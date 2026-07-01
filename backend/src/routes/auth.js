@@ -101,8 +101,7 @@ router.post('/login', async (req, res) => {
     { expiresIn: process.env.JWT_EXPIRES_IN }
   )
 
-  res.json({ mensaje: 'Sesión iniciada correctamente.', token, nombre: usuario.nombre_completo })
-})
+res.json({ mensaje: 'Sesión iniciada correctamente.', token, nombre: usuario.nombre_completo, modoDistribuidorActivo: usuario.modo_distribuidor_activo })})
 // POST /auth/recuperarContrasena
 router.post('/recuperarContrasena', async (req, res) => {
   const { telefono } = req.body
@@ -172,4 +171,21 @@ router.post('/nuevaContrasena', async (req, res) => {
   res.json({ mensaje: 'Contraseña actualizada correctamente. Ya podés iniciar sesión.' })
 })
 
+// POST /auth/activarModoDistribuidor
+router.post('/activarModoDistribuidor', async (req, res) => {
+  const { telefono } = req.body
+
+  const usuario = await pool.query('SELECT id, modo_distribuidor_activo FROM usuario WHERE telefono = $1', [telefono])
+  if (usuario.rows.length === 0) {
+    return res.status(400).json({ mensaje: 'No encontramos una cuenta con ese número de teléfono.' })
+  }
+
+  if (usuario.rows[0].modo_distribuidor_activo) {
+    return res.status(400).json({ mensaje: 'El modo distribuidor ya está activo en esta cuenta.' })
+  }
+
+  await pool.query('UPDATE usuario SET modo_distribuidor_activo = TRUE WHERE telefono = $1', [telefono])
+
+  res.json({ mensaje: 'Modo distribuidor activado correctamente.' })
+})
 module.exports = router
