@@ -78,7 +78,6 @@ router.post('/verificar', async (req, res) => {
 router.post('/login', async (req, res) => {
   const { telefono, contrasena } = req.body
 
-  // Buscar usuario
   const resultado = await pool.query('SELECT * FROM usuario WHERE telefono = $1', [telefono])
   if (resultado.rows.length === 0) {
     return res.status(400).json({ mensaje: 'No encontramos una cuenta con ese número de teléfono.' })
@@ -86,12 +85,10 @@ router.post('/login', async (req, res) => {
 
   const usuario = resultado.rows[0]
 
-  // Verificar si la cuenta está verificada
   if (!usuario.cuenta_verificada) {
     return res.status(400).json({ mensaje: 'Tu cuenta aún no fue verificada. Revisá el SMS que te enviamos.' })
   }
 
-  // Verificar contraseña
   const contrasenaCorrecta = await bcrypt.compare(contrasena, usuario.contrasena_hash)
   if (!contrasenaCorrecta) {
     return res.status(400).json({ mensaje: 'El teléfono o la contraseña son incorrectos.' })
@@ -106,4 +103,5 @@ router.post('/login', async (req, res) => {
 
   res.json({ mensaje: 'Sesión iniciada correctamente.', token, nombre: usuario.nombre_completo })
 })
+
 module.exports = router
