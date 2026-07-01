@@ -103,5 +103,73 @@ router.post('/login', async (req, res) => {
 
   res.json({ mensaje: 'Sesión iniciada correctamente.', token, nombre: usuario.nombre_completo })
 })
+// POST /auth/recuperarContrasena
+router.post('/recuperarContrasena', async (req, res) => {
+  const { telefono } = req.body
+
+  const resultado = await pool.query('SELECT id FROM usuario WHERE telefono = $1', [telefono])
+  if (resultado.rows.length === 0) {
+    return res.status(400).json({ mensaje: 'No encontramos una cuenta con ese número de teléfono.' })
+  }
+
+  const codigo = Math.floor(100000 + Math.random() * 900000).toString()
+  const expiracion = new Date(Date.now() + 10 * 60 * 1000)
+
+  await pool.query(
+    'INSERT INTO codigo_verificacion (usuario_id, codigo, proposito, fecha_expiracion) VALUES ($1, $2, $3, $4)',
+    [resultado.rows[0].id, codigo, 'recuperacion_password', expiracion]
+  )
+
+  await client.messages.create({
+    body: `Tu código de recuperación es: ${codigo}`,
+    from: process.env.TWILIO_PHONE_NUMBER,
+    to: telefono
+  })
+
+  res.json({ 
+    mensaje: 'Código enviado por SMS. Ingresalo para continuar.',
+    codigo_dev: codigo
+  })
+})
+
+// POST /auth/verificarRecuperacion
+router.post('/verificarRecuperacion', async (req, res) => {
+  const { telefono, codigo } = req.body
+
+  const usuario = await pool.query('SELECT id FROM usuario WHERE telefono = $1', [telefono])
+  if (usuario.rows.length === 0) {
+    return res.status(400).json({ mensaje: 'No encontramos una cuenta con ese número de teléfono.' })
+  }
+
+  const usuarioId = usuario.rows[0].id
+
+  const registro = await pool.query(
+    'SELECT * FROM codigo_verificacion WHERE usuario_id = $1 AND codigo = $2 AND proposito = $3 AND usado = FALSE',
+    [usuarioId, codigo, 'recuperacion_password']
+  )
+
+  if (registro.rows.length === 0) {
+    return res.status(400).json({ mensaje: 'El código ingresado no es válido. Intentá de nuevo.' })
+  }
+
+  if (new Date() > new Date(registro.rows[0].fecha_expiracion)) {
+    return res.status(400).json({ mensaje: 'El código expiró. Solicitá uno nuevo.' })
+  }
+
+  await pool.query('UPDATE codigo_verificacion SET usado = TRUE WHERE id = $1', [registro.rows[0].id])
+
+  res.json({ mensaje: 'Código verificado correctamente.' })
+})
+
+// POST /auth/nuevaContrasena
+router.post('/nuevaContrasena', async (req, res) => {
+  const { telefono, contrasena } = req.body
+
+  const contrasenaHash = await bcrypt.hash(contrasena, 10)
+
+  await pool.query('UPDATE usuario SET contrasena_hash = $1 WHERE telefono = $2', [contrasenaHash, telefono])
+
+  res.json({ mensaje: 'Contraseña actualizada correctamente. Ya podés iniciar sesión.' })
+})
 
 module.exports = router
