@@ -94,6 +94,7 @@ router.post('/login', async (req, res) => {
     return res.status(400).json({ mensaje: 'El teléfono o la contraseña son incorrectos.' })
   }
 
+  // Generar token JWT
   const token = require('jsonwebtoken').sign(
     { id: usuario.id, nombre: usuario.nombre_completo },
     process.env.JWT_SECRET,
