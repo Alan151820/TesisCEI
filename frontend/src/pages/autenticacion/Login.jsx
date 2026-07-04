@@ -7,6 +7,7 @@ function Login() {
   const [contrasena, setContrasena] = useState('')
   const [mensaje, setMensaje] = useState('')
   const navigate = useNavigate()
+  
 
   const formatearTelefono = (valor) => {
     let numeros = valor.replace(/\D/g, '')
@@ -25,6 +26,8 @@ function Login() {
       })
       localStorage.setItem('token', res.data.token)
       localStorage.setItem('nombre', res.data.nombre)
+      localStorage.setItem('modoDistribuidorActivo', res.data.modoDistribuidorActivo) 
+      localStorage.setItem('telefono', formatearTelefono(telefonoInput))
       navigate('/inicio')
     } catch (error) {
       setMensaje(error.response.data.mensaje)
