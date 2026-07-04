@@ -7,6 +7,9 @@ import VerificarRecuperacion from './pages/autenticacion/VerificarRecuperacion'
 import NuevaContrasena from './pages/autenticacion/NuevaContrasena'
 import Inicio from './pages/modoComprador/Inicio'
 import PanelDistribuidor from './pages/modoDistribuidor/PanelDistribuidor'
+import PerfilDistribuidor from './pages/modoComprador/PerfilDistribuidor'
+
+
 
 
 function App() {
@@ -20,6 +23,8 @@ function App() {
       <Route path='/nuevaContrasena' element={<NuevaContrasena />} />
       <Route path='/inicio' element={<Inicio />} />
       <Route path='/panelDistribuidor' element={<PanelDistribuidor />} />
+      <Route path='/perfilDistribuidor/:id' element={<PerfilDistribuidor />} />
+
 
     </Routes>
   )

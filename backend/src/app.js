@@ -10,6 +10,9 @@ app.use(express.json())
 
 app.use('/auth', authRoutes)
 
+const distribuidorRoutes = require('./routes/distribuidor')
+app.use('/distribuidor', distribuidorRoutes)
+
 app.listen(3000, () => {
   console.log('Servidor corriendo en http://localhost:3000')
 })
