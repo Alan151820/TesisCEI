@@ -8,6 +8,8 @@ import NuevaContrasena from './pages/autenticacion/NuevaContrasena'
 import Inicio from './pages/modoComprador/Inicio'
 import PanelDistribuidor from './pages/modoDistribuidor/PanelDistribuidor'
 import PerfilDistribuidor from './pages/modoComprador/PerfilDistribuidor'
+import ConfigurarPerfil from './pages/modoDistribuidor/ConfigurarPerfil'
+
 
 
 
@@ -24,6 +26,8 @@ function App() {
       <Route path='/inicio' element={<Inicio />} />
       <Route path='/panelDistribuidor' element={<PanelDistribuidor />} />
       <Route path='/perfilDistribuidor/:id' element={<PerfilDistribuidor />} />
+      <Route path='/configurarPerfil' element={<ConfigurarPerfil />} />
+
 
 
     </Routes>

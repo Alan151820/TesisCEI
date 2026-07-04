@@ -25,6 +25,13 @@ class Distribuidor {
   tieneCalificaciones() {
     return this.calificacionPromedio !== null
   }
+  static async configurarPerfilInicial(usuarioId, nombreComercial, descripcionNegocio, zonaEntrega) {
+  const resultado = await pool.query(
+    'INSERT INTO distribuidor (usuario_id, nombre_comercial, descripcion_negocio, zona_entrega, perfil_configurado) VALUES ($1, $2, $3, $4, $5) RETURNING *',
+    [usuarioId, nombreComercial, descripcionNegocio, zonaEntrega, true]
+  )
+  return new Distribuidor(resultado.rows[0])
+}
 }
 
 module.exports = Distribuidor
