@@ -27,14 +27,8 @@ router.post('/registro', async (req, res) => {
   // Guardar en memoria temporalmente
   registrosPendientes.push({ nombre, telefono, contrasenaHash, codigo, expiracion })
 
-  // Enviar SMS
-  await client.messages.create({
-    body: `Tu código de verificación es: ${codigo}`,
-    from: process.env.TWILIO_PHONE_NUMBER,
-    to: telefono
-  })
-
-  res.json({ 
+  // En desarrollo se omite el SMS y se devuelve el código directamente
+  res.json({
     mensaje: 'Código enviado por SMS. Ingresalo para activar tu cuenta.',
     codigo_dev: codigo
   })
