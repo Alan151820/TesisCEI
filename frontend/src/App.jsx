@@ -5,9 +5,9 @@ import Login from './pages/autenticacion/Login'
 import RecuperarContrasena from './pages/autenticacion/RecuperarContrasena'
 import VerificarRecuperacion from './pages/autenticacion/VerificarRecuperacion'
 import NuevaContrasena from './pages/autenticacion/NuevaContrasena'
-import Inicio from './pages/modoComprador/Inicio'
+import Inicio from './pages/modoDistribuidor/Inicio'
 import PanelDistribuidor from './pages/modoDistribuidor/PanelDistribuidor'
-
+import FichaProducto from './pages/modoDistribuidor/FichaProducto'
 
 function App() {
   return (
@@ -20,7 +20,7 @@ function App() {
       <Route path='/nuevaContrasena' element={<NuevaContrasena />} />
       <Route path='/inicio' element={<Inicio />} />
       <Route path='/panelDistribuidor' element={<PanelDistribuidor />} />
-
+      <Route path='/producto/nuevo' element={<FichaProducto />} />
     </Routes>
   )
 }
