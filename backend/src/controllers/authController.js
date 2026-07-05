@@ -70,8 +70,8 @@ const activarModoDistribuidor = async (req, res) => {
     await usuario.activarModoDistribuidor()
     res.json({ mensaje: 'Modo distribuidor activado correctamente.' })
   } catch (error) {
-    res.status(400).json({ mensaje: error.message })
-  }
+ console.log('Error activarModoDistribuidor:', error.message)
+  res.status(400).json({ mensaje: error.message })  }
 }
 
 module.exports = { registro, verificar, login, recuperarContrasena, verificarRecuperacion, nuevaContrasena, activarModoDistribuidor }

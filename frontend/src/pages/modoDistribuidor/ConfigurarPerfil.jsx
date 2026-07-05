@@ -11,19 +11,21 @@ function ConfigurarPerfil() {
   const telefono = localStorage.getItem('telefono')
 
   const handleConfigurar = async () => {
-    try {
-      const res = await axios.post('http://localhost:3000/distribuidor/configurarPerfil', {
-        telefono,
-        nombreComercial,
-        descripcionNegocio,
-        zonaEntrega
-      })
-      localStorage.setItem('distribuidorId', res.data.distribuidorId)
-      navigate('/panelDistribuidor')
-    } catch (error) {
-      setMensaje(error.response?.data?.mensaje || 'No fue posible completar la operación. Intente nuevamente más tarde.')
-    }
+  try {
+    const res = await axios.post('http://localhost:3000/distribuidor/configurarPerfil', {
+      telefono,
+      nombreComercial,
+      descripcionNegocio,
+      zonaEntrega
+    })
+    await axios.post('http://localhost:3000/auth/activarModoDistribuidor', { telefono })
+    localStorage.setItem('distribuidorId', res.data.distribuidorId)
+    localStorage.setItem('modoDistribuidorActivo', 'true')
+    navigate('/inicio')
+  } catch (error) {
+    setMensaje(error.response?.data?.mensaje || 'No fue posible completar la operación. Intente nuevamente más tarde.')
   }
+}
 
   return (
     <div style={{ textAlign: 'center', marginTop: '100px' }}>

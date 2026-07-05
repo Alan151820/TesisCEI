@@ -1,20 +1,11 @@
 import { useNavigate } from 'react-router-dom'
-import axios from 'axios'
 
 function InicioComprador() {
   const navigate = useNavigate()
   const nombre = localStorage.getItem('nombre')
-  const telefono = localStorage.getItem('telefono')
-  const modoDistribuidorActivo = localStorage.getItem('modoDistribuidorActivo') === 'true'
-
-  const handleActivarModo = async () => {
-    try {
-      await axios.post('http://localhost:3000/auth/activarModoDistribuidor', { telefono })
-      localStorage.setItem('modoDistribuidorActivo', 'true')
-      navigate('/inicio')
-    } catch (error) {
-      alert(error.response.data.mensaje)
-    }
+const modoDistribuidorActivo = localStorage.getItem('modoDistribuidorActivo') === 'true'
+  const handleActivarModo = () => {
+    navigate('/configurarPerfil')
   }
 
   const handleCerrarSesion = () => {
@@ -35,7 +26,7 @@ function InicioComprador() {
           <button onClick={handleActivarModo}>Activar modo distribuidor</button>
         </div>
       ) : (
-        <button onClick={() => navigate('/Inicio')}>Cambiar a modo distribuidor</button>
+        <button onClick={() => navigate('/inicio')}>Cambiar a modo distribuidor</button>
       )}
 
       <br /><br />

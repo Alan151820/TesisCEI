@@ -85,7 +85,7 @@ class Usuario {
       process.env.JWT_SECRET,
       { expiresIn: process.env.JWT_EXPIRES_IN }
     )
-
+console.log('usuario:', usuario)
     return { token, nombre: usuario.nombreCompleto, modoDistribuidorActivo: usuario.modoDistribuidorActivo, telefono: usuario.telefono }
   }
 

@@ -7,7 +7,6 @@ function Login() {
   const [contrasena, setContrasena] = useState('')
   const [mensaje, setMensaje] = useState('')
   const navigate = useNavigate()
-  
 
   const formatearTelefono = (valor) => {
     let numeros = valor.replace(/\D/g, '')
@@ -26,9 +25,9 @@ function Login() {
       })
       localStorage.setItem('token', res.data.token)
       localStorage.setItem('nombre', res.data.nombre)
-      localStorage.setItem('modoDistribuidorActivo', res.data.modoDistribuidorActivo) 
+      localStorage.setItem('modoDistribuidorActivo', String(res.data.modoDistribuidorActivo))
       localStorage.setItem('telefono', formatearTelefono(telefonoInput))
-      navigate('/InicioComprador')
+      navigate('/inicioComprador')
     } catch (error) {
       setMensaje(error.response.data.mensaje)
     }
@@ -43,7 +42,7 @@ function Login() {
       <input placeholder='Contraseña' type='password' value={contrasena} onChange={e => setContrasena(e.target.value)} />
       <br />
       <button onClick={() => navigate('/recuperarContrasena')}>¿Olvidaste tu contraseña?</button>
-       <br />
+      <br />
       <button onClick={handleLogin}>Ingresar</button>
       <p>{mensaje}</p>
     </div>

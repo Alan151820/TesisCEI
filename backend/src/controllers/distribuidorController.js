@@ -21,8 +21,7 @@ const obtenerPerfil = async (req, res) => {
     })
   } catch (error) {
       console.log(error)
-
-    res.status(500).json({ mensaje: 'No fue posible completar la operación. Intente nuevamente más tarde.' })
+  res.status(500).json({ mensaje: 'No fue posible completar la operación. Intente nuevamente más tarde.' })
   }
 }
 const configurarPerfil = async (req, res) => {
