@@ -21,17 +21,38 @@ function Inicio() {
 
   const [productos, setProductos] = useState([])
   const [cargando, setCargando] = useState(true)
+  const [errorVisibilidad, setErrorVisibilidad] = useState({}) // { [productoId]: mensaje }
+
+  const token = localStorage.getItem('token')
+  const headers = { Authorization: `Bearer ${token}` }
 
   useEffect(() => {
-    const token = localStorage.getItem('token')
     axios
-      .get('http://localhost:3000/api/productos', {
-        headers: { Authorization: `Bearer ${token}` },
-      })
+      .get('http://localhost:3000/api/productos', { headers })
       .then(res => setProductos(res.data))
       .catch(() => {})
       .finally(() => setCargando(false))
   }, [])
+
+  const handleCambiarVisibilidad = async (productoId, nuevoEstado) => {
+    setErrorVisibilidad(prev => ({ ...prev, [productoId]: null }))
+    try {
+      const res = await axios.patch(
+        `http://localhost:3000/api/productos/${productoId}/visibilidad`,
+        { nuevoEstado },
+        { headers }
+      )
+      const productoActualizado = res.data.producto
+      setProductos(prev =>
+        prev.map(p =>
+          p.id === productoId ? { ...p, estadoVisibilidad: productoActualizado.estadoVisibilidad } : p
+        )
+      )
+    } catch (err) {
+      const mensaje = err.response?.data?.error || 'No fue posible completar la operación. Intente nuevamente más tarde.'
+      setErrorVisibilidad(prev => ({ ...prev, [productoId]: mensaje }))
+    }
+  }
 
   const handleCerrarSesion = () => {
     localStorage.removeItem('token')
@@ -137,27 +158,38 @@ function Inicio() {
             )}
 
             {!cargando && productos.map(p => (
-              <div key={p.id} className="panel-tabla-fila">
-                <div className="panel-tabla-celda">
-                  {p.imagenUrl
-                    ? <img src={`http://localhost:3000${p.imagenUrl}`} alt={p.nombre} className="panel-producto-foto-img" />
-                    : <div className="panel-producto-foto">—</div>
-                  }
+              <div key={p.id}>
+                <div className="panel-tabla-fila">
+                  <div className="panel-tabla-celda">
+                    {p.imagenUrl
+                      ? <img src={`http://localhost:3000${p.imagenUrl}`} alt={p.nombre} className="panel-producto-foto-img" />
+                      : <div className="panel-producto-foto">—</div>
+                    }
+                  </div>
+                  <div className="panel-tabla-celda">{p.nombre}</div>
+                  <div className="panel-tabla-celda">{p.categoria}</div>
+                  <div className={`panel-tabla-celda${p.stockDisponible === 0 ? ' stock-cero' : ''}`}>
+                    {p.stockDisponible} u.
+                  </div>
+                  <div className="panel-tabla-celda">{p.stockReservado} u.</div>
+                  <div className="panel-tabla-celda">
+                    <span className={`panel-estado-badge ${p.estadoVisibilidad}`}>
+                      {p.estadoVisibilidad === 'publicado' ? 'Publicado' : 'Pausado'}
+                    </span>
+                  </div>
+                  <div className="panel-tabla-celda panel-acciones">
+                    {p.estadoVisibilidad === 'publicado' ? (
+                      <span className="panel-accion-link" onClick={() => handleCambiarVisibilidad(p.id, 'pausado')}>Pausar</span>
+                    ) : (
+                      <span className="panel-accion-link" onClick={() => handleCambiarVisibilidad(p.id, 'publicado')}>Publicar</span>
+                    )}
+                    {' · '}
+                    <span className="panel-accion-link">Editar</span>
+                  </div>
                 </div>
-                <div className="panel-tabla-celda">{p.nombre}</div>
-                <div className="panel-tabla-celda">{p.categoria}</div>
-                <div className={`panel-tabla-celda${p.stockDisponible === 0 ? ' stock-cero' : ''}`}>
-                  {p.stockDisponible} u.
-                </div>
-                <div className="panel-tabla-celda">{p.stockReservado} u.</div>
-                <div className="panel-tabla-celda">
-                  <span className={`panel-estado-badge ${p.estadoVisibilidad}`}>
-                    {p.estadoVisibilidad === 'publicado' ? 'Publicado' : 'Pausado'}
-                  </span>
-                </div>
-                <div className="panel-tabla-celda panel-acciones">
-                  {p.estadoVisibilidad === 'publicado' ? 'Pausar' : 'Publicar'} · Editar
-                </div>
+                {errorVisibilidad[p.id] && (
+                  <div className="panel-error-visibilidad">{errorVisibilidad[p.id]}</div>
+                )}
               </div>
             ))}
           </div>

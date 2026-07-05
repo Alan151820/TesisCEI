@@ -335,6 +335,25 @@
   margin-top: 10px;
 }
 
+.panel-accion-link {
+  color: #444;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.panel-accion-link:hover {
+  color: #111;
+  text-decoration: underline;
+}
+
+.panel-error-visibilidad {
+  padding: 6px 14px 8px 66px;
+  font-size: 12px;
+  color: oklch(35% 0.2 25);
+  background: oklch(97% 0.02 25);
+  border-top: 1px solid oklch(90% 0.05 25);
+}
+
 @media (max-width: 768px) {
   .panel-sidebar {
     display: none;
