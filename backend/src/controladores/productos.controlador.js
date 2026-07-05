@@ -61,4 +61,16 @@ async function listarProductos(req, res, next) {
   }
 }
 
-module.exports = { listarCategorias, crearProducto, listarProductos }
+async function cambiarVisibilidad(req, res, next) {
+  const productoId = Number(req.params.id)
+  const { nuevoEstado } = req.body
+  try {
+    const producto = await productosServicio.cambiarVisibilidad(productoId, req.usuario.id, nuevoEstado)
+    res.status(200).json({ mensaje: `Producto ${nuevoEstado} correctamente.`, producto })
+  } catch (error) {
+    if (error.status) return res.status(error.status).json({ error: error.mensaje })
+    next(error)
+  }
+}
+
+module.exports = { listarCategorias, crearProducto, listarProductos, cambiarVisibilidad }
