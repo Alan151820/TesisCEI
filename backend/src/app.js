@@ -3,6 +3,7 @@ const express = require('express')
 const cors = require('cors')
 const authRoutes = require('./routes/auth')
 const productosRutas = require('./rutas/productos.rutas')
+const preciosVolumenRutas = require('./rutas/preciosVolumen.rutas')
 
 const app = express()
 
@@ -12,6 +13,7 @@ app.use('/uploads', express.static(require('path').join(__dirname, '../public/up
 
 app.use('/auth', authRoutes)
 app.use('/api/productos', productosRutas)
+app.use('/api/productos/:productoId/precios', preciosVolumenRutas)
 
 app.use((err, req, res, next) => {
   console.error(err)
