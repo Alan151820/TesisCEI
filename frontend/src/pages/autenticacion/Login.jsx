@@ -28,7 +28,7 @@ function Login() {
       localStorage.setItem('nombre', res.data.nombre)
       localStorage.setItem('modoDistribuidorActivo', res.data.modoDistribuidorActivo) 
       localStorage.setItem('telefono', formatearTelefono(telefonoInput))
-      navigate('/inicio')
+      navigate('/InicioComprador')
     } catch (error) {
       setMensaje(error.response.data.mensaje)
     }

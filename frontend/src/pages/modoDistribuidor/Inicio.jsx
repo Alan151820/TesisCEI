@@ -59,6 +59,8 @@ function Inicio() {
               {item.label}
             </div>
           ))}
+          <button className='panel-nav-item' onClick={() => navigate('/inicioComprador')}>Cambiar a modo comprador</button>
+
         </nav>
 
         <div className="panel-sidebar-footer">
