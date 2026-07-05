@@ -293,6 +293,122 @@
   cursor: not-allowed;
 }
 
+/* Sección precios por volumen */
+.ficha-precios-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.ficha-precios-header .ficha-card-titulo {
+  margin-bottom: 0;
+}
+
+.ficha-btn-agregar-precio {
+  background: none;
+  border: 1px solid var(--color-primario, #222);
+  color: var(--color-primario, #222);
+  border-radius: 4px;
+  padding: 6px 14px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.ficha-precios-tabla {
+  border: 1px solid #e4e4e4;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 12px;
+}
+
+.ficha-precios-thead {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 40px;
+  background: #f5f5f5;
+  padding: 8px 12px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  gap: 8px;
+}
+
+.ficha-precios-fila {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 40px;
+  padding: 10px 12px;
+  border-top: 1px solid #e4e4e4;
+  font-size: 13px;
+  color: #333;
+  gap: 8px;
+  align-items: center;
+}
+
+.ficha-precios-vacio {
+  padding: 16px 12px;
+  font-size: 13px;
+  color: #aaa;
+  border-top: 1px solid #e4e4e4;
+}
+
+.ficha-precio-eliminar {
+  color: #ccc;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.ficha-precio-eliminar:hover {
+  color: #c00;
+}
+
+.ficha-form-precio {
+  background: #f9f9f9;
+  border: 1px solid #e4e4e4;
+  border-radius: 4px;
+  padding: 16px;
+  margin-bottom: 12px;
+}
+
+.ficha-form-precio-acciones {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.ficha-form-precio-acciones .ficha-btn-guardar,
+.ficha-form-precio-acciones .ficha-btn-cancelar {
+  width: auto;
+  padding: 0 20px;
+}
+
+.ficha-precios-nota {
+  font-size: 11px;
+  color: #aaa;
+  line-height: 1.4;
+}
+
+/* Vista confirmación producto guardado */
+.ficha-card-ok {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 20px;
+  background: oklch(95% 0.04 145);
+  border-color: oklch(80% 0.1 145);
+}
+
+.ficha-ok-icono {
+  font-size: 18px;
+  color: oklch(45% 0.15 145);
+}
+
+.ficha-ok-texto {
+  font-size: 14px;
+  color: oklch(30% 0.1 145);
+}
+
 @media (max-width: 768px) {
   .ficha-fondo {
     padding: 16px;
