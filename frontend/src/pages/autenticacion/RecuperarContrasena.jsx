@@ -2,9 +2,8 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 
-function Login() {
+function RecuperarContrasena() {
   const [telefonoInput, setTelefonoInput] = useState('')
-  const [contrasena, setContrasena] = useState('')
   const [mensaje, setMensaje] = useState('')
   const navigate = useNavigate()
 
@@ -16,33 +15,27 @@ function Login() {
     return '+598' + numeros
   }
 
-  const handleLogin = async () => {
+  const handleRecuperar = async () => {
     const telefono = formatearTelefono(telefonoInput)
     try {
-      const res = await axios.post('http://localhost:3000/auth/login', {
-        telefono,
-        contrasena
-      })
-      localStorage.setItem('token', res.data.token)
-      localStorage.setItem('nombre', res.data.nombre)
-      navigate('/inicio')
+      const res = await axios.post('http://localhost:3000/auth/recuperarContrasena', { telefono })
+      setMensaje(res.data.mensaje)
+      navigate('/verificarRecuperacion', { state: { telefono, codigoDev: res.data.codigo_dev } })
     } catch (error) {
       setMensaje(error.response.data.mensaje)
     }
   }
 
   return (
-    <div>
-      <h1>Iniciar sesión</h1>
+    <div style={{ textAlign: 'center', marginTop: '100px' }}>
+      <h1>Recuperar contraseña</h1>
       <label>+598</label>
       <input placeholder='99 123 456' value={telefonoInput} onChange={e => setTelefonoInput(e.target.value)} />
-      <br />
-      <input placeholder='Contraseña' type='password' value={contrasena} onChange={e => setContrasena(e.target.value)} />
-      <br />
-      <button onClick={handleLogin}>Ingresar</button>
+      <br /><br />
+      <button onClick={handleRecuperar}>Enviar código</button>
       <p>{mensaje}</p>
     </div>
   )
 }
 
-export default Login
+export default RecuperarContrasena
