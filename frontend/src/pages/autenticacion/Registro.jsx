@@ -26,7 +26,7 @@ function Registro() {
         contrasena
       })
       setMensaje(res.data.mensaje)
-      navigate('/verificar', { state: { telefono, nombre, codigoDev: res.data.codigo_dev } })
+      navigate('/verificar', { state: { telefono, nombre, codigoDev: res.data.codigo_dev } })   
     } catch (error) {
       setMensaje(error.response.data.mensaje)
     }
