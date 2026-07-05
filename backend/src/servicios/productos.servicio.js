@@ -114,4 +114,50 @@ async function listarProductos(usuarioId) {
   return resultado.rows
 }
 
-module.exports = { obtenerCategorias, validarDatosCreacion, crearProducto, listarProductos }
+async function cambiarVisibilidad(productoId, usuarioId, nuevoEstado) {
+  const estadosValidos = ['publicado', 'pausado']
+  if (!estadosValidos.includes(nuevoEstado)) {
+    const error = new Error()
+    error.status = 400
+    error.mensaje = 'Estado de visibilidad inválido.'
+    throw error
+  }
+
+  // Verificar que el producto pertenece al distribuidor
+  const pertenece = await pool.query(
+    `SELECT p.id FROM producto p
+     JOIN distribuidor d ON d.id = p.distribuidor_id
+     WHERE p.id = $1 AND d.usuario_id = $2 AND p.habilitado = true`,
+    [productoId, usuarioId]
+  )
+  if (pertenece.rows.length === 0) {
+    const error = new Error()
+    error.status = 404
+    error.mensaje = 'Producto no encontrado.'
+    throw error
+  }
+
+  // Regla de negocio: para publicar debe tener al menos un precio por volumen
+  if (nuevoEstado === 'publicado') {
+    const precios = await pool.query(
+      'SELECT id FROM precio_volumen WHERE producto_id = $1 LIMIT 1',
+      [productoId]
+    )
+    if (precios.rows.length === 0) {
+      const error = new Error()
+      error.status = 422
+      error.mensaje = 'El producto necesita al menos un precio por volumen para poder ser publicado.'
+      throw error
+    }
+  }
+
+  const resultado = await pool.query(
+    `UPDATE producto SET estado_visibilidad = $1
+     WHERE id = $2
+     RETURNING id, nombre, estado_visibilidad AS "estadoVisibilidad"`,
+    [nuevoEstado, productoId]
+  )
+  return resultado.rows[0]
+}
+
+module.exports = { obtenerCategorias, validarDatosCreacion, crearProducto, listarProductos, cambiarVisibilidad }
