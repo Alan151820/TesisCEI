@@ -8,25 +8,27 @@ function Verificar() {
   const location = useLocation()
   const navigate = useNavigate()
   const telefono = location.state?.telefono
+  const nombre = location.state?.nombre
   const codigoDev = location.state?.codigoDev
 
   const handleVerificar = async () => {
-  try {
-    const res = await axios.post('http://localhost:3000/auth/verificar', {
-      telefono,
-      codigo
-    })
- const nombre = location.state?.nombre
-
-localStorage.setItem('telefono', telefono)
-localStorage.setItem('modoDistribuidorActivo', 'false')
-localStorage.setItem('nombre', nombre)
-    setMensaje(res.data.mensaje)
-    navigate('/inicio')
-  } catch (error) {
-    setMensaje(error.response.data.mensaje)
+    try {
+      const res = await axios.post('http://localhost:3000/auth/verificar', {
+        telefono,
+        codigo
+      })
+      localStorage.setItem('telefono', telefono)
+      localStorage.setItem('nombre', nombre)
+      localStorage.setItem('modoDistribuidorActivo', 'false')
+      if (res.data.token) {
+        localStorage.setItem('token', res.data.token)
+      }
+      setMensaje(res.data.mensaje)
+      navigate('/inicioComprador')
+    } catch (error) {
+      setMensaje(error.response.data.mensaje)
+    }
   }
-}
 
   return (
     <div>

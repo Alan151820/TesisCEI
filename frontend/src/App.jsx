@@ -5,14 +5,11 @@ import Login from './pages/autenticacion/Login'
 import RecuperarContrasena from './pages/autenticacion/RecuperarContrasena'
 import VerificarRecuperacion from './pages/autenticacion/VerificarRecuperacion'
 import NuevaContrasena from './pages/autenticacion/NuevaContrasena'
-import Inicio from './pages/modoComprador/Inicio'
-import PanelDistribuidor from './pages/modoDistribuidor/PanelDistribuidor'
+import Inicio from './pages/modoDistribuidor/Inicio'
+import FichaProducto from './pages/modoDistribuidor/FichaProducto'
+import InicioComprador from './pages/modoComprador/InicioComprador'
 import PerfilDistribuidor from './pages/modoComprador/PerfilDistribuidor'
 import ConfigurarPerfil from './pages/modoDistribuidor/ConfigurarPerfil'
-
-
-
-
 
 function App() {
   return (
@@ -24,12 +21,10 @@ function App() {
       <Route path='/verificarRecuperacion' element={<VerificarRecuperacion />} />
       <Route path='/nuevaContrasena' element={<NuevaContrasena />} />
       <Route path='/inicio' element={<Inicio />} />
-      <Route path='/panelDistribuidor' element={<PanelDistribuidor />} />
+      <Route path='/producto/nuevo' element={<FichaProducto />} />
+      <Route path='/inicioComprador' element={<InicioComprador />} />
       <Route path='/perfilDistribuidor/:id' element={<PerfilDistribuidor />} />
       <Route path='/configurarPerfil' element={<ConfigurarPerfil />} />
-
-
-
     </Routes>
   )
 }

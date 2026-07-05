@@ -1,0 +1,378 @@
+.panel-layout {
+  display: flex;
+  height: 100vh;
+  font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  overflow: hidden;
+}
+
+/* Sidebar */
+.panel-sidebar {
+  width: 220px;
+  background: #111;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  height: 100%;
+}
+
+.panel-sidebar-marca {
+  padding: 18px 20px;
+  border-bottom: 1px solid #1E1E1E;
+}
+
+.panel-sidebar-titulo {
+  font-size: 16px;
+  font-weight: 700;
+  color: #FFF;
+}
+
+.panel-sidebar-subtitulo {
+  font-size: 10px;
+  color: #555;
+  margin-top: 2px;
+}
+
+.panel-nav {
+  flex: 1;
+  padding: 8px 0;
+}
+
+.panel-nav-item {
+  height: 44px;
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  font-size: 13px;
+  color: #888;
+  border-left: 3px solid transparent;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.panel-nav-item:hover {
+  background: #1A1A1A;
+  color: #CCC;
+}
+
+.panel-nav-item.activo {
+  color: #FFF;
+  background: #1E1E1E;
+  border-left-color: #FFF;
+}
+
+.panel-sidebar-footer {
+  border-top: 1px solid #1E1E1E;
+  padding: 14px 20px;
+}
+
+.panel-sidebar-usuario {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.panel-avatar-small {
+  width: 28px;
+  height: 28px;
+  background: #222;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  color: #777;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.panel-sidebar-nombre {
+  font-size: 11px;
+  color: #CCC;
+}
+
+.panel-sidebar-rol {
+  font-size: 10px;
+  color: #555;
+}
+
+.panel-sidebar-accion {
+  font-size: 11px;
+  color: #555;
+  cursor: pointer;
+}
+
+.panel-sidebar-accion:hover {
+  color: #888;
+}
+
+/* Main */
+.panel-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: #F8F8F8;
+}
+
+/* Topbar */
+.panel-topbar {
+  height: 52px;
+  background: #1A1A1A;
+  border-bottom: 1px solid #0D0D0D;
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+  flex-shrink: 0;
+}
+
+.panel-topbar-titulo {
+  font-size: 14px;
+  font-weight: 600;
+  color: #DDD;
+  flex: 1;
+}
+
+.panel-avatar {
+  width: 32px;
+  height: 32px;
+  background: #222;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  color: #777;
+  font-weight: 600;
+}
+
+/* Contenido */
+.panel-contenido {
+  flex: 1;
+  overflow: auto;
+  padding: 28px 32px;
+}
+
+.panel-seccion-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.panel-h1 {
+  font-size: 22px;
+  font-weight: 700;
+  color: #111;
+  letter-spacing: -0.5px;
+  margin: 0 0 4px 0;
+}
+
+.panel-subtitulo {
+  font-size: 13px;
+  color: #888;
+  margin: 0;
+}
+
+.panel-btn-nuevo {
+  height: 38px;
+  background: #222;
+  color: #FFF;
+  border: none;
+  border-radius: 4px;
+  padding: 0 16px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.panel-btn-nuevo:hover {
+  background: #333;
+}
+
+/* Filtros */
+.panel-filtros {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 18px;
+  flex-wrap: wrap;
+}
+
+.panel-filtro-chip {
+  height: 34px;
+  border: 1px solid #CCC;
+  border-radius: 4px;
+  padding: 0 12px;
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+  color: #777;
+  background: #FFF;
+  cursor: pointer;
+}
+
+.panel-filtro-limpiar {
+  height: 34px;
+  border: 1px solid #DDD;
+  border-radius: 4px;
+  padding: 0 10px;
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+  color: #AAA;
+  background: #FFF;
+  cursor: pointer;
+}
+
+/* Tabla */
+.panel-tabla-wrapper {
+  background: #FFF;
+  border: 1px solid #E4E4E4;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.panel-tabla-header {
+  display: grid;
+  grid-template-columns: 52px 1fr 140px 120px 120px 120px 180px;
+  background: #F5F5F5;
+  border-bottom: 1px solid #E4E4E4;
+}
+
+.panel-tabla-header > div {
+  padding: 10px 14px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #777;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.panel-tabla-vacio {
+  padding: 40px 24px;
+  font-size: 13px;
+  color: #AAA;
+  text-align: center;
+}
+
+.panel-tabla-vacio-link {
+  color: #333;
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+/* Filas de tabla */
+.panel-tabla-fila {
+  display: grid;
+  grid-template-columns: 52px 1fr 140px 120px 120px 120px 180px;
+  border-bottom: 1px solid #F0F0F0;
+  background: #FFF;
+}
+
+.panel-tabla-fila:last-child {
+  border-bottom: none;
+}
+
+.panel-tabla-celda {
+  padding: 12px 14px;
+  font-size: 13px;
+  color: #444;
+  display: flex;
+  align-items: center;
+}
+
+.panel-tabla-celda.stock-cero {
+  color: #C00;
+}
+
+.panel-producto-foto {
+  width: 36px;
+  height: 36px;
+  background: #E8E8E8;
+  border-radius: 3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 9px;
+  color: #AAA;
+}
+
+.panel-producto-foto-img {
+  width: 36px;
+  height: 36px;
+  border-radius: 3px;
+  object-fit: cover;
+}
+
+.panel-estado-badge {
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: 3px;
+}
+
+.panel-estado-badge.publicado {
+  background: #E8E8E8;
+  color: #333;
+}
+
+.panel-estado-badge.pausado {
+  background: #F5F5F5;
+  color: #AAA;
+}
+
+.panel-acciones {
+  font-size: 12px;
+  color: #444;
+  cursor: pointer;
+  gap: 4px;
+}
+
+.panel-tabla-contador {
+  font-size: 12px;
+  color: #AAA;
+  margin-top: 10px;
+}
+
+.panel-accion-link {
+  color: #444;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.panel-accion-link:hover {
+  color: #111;
+  text-decoration: underline;
+}
+
+.panel-error-visibilidad {
+  padding: 6px 14px 8px 66px;
+  font-size: 12px;
+  color: oklch(35% 0.2 25);
+  background: oklch(97% 0.02 25);
+  border-top: 1px solid oklch(90% 0.05 25);
+}
+
+@media (max-width: 768px) {
+  .panel-sidebar {
+    display: none;
+  }
+
+  .panel-contenido {
+    padding: 16px;
+  }
+
+  .panel-seccion-header {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .panel-btn-nuevo {
+    width: 100%;
+  }
+
+  .panel-tabla-header {
+    display: none;
+  }
+}
