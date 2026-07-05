@@ -8,6 +8,7 @@ import NuevaContrasena from './pages/autenticacion/NuevaContrasena'
 import Inicio from './pages/modoDistribuidor/Inicio'
 import FichaProducto from './pages/modoDistribuidor/FichaProducto'
 import InicioComprador from './pages/modoComprador/InicioComprador'
+import PerfilDistribuidor from './pages/modoComprador/PerfilDistribuidor'
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
       <Route path='/inicio' element={<Inicio />} />
       <Route path='/producto/nuevo' element={<FichaProducto />} />
       <Route path='/inicioComprador' element={<InicioComprador />} />
+      <Route path='/perfilDistribuidor/:id' element={<PerfilDistribuidor />} />
     </Routes>
   )
 }

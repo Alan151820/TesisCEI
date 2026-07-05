@@ -20,6 +20,9 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: 'No fue posible completar la operación. Intente nuevamente más tarde.' })
 })
 
+const distribuidorRoutes = require('./routes/distribuidor')
+app.use('/distribuidor', distribuidorRoutes)
+
 app.listen(3000, () => {
   console.log('Servidor corriendo en http://localhost:3000')
 })
