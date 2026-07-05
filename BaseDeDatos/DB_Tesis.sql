@@ -80,3 +80,15 @@ CREATE TABLE producto (
   fecha_creacion TIMESTAMP NOT NULL DEFAULT NOW()
 );
 
+-- RF-015: Registro de precio por volumen
+CREATE TABLE precio_volumen (
+  id SERIAL PRIMARY KEY,
+  producto_id INTEGER NOT NULL REFERENCES producto(id),
+  cantidad_minima DECIMAL NOT NULL,
+  precio_venta DECIMAL NOT NULL,
+  precio_costo DECIMAL,
+  CONSTRAINT precio_venta_positivo CHECK (precio_venta > 0),
+  CONSTRAINT cantidad_minima_positiva CHECK (cantidad_minima > 0),
+  CONSTRAINT precio_costo_no_negativo CHECK (precio_costo IS NULL OR precio_costo >= 0)
+);
+
