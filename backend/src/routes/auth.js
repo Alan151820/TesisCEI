@@ -23,18 +23,21 @@ router.post('/registro', async (req, res) => {
 
   registrosPendientes.push({ nombre, telefono, contrasenaHash, codigo, expiracion })
 
-  await client.messages.create({
-    body: `Tu código de verificación es: ${codigo}`,
-    from: process.env.TWILIO_PHONE_NUMBER,
-    to: telefono
-  })
+  try {
+    await client.messages.create({
+      body: `Tu código de verificación es: ${codigo}`,
+      from: process.env.TWILIO_PHONE_NUMBER,
+      to: telefono
+    })
+  } catch (twilioError) {
+    console.log('SMS no enviado:', twilioError.message)
+  }
 
   res.json({
     mensaje: 'Código enviado por SMS. Ingresalo para activar tu cuenta.',
     codigo_dev: codigo
   })
 })
-
 /*
 // POST /auth/registro
 router.post('/registro', async (req, res) => {
