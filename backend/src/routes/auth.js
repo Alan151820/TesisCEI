@@ -9,6 +9,33 @@ const client = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TO
 // Almacenamiento temporal de registros pendientes
 const registrosPendientes = []
 
+router.post('/registro', async (req, res) => {
+  const { nombre, telefono, contrasena } = req.body
+
+  const usuarioExistente = await pool.query('SELECT id FROM usuario WHERE telefono = $1', [telefono])
+  if (usuarioExistente.rows.length > 0) {
+    return res.status(400).json({ mensaje: 'El número de teléfono ya está registrado. Iniciá sesión o recuperá tu contraseña.' })
+  }
+
+  const codigo = Math.floor(100000 + Math.random() * 900000).toString()
+  const expiracion = new Date(Date.now() + 10 * 60 * 1000)
+  const contrasenaHash = await bcrypt.hash(contrasena, 10)
+
+  registrosPendientes.push({ nombre, telefono, contrasenaHash, codigo, expiracion })
+
+  await client.messages.create({
+    body: `Tu código de verificación es: ${codigo}`,
+    from: process.env.TWILIO_PHONE_NUMBER,
+    to: telefono
+  })
+
+  res.json({
+    mensaje: 'Código enviado por SMS. Ingresalo para activar tu cuenta.',
+    codigo_dev: codigo
+  })
+})
+
+/*
 // POST /auth/registro
 router.post('/registro', async (req, res) => {
   const { nombre, telefono, contrasena } = req.body
@@ -33,7 +60,7 @@ router.post('/registro', async (req, res) => {
     codigo_dev: codigo
   })
 })
-
+*/
 // POST /auth/verificar
 router.post('/verificar', async (req, res) => {
   const { telefono, codigo } = req.body
@@ -95,7 +122,18 @@ router.post('/login', async (req, res) => {
     { expiresIn: process.env.JWT_EXPIRES_IN }
   )
 
-  res.json({ mensaje: 'Sesión iniciada correctamente.', token, nombre: usuario.nombre_completo })
+res.json({ mensaje: 'Sesión iniciada correctamente.', token, nombre: usuario.nombre_completo, modoDistribuidorActivo: usuario.modo_distribuidor_activo, telefono: usuario.telefono })})
+
+// POST /auth/activarModoDistribuidor
+router.post('/activarModoDistribuidor', async (req, res) => {
+  try {
+    const { telefono } = req.body
+    await pool.query('UPDATE usuario SET modo_distribuidor_activo = TRUE WHERE telefono = $1', [telefono])
+    res.json({ mensaje: 'Modo distribuidor activado correctamente.' })
+  } catch (error) {
+    console.log('Error activarModoDistribuidor:', error.message)
+    res.status(500).json({ mensaje: 'No fue posible completar la operación. Intente nuevamente más tarde.' })
+  }
 })
 
 module.exports = router

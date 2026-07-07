@@ -8,6 +8,7 @@ function Verificar() {
   const location = useLocation()
   const navigate = useNavigate()
   const telefono = location.state?.telefono
+  const nombre = location.state?.nombre
   const codigoDev = location.state?.codigoDev
 
   const handleVerificar = async () => {
@@ -16,8 +17,14 @@ function Verificar() {
         telefono,
         codigo
       })
+      localStorage.setItem('telefono', telefono)
+      localStorage.setItem('nombre', nombre)
+      localStorage.setItem('modoDistribuidorActivo', 'false')
+      if (res.data.token) {
+        localStorage.setItem('token', res.data.token)
+      }
       setMensaje(res.data.mensaje)
-      navigate('/inicio')
+      navigate('/inicioComprador')
     } catch (error) {
       setMensaje(error.response.data.mensaje)
     }
