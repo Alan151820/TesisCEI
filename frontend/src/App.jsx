@@ -10,6 +10,9 @@ import FichaProducto from './pages/modoDistribuidor/FichaProducto'
 import InicioComprador from './pages/modoComprador/InicioComprador'
 import PerfilDistribuidor from './pages/modoComprador/PerfilDistribuidor'
 import ConfigurarPerfil from './pages/modoDistribuidor/ConfigurarPerfil'
+import EditarPerfil from './pages/modoDistribuidor/EditarPerfil'
+
+
 
 function App() {
   return (
@@ -25,6 +28,8 @@ function App() {
       <Route path='/inicioComprador' element={<InicioComprador />} />
       <Route path='/perfilDistribuidor/:id' element={<PerfilDistribuidor />} />
       <Route path='/configurarPerfil' element={<ConfigurarPerfil />} />
+      <Route path='/editarPerfil' element={<EditarPerfil />} />
+
     </Routes>
   )
 }

@@ -44,7 +44,7 @@ const configurarPerfil = async (req, res) => {
   } catch (error) {
     res.status(500).json({ mensaje: 'No fue posible completar la operación. Intente nuevamente más tarde.' })
   }
-}
+ }
 const verificarPerfil = async (req, res) => {
   try {
     const { telefono } = req.body
@@ -64,5 +64,62 @@ const verificarPerfil = async (req, res) => {
     res.status(500).json({ mensaje: 'No fue posible completar la operación. Intente nuevamente más tarde.' })
   }
 }
+const obtenerPerfilPropio = async (req, res) => {
+  try {
+    const { telefono } = req.body
+    const db = require('../config/db')
+    const usuario = await db.query('SELECT id FROM usuario WHERE telefono = $1', [telefono])
+    if (usuario.rows.length === 0) return res.status(400).json({ mensaje: 'No encontramos una cuenta con ese número de teléfono.' })
 
-module.exports = { obtenerPerfil, configurarPerfil, verificarPerfil }
+    const distribuidor = await Distribuidor.obtenerPorId(
+      (await db.query('SELECT id FROM distribuidor WHERE usuario_id = $1', [usuario.rows[0].id])).rows[0].id
+    )
+
+    res.json({
+      nombreComercial: distribuidor.nombreComercial,
+      descripcionNegocio: distribuidor.descripcionNegocio,
+      zonaEntrega: distribuidor.zonaEntrega
+    })
+  } catch (error) {
+    res.status(500).json({ mensaje: 'No fue posible completar la operación. Intente nuevamente más tarde.' })
+  }
+}
+
+const editarPerfil = async (req, res) => {
+  try {
+    const { telefono, nombreComercial, descripcionNegocio, zonaEntrega } = req.body
+    const db = require('../config/db')
+    const usuario = await db.query('SELECT id FROM usuario WHERE telefono = $1', [telefono])
+    if (usuario.rows.length === 0) return res.status(400).json({ mensaje: 'No encontramos una cuenta con ese número de teléfono.' })
+
+    const distResult = await db.query('SELECT id FROM distribuidor WHERE usuario_id = $1', [usuario.rows[0].id])
+    const distribuidor = await Distribuidor.obtenerPorId(distResult.rows[0].id)
+    await distribuidor.editarPerfil(nombreComercial, descripcionNegocio, zonaEntrega)
+
+    res.json({ mensaje: 'Perfil actualizado correctamente.' })
+  } catch (error) {
+    res.status(500).json({ mensaje: error.message || 'No fue posible completar la operación. Intente nuevamente más tarde.' })
+  }
+}
+const subirLogo = async (req, res) => {
+  try {
+    const telefono = req.body.telefono
+    const db = require('../config/db')
+
+    const usuario = await db.query('SELECT id FROM usuario WHERE telefono = $1', [telefono])
+    if (usuario.rows.length === 0) return res.status(400).json({ mensaje: 'No encontramos una cuenta con ese número de teléfono.' })
+
+    const distResult = await db.query('SELECT id FROM distribuidor WHERE usuario_id = $1', [usuario.rows[0].id])
+    const distribuidor = await Distribuidor.obtenerPorId(distResult.rows[0].id)
+
+    const logoUrl = `/uploads/${req.file.filename}`
+    await distribuidor.actualizarLogo(logoUrl)
+
+    res.json({ mensaje: 'Logo actualizado correctamente.', logoUrl })
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({ mensaje: 'No fue posible completar la operación. Intente nuevamente más tarde.' })
+  }
+}
+
+module.exports = { obtenerPerfil, configurarPerfil, verificarPerfil, obtenerPerfilPropio, editarPerfil, subirLogo }
