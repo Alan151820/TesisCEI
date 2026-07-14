@@ -120,4 +120,15 @@ async function editarProducto(req, res, next) {
   }
 }
 
-module.exports = { listarCategorias, crearProducto, listarProductos, cambiarVisibilidad, obtenerProducto, editarProducto }
+async function eliminarProducto(req, res, next) {
+  const productoId = Number(req.params.id)
+  try {
+    const resultado = await productosServicio.eliminarOdeshabilitar(productoId, req.usuario.id)
+    res.status(200).json(resultado)
+  } catch (error) {
+    if (error.status) return res.status(error.status).json({ error: error.mensaje })
+    next(error)
+  }
+}
+
+module.exports = { listarCategorias, crearProducto, listarProductos, cambiarVisibilidad, obtenerProducto, editarProducto, eliminarProducto }

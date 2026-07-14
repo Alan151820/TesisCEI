@@ -291,4 +291,27 @@ async function obtenerProducto(productoId, usuarioId) {
   return resultado.rows[0]
 }
 
-module.exports = { obtenerCategorias, validarDatosCreacion, crearProducto, listarProductos, cambiarVisibilidad, editarProducto, obtenerProducto }
+async function eliminarOdeshabilitar(productoId, usuarioId) {
+  // Verificar que el producto pertenece al distribuidor
+  const perteneceRes = await pool.query(
+    `SELECT p.id FROM producto p
+     JOIN distribuidor d ON d.id = p.distribuidor_id
+     WHERE p.id = $1 AND d.usuario_id = $2 AND p.habilitado = true`,
+    [productoId, usuarioId]
+  )
+  if (perteneceRes.rows.length === 0) {
+    const error = new Error()
+    error.status = 404
+    error.mensaje = 'Producto no encontrado.'
+    throw error
+  }
+
+  // Eliminar precios asociados y luego el producto
+  // Nota: cuando existan las tablas pedido_item / propuesta_sustitucion / pedido_reposicion_item
+  // agregar verificación aquí y pasar a deshabilitar en vez de eliminar si hay registros asociados.
+  await pool.query('DELETE FROM precio_volumen WHERE producto_id = $1', [productoId])
+  await pool.query('DELETE FROM producto WHERE id = $1', [productoId])
+  return { tipoResultado: 'ELIMINADO_FISICAMENTE', mensaje: 'El producto fue eliminado correctamente.' }
+}
+
+module.exports = { obtenerCategorias, validarDatosCreacion, crearProducto, listarProductos, cambiarVisibilidad, editarProducto, obtenerProducto, eliminarOdeshabilitar }

@@ -9,6 +9,7 @@ router.get('/', verificarToken, productosControlador.listarProductos)
 router.post('/', verificarToken, upload.single('imagen'), productosControlador.crearProducto)
 router.get('/:id', verificarToken, productosControlador.obtenerProducto)
 router.put('/:id', verificarToken, upload.single('imagen'), productosControlador.editarProducto)
+router.delete('/:id', verificarToken, productosControlador.eliminarProducto)
 router.patch('/:id/visibilidad', verificarToken, productosControlador.cambiarVisibilidad)
 
 module.exports = router
