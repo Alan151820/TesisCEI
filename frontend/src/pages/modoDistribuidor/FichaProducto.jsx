@@ -27,6 +27,9 @@ function FichaProducto() {
   const [errorProducto, setErrorProducto] = useState('')
   const [cargandoProducto, setCargandoProducto] = useState(false)
   const [cargandoDatos, setCargandoDatos] = useState(modoEdicion)
+  const [confirmarEliminar, setConfirmarEliminar] = useState(false)
+  const [cargandoEliminar, setCargandoEliminar] = useState(false)
+  const [mensajeEliminar, setMensajeEliminar] = useState('')
 
   // --- Estado del producto recién creado (para habilitar precios) ---
   const [productoId, setProductoId] = useState(null)
@@ -196,6 +199,20 @@ function FichaProducto() {
   }
 
   const handleFinalizar = () => navigate('/inicio')
+
+  const handleEliminarProducto = async () => {
+    setCargandoEliminar(true)
+    try {
+      const res = await axios.delete(`${API}/api/productos/${productoIdParam}`, { headers })
+      setMensajeEliminar(res.data.mensaje)
+      setConfirmarEliminar(false)
+    } catch (err) {
+      setMensajeEliminar(err.response?.data?.error || 'No fue posible completar la operación. Intente nuevamente más tarde.')
+      setConfirmarEliminar(false)
+    } finally {
+      setCargandoEliminar(false)
+    }
+  }
 
   // Vista después de guardar el producto (solo creación) — sección de precios
   if (productoId) {
@@ -488,6 +505,33 @@ function FichaProducto() {
                 Cancelar
               </button>
             </div>
+            {modoEdicion && (
+              <div className="ficha-card ficha-card-peligro">
+                <div className="ficha-peligro-titulo">Zona de peligro</div>
+                {mensajeEliminar ? (
+                  <div className="ficha-eliminar-mensaje">{mensajeEliminar}</div>
+                ) : confirmarEliminar ? (
+                  <div className="ficha-confirmar-eliminar">
+                    <p className="ficha-confirmar-texto">¿Estás seguro? Esta acción no puede revertirse.</p>
+                    <button className="ficha-btn-eliminar-confirmar" onClick={handleEliminarProducto} disabled={cargandoEliminar}>
+                      {cargandoEliminar ? 'Eliminando…' : 'Confirmar eliminación'}
+                    </button>
+                    <button className="ficha-btn-cancelar" onClick={() => setConfirmarEliminar(false)} disabled={cargandoEliminar}>
+                      Cancelar
+                    </button>
+                  </div>
+                ) : (
+                  <button className="ficha-btn-eliminar" onClick={() => setConfirmarEliminar(true)}>
+                    Eliminar producto
+                  </button>
+                )}
+                {mensajeEliminar && (
+                  <button className="ficha-btn-cancelar" style={{ marginTop: '8px' }} onClick={() => navigate('/inicio')}>
+                    Volver al panel
+                  </button>
+                )}
+              </div>
+            )}
           </div>
         </div>
 
