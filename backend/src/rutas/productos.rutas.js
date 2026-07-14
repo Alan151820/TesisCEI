@@ -7,6 +7,8 @@ const productosControlador = require('../controladores/productos.controlador')
 router.get('/categorias', productosControlador.listarCategorias)
 router.get('/', verificarToken, productosControlador.listarProductos)
 router.post('/', verificarToken, upload.single('imagen'), productosControlador.crearProducto)
+router.get('/:id', verificarToken, productosControlador.obtenerProducto)
+router.put('/:id', verificarToken, upload.single('imagen'), productosControlador.editarProducto)
 router.patch('/:id/visibilidad', verificarToken, productosControlador.cambiarVisibilidad)
 
 module.exports = router
