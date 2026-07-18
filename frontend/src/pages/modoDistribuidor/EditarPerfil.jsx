@@ -1,6 +1,18 @@
 import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import axios from 'axios'
+import './Inicio.css'
+import './EditarPerfil.css'
+
+const NAV_ITEMS = [
+  { label: 'Pedidos', ruta: '/pedidos' },
+  { label: 'Productos', ruta: '/inicio' },
+  { label: 'Proveedores', ruta: '/proveedores' },
+  { label: 'Reparto', ruta: '/reparto' },
+  { label: 'Reportes', ruta: '/reportes' },
+  { label: 'Empleados', ruta: '/empleados' },
+  { label: 'Editar perfil', ruta: '/editarPerfil' },
+]
 
 function EditarPerfil() {
   const [nombreComercial, setNombreComercial] = useState('')
@@ -10,7 +22,10 @@ function EditarPerfil() {
   const [logoPreview, setLogoPreview] = useState(null)
   const [mensaje, setMensaje] = useState('')
   const navigate = useNavigate()
+  const location = useLocation()
   const telefono = localStorage.getItem('telefono')
+  const nombre = localStorage.getItem('nombre') || ''
+  const iniciales = nombre.split(' ').map(p => p[0]).join('').slice(0, 2).toUpperCase()
 
   useEffect(() => {
     const cargarPerfil = async () => {
@@ -55,23 +70,122 @@ function EditarPerfil() {
     }
   }
 
+  const handleCerrarSesion = () => {
+    localStorage.removeItem('token')
+    localStorage.removeItem('nombre')
+    navigate('/login')
+  }
+
   return (
-    <div style={{ textAlign: 'center', marginTop: '100px' }}>
-      <h1>Editar perfil</h1>
-      {logoPreview && <img src={logoPreview} alt='Logo' width={100} style={{ borderRadius: '50%' }} />}
-      <br /><br />
-      <input type='file' accept='image/*' onChange={handleLogo} />
-      <br /><br />
-      <input placeholder='Nombre comercial *' value={nombreComercial} onChange={e => setNombreComercial(e.target.value)} />
-      <br /><br />
-      <input placeholder='Descripción del negocio' value={descripcionNegocio} onChange={e => setDescripcionNegocio(e.target.value)} />
-      <br /><br />
-      <input placeholder='Zona de entrega' value={zonaEntrega} onChange={e => setZonaEntrega(e.target.value)} />
-      <br /><br />
-      <button onClick={handleEditar}>Guardar cambios</button>
-      <br /><br />
-      <button onClick={() => navigate('/inicio')}>Volver al panel</button>
-      <p>{mensaje}</p>
+    <div className="panel-layout">
+
+      <aside className="panel-sidebar">
+        <div className="panel-sidebar-marca">
+          <div className="panel-sidebar-titulo">MarketDist</div>
+          <div className="panel-sidebar-subtitulo">Panel del Distribuidor</div>
+        </div>
+
+        <nav className="panel-nav">
+          {NAV_ITEMS.map(item => (
+            <div
+              key={item.ruta}
+              className={`panel-nav-item${location.pathname === item.ruta ? ' activo' : ''}`}
+              onClick={() => navigate(item.ruta)}
+            >
+              {item.label}
+            </div>
+          ))}
+          <button className='panel-nav-item' onClick={() => navigate('/inicioComprador')}>Cambiar a modo comprador</button>
+        </nav>
+
+        <div className="panel-sidebar-footer">
+          <div className="panel-sidebar-usuario">
+            <div className="panel-avatar-small">{iniciales}</div>
+            <div>
+              <div className="panel-sidebar-nombre">{nombre}</div>
+              <div className="panel-sidebar-rol">Distribuidor</div>
+            </div>
+          </div>
+          <div className="panel-sidebar-accion" onClick={handleCerrarSesion}>Cerrar sesión</div>
+        </div>
+      </aside>
+
+      <main className="panel-main">
+
+        <header className="panel-topbar">
+          <span className="panel-topbar-titulo">Panel del Distribuidor</span>
+          <div className="panel-avatar">{iniciales}</div>
+        </header>
+
+        <div className="panel-contenido">
+
+          <div className="panel-seccion-header">
+            <div>
+              <h1 className="panel-h1">Editar perfil</h1>
+              <p className="panel-subtitulo">Actualizá los datos de tu distribuidora visibles para los compradores.</p>
+            </div>
+          </div>
+
+          <div className="editarperfil-card">
+
+            <div className="editarperfil-logo-fila">
+              <div className="editarperfil-logo-zona" onClick={() => document.getElementById('input-logo').click()}>
+                {logoPreview
+                  ? <img src={logoPreview} alt='Logo' className="editarperfil-logo-preview" />
+                  : <span className="editarperfil-logo-texto">+ Subir logo</span>
+                }
+              </div>
+              <input
+                id="input-logo"
+                type='file'
+                accept='image/*'
+                style={{ display: 'none' }}
+                onChange={handleLogo}
+              />
+            </div>
+
+            <div className="editarperfil-campo">
+              <label className="editarperfil-label">Nombre comercial</label>
+              <input
+                className="editarperfil-input"
+                placeholder='Nombre comercial *'
+                value={nombreComercial}
+                onChange={e => setNombreComercial(e.target.value)}
+              />
+            </div>
+
+            <div className="editarperfil-campo">
+              <label className="editarperfil-label">Descripción</label>
+              <textarea
+                className="editarperfil-textarea"
+                placeholder='Descripción del negocio'
+                value={descripcionNegocio}
+                onChange={e => setDescripcionNegocio(e.target.value)}
+              />
+            </div>
+
+            <div className="editarperfil-campo">
+              <label className="editarperfil-label">Zona de entrega</label>
+              <input
+                className="editarperfil-input"
+                placeholder='Zona de entrega'
+                value={zonaEntrega}
+                onChange={e => setZonaEntrega(e.target.value)}
+              />
+            </div>
+
+            <div className="editarperfil-acciones">
+              <button className="editarperfil-btn-guardar" onClick={handleEditar}>Guardar cambios</button>
+              <button className="editarperfil-btn-cancelar" onClick={() => navigate('/inicio')}>Volver al panel</button>
+            </div>
+
+            <p className="editarperfil-mensaje">{mensaje}</p>
+
+          </div>
+
+        </div>
+      </main>
+
     </div>
   )
 }

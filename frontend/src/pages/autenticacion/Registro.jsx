@@ -43,9 +43,10 @@ function Registro() {
           <span className="registro-buscador-texto">Buscar productos…</span>
         </div>
 
-        <div className="registro-encabezado-derecha">
-          <span className="registro-encabezado-link">Iniciar sesión</span>
-          <button type="button" className="registro-encabezado-boton">Registrarse</button>
+        
+        <div className="login-encabezado-derecha">
+          <button type="button" className="registro-encabezado-boton" onClick={() => navigate('/login')}>Iniciar sesión</button>
+          <span className="registro-encabezado-link">Registro</span>
         </div>
       </header>
 

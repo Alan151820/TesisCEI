@@ -1,0 +1,124 @@
+.configperfil-fondo {
+  min-height: 100vh;
+  background: #F8F8F8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  box-sizing: border-box;
+}
+
+.configperfil-card {
+  width: 520px;
+  max-width: 100%;
+  background: #FFF;
+  border: 1px solid #E0E0E0;
+  border-radius: 8px;
+  padding: 36px 40px;
+  box-sizing: border-box;
+}
+
+.configperfil-eyebrow {
+  font-size: 10px;
+  font-weight: 600;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+}
+
+.configperfil-titulo {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--color-sobre-superficie, #111);
+  margin: 0 0 6px 0;
+}
+
+.configperfil-subtitulo {
+  font-size: 13px;
+  color: #888;
+  margin: 0 0 24px 0;
+}
+
+.configperfil-campo {
+  margin-bottom: 16px;
+}
+
+.configperfil-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-sobre-superficie, #333);
+  margin-bottom: 5px;
+}
+
+.configperfil-input,
+.configperfil-textarea {
+  width: 100%;
+  border: 1px solid #CCC;
+  border-radius: 4px;
+  background: #FFF;
+  font-size: 13px;
+  color: var(--color-sobre-superficie, #333);
+  box-sizing: border-box;
+  font-family: inherit;
+}
+
+.configperfil-input {
+  height: 38px;
+  padding: 0 12px;
+}
+
+.configperfil-textarea {
+  height: 80px;
+  padding: 10px 12px;
+  resize: vertical;
+}
+
+.configperfil-ayuda {
+  display: block;
+  font-size: 11px;
+  color: #999;
+  margin-top: 3px;
+}
+
+.configperfil-btn-guardar {
+  height: 40px;
+  width: 100%;
+  border-radius: 4px;
+  padding: 0 20px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  background: var(--color-primario, #222);
+  color: var(--color-sobre-primario, #FFF);
+  border: none;
+}
+
+.configperfil-btn-guardar:hover {
+  opacity: 0.9;
+}
+
+.configperfil-mensaje:empty {
+  margin: 0;
+}
+
+.configperfil-mensaje:not(:empty) {
+  font-size: 13px;
+  color: var(--color-error, oklch(35% 0.2 25));
+  background: oklch(95% 0.03 25);
+  border-radius: 4px;
+  padding: 10px 12px;
+  margin: 14px 0 0 0;
+}
+
+@media (max-width: 600px) {
+  .configperfil-fondo {
+    padding: 20px;
+  }
+
+  .configperfil-card {
+    padding: 24px;
+  }
+}

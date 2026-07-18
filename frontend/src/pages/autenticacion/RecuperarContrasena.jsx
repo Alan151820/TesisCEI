@@ -38,7 +38,7 @@ function RecuperarContrasena() {
         </div>
 
         <div className="recuperar-encabezado-derecha">
-          <span className="recuperar-encabezado-link">Iniciar sesión</span>
+          <button className="login-encabezado-link" onClick={() => navigate('/login')}>Iniciar sesión</button>
           <button type="button" className="recuperar-encabezado-boton">Registrarse</button>
         </div>
       </header>
@@ -84,7 +84,7 @@ function RecuperarContrasena() {
           {mensaje && <p className="recuperar-mensaje-error">{mensaje}</p>}
 
           <p className="recuperar-pie">
-            ← <button type="button" className="recuperar-pie-link">Volver al inicio de sesión</button>
+            ← <button type="button" className="recuperar-pie-link"onClick={() => navigate('/login')} >Volver al inicio de sesión</button>
           </p>
         </div>
       </main>

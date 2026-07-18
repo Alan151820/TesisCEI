@@ -1,0 +1,142 @@
+.editarperfil-card {
+  background: #FFF;
+  border: 1px solid #E4E4E4;
+  border-radius: 6px;
+  padding: 24px;
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.editarperfil-logo-fila {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+.editarperfil-logo-zona {
+  width: 84px;
+  height: 84px;
+  border-radius: 50%;
+  border: 1px dashed #CCC;
+  background: #FAFAFA;
+  cursor: pointer;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.editarperfil-logo-zona:hover {
+  border-color: #999;
+  background: #F0F0F0;
+}
+
+.editarperfil-logo-preview {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.editarperfil-logo-texto {
+  font-size: 11px;
+  color: #AAA;
+  text-align: center;
+  padding: 6px;
+}
+
+.editarperfil-campo {
+  margin-bottom: 16px;
+}
+
+.editarperfil-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-sobre-superficie, #333);
+  margin-bottom: 5px;
+}
+
+.editarperfil-input,
+.editarperfil-textarea {
+  width: 100%;
+  border: 1px solid #CCC;
+  border-radius: 4px;
+  background: #FFF;
+  font-size: 13px;
+  color: var(--color-sobre-superficie, #333);
+  box-sizing: border-box;
+  font-family: inherit;
+}
+
+.editarperfil-input {
+  height: 38px;
+  padding: 0 12px;
+}
+
+.editarperfil-textarea {
+  height: 80px;
+  padding: 10px 12px;
+  resize: vertical;
+}
+
+.editarperfil-acciones {
+  display: flex;
+  gap: 10px;
+}
+
+.editarperfil-btn-guardar {
+  height: 40px;
+  border-radius: 4px;
+  padding: 0 20px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  background: var(--color-primario, #222);
+  color: var(--color-sobre-primario, #FFF);
+  border: none;
+}
+
+.editarperfil-btn-guardar:hover {
+  opacity: 0.9;
+}
+
+.editarperfil-btn-cancelar {
+  height: 40px;
+  border-radius: 4px;
+  padding: 0 20px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  background: #FFF;
+  color: #333;
+  border: 1px solid #AAA;
+}
+
+.editarperfil-btn-cancelar:hover {
+  background: #F5F5F5;
+}
+
+.editarperfil-mensaje {
+  font-size: 13px;
+  color: var(--color-sobre-superficie, #333);
+  margin: 14px 0 0 0;
+}
+
+.editarperfil-mensaje:empty {
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .editarperfil-card {
+    max-width: 100%;
+  }
+
+  .editarperfil-acciones {
+    flex-direction: column;
+  }
+
+  .editarperfil-btn-guardar,
+  .editarperfil-btn-cancelar {
+    width: 100%;
+  }
+  
+}
