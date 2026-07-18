@@ -54,7 +54,12 @@ async function crearProducto(req, res, next) {
 
 async function listarProductos(req, res, next) {
   try {
-    const productos = await productosServicio.listarProductos(req.usuario.id)
+    const filtros = {
+      categoria: req.query.categoria || null,
+      visibilidad: req.query.visibilidad || null,
+      stock: req.query.stock || null
+    }
+    const productos = await productosServicio.listarProductos(req.usuario.id, filtros)
     res.status(200).json(productos)
   } catch (error) {
     next(error)

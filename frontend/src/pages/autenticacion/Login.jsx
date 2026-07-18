@@ -46,7 +46,7 @@ function Login() {
 
         <div className="login-encabezado-derecha">
           <span className="login-encabezado-link">Iniciar sesión</span>
-          <button type="button" className="login-encabezado-boton">Registrarse</button>
+          <button type="button" className="login-encabezado-boton" onClick={() => navigate('/registro')}>Registrarse</button>
         </div>
       </header>
 
@@ -86,18 +86,14 @@ function Login() {
             />
           </div>
 
-          <button
-            type="button"
-            className="login-boton-ingresar"
-            onClick={handleLogin}
-          >
+          <button type="button" className="login-boton-ingresar" onClick={handleLogin}>
             Iniciar sesión
           </button>
 
           {mensaje && <p className="login-mensaje-error">{mensaje}</p>}
 
           <p className="login-pie">
-            ¿No tenés cuenta? <button type="button" className="login-pie-link">Registrarse gratis</button>
+            ¿No tenés cuenta? <button type="button" className="login-pie-link" onClick={() => navigate('/registro')}>Registrarse gratis</button>
           </p>
         </div>
       </main>

@@ -93,7 +93,33 @@ async function crearProducto(usuarioId, datos) {
   return resultado.rows[0]
 }
 
-async function listarProductos(usuarioId) {
+async function listarProductos(usuarioId, filtros = {}) {
+  const { categoria, visibilidad, stock } = filtros
+
+  let condiciones = ['d.usuario_id = $1', 'p.habilitado = true']
+  let params = [usuarioId]
+  let contador = 2
+
+  if (categoria) {
+    condiciones.push(`c.nombre = $${contador}`)
+    params.push(categoria)
+    contador++
+  }
+
+  if (visibilidad) {
+    condiciones.push(`p.estado_visibilidad = $${contador}`)
+    params.push(visibilidad)
+    contador++
+  }
+
+  if (stock === 'con_stock') {
+    condiciones.push(`(p.stock_total - p.stock_reservado) > 0`)
+  } else if (stock === 'sin_stock') {
+    condiciones.push(`(p.stock_total - p.stock_reservado) = 0`)
+  }
+
+  const where = condiciones.join(' AND ')
+
   const resultado = await pool.query(
     `SELECT
        p.id,
@@ -107,9 +133,9 @@ async function listarProductos(usuarioId) {
      FROM producto p
      JOIN categoria c ON c.id = p.categoria_id
      JOIN distribuidor d ON d.id = p.distribuidor_id
-     WHERE d.usuario_id = $1 AND p.habilitado = true
+     WHERE ${where}
      ORDER BY p.fecha_creacion DESC`,
-    [usuarioId]
+    params
   )
   return resultado.rows
 }

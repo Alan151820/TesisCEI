@@ -1,73 +1,67 @@
-.login-pagina {
-  min-height: 100vh;
+.pagina-inicio-sesion {
   display: flex;
   flex-direction: column;
+  min-height: 100vh;
   font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
-  background: var(--color-superficie-tenue);
+  background-color: var(--color-superficie-tenue);
 }
 
-.login-encabezado {
+.barra-superior {
   height: 56px;
   flex-shrink: 0;
-  background: var(--color-contenedor-superficie-minimo);
-  border-bottom: 1px solid var(--color-variante-contorno);
   display: flex;
   align-items: center;
-  padding: 0 40px;
   gap: 24px;
+  padding: 0 40px;
+  background-color: var(--color-contenedor-superficie-minimo);
+  border-bottom: 1px solid var(--color-variante-contorno);
 }
 
-.login-logo {
+.marca {
+  flex-shrink: 0;
   font-size: 17px;
   font-weight: 700;
   color: var(--color-sobre-superficie);
-  flex-shrink: 0;
 }
 
-.login-buscador {
+.buscador {
   flex: 1;
   max-width: 560px;
   height: 36px;
-  background: var(--color-contenedor-superficie-bajo);
-  border: 1px solid var(--color-contorno);
-  border-radius: 4px;
   display: flex;
   align-items: center;
-  padding: 0 14px;
   gap: 8px;
+  padding: 0 14px;
+  border-radius: 4px;
+  background-color: var(--color-contenedor-superficie-bajo);
+  border: 1px solid var(--color-variante-contorno);
 }
 
-.login-buscador-icono,
-.login-buscador-texto {
+.icono-buscador,
+.placeholder-buscador {
   font-size: 13px;
   color: var(--color-sobre-variante-superficie);
 }
 
-.login-encabezado-derecha {
-  margin-left: auto;
-  display: flex;
-  align-items: center;
-  gap: 20px;
-}
-
-.login-encabezado-link {
+.enlace-iniciar-sesion {
   font-size: 13px;
   color: var(--color-sobre-variante-superficie);
+  cursor: pointer;
 }
 
-.login-encabezado-boton {
-  background: var(--color-primario);
-  color: var(--color-sobre-primario);
-  border: none;
+.boton-registrarse {
   padding: 7px 18px;
+  border: none;
   border-radius: 4px;
   font-size: 13px;
   font-weight: 500;
   font-family: inherit;
   cursor: pointer;
+  background-color: var(--color-primario);
+  color: var(--color-sobre-primario);
 }
 
-.login-contenido {
+.contenedor-formulario {
   flex: 1;
   display: flex;
   align-items: center;
@@ -75,106 +69,174 @@
   padding: 40px;
 }
 
-.login-tarjeta {
+.tarjeta-login {
   width: 440px;
   max-width: 100%;
-  background: var(--color-contenedor-superficie);
-  border: 1px solid var(--color-variante-contorno);
-  border-radius: 8px;
   padding: 36px 40px;
+  border-radius: 8px;
+  background-color: var(--color-contenedor-superficie-minimo);
+  border: 1px solid var(--color-variante-contorno);
 }
 
-.login-titulo {
+.titulo-login {
+  margin: 0 0 6px;
   font-size: 22px;
   font-weight: 700;
   color: var(--color-sobre-superficie);
-  margin: 0 0 6px;
 }
 
-.login-subtitulo {
+.subtitulo-login {
+  margin: 0 0 24px;
   font-size: 13px;
   color: var(--color-sobre-variante-superficie);
-  margin: 0 0 24px;
 }
 
-.login-campo {
+.formulario-login {
+  display: flex;
+  flex-direction: column;
+}
+
+.campo {
   margin-bottom: 16px;
 }
 
-.login-etiqueta {
+.etiqueta-campo {
   display: block;
+  margin-bottom: 5px;
   font-size: 12px;
   font-weight: 600;
   color: var(--color-sobre-superficie);
-  margin-bottom: 5px;
 }
 
-.login-campo-encabezado {
+.fila-etiqueta-enlace {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
   margin-bottom: 5px;
 }
 
-.login-campo-encabezado .login-etiqueta {
+.fila-etiqueta-enlace .etiqueta-campo {
   margin-bottom: 0;
 }
 
-.login-olvido {
-  background: none;
-  border: none;
-  padding: 0;
+.enlace-olvido-contrasena {
   font-size: 12px;
   color: var(--color-sobre-variante-superficie);
   text-decoration: underline;
-  font-family: inherit;
   cursor: pointer;
 }
 
-.login-input {
+.input-campo {
   width: 100%;
   height: 38px;
-  border: 1px solid var(--color-contorno);
-  border-radius: 4px;
-  background: var(--color-contenedor-superficie-minimo);
   padding: 0 12px;
-  font-size: 13px;
-  font-family: inherit;
-  color: var(--color-sobre-superficie);
-  box-sizing: border-box;
-}
-
-.login-input::placeholder {
-  color: var(--color-sobre-variante-superficie);
-}
-
-.login-boton-ingresar {
-  width: 100%;
-  height: 40px;
   border-radius: 4px;
+  font-size: 13px;
+  font-family: inherit;
+  background-color: var(--color-contenedor-superficie-minimo);
+  border: 1px solid var(--color-contorno);
+  color: var(--color-sobre-superficie);
+}
+
+.input-campo::placeholder {
+  color: var(--color-sobre-variante-superficie);
+}
+
+.campo-telefono {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.prefijo-telefono {
+  flex-shrink: 0;
+  height: 38px;
+  padding: 0 10px;
+  display: flex;
+  align-items: center;
+  border-radius: 4px;
+  font-size: 13px;
+  color: var(--color-sobre-variante-superficie);
+  background-color: var(--color-contenedor-superficie-bajo);
+  border: 1px solid var(--color-contorno);
+}
+
+.campo-telefono .input-campo {
+  flex: 1;
+}
+
+.boton-enlace {
+  padding: 0;
   border: none;
-  background: var(--color-primario);
-  color: var(--color-sobre-primario);
+  background: none;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.mensaje-error {
+  margin-top: 12px;
+  font-size: 12px;
+  text-align: center;
+  color: var(--color-error);
+}
+
+.boton-iniciar-sesion {
+  height: 40px;
+  width: 100%;
+  margin-top: 4px;
+  border: none;
+  border-radius: 4px;
   font-size: 13px;
   font-weight: 500;
   font-family: inherit;
   cursor: pointer;
+  background-color: var(--color-primario);
+  color: var(--color-sobre-primario);
 }
 
-.login-pie {
+.pie-login {
   margin-top: 16px;
-  font-size: 12px;
-  color: var(--color-sobre-variante-superficie);
-  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
 
-.login-pie-link {
-  background: none;
-  border: none;
-  padding: 0;
+.texto-pie-login {
   font-size: 12px;
+  text-align: center;
+  color: var(--color-sobre-variante-superficie);
+}
+
+.enlace-registrarse-gratis {
   font-weight: 500;
-  font-family: inherit;
   color: var(--color-sobre-superficie);
   cursor: pointer;
+}
+
+@media (max-width: 600px) {
+  .barra-superior {
+    padding: 0 16px;
+    gap: 12px;
+  }
+
+  .buscador {
+    display: none;
+  }
+
+  .contenedor-formulario {
+    padding: 20px;
+    align-items: center;
+  }
+
+  .tarjeta-login {
+    width: 100%;
+    padding: 28px 20px;
+    border: none;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+  }
+
+  .input-campo,
+  .boton-iniciar-sesion {
+    height: 44px;
+  }
 }

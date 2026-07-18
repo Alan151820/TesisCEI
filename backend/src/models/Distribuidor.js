@@ -32,6 +32,26 @@ class Distribuidor {
   )
   return new Distribuidor(resultado.rows[0])
 }
+
+async editarPerfil(nombreComercial, descripcionNegocio, zonaEntrega) {
+  if (!nombreComercial) throw new Error('El nombre comercial no puede quedar vacío.')
+  
+  await pool.query(
+    'UPDATE distribuidor SET nombre_comercial = $1, descripcion_negocio = $2, zona_entrega = $3 WHERE id = $4',
+    [nombreComercial, descripcionNegocio, zonaEntrega, this.id]
+  )
+
+  this.nombreComercial = nombreComercial
+  this.descripcionNegocio = descripcionNegocio
+  this.zonaEntrega = zonaEntrega
+
+  return true
+}
+async actualizarLogo(logoUrl) {
+  await pool.query('UPDATE distribuidor SET logo_url = $1 WHERE id = $2', [logoUrl, this.id])
+  this.logoUrl = logoUrl
+  return true
+}
 }
 
 module.exports = Distribuidor

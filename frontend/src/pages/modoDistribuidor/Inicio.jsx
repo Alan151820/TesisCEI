@@ -11,6 +11,8 @@ const NAV_ITEMS = [
   { label: 'Reportes', ruta: '/reportes' },
   { label: 'Empleados', ruta: '/empleados' },
   { label: 'Configuración', ruta: '/configuracion' },
+  { label: 'Editar perfil', ruta: '/editarPerfil' },
+
 ]
 
 function Inicio() {
