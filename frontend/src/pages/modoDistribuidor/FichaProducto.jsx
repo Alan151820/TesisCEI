@@ -424,7 +424,7 @@ function FichaProducto() {
                 {cargandoProducto ? 'Guardando…' : 'Guardar producto'}
               </button>
               <button className="ficha-btn-cancelar" onClick={() => navigate('/inicio')} disabled={cargandoProducto}>
-                Cancelar
+               Cancelar
               </button>
             </div>
           </div>

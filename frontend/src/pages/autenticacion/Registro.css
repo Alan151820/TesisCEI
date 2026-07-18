@@ -1,0 +1,204 @@
+.registro-pagina {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  background: var(--color-superficie-tenue);
+}
+
+.registro-encabezado {
+  height: 56px;
+  flex-shrink: 0;
+  background: var(--color-contenedor-superficie-minimo);
+  border-bottom: 1px solid var(--color-variante-contorno);
+  display: flex;
+  align-items: center;
+  padding: 0 40px;
+  gap: 24px;
+}
+
+.registro-logo {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--color-sobre-superficie);
+  flex-shrink: 0;
+}
+
+.registro-buscador {
+  flex: 1;
+  max-width: 560px;
+  height: 36px;
+  background: var(--color-contenedor-superficie-bajo);
+  border: 1px solid var(--color-contorno);
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  padding: 0 14px;
+  gap: 8px;
+}
+
+.registro-buscador-icono,
+.registro-buscador-texto {
+  font-size: 13px;
+  color: var(--color-sobre-variante-superficie);
+}
+
+.registro-encabezado-derecha {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.registro-encabezado-link {
+  font-size: 13px;
+  color: var(--color-sobre-variante-superficie);
+}
+
+.registro-encabezado-boton {
+  background: var(--color-primario);
+  color: var(--color-sobre-primario);
+  border: none;
+  padding: 7px 18px;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.registro-contenido {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+}
+
+.registro-tarjeta {
+  width: 440px;
+  max-width: 100%;
+  background: var(--color-contenedor-superficie);
+  border: 1px solid var(--color-variante-contorno);
+  border-radius: 8px;
+  padding: 36px 40px;
+}
+
+.registro-titulo {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--color-sobre-superficie);
+  margin: 0 0 6px;
+}
+
+.registro-subtitulo {
+  font-size: 13px;
+  color: var(--color-sobre-variante-superficie);
+  margin: 0 0 24px;
+}
+
+.registro-campo {
+  margin-bottom: 16px;
+}
+
+.registro-etiqueta {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-sobre-superficie);
+  margin-bottom: 5px;
+}
+
+.registro-input {
+  width: 100%;
+  height: 38px;
+  border: 1px solid var(--color-contorno);
+  border-radius: 4px;
+  background: var(--color-contenedor-superficie-minimo);
+  padding: 0 12px;
+  font-size: 13px;
+  font-family: inherit;
+  color: var(--color-sobre-superficie);
+  box-sizing: border-box;
+}
+
+.registro-input::placeholder {
+  color: var(--color-sobre-variante-superficie);
+}
+
+.registro-ayuda {
+  display: block;
+  font-size: 11px;
+  color: var(--color-sobre-variante-superficie);
+  margin-top: 3px;
+}
+
+.registro-consentimiento {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 20px;
+  cursor: pointer;
+}
+
+.registro-checkbox {
+  width: 16px;
+  height: 16px;
+  margin-top: 2px;
+  flex-shrink: 0;
+  accent-color: var(--color-primario);
+}
+
+.registro-consentimiento-texto {
+  font-size: 12px;
+  color: var(--color-sobre-variante-superficie);
+  line-height: 1.5;
+}
+
+.registro-boton-crear {
+  width: 100%;
+  height: 40px;
+  border-radius: 4px;
+  border: none;
+  background: var(--color-primario);
+  color: var(--color-sobre-primario);
+  font-size: 13px;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.registro-paso-info {
+  margin-top: 16px;
+  padding: 12px 14px;
+  background: var(--color-contenedor-superficie-bajo);
+  border: 1px solid var(--color-variante-contorno);
+  border-radius: 4px;
+  font-size: 12px;
+  color: var(--color-sobre-variante-superficie);
+}
+
+.registro-mensaje-error {
+  margin-top: 12px;
+  font-size: 12px;
+  color: var(--color-error);
+  text-align: center;
+}
+
+.registro-pie {
+  margin-top: 16px;
+  font-size: 12px;
+  color: var(--color-sobre-variante-superficie);
+  text-align: center;
+}
+
+.registro-pie-link {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 12px;
+  font-weight: 500;
+  font-family: inherit;
+  color: var(--color-sobre-superficie);
+  cursor: pointer;
+}

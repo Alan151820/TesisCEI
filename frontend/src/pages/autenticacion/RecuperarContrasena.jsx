@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
+import './RecuperarContrasena.css'
 
 function RecuperarContrasena() {
   const [telefonoInput, setTelefonoInput] = useState('')
@@ -27,13 +28,66 @@ function RecuperarContrasena() {
   }
 
   return (
-    <div style={{ textAlign: 'center', marginTop: '100px' }}>
-      <h1>Recuperar contraseña</h1>
-      <label>+598</label>
-      <input placeholder='99 123 456' value={telefonoInput} onChange={e => setTelefonoInput(e.target.value)} />
-      <br /><br />
-      <button onClick={handleRecuperar}>Enviar código</button>
-      <p>{mensaje}</p>
+    <div className="recuperar-pagina">
+      <header className="recuperar-encabezado">
+        <span className="recuperar-logo">MarketPlace</span>
+
+        <div className="recuperar-buscador">
+          <span className="recuperar-buscador-icono">⌕</span>
+          <span className="recuperar-buscador-texto">Buscar productos…</span>
+        </div>
+
+        <div className="recuperar-encabezado-derecha">
+          <span className="recuperar-encabezado-link">Iniciar sesión</span>
+          <button type="button" className="recuperar-encabezado-boton">Registrarse</button>
+        </div>
+      </header>
+
+      <main className="recuperar-contenido">
+        <div className="recuperar-tarjeta">
+          <h1 className="recuperar-titulo">Recuperar contraseña</h1>
+          <p className="recuperar-subtitulo">Ingresá tu teléfono para recibir un código de verificación.</p>
+
+          <div className="recuperar-stepper">
+            <div className="recuperar-paso recuperar-paso-activo">
+              <span className="recuperar-paso-numero">1</span>
+              <span className="recuperar-paso-texto">Teléfono</span>
+            </div>
+            <div className="recuperar-paso">
+              <span className="recuperar-paso-numero">2</span>
+              <span className="recuperar-paso-texto">Código SMS</span>
+            </div>
+            <div className="recuperar-paso">
+              <span className="recuperar-paso-numero">3</span>
+              <span className="recuperar-paso-texto">Nueva contraseña</span>
+            </div>
+          </div>
+
+          <div className="recuperar-campo">
+            <label className="recuperar-etiqueta">Número de teléfono registrado</label>
+            <input
+              className="recuperar-input"
+              placeholder="099 123 456"
+              value={telefonoInput}
+              onChange={e => setTelefonoInput(e.target.value)}
+            />
+          </div>
+
+          <button
+            type="button"
+            className="recuperar-boton"
+            onClick={handleRecuperar}
+          >
+            Enviar código SMS
+          </button>
+
+          {mensaje && <p className="recuperar-mensaje-error">{mensaje}</p>}
+
+          <p className="recuperar-pie">
+            ← <button type="button" className="recuperar-pie-link">Volver al inicio de sesión</button>
+          </p>
+        </div>
+      </main>
     </div>
   )
 }

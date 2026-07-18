@@ -1,0 +1,85 @@
+:root {
+  /* ============================================================
+     FUENTES — las DOS únicas variables que se cambian cuando se
+     elige el color real del proyecto.
+
+     Formato: oklch(lightness% chroma hue)
+       - lightness: 0–100% (qué tan claro u oscuro)
+       - chroma: 0–0.4 aprox. (0 = gris puro, 0.3+ = muy vívido)
+       - hue: 0–360 (el matiz: 0=rojo, 120=verde, 250=azul, etc.)
+
+     Placeholder actual (chroma=0): grises puros, sin tinte.
+     Para activar el sistema completo: cambiar chroma y hue.
+     Ejemplo de azul: --_fuente-primaria: oklch(50% 0.20 250);
+  ============================================================ */
+  --_fuente-primaria:   oklch(50% 0 0);
+  --_fuente-secundaria: oklch(50% 0 0);
+
+  /* Roles de acento primario */
+  --color-primario:                     oklch(from var(--_fuente-primaria) 45% c h);
+  --color-sobre-primario:               oklch(from var(--_fuente-primaria) 100% 0 h);
+  --color-contenedor-primario:          oklch(from var(--_fuente-primaria) 91% calc(c * 0.5) h);
+  --color-sobre-contenedor-primario:    oklch(from var(--_fuente-primaria) 12% calc(c * 0.3) h);
+
+  /* Roles de acento secundario */
+  --color-secundario:                   oklch(from var(--_fuente-secundaria) 45% c h);
+  --color-sobre-secundario:             oklch(from var(--_fuente-secundaria) 100% 0 h);
+  --color-contenedor-secundario:        oklch(from var(--_fuente-secundaria) 91% calc(c * 0.5) h);
+  --color-sobre-contenedor-secundario:  oklch(from var(--_fuente-secundaria) 12% calc(c * 0.3) h);
+
+  /* Roles de superficie — chromatic neutrals */
+  --color-superficie:                   oklch(from var(--_fuente-primaria) 99% calc(c * 0.06) h);
+  --color-sobre-superficie:             oklch(from var(--_fuente-primaria) 12% calc(c * 0.07) h);
+  --color-superficie-tenue:             oklch(from var(--_fuente-primaria) 88% calc(c * 0.06) h);
+  --color-superficie-brillante:         oklch(from var(--_fuente-primaria) 98% calc(c * 0.05) h);
+  --color-contenedor-superficie-minimo: oklch(from var(--_fuente-primaria) 100% 0 h);
+  --color-contenedor-superficie-bajo:   oklch(from var(--_fuente-primaria) 96% calc(c * 0.05) h);
+  --color-contenedor-superficie:        oklch(from var(--_fuente-primaria) 94% calc(c * 0.06) h);
+  --color-contenedor-superficie-alto:   oklch(from var(--_fuente-primaria) 92% calc(c * 0.06) h);
+  --color-contenedor-superficie-maximo: oklch(from var(--_fuente-primaria) 90% calc(c * 0.07) h);
+  --color-variante-superficie:          oklch(from var(--_fuente-primaria) 88% calc(c * 0.07) h);
+  --color-sobre-variante-superficie:    oklch(from var(--_fuente-primaria) 53% calc(c * 0.08) h);
+
+  /* Contornos */
+  --color-contorno:                     oklch(from var(--_fuente-primaria) 77% calc(c * 0.12) h);
+  --color-variante-contorno:            oklch(from var(--_fuente-primaria) 85% calc(c * 0.10) h);
+
+  /* Error — fijo, independiente del color de marca */
+  --color-error:                    oklch(40% 0.22 25);
+  --color-sobre-error:              oklch(100% 0 25);
+  --color-contenedor-error:         oklch(91% 0.10 25);
+  --color-sobre-contenedor-error:   oklch(12% 0.15 25);
+}
+
+[data-tema="oscuro"] {
+  /* Tema oscuro: mismas fuentes, tonos claros y oscuros invertidos */
+  --color-primario:                     oklch(from var(--_fuente-primaria) 82% c h);
+  --color-sobre-primario:               oklch(from var(--_fuente-primaria) 22% 0 h);
+  --color-contenedor-primario:          oklch(from var(--_fuente-primaria) 35% calc(c * 0.5) h);
+  --color-sobre-contenedor-primario:    oklch(from var(--_fuente-primaria) 91% calc(c * 0.3) h);
+
+  --color-secundario:                   oklch(from var(--_fuente-secundaria) 82% c h);
+  --color-sobre-secundario:             oklch(from var(--_fuente-secundaria) 22% 0 h);
+  --color-contenedor-secundario:        oklch(from var(--_fuente-secundaria) 35% calc(c * 0.5) h);
+  --color-sobre-contenedor-secundario:  oklch(from var(--_fuente-secundaria) 91% calc(c * 0.3) h);
+
+  --color-superficie:                   oklch(from var(--_fuente-primaria) 12% calc(c * 0.07) h);
+  --color-sobre-superficie:             oklch(from var(--_fuente-primaria) 91% calc(c * 0.06) h);
+  --color-superficie-tenue:             oklch(from var(--_fuente-primaria)  7% calc(c * 0.06) h);
+  --color-superficie-brillante:         oklch(from var(--_fuente-primaria) 24% calc(c * 0.07) h);
+  --color-contenedor-superficie-minimo: oklch(from var(--_fuente-primaria)  5% calc(c * 0.05) h);
+  --color-contenedor-superficie-bajo:   oklch(from var(--_fuente-primaria) 12% calc(c * 0.06) h);
+  --color-contenedor-superficie:        oklch(from var(--_fuente-primaria) 14% calc(c * 0.06) h);
+  --color-contenedor-superficie-alto:   oklch(from var(--_fuente-primaria) 18% calc(c * 0.07) h);
+  --color-contenedor-superficie-maximo: oklch(from var(--_fuente-primaria) 21% calc(c * 0.07) h);
+  --color-variante-superficie:          oklch(from var(--_fuente-primaria) 32% calc(c * 0.07) h);
+  --color-sobre-variante-superficie:    oklch(from var(--_fuente-primaria) 80% calc(c * 0.07) h);
+
+  --color-contorno:                     oklch(from var(--_fuente-primaria) 58% calc(c * 0.12) h);
+  --color-variante-contorno:            oklch(from var(--_fuente-primaria) 32% calc(c * 0.10) h);
+
+  --color-error:                    oklch(80% 0.18 25);
+  --color-sobre-error:              oklch(22% 0.18 25);
+  --color-contenedor-error:         oklch(32% 0.20 25);
+  --color-sobre-contenedor-error:   oklch(91% 0.10 25);
+}

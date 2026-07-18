@@ -3,6 +3,8 @@ const router = express.Router()
 const twilio = require('twilio')
 const bcrypt = require('bcryptjs')
 const pool = require('../config/db')
+const Usuario = require('../models/Usuario')
+
 
 const client = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN)
 
@@ -136,6 +138,40 @@ router.post('/activarModoDistribuidor', async (req, res) => {
   } catch (error) {
     console.log('Error activarModoDistribuidor:', error.message)
     res.status(500).json({ mensaje: 'No fue posible completar la operación. Intente nuevamente más tarde.' })
+  }
+})
+// POST /auth/recuperarContrasena
+router.post('/recuperarContrasena', async (req, res) => {
+  const { telefono } = req.body
+  try {
+    const codigo = await Usuario.solicitarRecuperacionContrasena(telefono)
+    res.json({
+      mensaje: 'Código enviado por SMS. Ingresalo para continuar.',
+      codigo_dev: codigo
+    })
+  } catch (error) {
+    res.status(400).json({ mensaje: error.message })
+  }
+})
+
+// POST /auth/verificarRecuperacion
+router.post('/verificarRecuperacion', async (req, res) => {
+  const { telefono, codigo } = req.body
+  try {
+    await Usuario.verificarCodigoRecuperacion(telefono, codigo)
+    res.json({ mensaje: 'Código verificado correctamente.' })
+  } catch (error) {
+    res.status(400).json({ mensaje: error.message })
+  }
+})
+// POST /auth/nuevaContrasena
+router.post('/nuevaContrasena', async (req, res) => {
+  const { telefono, contrasena } = req.body
+  try {
+    await Usuario.restablecerContrasena(telefono, contrasena)
+    res.json({ mensaje: 'Contraseña actualizada correctamente.' })
+  } catch (error) {
+    res.status(400).json({ mensaje: error.message })
   }
 })
 

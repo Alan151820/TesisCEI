@@ -1,11 +1,3 @@
-/*
-  Estilos de la página "Inicio de sesión — Comprador".
-
-  Todas las declaraciones de color usan las variables de rol definidas en
-  frontend/src/styles/colors.css (Guía 07). Ningún valor hex/rgb/oklch
-  literal se declara acá.
-*/
-
 .pagina-inicio-sesion {
   display: flex;
   flex-direction: column;
@@ -13,10 +5,6 @@
   font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
   background-color: var(--color-superficie-tenue);
 }
-
-/* ============================
-   Barra superior (navegación)
-   ============================ */
 
 .barra-superior {
   height: 56px;
@@ -55,13 +43,6 @@
   color: var(--color-sobre-variante-superficie);
 }
 
-.acciones-barra-superior {
-  margin-left: auto;
-  display: flex;
-  align-items: center;
-  gap: 20px;
-}
-
 .enlace-iniciar-sesion {
   font-size: 13px;
   color: var(--color-sobre-variante-superficie);
@@ -79,10 +60,6 @@
   background-color: var(--color-primario);
   color: var(--color-sobre-primario);
 }
-
-/* ============================
-   Contenedor + tarjeta de login
-   ============================ */
 
 .contenedor-formulario {
   flex: 1;
@@ -235,13 +212,6 @@
   color: var(--color-sobre-superficie);
   cursor: pointer;
 }
-
-/* ============================
-   Adaptación mobile
-   (según anotaciones del wireframe: formulario centrado
-   verticalmente, botones con altura mínima 44px, enlace
-   "¿Olvidaste?" en la misma línea que la label)
-   ============================ */
 
 @media (max-width: 600px) {
   .barra-superior {

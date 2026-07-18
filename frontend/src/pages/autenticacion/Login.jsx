@@ -1,8 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
-import './login.css'          
-
+import './Login.css'
 
 function Login() {
   const [telefonoInput, setTelefonoInput] = useState('')
@@ -36,54 +35,68 @@ function Login() {
   }
 
   return (
-    <div className="pagina-inicio-sesion">
-      <div className="contenedor-formulario">
-        <div className="tarjeta-login">
-          <h1 className="titulo-login">Iniciar sesión</h1>
-          <p className="subtitulo-login">Usá tu número de teléfono y contraseña.</p>
+    <div className="login-pagina">
+      <header className="login-encabezado">
+        <span className="login-logo">MarketPlace</span>
 
-          <div className="formulario-login">
-            <div className="campo">
-              <label className="etiqueta-campo">Número de teléfono</label>
-              <div className="campo-telefono">
-                <span className="prefijo-telefono">+598</span>
-                <input
-                  className="input-campo"
-                  placeholder="99 123 456"
-                  value={telefonoInput}
-                  onChange={e => setTelefonoInput(e.target.value)}
-                />
-              </div>
-            </div>
-
-            <div className="campo">
-              <div className="fila-etiqueta-enlace">
-                <label className="etiqueta-campo">Contraseña</label>
-                <button
-                  type="button"
-                  className="boton-enlace enlace-olvido-contrasena"
-                  onClick={() => navigate('/recuperarContrasena')}
-                >
-                  ¿Olvidaste tu contraseña?
-                </button>
-              </div>
-              <input
-                className="input-campo"
-                placeholder="Contraseña"
-                type="password"
-                value={contrasena}
-                onChange={e => setContrasena(e.target.value)}
-              />
-            </div>
-
-            <button type="button" className="boton-iniciar-sesion" onClick={handleLogin}>
-              Ingresar
-            </button>
-
-            {mensaje && <p className="mensaje-error">{mensaje}</p>}
-          </div>
+        <div className="login-buscador">
+          <span className="login-buscador-icono">⌕</span>
+          <span className="login-buscador-texto">Buscar productos…</span>
         </div>
-      </div>
+
+        <div className="login-encabezado-derecha">
+          <span className="login-encabezado-link">Iniciar sesión</span>
+          <button type="button" className="login-encabezado-boton" onClick={() => navigate('/registro')}>Registrarse</button>
+        </div>
+      </header>
+
+      <main className="login-contenido">
+        <div className="login-tarjeta">
+          <h1 className="login-titulo">Iniciar sesión</h1>
+          <p className="login-subtitulo">Usá tu número de teléfono y contraseña.</p>
+
+          <div className="login-campo">
+            <label className="login-etiqueta">Número de teléfono</label>
+            <input
+              className="login-input"
+              type="text"
+              placeholder="099 123 456"
+              value={telefonoInput}
+              onChange={e => setTelefonoInput(e.target.value)}
+            />
+          </div>
+
+          <div className="login-campo">
+            <div className="login-campo-encabezado">
+              <label className="login-etiqueta">Contraseña</label>
+              <button
+                type="button"
+                className="login-olvido"
+                onClick={() => navigate('/recuperarContrasena')}
+              >
+                ¿Olvidaste tu contraseña?
+              </button>
+            </div>
+            <input
+              className="login-input"
+              type="password"
+              placeholder="••••••••"
+              value={contrasena}
+              onChange={e => setContrasena(e.target.value)}
+            />
+          </div>
+
+          <button type="button" className="login-boton-ingresar" onClick={handleLogin}>
+            Iniciar sesión
+          </button>
+
+          {mensaje && <p className="login-mensaje-error">{mensaje}</p>}
+
+          <p className="login-pie">
+            ¿No tenés cuenta? <button type="button" className="login-pie-link" onClick={() => navigate('/registro')}>Registrarse gratis</button>
+          </p>
+        </div>
+      </main>
     </div>
   )
 }

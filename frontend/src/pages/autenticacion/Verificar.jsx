@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import axios from 'axios'
+import './Verificar.css'
 
 function Verificar() {
   const [codigo, setCodigo] = useState('')
@@ -31,14 +32,49 @@ function Verificar() {
   }
 
   return (
-    <div>
-      <h1>Verificar cuenta</h1>
-      <p>Ingresá el código que te enviamos al {telefono}</p>
-      {codigoDev && <p>Código de desarrollo: {codigoDev}</p>}
-      <input placeholder='Código de 6 dígitos' value={codigo} onChange={e => setCodigo(e.target.value)} />
-      <br />
-      <button onClick={handleVerificar}>Verificar</button>
-      <p>{mensaje}</p>
+    <div className="verificar-pagina">
+      <header className="verificar-encabezado">
+        <span className="verificar-logo">MarketPlace</span>
+
+        <div className="verificar-buscador">
+          <span className="verificar-buscador-icono">⌕</span>
+          <span className="verificar-buscador-texto">Buscar productos…</span>
+        </div>
+
+        <div className="verificar-encabezado-derecha">
+          <span className="verificar-encabezado-link">Iniciar sesión</span>
+          <button type="button" className="verificar-encabezado-boton">Registrarse</button>
+        </div>
+      </header>
+
+      <main className="verificar-contenido">
+        <div className="verificar-tarjeta">
+          <h1 className="verificar-titulo">Verificar cuenta</h1>
+          <p className="verificar-subtitulo">Ingresá el código que te enviamos al {telefono}</p>
+
+          {codigoDev && <p className="verificar-codigo-dev">Código de desarrollo: {codigoDev}</p>}
+
+          <div className="verificar-campo">
+            <label className="verificar-etiqueta">Código de verificación</label>
+            <input
+              className="verificar-input"
+              placeholder="Código de 6 dígitos"
+              value={codigo}
+              onChange={e => setCodigo(e.target.value)}
+            />
+          </div>
+
+          <button
+            type="button"
+            className="verificar-boton"
+            onClick={handleVerificar}
+          >
+            Verificar
+          </button>
+
+          {mensaje && <p className="verificar-mensaje-error">{mensaje}</p>}
+        </div>
+      </main>
     </div>
   )
 }
