@@ -30,6 +30,11 @@ function EditarProducto() {
   const [cargandoProducto, setCargandoProducto] = useState(false)
   const [guardado, setGuardado] = useState(false)
 
+  const [umbralMinimoStock, setUmbralMinimoStock] = useState('')
+  const [errorUmbral, setErrorUmbral] = useState('')
+  const [umbralGuardado, setUmbralGuardado] = useState(false)
+  const [cargandoUmbral, setCargandoUmbral] = useState(false)
+
   const [precios, setPrecios] = useState([])
   const [mostrarFormPrecio, setMostrarFormPrecio] = useState(false)
   const [editandoPrecioId, setEditandoPrecioId] = useState(null)
@@ -57,6 +62,7 @@ function EditarProducto() {
         setCategoriaId(String(p.categoriaId))
         setTipo(p.tipoProducto)
         setStockTotal(p.stockTotal ?? '')
+        setUmbralMinimoStock(p.umbralMinimoStock ?? '')
         setCantidadMinimaCompra(p.cantidadMinimaCompra ?? '')
         setDescripcionUnidadVenta(p.descripcionUnidadVenta || '')
         setUnidadBaseInterna(p.unidadBaseInterna || '')
@@ -177,6 +183,20 @@ function EditarProducto() {
       setPrecios(prev => prev.filter(p => p.id !== precioId))
     } catch (err) {
       setErrorPrecio(err.response?.data?.error || 'No fue posible eliminar el precio.')
+    }
+  }
+
+  const handleGuardarUmbral = async () => {
+    setErrorUmbral('')
+    setUmbralGuardado(false)
+    setCargandoUmbral(true)
+    try {
+      await axios.patch(`${API}/api/productos/${id}/umbral`, { valor: Number(umbralMinimoStock) }, { headers })
+      setUmbralGuardado(true)
+    } catch (err) {
+      setErrorUmbral(err.response?.data?.error || 'No fue posible completar la operación. Intente nuevamente más tarde.')
+    } finally {
+      setCargandoUmbral(false)
     }
   }
 
@@ -330,6 +350,31 @@ function EditarProducto() {
               </div>
 
               {errorProducto && <div className="ficha-error">{errorProducto}</div>}
+            </div>
+
+            <div className="ficha-card">
+              <div className="ficha-card-titulo">Alerta de stock bajo</div>
+              <div className="ficha-campo">
+                <label className="ficha-label">Umbral mínimo de stock</label>
+                <input
+                  type="number"
+                  className="ficha-input ficha-input-angosto"
+                  min="0"
+                  value={umbralMinimoStock}
+                  onChange={e => setUmbralMinimoStock(e.target.value)}
+                  placeholder="0"
+                />
+                <span className="ficha-ayuda">
+                  Recibirás una notificación cuando el stock disponible caiga por debajo de este valor.
+                </span>
+              </div>
+              {errorUmbral && <div className="ficha-error">{errorUmbral}</div>}
+              {umbralGuardado && <div className="ficha-ok-texto" style={{ color: '#2a7a2a', fontSize: '13px', marginTop: '8px' }}>Umbral configurado correctamente.</div>}
+              <div style={{ marginTop: '12px' }}>
+                <button className="ficha-btn-guardar" onClick={handleGuardarUmbral} disabled={cargandoUmbral}>
+                  {cargandoUmbral ? 'Guardando…' : 'Guardar umbral'}
+                </button>
+              </div>
             </div>
 
             {/* Precios por volumen */}
