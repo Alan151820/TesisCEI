@@ -225,7 +225,7 @@ function Inicio() {
                   <div className="panel-tabla-celda">{p.nombre}</div>
                   <div className="panel-tabla-celda">{p.categoria}</div>
                   <div className={`panel-tabla-celda${p.stockDisponible === 0 ? ' stock-cero' : ''}`}>
-                    {p.stockDisponible === 0 ? 'Sin stock disp.' : `${p.stockDisponible} ${sufijoPorTipo(p.tipoProducto, p.metricaVisualizacion)}`}
+                    {p.stockDisponible === 0 ? 'Sin stock disponible.' : `${p.stockDisponible} ${sufijoPorTipo(p.tipoProducto, p.metricaVisualizacion)}`}
                   </div>
                   <div className="panel-tabla-celda">{p.stockReservado} {sufijoPorTipo(p.tipoProducto, p.metricaVisualizacion)}</div>
                   <div className="panel-tabla-celda">
