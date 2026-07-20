@@ -3,6 +3,7 @@
 
 # Herramientas de desarrollo local (no van al repo compartido)
 docs/
+CLAUDE.md
 .claude/
 
 # Dependencias
