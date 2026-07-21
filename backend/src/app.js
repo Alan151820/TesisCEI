@@ -5,6 +5,7 @@ const authRoutes = require('./routes/auth')
 const productosRoutes = require('./routes/productos')
 const preciosVolumenRoutes = require('./routes/preciosVolumen')
 const distribuidorRoutes = require('./routes/distribuidor')
+const catalogoRoutes = require('./routes/catalogo')
 
 const app = express()
 
@@ -16,6 +17,7 @@ app.use('/auth', authRoutes)
 app.use('/api/productos', productosRoutes)
 app.use('/api/productos/:productoId/precios', preciosVolumenRoutes)
 app.use('/distribuidor', distribuidorRoutes)
+app.use('/api/catalogo', catalogoRoutes)
 
 app.use((err, req, res, next) => {
   console.error(err)
