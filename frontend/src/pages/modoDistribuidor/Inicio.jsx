@@ -13,6 +13,15 @@ const NAV_ITEMS = [
   { label: 'Editar perfil', ruta: '/editarPerfil' },
 ]
 
+function sufijoPorTipo(tipoProducto, metricaVisualizacion) {
+  if (tipoProducto === 'fraccionable') {
+    if (metricaVisualizacion === 'kilogramos') return 'kg'
+    if (metricaVisualizacion === 'litros') return 'L'
+    if (metricaVisualizacion === 'metros') return 'm'
+  }
+  return 'u.'
+}
+
 function Inicio() {
   const navigate = useNavigate()
   const location = useLocation()
@@ -216,9 +225,9 @@ function Inicio() {
                   <div className="panel-tabla-celda">{p.nombre}</div>
                   <div className="panel-tabla-celda">{p.categoria}</div>
                   <div className={`panel-tabla-celda${p.stockDisponible === 0 ? ' stock-cero' : ''}`}>
-                    {p.stockDisponible} u.
+                    {p.stockDisponible === 0 ? 'Sin stock disponible.' : `${p.stockDisponible} ${sufijoPorTipo(p.tipoProducto, p.metricaVisualizacion)}`}
                   </div>
-                  <div className="panel-tabla-celda">{p.stockReservado} u.</div>
+                  <div className="panel-tabla-celda">{p.stockReservado} {sufijoPorTipo(p.tipoProducto, p.metricaVisualizacion)}</div>
                   <div className="panel-tabla-celda">
                     <span className={`panel-estado-badge ${p.estadoVisibilidad}`}>
                       {p.estadoVisibilidad === 'publicado' ? 'Publicado' : 'Pausado'}
@@ -231,7 +240,7 @@ function Inicio() {
                       <span className="panel-accion-link" onClick={() => handleCambiarVisibilidad(p.id, 'publicado')}>Publicar</span>
                     )}
                     {' · '}
-                    <span className="panel-accion-link">Editar</span>
+                    <span className="panel-accion-link" onClick={() => navigate(`/producto/editar/${p.id}`)}>Editar</span>
                   </div>
                 </div>
                 {errorVisibilidad[p.id] && (

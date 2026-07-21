@@ -11,6 +11,7 @@ import InicioComprador from './pages/modoComprador/InicioComprador'
 import PerfilDistribuidor from './pages/modoComprador/PerfilDistribuidor'
 import ConfigurarPerfil from './pages/modoDistribuidor/ConfigurarPerfil'
 import EditarPerfil from './pages/modoDistribuidor/EditarPerfil'
+import EditarProducto from './pages/modoDistribuidor/EditarProducto'
 
 
 
@@ -25,6 +26,7 @@ function App() {
       <Route path='/nuevaContrasena' element={<NuevaContrasena />} />
       <Route path='/inicio' element={<Inicio />} />
       <Route path='/producto/nuevo' element={<FichaProducto />} />
+      <Route path='/producto/editar/:id' element={<EditarProducto />} />
       <Route path='/inicioComprador' element={<InicioComprador />} />
       <Route path='/perfilDistribuidor/:id' element={<PerfilDistribuidor />} />
       <Route path='/configurarPerfil' element={<ConfigurarPerfil />} />

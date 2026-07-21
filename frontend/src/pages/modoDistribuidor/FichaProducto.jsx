@@ -138,8 +138,13 @@ function FichaProducto() {
     }
   }
 
-  const handleEliminarPrecio = (id) => {
-    setPrecios(prev => prev.filter(p => p.id !== id))
+  const handleEliminarPrecio = async (id) => {
+    try {
+      await axios.delete(`${API}/api/productos/${productoId}/precios/${id}`, { headers })
+      setPrecios(prev => prev.filter(p => p.id !== id))
+    } catch {
+      // si falla, no actualizar el estado
+    }
   }
 
   const handleFinalizar = () => navigate('/inicio')
