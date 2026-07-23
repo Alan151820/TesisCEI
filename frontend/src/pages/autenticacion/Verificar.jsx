@@ -35,7 +35,11 @@ function Verificar() {
 
         <div className="verificar-buscador">
           <span className="verificar-buscador-icono">⌕</span>
-          <span className="verificar-buscador-texto">Buscar productos…</span>
+          <input
+            className="verificar-buscador-input"
+            type="text"
+            placeholder="Buscar productos…"
+          />
         </div>
 
         <div className="verificar-encabezado-derecha">

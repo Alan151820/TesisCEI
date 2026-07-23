@@ -1,7 +1,9 @@
 .catalogo-layout {
   min-height: 100vh;
-  background: #f5f5f5;
+  display: flex;
+  flex-direction: column;
   font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  background: var(--color-superficie-tenue);
 }
 
 /* Header */
@@ -34,19 +36,32 @@
   align-items: center;
   padding: 0 14px;
   gap: 8px;
-  cursor: text;
 }
 
-.catalogo-header-buscador-icono,
-.catalogo-header-buscador-texto {
+.catalogo-header-buscador-icono {
+  font-size: 14px;
+  color: var(--color-sobre-variante-superficie);
+  flex-shrink: 0;
+}
+
+.catalogo-header-buscador-input {
+  flex: 1;
+  background: none;
+  border: none;
+  outline: none;
   font-size: 13px;
+  color: var(--color-sobre-superficie);
+  font-family: inherit;
+}
+
+.catalogo-header-buscador-input::placeholder {
   color: var(--color-sobre-variante-superficie);
 }
 
 .catalogo-header-acciones {
   margin-left: auto;
   display: flex;
-  gap: 20px;
+  gap: 4px;
   align-items: center;
 }
 
@@ -55,8 +70,10 @@
   border: none;
   color: var(--color-sobre-variante-superficie);
   font-size: 13px;
+  font-weight: 500;
+  font-family: inherit;
   cursor: pointer;
-  padding: 0;
+  padding: 7px 18px;
 }
 
 .catalogo-btn-login:hover {
@@ -71,6 +88,7 @@
   border-radius: 4px;
   font-size: 13px;
   font-weight: 500;
+  font-family: inherit;
   cursor: pointer;
 }
 
@@ -80,29 +98,15 @@
 
 /* Contenido */
 .catalogo-contenido {
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 32px 24px;
-}
-
-.catalogo-titulo {
-  font-size: 22px;
-  font-weight: 700;
-  color: #111;
-  margin: 0 0 4px;
-}
-
-.catalogo-subtitulo {
-  font-size: 13px;
-  color: #777;
-  margin: 0 0 28px;
+  flex: 1;
+  padding: 32px 40px;
 }
 
 /* Estado vacío / cargando */
 .catalogo-vacio {
   text-align: center;
   padding: 80px 0;
-  color: #888;
+  color: var(--color-sobre-variante-superficie);
   font-size: 14px;
 }
 
@@ -115,35 +119,35 @@
 
 /* Tarjeta */
 .catalogo-tarjeta {
-  background: #fff;
+  background: var(--color-contenedor-superficie-minimo);
   border-radius: 10px;
   overflow: hidden;
-  border: 1px solid #e8e8e8;
+  border: 1px solid var(--color-variante-contorno);
   display: flex;
   flex-direction: column;
   transition: box-shadow 0.15s;
 }
 
 .catalogo-tarjeta:hover {
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
 }
 
 .catalogo-tarjeta-imagen {
   width: 100%;
   aspect-ratio: 4 / 3;
   object-fit: cover;
-  background: #f0f0f0;
+  background: var(--color-contenedor-superficie-bajo);
   display: block;
 }
 
 .catalogo-tarjeta-imagen-placeholder {
   width: 100%;
   aspect-ratio: 4 / 3;
-  background: #f0f0f0;
+  background: var(--color-contenedor-superficie-bajo);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #bbb;
+  color: var(--color-sobre-variante-superficie);
   font-size: 13px;
 }
 
@@ -158,7 +162,7 @@
 .catalogo-tarjeta-categoria {
   font-size: 10px;
   font-weight: 600;
-  color: #999;
+  color: var(--color-sobre-variante-superficie);
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
@@ -166,13 +170,13 @@
 .catalogo-tarjeta-nombre {
   font-size: 14px;
   font-weight: 600;
-  color: #111;
+  color: var(--color-sobre-superficie);
   line-height: 1.3;
 }
 
 .catalogo-tarjeta-descripcion {
   font-size: 12px;
-  color: #666;
+  color: var(--color-sobre-variante-superficie);
   line-height: 1.4;
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -190,19 +194,19 @@
 
 .catalogo-tarjeta-distribuidor {
   font-size: 11px;
-  color: #888;
+  color: var(--color-sobre-variante-superficie);
 }
 
 .catalogo-tarjeta-precio {
   font-size: 15px;
   font-weight: 700;
-  color: #111;
+  color: var(--color-sobre-superficie);
 }
 
 .catalogo-contador {
   margin-top: 24px;
   font-size: 12px;
-  color: #999;
+  color: var(--color-sobre-variante-superficie);
   text-align: right;
 }
 
@@ -223,10 +227,6 @@
     height: 32px;
   }
 
-  .catalogo-header-acciones {
-    gap: 8px;
-  }
-
   .catalogo-btn-login {
     display: none;
   }
@@ -237,7 +237,7 @@
   }
 
   .catalogo-contenido {
-    padding: 16px 14px 20px;
+    padding: 16px 16px 20px;
   }
 
   .catalogo-grilla {

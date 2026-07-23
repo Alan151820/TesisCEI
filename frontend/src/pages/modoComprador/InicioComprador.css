@@ -39,9 +39,23 @@
   cursor: text;
 }
 
-.comprador-buscador-icono,
-.comprador-buscador-texto {
+.comprador-buscador-icono {
+  font-size: 14px;
+  color: var(--color-sobre-variante-superficie);
+  flex-shrink: 0;
+}
+
+.comprador-buscador-input {
+  flex: 1;
+  background: none;
+  border: none;
+  outline: none;
   font-size: 13px;
+  color: var(--color-sobre-superficie);
+  font-family: inherit;
+}
+
+.comprador-buscador-input::placeholder {
   color: var(--color-sobre-variante-superficie);
 }
 

@@ -40,7 +40,11 @@ function Registro() {
 
         <div className="registro-buscador">
           <span className="registro-buscador-icono">⌕</span>
-          <span className="registro-buscador-texto">Buscar productos…</span>
+          <input
+            className="registro-buscador-input"
+            type="text"
+            placeholder="Buscar productos…"
+          />
         </div>
 
         

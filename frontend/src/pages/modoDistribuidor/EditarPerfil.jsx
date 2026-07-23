@@ -77,46 +77,58 @@ function EditarPerfil() {
   }
 
   return (
-    <div className="panel-layout">
+    <div className="panel-root">
 
-      <aside className="panel-sidebar">
-        <div className="panel-sidebar-marca">
-          <div className="panel-sidebar-titulo">MarketDist</div>
-          <div className="panel-sidebar-subtitulo">Panel del Distribuidor</div>
+      <header className="panel-master-header">
+        <div className="panel-master-header-marca">MarketDist</div>
+        <div className="panel-master-header-buscador">
+          <span className="panel-master-header-buscador-icono">⌕</span>
+          <input className="panel-master-header-buscador-input" type="text" placeholder="Buscar productos…" />
         </div>
+        <div className="panel-master-header-perfil">
+          <div className="panel-master-header-avatar">{iniciales}</div>
+        </div>
+      </header>
 
-        <nav className="panel-nav">
-          {NAV_ITEMS.map(item => (
-            <div
-              key={item.ruta}
-              className={`panel-nav-item${location.pathname === item.ruta ? ' activo' : ''}`}
-              onClick={() => navigate(item.ruta)}
-            >
-              {item.label}
-            </div>
-          ))}
-          <button className='panel-nav-item' onClick={() => navigate('/inicioComprador')}>Cambiar a modo comprador</button>
-        </nav>
+      <div className="panel-layout">
 
-        <div className="panel-sidebar-footer">
-          <div className="panel-sidebar-usuario">
-            <div className="panel-avatar-small">{iniciales}</div>
-            <div>
-              <div className="panel-sidebar-nombre">{nombre}</div>
-              <div className="panel-sidebar-rol">Distribuidor</div>
-            </div>
+        <aside className="panel-sidebar">
+          <div className="panel-sidebar-marca">
+            <div className="panel-sidebar-titulo">MarketDist</div>
+            <div className="panel-sidebar-subtitulo">Panel del Distribuidor</div>
           </div>
-          <div className="panel-sidebar-accion" onClick={handleCerrarSesion}>Cerrar sesión</div>
-        </div>
-      </aside>
 
-      <main className="panel-main">
+          <nav className="panel-nav">
+            {NAV_ITEMS.map(item => (
+              <div
+                key={item.ruta}
+                className={`panel-nav-item${location.pathname === item.ruta ? ' activo' : ''}`}
+                onClick={() => navigate(item.ruta)}
+              >
+                {item.label}
+              </div>
+            ))}
+          </nav>
 
-        <header className="panel-topbar">
-          <span className="panel-topbar-titulo">Panel del Distribuidor</span>
-          <div className="panel-avatar">{iniciales}</div>
-        </header>
+          <div className="panel-sidebar-cambiar-modo">
+            <button className="panel-sidebar-cambiar-btn" onClick={() => navigate('/inicioComprador')}>
+              ← Cambiar a modo comprador
+            </button>
+          </div>
 
+          <div className="panel-sidebar-footer">
+            <div className="panel-sidebar-usuario">
+              <div className="panel-avatar-small">{iniciales}</div>
+              <div>
+                <div className="panel-sidebar-nombre">{nombre}</div>
+                <div className="panel-sidebar-rol">Distribuidor</div>
+              </div>
+            </div>
+            <div className="panel-sidebar-accion" onClick={handleCerrarSesion}>Cerrar sesión</div>
+          </div>
+        </aside>
+
+        <main className="panel-main">
         <div className="panel-contenido">
 
           <div className="panel-seccion-header">
@@ -184,8 +196,9 @@ function EditarPerfil() {
           </div>
 
         </div>
-      </main>
+        </main>
 
+      </div>
     </div>
   )
 }

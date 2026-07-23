@@ -34,14 +34,18 @@ function InicioComprador() {
         <div className="comprador-logo">MarketDist</div>
         <div className="comprador-buscador">
           <span className="comprador-buscador-icono">⌕</span>
-          <span className="comprador-buscador-texto">Buscar productos…</span>
+          <input
+            className="comprador-buscador-input"
+            type="text"
+            placeholder="Buscar productos…"
+          />
         </div>
         <div className="comprador-acciones">
           <button
             className="comprador-cambiar-btn"
             onClick={() => navigate(modoDistribuidorActivo ? '/inicio' : '/configurarPerfil')}
           >
-            {modoDistribuidorActivo ? 'Panel distribuidor' : 'Ser distribuidor'}
+            Distribuidora
           </button>
           <div className="comprador-perfil">
             <div className="comprador-avatar">{iniciales}</div>
@@ -54,11 +58,6 @@ function InicioComprador() {
       </header>
 
       <main className="comprador-contenido">
-
-        <div className="comprador-pagina-header">
-          <h1 className="comprador-titulo">Catálogo</h1>
-          <p className="comprador-subtitulo">Explorá los productos disponibles.</p>
-        </div>
 
         {cargando && (
           <div className="comprador-vacio">Cargando productos...</div>

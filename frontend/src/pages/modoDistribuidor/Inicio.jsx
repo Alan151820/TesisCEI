@@ -117,7 +117,7 @@ function Inicio() {
         <div className="panel-master-header-marca">MarketDist</div>
         <div className="panel-master-header-buscador">
           <span className="panel-master-header-buscador-icono">⌕</span>
-          <span className="panel-master-header-buscador-texto">Buscar productos…</span>
+          <input className="panel-master-header-buscador-input" type="text" placeholder="Buscar productos…" />
         </div>
         <div className="panel-master-header-perfil">
           <div className="panel-master-header-avatar">{iniciales}</div>

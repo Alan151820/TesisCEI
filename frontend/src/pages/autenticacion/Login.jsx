@@ -41,12 +41,16 @@ function Login() {
 
         <div className="login-buscador">
           <span className="login-buscador-icono">⌕</span>
-          <span className="login-buscador-texto">Buscar productos…</span>
+          <input
+            className="login-buscador-input"
+            type="text"
+            placeholder="Buscar productos…"
+          />
         </div>
 
         <div className="login-encabezado-derecha">
           <div className="auth-tabs">
-            <button type="button" className="auth-tab activo">Iniciar sesión</button>
+            <button type="button" className="auth-tab activo" onClick={() => navigate('/login')}>Iniciar sesión</button>
             <button type="button" className="auth-tab" onClick={() => navigate('/registro')}>Registrarse</button>
           </div>
         </div>
