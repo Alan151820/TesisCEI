@@ -31,6 +31,7 @@ function App() {
       <Route path='/configurarPerfil' element={<ConfigurarPerfil />} />
       <Route path='/editarPerfil' element={<EditarPerfil />} />
       <Route path='/catalogo' element={<Catalogo />} />
+      <Route path='/' element={<Catalogo />} />
     </Routes>
   )
 }

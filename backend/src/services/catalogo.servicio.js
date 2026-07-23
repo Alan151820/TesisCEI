@@ -8,7 +8,7 @@ async function listarCatalogo() {
        p.descripcion,
        p.imagen_url AS "imagenUrl",
        c.nombre AS categoria,
-       d.nombre_negocio AS "nombreDistribuidor",
+       d.nombre_comercial AS "nombreDistribuidor",
        d.id AS "distribuidorId",
        MIN(pv.precio_venta) AS "precioMinimo"
      FROM producto p
@@ -17,7 +17,7 @@ async function listarCatalogo() {
      JOIN precio_volumen pv ON pv.producto_id = p.id
      WHERE p.estado_visibilidad = 'publicado'
        AND p.habilitado = true
-     GROUP BY p.id, p.nombre, p.descripcion, p.imagen_url, c.nombre, d.nombre_negocio, d.id
+     GROUP BY p.id, p.nombre, p.descripcion, p.imagen_url, c.nombre, d.nombre_comercial, d.id
      ORDER BY p.fecha_creacion DESC`
   )
   return resultado.rows

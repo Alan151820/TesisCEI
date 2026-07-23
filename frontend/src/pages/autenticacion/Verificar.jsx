@@ -19,12 +19,9 @@ function Verificar() {
         codigo
       })
       localStorage.setItem('telefono', telefono)
-      localStorage.setItem('nombre', nombre)
+      localStorage.setItem('nombre', res.data.nombre || nombre)
       localStorage.setItem('modoDistribuidorActivo', 'false')
-      if (res.data.token) {
-        localStorage.setItem('token', res.data.token)
-      }
-      setMensaje(res.data.mensaje)
+      localStorage.setItem('token', res.data.token)
       navigate('/inicioComprador')
     } catch (error) {
       setMensaje(error.response.data.mensaje)
@@ -38,12 +35,18 @@ function Verificar() {
 
         <div className="verificar-buscador">
           <span className="verificar-buscador-icono">⌕</span>
-          <span className="verificar-buscador-texto">Buscar productos…</span>
+          <input
+            className="verificar-buscador-input"
+            type="text"
+            placeholder="Buscar productos…"
+          />
         </div>
 
         <div className="verificar-encabezado-derecha">
-          <span className="verificar-encabezado-link">Iniciar sesión</span>
-          <button type="button" className="verificar-encabezado-boton">Registrarse</button>
+          <div className="auth-tabs">
+            <button type="button" className="auth-tab" onClick={() => navigate('/login')}>Iniciar sesión</button>
+            <button type="button" className="auth-tab activo">Registrarse</button>
+          </div>
         </div>
       </header>
 

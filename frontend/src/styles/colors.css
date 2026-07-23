@@ -16,7 +16,7 @@
   --_fuente-secundaria: oklch(50% 0 0);
 
   /* Roles de acento primario */
-  --color-primario:                     oklch(from var(--_fuente-primaria) 45% c h);
+  --color-primario:                     oklch(from var(--_fuente-primaria) 16% c h);
   --color-sobre-primario:               oklch(from var(--_fuente-primaria) 100% 0 h);
   --color-contenedor-primario:          oklch(from var(--_fuente-primaria) 91% calc(c * 0.5) h);
   --color-sobre-contenedor-primario:    oklch(from var(--_fuente-primaria) 12% calc(c * 0.3) h);

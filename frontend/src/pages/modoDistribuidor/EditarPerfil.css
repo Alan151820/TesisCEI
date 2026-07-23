@@ -1,6 +1,6 @@
 .editarperfil-card {
-  background: #FFF;
-  border: 1px solid #E4E4E4;
+  background: var(--color-contenedor-superficie-minimo);
+  border: 1px solid var(--color-variante-contorno);
   border-radius: 6px;
   padding: 24px;
   max-width: 640px;
@@ -16,8 +16,8 @@
   width: 84px;
   height: 84px;
   border-radius: 50%;
-  border: 1px dashed #CCC;
-  background: #FAFAFA;
+  border: 1px dashed var(--color-contorno);
+  background: var(--color-contenedor-superficie-bajo);
   cursor: pointer;
   overflow: hidden;
   display: flex;
@@ -26,8 +26,8 @@
 }
 
 .editarperfil-logo-zona:hover {
-  border-color: #999;
-  background: #F0F0F0;
+  border-color: var(--color-sobre-variante-superficie);
+  background: var(--color-contenedor-superficie);
 }
 
 .editarperfil-logo-preview {
@@ -38,7 +38,7 @@
 
 .editarperfil-logo-texto {
   font-size: 11px;
-  color: #AAA;
+  color: var(--color-sobre-variante-superficie);
   text-align: center;
   padding: 6px;
 }
@@ -51,18 +51,18 @@
   display: block;
   font-size: 12px;
   font-weight: 600;
-  color: var(--color-sobre-superficie, #333);
+  color: var(--color-sobre-superficie);
   margin-bottom: 5px;
 }
 
 .editarperfil-input,
 .editarperfil-textarea {
   width: 100%;
-  border: 1px solid #CCC;
+  border: 1px solid var(--color-contorno);
   border-radius: 4px;
-  background: #FFF;
+  background: var(--color-contenedor-superficie-minimo);
   font-size: 13px;
-  color: var(--color-sobre-superficie, #333);
+  color: var(--color-sobre-superficie);
   box-sizing: border-box;
   font-family: inherit;
 }
@@ -90,8 +90,8 @@
   font-size: 13px;
   font-weight: 500;
   cursor: pointer;
-  background: var(--color-primario, #222);
-  color: var(--color-sobre-primario, #FFF);
+  background: var(--color-primario);
+  color: var(--color-sobre-primario);
   border: none;
 }
 
@@ -106,18 +106,18 @@
   font-size: 13px;
   font-weight: 500;
   cursor: pointer;
-  background: #FFF;
-  color: #333;
-  border: 1px solid #AAA;
+  background: var(--color-contenedor-superficie-minimo);
+  color: var(--color-sobre-superficie);
+  border: 1px solid var(--color-contorno);
 }
 
 .editarperfil-btn-cancelar:hover {
-  background: #F5F5F5;
+  background: var(--color-contenedor-superficie-bajo);
 }
 
 .editarperfil-mensaje {
   font-size: 13px;
-  color: var(--color-sobre-superficie, #333);
+  color: var(--color-sobre-superficie);
   margin: 14px 0 0 0;
 }
 
@@ -138,5 +138,4 @@
   .editarperfil-btn-cancelar {
     width: 100%;
   }
-  
 }

@@ -97,7 +97,13 @@ router.post('/verificar', async (req, res) => {
   const index = registrosPendientes.indexOf(pendiente)
   registrosPendientes.splice(index, 1)
 
-  res.json({ mensaje: 'Cuenta activada correctamente.' })
+  const token = require('jsonwebtoken').sign(
+    { id: nuevoUsuario.rows[0].id, nombre: pendiente.nombre },
+    process.env.JWT_SECRET,
+    { expiresIn: process.env.JWT_EXPIRES_IN }
+  )
+
+  res.json({ mensaje: 'Cuenta activada correctamente.', token, nombre: pendiente.nombre, modoDistribuidorActivo: false })
 })
 
 // POST /auth/login

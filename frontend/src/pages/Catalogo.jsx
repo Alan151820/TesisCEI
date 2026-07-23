@@ -20,17 +20,25 @@ function Catalogo() {
 
       <header className="catalogo-header">
         <div className="catalogo-header-marca">MarketDist</div>
+        <div className="catalogo-header-buscador">
+          <span className="catalogo-header-buscador-icono">⌕</span>
+          <input
+            className="catalogo-header-buscador-input"
+            type="text"
+            placeholder="Buscar productos…"
+          />
+        </div>
         <div className="catalogo-header-acciones">
           <button className="catalogo-btn-login" onClick={() => navigate('/login')}>
             Iniciar sesión
+          </button>
+          <button className="catalogo-btn-registro" onClick={() => navigate('/registro')}>
+            Registrarse
           </button>
         </div>
       </header>
 
       <div className="catalogo-contenido">
-        <h1 className="catalogo-titulo">Catálogo de productos</h1>
-        <p className="catalogo-subtitulo">Explorá los productos disponibles de nuestros distribuidores.</p>
-
         {cargando && (
           <div className="catalogo-vacio">Cargando productos...</div>
         )}
