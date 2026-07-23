@@ -47,24 +47,30 @@
   margin-left: auto;
   display: flex;
   align-items: center;
-  gap: 20px;
 }
 
-.registro-encabezado-link {
+.auth-tabs {
+  display: flex;
+  border: 1px solid var(--color-variante-contorno);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.auth-tab {
+  padding: 6px 18px;
   font-size: 13px;
+  font-family: inherit;
+  font-weight: 500;
+  cursor: pointer;
+  background: none;
+  border: none;
   color: var(--color-sobre-variante-superficie);
+  transition: background 0.12s, color 0.12s;
 }
 
-.registro-encabezado-boton {
+.auth-tab.activo {
   background: var(--color-primario);
   color: var(--color-sobre-primario);
-  border: none;
-  padding: 7px 18px;
-  border-radius: 4px;
-  font-size: 13px;
-  font-weight: 500;
-  font-family: inherit;
-  cursor: pointer;
 }
 
 .registro-contenido {

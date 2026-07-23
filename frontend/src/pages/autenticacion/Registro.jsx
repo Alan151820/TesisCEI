@@ -45,8 +45,10 @@ function Registro() {
 
         
         <div className="login-encabezado-derecha">
-          <button type="button" className="registro-encabezado-boton" onClick={() => navigate('/login')}>Iniciar sesión</button>
-          <span className="registro-encabezado-link">Registro</span>
+          <div className="auth-tabs">
+            <button type="button" className="auth-tab" onClick={() => navigate('/login')}>Iniciar sesión</button>
+            <button type="button" className="auth-tab activo">Registrarse</button>
+          </div>
         </div>
       </header>
 

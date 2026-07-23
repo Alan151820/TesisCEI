@@ -39,8 +39,10 @@ function Verificar() {
         </div>
 
         <div className="verificar-encabezado-derecha">
-          <span className="verificar-encabezado-link">Iniciar sesión</span>
-          <button type="button" className="verificar-encabezado-boton">Registrarse</button>
+          <div className="auth-tabs">
+            <button type="button" className="auth-tab" onClick={() => navigate('/login')}>Iniciar sesión</button>
+            <button type="button" className="auth-tab activo">Registrarse</button>
+          </div>
         </div>
       </header>
 
