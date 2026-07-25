@@ -11,13 +11,30 @@ function InicioComprador() {
 
   const [productos, setProductos] = useState([])
   const [cargando, setCargando] = useState(true)
+const [busqueda, setBusqueda] = useState('')
 
-  useEffect(() => {
-    axios.get('http://localhost:3000/api/catalogo')
-      .then(res => setProductos(res.data))
-      .catch(() => setProductos([]))
-      .finally(() => setCargando(false))
-  }, [])
+useEffect(() => {
+  cargarProductos()
+}, [])
+
+const cargarProductos = async (nombre = '') => {
+  setCargando(true)
+  try {
+    const res = await axios.get('http://localhost:3000/api/catalogo', {
+      params: { nombre }
+    })
+    setProductos(res.data)
+  } catch {
+    setProductos([])
+  } finally {
+    setCargando(false)
+  }
+}
+
+const buscarProductos = (e) => {
+  setBusqueda(e.target.value)
+  cargarProductos(e.target.value)
+}
 
   const handleCerrarSesion = () => {
     localStorage.removeItem('token')
@@ -38,6 +55,8 @@ function InicioComprador() {
             className="comprador-buscador-input"
             type="text"
             placeholder="Buscar productos…"
+            value={busqueda}
+            onChange={buscarProductos}
           />
         </div>
         <div className="comprador-acciones">
@@ -63,10 +82,11 @@ function InicioComprador() {
           <div className="comprador-vacio">Cargando productos...</div>
         )}
 
-        {!cargando && productos.length === 0 && (
-          <div className="comprador-vacio">No hay productos disponibles en este momento.</div>
-        )}
-
+     {!cargando && productos.length === 0 && (
+  <div className="comprador-vacio">
+    {busqueda ? 'No se encontraron productos con ese nombre.' : 'No hay productos disponibles en este momento.'}
+  </div>
+)}
         {!cargando && productos.length > 0 && (
           <>
             <div className="comprador-grilla">

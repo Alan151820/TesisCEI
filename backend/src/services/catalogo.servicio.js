@@ -1,6 +1,6 @@
 const pool = require('../config/db')
 
-async function listarCatalogo() {
+async function listarCatalogo(nombre = '') {
   const resultado = await pool.query(
     `SELECT
        p.id,
@@ -17,8 +17,10 @@ async function listarCatalogo() {
      JOIN precio_volumen pv ON pv.producto_id = p.id
      WHERE p.estado_visibilidad = 'publicado'
        AND p.habilitado = true
+       AND p.nombre ILIKE $1
      GROUP BY p.id, p.nombre, p.descripcion, p.imagen_url, c.nombre, d.nombre_comercial, d.id
-     ORDER BY p.fecha_creacion DESC`
+     ORDER BY p.fecha_creacion DESC`,
+    [`%${nombre}%`]
   )
   return resultado.rows
 }

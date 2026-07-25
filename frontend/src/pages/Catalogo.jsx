@@ -7,13 +7,30 @@ function Catalogo() {
   const navigate = useNavigate()
   const [productos, setProductos] = useState([])
   const [cargando, setCargando] = useState(true)
+  const [busqueda, setBusqueda] = useState('')
 
   useEffect(() => {
-    axios.get('http://localhost:3000/api/catalogo')
-      .then(res => setProductos(res.data))
-      .catch(() => setProductos([]))
-      .finally(() => setCargando(false))
+    cargarProductos()
   }, [])
+
+  const cargarProductos = async (nombre = '') => {
+    setCargando(true)
+    try {
+      const res = await axios.get('http://localhost:3000/api/catalogo', {
+        params: { nombre }
+      })
+      setProductos(res.data)
+    } catch {
+      setProductos([])
+    } finally {
+      setCargando(false)
+    }
+  }
+
+  const buscarProductos = (e) => {
+    setBusqueda(e.target.value)
+    cargarProductos(e.target.value)
+  }
 
   return (
     <div className="catalogo-layout">
@@ -26,6 +43,8 @@ function Catalogo() {
             className="catalogo-header-buscador-input"
             type="text"
             placeholder="Buscar productos…"
+            value={busqueda}
+            onChange={buscarProductos}
           />
         </div>
         <div className="catalogo-header-acciones">
@@ -44,7 +63,9 @@ function Catalogo() {
         )}
 
         {!cargando && productos.length === 0 && (
-          <div className="catalogo-vacio">No hay productos disponibles en este momento.</div>
+          <div className="catalogo-vacio">
+            {busqueda ? 'No se encontraron productos con ese nombre.' : 'No hay productos disponibles en este momento.'}
+          </div>
         )}
 
         {!cargando && productos.length > 0 && (
@@ -53,11 +74,7 @@ function Catalogo() {
               {productos.map(p => (
                 <div key={p.id} className="catalogo-tarjeta">
                   {p.imagenUrl
-                    ? <img
-                        src={`http://localhost:3000${p.imagenUrl}`}
-                        alt={p.nombre}
-                        className="catalogo-tarjeta-imagen"
-                      />
+                    ? <img src={`http://localhost:3000${p.imagenUrl}`} alt={p.nombre} className="catalogo-tarjeta-imagen" />
                     : <div className="catalogo-tarjeta-imagen-placeholder">Sin imagen</div>
                   }
                   <div className="catalogo-tarjeta-cuerpo">
