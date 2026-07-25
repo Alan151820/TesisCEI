@@ -11,30 +11,53 @@ function InicioComprador() {
 
   const [productos, setProductos] = useState([])
   const [cargando, setCargando] = useState(true)
-const [busqueda, setBusqueda] = useState('')
+  const [categorias, setCategorias] = useState([])
+  const [busqueda, setBusqueda] = useState('')
+  const [filtroCategoria, setFiltroCategoria] = useState('')
+  const [filtroDistribuidor, setFiltroDistribuidor] = useState('')
+  const [filtroPrecioMin, setFiltroPrecioMin] = useState('')
+  const [filtroPrecioMax, setFiltroPrecioMax] = useState('')
 
-useEffect(() => {
-  cargarProductos()
-}, [])
+  useEffect(() => {
+    cargarProductos()
+    axios.get('http://localhost:3000/api/productos/categorias')
+      .then(res => setCategorias(res.data))
+      .catch(() => {})
+  }, [])
 
-const cargarProductos = async (nombre = '') => {
-  setCargando(true)
-  try {
-    const res = await axios.get('http://localhost:3000/api/catalogo', {
-      params: { nombre }
-    })
-    setProductos(res.data)
-  } catch {
-    setProductos([])
-  } finally {
-    setCargando(false)
+  const cargarProductos = async (params = {}) => {
+    setCargando(true)
+    try {
+      const res = await axios.get('http://localhost:3000/api/catalogo', { params })
+      setProductos(res.data)
+    } catch {
+      setProductos([])
+    } finally {
+      setCargando(false)
+    }
   }
-}
 
-const buscarProductos = (e) => {
-  setBusqueda(e.target.value)
-  cargarProductos(e.target.value)
-}
+  const aplicarFiltros = (nuevosValores = {}) => {
+    const params = {
+      nombre: nuevosValores.nombre ?? busqueda,
+      categoria: nuevosValores.categoria ?? filtroCategoria,
+      distribuidor: nuevosValores.distribuidor ?? filtroDistribuidor,
+      precioMinimo: nuevosValores.precioMinimo ?? filtroPrecioMin,
+      precioMaximo: nuevosValores.precioMaximo ?? filtroPrecioMax,
+    }
+    cargarProductos(params)
+  }
+
+  const limpiarFiltros = () => {
+    setBusqueda('')
+    setFiltroCategoria('')
+    setFiltroDistribuidor('')
+    setFiltroPrecioMin('')
+    setFiltroPrecioMax('')
+    cargarProductos()
+  }
+
+  const hayFiltros = busqueda || filtroCategoria || filtroDistribuidor || filtroPrecioMin || filtroPrecioMax
 
   const handleCerrarSesion = () => {
     localStorage.removeItem('token')
@@ -56,14 +79,11 @@ const buscarProductos = (e) => {
             type="text"
             placeholder="Buscar productos…"
             value={busqueda}
-            onChange={buscarProductos}
+            onChange={e => { setBusqueda(e.target.value); aplicarFiltros({ nombre: e.target.value }) }}
           />
         </div>
         <div className="comprador-acciones">
-          <button
-            className="comprador-cambiar-btn"
-            onClick={() => navigate(modoDistribuidorActivo ? '/inicio' : '/configurarPerfil')}
-          >
+          <button className="comprador-cambiar-btn" onClick={() => navigate(modoDistribuidorActivo ? '/inicio' : '/configurarPerfil')}>
             Distribuidora
           </button>
           <div className="comprador-perfil">
@@ -76,17 +96,46 @@ const buscarProductos = (e) => {
         </div>
       </header>
 
+      <div className="comprador-filtros">
+        <select value={filtroCategoria} onChange={e => { setFiltroCategoria(e.target.value); aplicarFiltros({ categoria: e.target.value }) }}>
+          <option value=''>Categoría</option>
+          {categorias.map(c => <option key={c.id} value={c.nombre}>{c.nombre}</option>)}
+        </select>
+
+        <input
+          type="text"
+          placeholder="Distribuidor"
+          value={filtroDistribuidor}
+          onChange={e => { setFiltroDistribuidor(e.target.value); aplicarFiltros({ distribuidor: e.target.value }) }}
+        />
+
+        <input
+          type="number"
+          placeholder="Precio mínimo"
+          value={filtroPrecioMin}
+          onChange={e => { setFiltroPrecioMin(e.target.value); aplicarFiltros({ precioMinimo: e.target.value }) }}
+        />
+
+        <input
+          type="number"
+          placeholder="Precio máximo"
+          value={filtroPrecioMax}
+          onChange={e => { setFiltroPrecioMax(e.target.value); aplicarFiltros({ precioMaximo: e.target.value }) }}
+        />
+
+        {hayFiltros && <button onClick={limpiarFiltros}>Limpiar filtros</button>}
+      </div>
+
       <main className="comprador-contenido">
 
-        {cargando && (
-          <div className="comprador-vacio">Cargando productos...</div>
+        {cargando && <div className="comprador-vacio">Cargando productos...</div>}
+
+        {!cargando && productos.length === 0 && (
+          <div className="comprador-vacio">
+            {hayFiltros ? 'No se encontraron productos con los filtros aplicados.' : 'No hay productos disponibles en este momento.'}
+          </div>
         )}
 
-     {!cargando && productos.length === 0 && (
-  <div className="comprador-vacio">
-    {busqueda ? 'No se encontraron productos con ese nombre.' : 'No hay productos disponibles en este momento.'}
-  </div>
-)}
         {!cargando && productos.length > 0 && (
           <>
             <div className="comprador-grilla">
@@ -99,9 +148,7 @@ const buscarProductos = (e) => {
                   <div className="comprador-tarjeta-cuerpo">
                     <div className="comprador-tarjeta-categoria">{p.categoria}</div>
                     <div className="comprador-tarjeta-nombre">{p.nombre}</div>
-                    {p.descripcion && (
-                      <div className="comprador-tarjeta-descripcion">{p.descripcion}</div>
-                    )}
+                    {p.descripcion && <div className="comprador-tarjeta-descripcion">{p.descripcion}</div>}
                     <div className="comprador-tarjeta-pie">
                       <div className="comprador-tarjeta-distribuidor">{p.nombreDistribuidor}</div>
                       <div className="comprador-tarjeta-precio">

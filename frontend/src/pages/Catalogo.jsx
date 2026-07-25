@@ -5,20 +5,31 @@ import './Catalogo.css'
 
 function Catalogo() {
   const navigate = useNavigate()
+  const token = localStorage.getItem('token')
+  const nombre = localStorage.getItem('nombre') || ''
+  const modoDistribuidorActivo = localStorage.getItem('modoDistribuidorActivo') === 'true'
+  const iniciales = nombre.split(' ').map(p => p[0]).join('').slice(0, 2).toUpperCase()
+
   const [productos, setProductos] = useState([])
   const [cargando, setCargando] = useState(true)
+  const [categorias, setCategorias] = useState([])
   const [busqueda, setBusqueda] = useState('')
+  const [filtroCategoria, setFiltroCategoria] = useState('')
+  const [filtroDistribuidor, setFiltroDistribuidor] = useState('')
+  const [filtroPrecioMin, setFiltroPrecioMin] = useState('')
+  const [filtroPrecioMax, setFiltroPrecioMax] = useState('')
 
   useEffect(() => {
     cargarProductos()
+    axios.get('http://localhost:3000/api/productos/categorias')
+      .then(res => setCategorias(res.data))
+      .catch(() => {})
   }, [])
 
-  const cargarProductos = async (nombre = '') => {
+  const cargarProductos = async (params = {}) => {
     setCargando(true)
     try {
-      const res = await axios.get('http://localhost:3000/api/catalogo', {
-        params: { nombre }
-      })
+      const res = await axios.get('http://localhost:3000/api/catalogo', { params })
       setProductos(res.data)
     } catch {
       setProductos([])
@@ -27,10 +38,35 @@ function Catalogo() {
     }
   }
 
-  const buscarProductos = (e) => {
-    setBusqueda(e.target.value)
-    cargarProductos(e.target.value)
+  const aplicarFiltros = (nuevosValores = {}) => {
+    const params = {
+      nombre: nuevosValores.nombre ?? busqueda,
+      categoria: nuevosValores.categoria ?? filtroCategoria,
+      distribuidor: nuevosValores.distribuidor ?? filtroDistribuidor,
+      precioMinimo: nuevosValores.precioMinimo ?? filtroPrecioMin,
+      precioMaximo: nuevosValores.precioMaximo ?? filtroPrecioMax,
+    }
+    cargarProductos(params)
   }
+
+  const limpiarFiltros = () => {
+    setBusqueda('')
+    setFiltroCategoria('')
+    setFiltroDistribuidor('')
+    setFiltroPrecioMin('')
+    setFiltroPrecioMax('')
+    cargarProductos()
+  }
+
+  const cerrarSesion = () => {
+    localStorage.removeItem('token')
+    localStorage.removeItem('nombre')
+    localStorage.removeItem('telefono')
+    localStorage.removeItem('modoDistribuidorActivo')
+    navigate('/catalogo')
+  }
+
+  const hayFiltros = busqueda || filtroCategoria || filtroDistribuidor || filtroPrecioMin || filtroPrecioMax
 
   return (
     <div className="catalogo-layout">
@@ -44,27 +80,64 @@ function Catalogo() {
             type="text"
             placeholder="Buscar productos…"
             value={busqueda}
-            onChange={buscarProductos}
+            onChange={e => { setBusqueda(e.target.value); aplicarFiltros({ nombre: e.target.value }) }}
           />
         </div>
         <div className="catalogo-header-acciones">
-          <button className="catalogo-btn-login" onClick={() => navigate('/login')}>
-            Iniciar sesión
-          </button>
-          <button className="catalogo-btn-registro" onClick={() => navigate('/registro')}>
-            Registrarse
-          </button>
+          {token ? (
+            <>
+              <button className="catalogo-btn-login" onClick={() => navigate(modoDistribuidorActivo ? '/inicio' : '/configurarPerfil')}>Distribuidora</button>
+              <div className="comprador-perfil">
+                <div className="comprador-avatar">{iniciales}</div>
+                <span>{nombre}</span>
+              </div>
+              <button className="catalogo-btn-login" onClick={cerrarSesion}>Cerrar sesión</button>
+            </>
+          ) : (
+            <>
+              <button className="catalogo-btn-login" onClick={() => navigate('/login')}>Iniciar sesión</button>
+              <button className="catalogo-btn-registro" onClick={() => navigate('/registro')}>Registrarse</button>
+            </>
+          )}
         </div>
       </header>
 
+      <div className="catalogo-filtros">
+        <select value={filtroCategoria} onChange={e => { setFiltroCategoria(e.target.value); aplicarFiltros({ categoria: e.target.value }) }}>
+          <option value=''>Categoría</option>
+          {categorias.map(c => <option key={c.id} value={c.nombre}>{c.nombre}</option>)}
+        </select>
+
+        <input
+          type="text"
+          placeholder="Distribuidor"
+          value={filtroDistribuidor}
+          onChange={e => { setFiltroDistribuidor(e.target.value); aplicarFiltros({ distribuidor: e.target.value }) }}
+        />
+
+        <input
+          type="number"
+          placeholder="Precio mínimo"
+          value={filtroPrecioMin}
+          onChange={e => { setFiltroPrecioMin(e.target.value); aplicarFiltros({ precioMinimo: e.target.value }) }}
+        />
+
+        <input
+          type="number"
+          placeholder="Precio máximo"
+          value={filtroPrecioMax}
+          onChange={e => { setFiltroPrecioMax(e.target.value); aplicarFiltros({ precioMaximo: e.target.value }) }}
+        />
+
+        {hayFiltros && <button onClick={limpiarFiltros}>Limpiar filtros</button>}
+      </div>
+
       <div className="catalogo-contenido">
-        {cargando && (
-          <div className="catalogo-vacio">Cargando productos...</div>
-        )}
+        {cargando && <div className="catalogo-vacio">Cargando productos...</div>}
 
         {!cargando && productos.length === 0 && (
           <div className="catalogo-vacio">
-            {busqueda ? 'No se encontraron productos con ese nombre.' : 'No hay productos disponibles en este momento.'}
+            {hayFiltros ? 'No se encontraron productos con los filtros aplicados.' : 'No hay productos disponibles en este momento.'}
           </div>
         )}
 
@@ -80,9 +153,7 @@ function Catalogo() {
                   <div className="catalogo-tarjeta-cuerpo">
                     <div className="catalogo-tarjeta-categoria">{p.categoria}</div>
                     <div className="catalogo-tarjeta-nombre">{p.nombre}</div>
-                    {p.descripcion && (
-                      <div className="catalogo-tarjeta-descripcion">{p.descripcion}</div>
-                    )}
+                    {p.descripcion && <div className="catalogo-tarjeta-descripcion">{p.descripcion}</div>}
                     <div className="catalogo-tarjeta-pie">
                       <div className="catalogo-tarjeta-distribuidor">{p.nombreDistribuidor}</div>
                       <div className="catalogo-tarjeta-precio">
