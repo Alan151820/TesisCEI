@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
-import axios from 'axios'
+import api from '../../lib/axios'
 import './PerfilDistribuidor.css'
 
 function PerfilDistribuidor() {
@@ -12,7 +12,7 @@ function PerfilDistribuidor() {
   useEffect(() => {
     const obtenerPerfil = async () => {
       try {
-        const res = await axios.get(`http://localhost:3000/distribuidor/perfilDistribuidor/${id}`)
+        const res = await api.get(`/distribuidor/perfilDistribuidor/${id}`)
         setDistribuidor(res.data)
       } catch (error) {
         setMensaje(error.response?.data?.mensaje || 'No fue posible completar la operación. Intente nuevamente más tarde.')
@@ -21,7 +21,7 @@ function PerfilDistribuidor() {
 
     const obtenerProductos = async () => {
       try {
-        const res = await axios.get(`http://localhost:3000/distribuidor/${id}/productos`)
+        const res = await api.get(`/distribuidor/${id}/productos`)
         setProductos(res.data)
       } catch {
         setProductos([])
@@ -39,6 +39,11 @@ function PerfilDistribuidor() {
 
   return (
     <div className="perfildist-fondo">
+
+      <div className="perfildist-mobile-header">
+        <span className="perfildist-mobile-volver" onClick={() => window.history.back()}>←</span>
+        <div className="perfildist-mobile-titulo">Perfil del distribuidor</div>
+      </div>
 
       <header className="perfildist-topbar">
         <div className="perfildist-marca">MarketPlace</div>

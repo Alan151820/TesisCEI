@@ -245,27 +245,62 @@
   line-height: 1.4;
 }
 
+.perfildist-mobile-header { display: none; }
+
 @media (max-width: 768px) {
-  .perfildist-buscador {
-    display: none;
-  }
-
-  .perfildist-cabecera {
-    flex-direction: column;
+  /* Header blanco mobile con ← y título */
+  .perfildist-mobile-header {
+    display: flex;
+    height: 48px;
+    background: #FFF;
+    border-bottom: 1px solid #E8E8E8;
     align-items: center;
-    text-align: center;
+    padding: 0 16px;
+    gap: 12px;
+    flex-shrink: 0;
+  }
+  .perfildist-mobile-volver {
+    font-size: 18px;
+    color: #777;
+    cursor: pointer;
+    min-width: 44px;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+  }
+  .perfildist-mobile-titulo {
+    font-size: 14px;
+    font-weight: 600;
+    color: #111;
+    flex: 1;
+  }
+
+  /* Ocultar topbar completo en mobile */
+  .perfildist-topbar { display: none; }
+
+  /* Cabecera: mantener fila (logo + datos lado a lado) pero compacta */
+  .perfildist-cabecera {
     padding: 20px 16px;
+    gap: 14px;
+    align-items: flex-start;
   }
 
-  .perfildist-info-fila {
-    justify-content: center;
+  .perfildist-logo {
+    width: 56px;
+    height: 56px;
+    flex-shrink: 0;
   }
 
-  .perfildist-catalogo {
-    padding: 14px 16px;
+  .perfildist-logo-img {
+    width: 56px;
+    height: 56px;
   }
 
-  .perfildist-producto-card {
-    flex: 0 0 calc(50% - 5px);
-  }
+  .perfildist-nombre { font-size: 17px; }
+
+  .perfildist-info-fila { gap: 12px; }
+
+  .perfildist-catalogo { padding: 14px 16px; }
+
+  .perfildist-producto-card { flex: 0 0 calc(50% - 5px); }
 }
