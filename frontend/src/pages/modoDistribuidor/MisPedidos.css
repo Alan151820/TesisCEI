@@ -1,8 +1,8 @@
 .pedidos-tabla-header {
   display: grid;
-  grid-template-columns: 100px 1fr 120px 110px 130px 70px;
-  background: #F5F5F5;
-  border: 1px solid #E4E4E4;
+  grid-template-columns: 120px 180px 1fr 120px 130px 260px;
+  background: var(--color-contenedor-superficie-bajo);
+  border: 1px solid var(--color-variante-contorno);
   border-radius: 6px 6px 0 0;
   border-bottom: none;
 }
@@ -11,48 +11,70 @@
   padding: 10px 14px;
   font-size: 11px;
   font-weight: 700;
-  color: #777;
+  color: var(--color-sobre-variante-superficie);
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
 
 .pedidos-tabla-fila {
   display: grid;
-  grid-template-columns: 100px 1fr 120px 110px 130px 70px;
-  background: #FFF;
-  border: 1px solid #E4E4E4;
+  grid-template-columns: 120px 180px 1fr 120px 130px 260px;
+  background: var(--color-superficie);
+  border: 1px solid var(--color-variante-contorno);
   border-top: none;
 }
 
-.pedidos-tabla-fila:last-child {
+.pedidos-tabla-fila:last-of-type {
   border-radius: 0 0 6px 6px;
 }
 
 .pedidos-celda {
   padding: 12px 14px;
   font-size: 13px;
-  color: #444;
+  color: var(--color-sobre-superficie);
   display: flex;
-  align-items: center;
-  border-bottom: 1px solid #F0F0F0;
+  align-items: flex-start;
+  border-bottom: 1px solid var(--color-contenedor-superficie-bajo);
 }
 
-.pedidos-tabla-fila:last-child .pedidos-celda {
+.pedidos-tabla-fila:last-of-type .pedidos-celda {
   border-bottom: none;
 }
 
 .pedidos-numero {
   font-weight: 600;
-  color: #333;
+  align-items: center;
 }
 
+.pedidos-telefono {
+  font-size: 11px;
+  color: var(--color-sobre-variante-superficie);
+  margin-top: 2px;
+}
+
+/* Estados */
 .pedidos-estado {
   font-size: 11px;
   padding: 3px 8px;
   border-radius: 3px;
-  background: #E8E8E8;
-  color: #333;
   white-space: nowrap;
+  background: var(--color-contenedor-superficie-maximo);
+  color: var(--color-sobre-superficie);
+}
+
+.pedidos-estado--pendiente {
+  background: var(--color-contenedor-superficie-maximo);
+  color: var(--color-sobre-superficie);
+}
+
+.pedidos-estado--aceptado {
+  background: #FFF8E1;
+  color: #8A6800;
+}
+
+.pedidos-estado--en_camino {
+  background: #EAF2FB;
+  color: #1A6BAA;
 }
 
 .pedidos-estado--entregado {
@@ -61,37 +83,78 @@
 }
 
 .pedidos-estado--rechazado {
-  background: #FDECEA;
-  color: #C0392B;
+  background: var(--color-contenedor-error);
+  color: var(--color-sobre-contenedor-error);
 }
 
-.pedidos-estado--en_camino {
-  background: #EAF2FB;
-  color: #1A6BAA;
+/* Lista de productos */
+.pedidos-productos-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 100%;
 }
 
-.pedidos-estado--pendiente {
-  background: #E8E8E8;
-  color: #333;
-}
-
-.pedidos-estado--aceptado {
-  background: #FFF8E1;
-  color: #8A6800;
-}
-
-.pedidos-ver {
-  color: #555;
-  cursor: pointer;
+.pedidos-producto-item {
+  display: flex;
+  flex-direction: column;
   font-size: 12px;
+  color: var(--color-sobre-superficie);
+  line-height: 1.4;
 }
 
-.pedidos-ver:hover {
-  color: #111;
+.pedidos-producto-stock {
+  font-size: 11px;
+  color: var(--color-sobre-variante-superficie);
+}
+
+/* Botones de acción */
+.pedidos-acciones {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  width: 100%;
+}
+
+.pedidos-accion-btn {
+  font-size: 12px;
+  padding: 5px 10px;
+  border-radius: 4px;
+  border: 1px solid var(--color-contorno);
+  background: var(--color-contenedor-superficie-bajo);
+  color: var(--color-sobre-superficie);
+  cursor: pointer;
+  text-align: left;
+  width: 100%;
+}
+
+.pedidos-accion-btn:hover {
+  background: var(--color-contenedor-superficie);
+}
+
+.pedidos-accion-btn--primario {
+  background: var(--color-primario);
+  color: var(--color-sobre-primario);
+  border-color: var(--color-primario);
+}
+
+.pedidos-accion-btn--primario:hover {
+  opacity: 0.9;
+}
+
+.pedidos-accion-btn--peligro {
+  border-color: var(--color-error);
+  color: var(--color-error);
+  background: transparent;
+}
+
+.pedidos-accion-btn--peligro:hover {
+  background: var(--color-contenedor-error);
+  color: var(--color-sobre-contenedor-error);
 }
 
 .pedidos-error {
-  color: #C0392B;
+  color: var(--color-error);
 }
 
 @media (max-width: 768px) {
@@ -104,12 +167,12 @@
     flex-direction: column;
     border-radius: 6px;
     margin-bottom: 8px;
-    border: 1px solid #E4E4E4;
-    border-top: 1px solid #E4E4E4;
+    border: 1px solid var(--color-variante-contorno);
+    border-top: 1px solid var(--color-variante-contorno);
   }
 
   .pedidos-celda {
-    border-bottom: 1px solid #F0F0F0;
+    border-bottom: 1px solid var(--color-contenedor-superficie-bajo);
     padding: 10px 14px;
   }
 
@@ -120,5 +183,14 @@
   .pedidos-numero {
     font-size: 14px;
     font-weight: 700;
+  }
+
+  .pedidos-acciones {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .pedidos-accion-btn {
+    width: auto;
   }
 }
