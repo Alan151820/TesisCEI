@@ -1,13 +1,13 @@
 import { useState, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import axios from 'axios'
+import api from '../../lib/axios'
+import { tokenValido } from '../../lib/auth'
 import './FichaProducto.css'
-
-const API = 'http://localhost:3000'
 
 function EditarProducto() {
   const navigate = useNavigate()
   const { id } = useParams()
+  useEffect(() => { if (!tokenValido()) navigate('/login') }, [navigate])
 
   const [cargandoInicial, setCargandoInicial] = useState(true)
   const [errorCarga, setErrorCarga] = useState('')
@@ -44,14 +44,11 @@ function EditarProducto() {
   const [errorPrecio, setErrorPrecio] = useState('')
   const [cargandoPrecio, setCargandoPrecio] = useState(false)
 
-  const token = localStorage.getItem('token')
-  const headers = { Authorization: `Bearer ${token}` }
-
   useEffect(() => {
     Promise.all([
-      axios.get(`${API}/api/productos/categorias`),
-      axios.get(`${API}/api/productos/${id}`, { headers }),
-      axios.get(`${API}/api/productos/${id}/precios`, { headers }),
+      api.get('/api/productos/categorias'),
+      api.get(`/api/productos/${id}`),
+      api.get(`/api/productos/${id}/precios`),
     ])
       .then(([catRes, prodRes, preciosRes]) => {
         setCategorias(catRes.data)
@@ -126,7 +123,7 @@ function EditarProducto() {
       }
       if (imagenArchivo) formData.append('imagen', imagenArchivo)
 
-      await axios.put(`${API}/api/productos/${id}`, formData, { headers })
+      await api.put(`/api/productos/${id}`, formData)
       setGuardado(true)
     } catch (err) {
       setErrorProducto(err.response?.data?.error || 'No fue posible completar la operación. Intente nuevamente más tarde.')
@@ -139,10 +136,9 @@ function EditarProducto() {
     setErrorPrecio('')
     setCargandoPrecio(true)
     try {
-      const res = await axios.post(
-        `${API}/api/productos/${id}/precios`,
-        { cantidadMinima, precioVenta, precioCosto: precioCosto || undefined },
-        { headers }
+      const res = await api.post(
+        `/api/productos/${id}/precios`,
+        { cantidadMinima, precioVenta, precioCosto: precioCosto || undefined }
       )
       setPrecios(prev => [...prev, res.data.precio])
       setCantidadMinima('')
@@ -160,10 +156,9 @@ function EditarProducto() {
     setErrorPrecio('')
     setCargandoPrecio(true)
     try {
-      const res = await axios.put(
-        `${API}/api/productos/${id}/precios/${precioId}`,
-        { cantidadMinima, precioVenta, precioCosto: precioCosto || undefined },
-        { headers }
+      const res = await api.put(
+        `/api/productos/${id}/precios/${precioId}`,
+        { cantidadMinima, precioVenta, precioCosto: precioCosto || undefined }
       )
       setPrecios(prev => prev.map(p => p.id === precioId ? res.data.precio : p))
       setEditandoPrecioId(null)
@@ -179,7 +174,7 @@ function EditarProducto() {
 
   const handleEliminarPrecio = async (precioId) => {
     try {
-      await axios.delete(`${API}/api/productos/${id}/precios/${precioId}`, { headers })
+      await api.delete(`/api/productos/${id}/precios/${precioId}`)
       setPrecios(prev => prev.filter(p => p.id !== precioId))
     } catch (err) {
       setErrorPrecio(err.response?.data?.error || 'No fue posible eliminar el precio.')
@@ -191,7 +186,7 @@ function EditarProducto() {
     setUmbralGuardado(false)
     setCargandoUmbral(true)
     try {
-      await axios.patch(`${API}/api/productos/${id}/umbral`, { valor: Number(umbralMinimoStock) }, { headers })
+      await api.patch(`/api/productos/${id}/umbral`, { valor: Number(umbralMinimoStock) })
       setUmbralGuardado(true)
     } catch (err) {
       setErrorUmbral(err.response?.data?.error || 'No fue posible completar la operación. Intente nuevamente más tarde.')
@@ -222,6 +217,10 @@ function EditarProducto() {
 
   return (
     <div className="ficha-fondo">
+      <div className="ficha-mobile-header">
+        <span className="ficha-mobile-volver" onClick={() => navigate('/inicio')}>←</span>
+        <div className="ficha-mobile-titulo">Editar producto</div>
+      </div>
       <div className="ficha-contenedor">
 
         <div className="ficha-breadcrumb">

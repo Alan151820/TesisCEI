@@ -121,4 +121,7 @@
   .configperfil-card {
     padding: 24px;
   }
+
+  .configperfil-input { height: 44px; }
+  .configperfil-btn-guardar { height: 44px; }
 }
