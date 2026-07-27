@@ -92,3 +92,28 @@ CREATE TABLE precio_volumen (
   CONSTRAINT precio_costo_no_negativo CHECK (precio_costo IS NULL OR precio_costo >= 0)
 );
 
+-- RF-008: Confirmación de pedido
+CREATE TYPE pedido_estado AS ENUM ('pendiente', 'aceptado', 'en_camino', 'entregado', 'rechazado');
+
+CREATE TABLE pedido (
+  id SERIAL PRIMARY KEY,
+  comprador_id INTEGER NOT NULL REFERENCES usuario(id),
+  distribuidor_id INTEGER NOT NULL REFERENCES distribuidor(id),
+  direccion_entrega VARCHAR NOT NULL,
+  latitud DECIMAL,
+  longitud DECIMAL,
+  estado pedido_estado NOT NULL DEFAULT 'pendiente',
+  motivo_rechazo VARCHAR,
+  fecha_creacion TIMESTAMP NOT NULL DEFAULT NOW(),
+  fecha_entregado TIMESTAMP
+);
+
+CREATE TABLE pedido_item (
+  id SERIAL PRIMARY KEY,
+  pedido_id INTEGER NOT NULL REFERENCES pedido(id),
+  producto_id INTEGER NOT NULL REFERENCES producto(id),
+  precio_volumen_id INTEGER NOT NULL REFERENCES precio_volumen(id),
+  cantidad DECIMAL NOT NULL,
+  precio_venta_congelado DECIMAL NOT NULL
+);
+

@@ -1,0 +1,43 @@
+const pedidosServicio = require('../services/pedidos.servicio')
+
+async function confirmarPedido(req, res, next) {
+  const { direccionEntrega, latitud, longitud, items } = req.body
+  const compradorId = req.usuario.id
+
+  if (!direccionEntrega || !direccionEntrega.trim()) {
+    return res.status(400).json({ error: 'Debés ingresar una dirección de entrega para continuar.' })
+  }
+
+  if (!Array.isArray(items) || items.length === 0) {
+    return res.status(400).json({ error: 'El carrito debe contener al menos un producto.' })
+  }
+
+  try {
+    const pedidos = await pedidosServicio.confirmarPedido(compradorId, direccionEntrega.trim(), latitud, longitud, items)
+    res.status(201).json({ pedidos })
+  } catch (error) {
+    next(error)
+  }
+}
+
+async function historialDistribuidor(req, res, next) {
+  const distribuidorId = req.usuario.id
+  try {
+    const pedidos = await pedidosServicio.obtenerHistorialDistribuidor(distribuidorId)
+    res.json(pedidos)
+  } catch (error) {
+    next(error)
+  }
+}
+
+async function historialComprador(req, res, next) {
+  const compradorId = req.usuario.id
+  try {
+    const pedidos = await pedidosServicio.obtenerHistorialComprador(compradorId)
+    res.json(pedidos)
+  } catch (error) {
+    next(error)
+  }
+}
+
+module.exports = { confirmarPedido, historialDistribuidor, historialComprador }
