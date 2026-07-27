@@ -44,6 +44,8 @@ function MisPedidos() {
   const [cargando, setCargando] = useState(true)
   const [error, setError] = useState(null)
   const [menuAbierto, setMenuAbierto] = useState(false)
+  const [erroresAccion, setErroresAccion] = useState({})
+  const [procesando, setProcesando] = useState(new Set())
 
   useEffect(() => { if (!tokenValido()) navigate('/login') }, [navigate])
 
@@ -53,6 +55,21 @@ function MisPedidos() {
       .catch(err => setError(err.response?.data?.error || 'No fue posible completar la operación. Intente nuevamente más tarde.'))
       .finally(() => setCargando(false))
   }, [])
+
+  const handleAceptar = async (pedidoId) => {
+    setProcesando(prev => new Set(prev).add(pedidoId))
+    setErroresAccion(prev => ({ ...prev, [pedidoId]: null }))
+    try {
+      const res = await api.patch(`/api/pedidos/${pedidoId}/aceptar`)
+      setPedidos(prev => prev.map(p => p.id === pedidoId ? { ...p, estado: 'aceptado' } : p))
+      window.open(res.data.deepLink, '_blank')
+    } catch (err) {
+      const mensaje = err.response?.data?.error || 'No fue posible completar la operación. Intente nuevamente más tarde.'
+      setErroresAccion(prev => ({ ...prev, [pedidoId]: mensaje }))
+    } finally {
+      setProcesando(prev => { const s = new Set(prev); s.delete(pedidoId); return s })
+    }
+  }
 
   const handleCerrarSesion = () => {
     localStorage.removeItem('token')
@@ -178,7 +195,8 @@ function MisPedidos() {
                 </div>
 
                 {pedidos.map(p => (
-                  <div key={p.id} className="pedidos-tabla-fila">
+                  <div key={p.id}>
+                  <div className="pedidos-tabla-fila">
                     <div className="pedidos-celda pedidos-numero">#{p.id}</div>
                     <div className="pedidos-celda">
                       <div>
@@ -209,7 +227,13 @@ function MisPedidos() {
                       <div className="pedidos-acciones">
                         {p.estado === 'pendiente' && (
                           <>
-                            <button className="pedidos-accion-btn pedidos-accion-btn--primario">Aceptar</button>
+                            <button
+                              className="pedidos-accion-btn pedidos-accion-btn--primario"
+                              disabled={procesando.has(p.id)}
+                              onClick={() => handleAceptar(p.id)}
+                            >
+                              {procesando.has(p.id) ? 'Aceptando...' : 'Aceptar'}
+                            </button>
                             <button className="pedidos-accion-btn pedidos-accion-btn--peligro">Rechazar</button>
                             <button className="pedidos-accion-btn">Proponer sustituto</button>
                           </>
@@ -222,6 +246,10 @@ function MisPedidos() {
                         )}
                       </div>
                     </div>
+                  </div>
+                  {erroresAccion[p.id] && (
+                    <div className="pedidos-error-accion">{erroresAccion[p.id]}</div>
+                  )}
                   </div>
                 ))}
 
