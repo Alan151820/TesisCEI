@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import axios from 'axios'
+import api from '../../lib/axios'
+import { tokenValido } from '../../lib/auth'
 import './FichaProducto.css'
-
-const API = 'http://localhost:3000'
 
 function FichaProducto() {
   const navigate = useNavigate()
+  useEffect(() => { if (!tokenValido()) navigate('/login') }, [navigate])
 
   // --- Estado del producto ---
   const [categorias, setCategorias] = useState([])
@@ -37,11 +37,8 @@ function FichaProducto() {
   const [errorPrecio, setErrorPrecio] = useState('')
   const [cargandoPrecio, setCargandoPrecio] = useState(false)
 
-  const token = localStorage.getItem('token')
-  const headers = { Authorization: `Bearer ${token}` }
-
   useEffect(() => {
-    axios.get(`${API}/api/productos/categorias`)
+    api.get('/api/productos/categorias')
       .then(res => setCategorias(res.data))
       .catch(() => setErrorProducto('No se pudieron cargar las categorías.'))
   }, [])
@@ -108,7 +105,7 @@ function FichaProducto() {
       }
       if (imagenArchivo) formData.append('imagen', imagenArchivo)
 
-      const res = await axios.post(`${API}/api/productos`, formData, { headers })
+      const res = await api.post('/api/productos', formData)
       setProductoId(res.data.producto.id)
     } catch (err) {
       setErrorProducto(err.response?.data?.error || 'No fue posible completar la operación. Intente nuevamente más tarde.')
@@ -121,10 +118,9 @@ function FichaProducto() {
     setErrorPrecio('')
     setCargandoPrecio(true)
     try {
-      const res = await axios.post(
-        `${API}/api/productos/${productoId}/precios`,
-        { cantidadMinima, precioVenta, precioCosto: precioCosto || undefined },
-        { headers }
+      const res = await api.post(
+        `/api/productos/${productoId}/precios`,
+        { cantidadMinima, precioVenta, precioCosto: precioCosto || undefined }
       )
       setPrecios(prev => [...prev, res.data.precio])
       setCantidadMinima('')
@@ -140,7 +136,7 @@ function FichaProducto() {
 
   const handleEliminarPrecio = async (id) => {
     try {
-      await axios.delete(`${API}/api/productos/${productoId}/precios/${id}`, { headers })
+      await api.delete(`/api/productos/${productoId}/precios/${id}`)
       setPrecios(prev => prev.filter(p => p.id !== id))
     } catch {
       // si falla, no actualizar el estado
@@ -153,6 +149,10 @@ function FichaProducto() {
   if (productoId) {
     return (
       <div className="ficha-fondo">
+        <div className="ficha-mobile-header">
+          <span className="ficha-mobile-volver" onClick={() => navigate('/inicio')}>←</span>
+          <div className="ficha-mobile-titulo">Nuevo producto</div>
+        </div>
         <div className="ficha-contenedor">
 
           <div className="ficha-breadcrumb">
@@ -284,6 +284,10 @@ function FichaProducto() {
   // Vista inicial — formulario de creación del producto
   return (
     <div className="ficha-fondo">
+      <div className="ficha-mobile-header">
+        <span className="ficha-mobile-volver" onClick={() => navigate('/inicio')}>←</span>
+        <div className="ficha-mobile-titulo">Nuevo producto</div>
+      </div>
       <div className="ficha-contenedor">
 
         <div className="ficha-breadcrumb">

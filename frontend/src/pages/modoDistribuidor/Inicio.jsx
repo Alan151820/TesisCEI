@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
-import axios from 'axios'
+import api from '../../lib/axios'
+import { tokenValido } from '../../lib/auth'
 import './Inicio.css'
 
 const NAV_ITEMS = [
@@ -35,9 +36,9 @@ function Inicio() {
   const [filtroCategoria, setFiltroCategoria] = useState('')
   const [filtroVisibilidad, setFiltroVisibilidad] = useState('')
   const [filtroStock, setFiltroStock] = useState('')
+  const [menuAbierto, setMenuAbierto] = useState(false)
 
-  const token = localStorage.getItem('token')
-  const headers = { Authorization: `Bearer ${token}` }
+  useEffect(() => { if (!tokenValido()) navigate('/login') }, [navigate])
 
   const cargarProductos = async (categoria = '', visibilidad = '', stock = '') => {
     setCargando(true)
@@ -46,7 +47,7 @@ function Inicio() {
       if (categoria) params.categoria = categoria
       if (visibilidad) params.visibilidad = visibilidad
       if (stock) params.stock = stock
-      const res = await axios.get('http://localhost:3000/api/productos', { headers, params })
+      const res = await api.get('/api/productos', { params })
       setProductos(res.data)
     } catch {
       setProductos([])
@@ -57,7 +58,7 @@ function Inicio() {
 
   useEffect(() => {
     cargarProductos()
-    axios.get('http://localhost:3000/api/productos/categorias', { headers })
+    api.get('/api/productos/categorias')
       .then(res => setCategorias(res.data))
       .catch(() => {})
   }, [])
@@ -87,10 +88,9 @@ function Inicio() {
   const handleCambiarVisibilidad = async (productoId, nuevoEstado) => {
     setErrorVisibilidad(prev => ({ ...prev, [productoId]: null }))
     try {
-      const res = await axios.patch(
-        `http://localhost:3000/api/productos/${productoId}/visibilidad`,
-        { nuevoEstado },
-        { headers }
+      const res = await api.patch(
+        `/api/productos/${productoId}/visibilidad`,
+        { nuevoEstado }
       )
       const productoActualizado = res.data.producto
       setProductos(prev =>
@@ -107,11 +107,47 @@ function Inicio() {
   const handleCerrarSesion = () => {
     localStorage.removeItem('token')
     localStorage.removeItem('nombre')
+    window.dispatchEvent(new Event('auth-changed'))
     navigate('/login')
   }
 
   return (
     <div className="panel-root">
+
+      {menuAbierto && (
+        <div className="panel-drawer-overlay" onClick={() => setMenuAbierto(false)}>
+          <nav className="panel-drawer" onClick={e => e.stopPropagation()}>
+            <div className="panel-drawer-top">
+              <div className="panel-drawer-marca">MarketDist</div>
+              <button className="panel-drawer-cerrar-btn" onClick={() => setMenuAbierto(false)}>✕</button>
+            </div>
+            {NAV_ITEMS.map(item => (
+              <div
+                key={item.ruta}
+                className={`panel-drawer-item${location.pathname === item.ruta ? ' activo' : ''}`}
+                onClick={() => { navigate(item.ruta); setMenuAbierto(false) }}
+              >
+                {item.label}
+              </div>
+            ))}
+            <div className="panel-drawer-sep" />
+            <button className="panel-drawer-modo" onClick={() => { navigate('/inicioComprador'); setMenuAbierto(false) }}>
+              ← Modo comprador
+            </button>
+            <div className="panel-drawer-footer">
+              <div className="panel-drawer-nombre">{nombre}</div>
+              <div className="panel-drawer-rol">Distribuidor</div>
+              <button className="panel-drawer-logout" onClick={handleCerrarSesion}>Cerrar sesión</button>
+            </div>
+          </nav>
+        </div>
+      )}
+
+      <div className="panel-mobile-header">
+        <span className="panel-mobile-hamburger" onClick={() => setMenuAbierto(true)}>≡</span>
+        <div className="panel-mobile-titulo">Mis productos</div>
+        <button className="panel-mobile-nuevo" onClick={() => navigate('/producto/nuevo')}>+</button>
+      </div>
 
       <header className="panel-master-header">
         <div className="panel-master-header-marca">MarketDist</div>
@@ -255,6 +291,32 @@ function Inicio() {
                     <span className="panel-accion-link" onClick={() => navigate(`/producto/editar/${p.id}`)}>Editar</span>
                   </div>
                 </div>
+
+                <div className="panel-lista-fila">
+                  <div className="panel-lista-foto">
+                    {p.imagenUrl
+                      ? <img src={`http://localhost:3000${p.imagenUrl}`} alt={p.nombre} className="panel-lista-foto-img" />
+                      : '—'
+                    }
+                  </div>
+                  <div className="panel-lista-info">
+                    <div className="panel-lista-nombre">{p.nombre}</div>
+                    <div className="panel-lista-stock">Stock: {p.stockDisponible} {sufijoPorTipo(p.tipoProducto, p.metricaVisualizacion)}</div>
+                  </div>
+                  <div className="panel-lista-derecha">
+                    <span
+                      className={`panel-estado-badge ${p.estadoVisibilidad} panel-lista-toggle`}
+                      onClick={() => handleCambiarVisibilidad(
+                        p.id,
+                        p.estadoVisibilidad === 'publicado' ? 'pausado' : 'publicado'
+                      )}
+                    >
+                      {p.estadoVisibilidad === 'publicado' ? 'Publicado' : 'Pausado'}
+                    </span>
+                    <span className="panel-lista-editar" onClick={() => navigate(`/producto/editar/${p.id}`)}>Editar</span>
+                  </div>
+                </div>
+
                 {errorVisibilidad[p.id] && (
                   <div className="panel-error-visibilidad">{errorVisibilidad[p.id]}</div>
                 )}
