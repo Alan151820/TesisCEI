@@ -179,6 +179,7 @@ async function aceptarPedido(pedidoId, distribuidorUsuarioId) {
 
     const resItems = await cliente.query(
       `SELECT pi.producto_id AS "productoId", pi.cantidad,
+              pi.precio_venta_congelado AS "precioVentaCongelado",
               pr.nombre AS "nombreProducto",
               pr.stock_total AS "stockTotal", pr.stock_reservado AS "stockReservado",
               pr.tipo_producto AS "tipoProducto", pr.metrica_visualizacion AS "metricaVisualizacion"
@@ -216,7 +217,8 @@ async function aceptarPedido(pedidoId, distribuidorUsuarioId) {
       return `- ${item.nombreProducto} × ${Number(item.cantidad)} ${sufijo}`
     }).join('\n')
 
-    const mensaje = `Hola ${pedido.nombreComprador}, tu pedido #${pedidoId} fue aceptado.\n\nDetalle:\n${lineasProductos}\n\nGracias por tu compra.`
+    const total = resItems.rows.reduce((acc, item) => acc + Number(item.cantidad) * Number(item.precioVentaCongelado), 0)
+    const mensaje = `Hola ${pedido.nombreComprador}, tu pedido #${pedidoId} fue aceptado.\n\nDetalle:\n${lineasProductos}\n\nTotal: $${total.toLocaleString('es-AR')}\n\nGracias por tu compra.`
     const telefono = pedido.telefonoComprador.replace(/^\+/, '')
     const deepLink = `https://wa.me/${telefono}?text=${encodeURIComponent(mensaje)}`
 
