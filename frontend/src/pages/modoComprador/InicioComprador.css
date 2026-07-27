@@ -1,9 +1,10 @@
 .comprador-layout {
-  min-height: 100vh;
+  height: 100vh;
   display: flex;
   flex-direction: column;
   font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
   background: var(--color-superficie-tenue);
+  overflow: hidden;
 }
 
 /* Encabezado autenticado */
@@ -66,37 +67,50 @@
   gap: 16px;
 }
 
-.comprador-cambiar-btn {
-  background: none;
-  border: 1px solid var(--color-contorno);
-  color: var(--color-sobre-variante-superficie);
-  padding: 5px 14px;
-  border-radius: 4px;
+.comprador-nav-link {
   font-size: 13px;
+  color: var(--color-sobre-variante-superficie);
   cursor: pointer;
   white-space: nowrap;
+  padding: 4px 0;
+  border-bottom: 1px solid transparent;
 }
 
-.comprador-cambiar-btn:hover {
-  border-color: var(--color-sobre-superficie);
+.comprador-nav-link:hover {
   color: var(--color-sobre-superficie);
+  border-bottom-color: var(--color-sobre-superficie);
 }
 
-.comprador-perfil {
+/* Perfil con dropdown */
+.comprador-perfil-wrapper {
+  position: relative;
+}
+
+.comprador-perfil-trigger {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
+  background: var(--color-contenedor-superficie-bajo);
+  border: 1px solid var(--color-variante-contorno);
+  border-radius: 6px;
+  padding: 4px 10px 4px 6px;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.comprador-perfil-trigger:hover {
+  background: var(--color-contenedor-superficie-alto);
 }
 
 .comprador-avatar {
-  width: 32px;
-  height: 32px;
+  width: 28px;
+  height: 28px;
   background: var(--color-contenedor-superficie-alto);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
   color: var(--color-sobre-variante-superficie);
   flex-shrink: 0;
@@ -105,28 +119,85 @@
 .comprador-nombre {
   font-size: 13px;
   color: var(--color-sobre-superficie);
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.comprador-cerrar-sesion {
+.comprador-perfil-flecha {
+  font-size: 10px;
+  color: var(--color-sobre-variante-superficie);
+}
+
+.comprador-menu-desplegable {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  background: var(--color-contenedor-superficie-minimo);
+  border: 1px solid var(--color-variante-contorno);
+  border-radius: 6px;
+  min-width: 140px;
+  box-shadow: 0 4px 16px rgba(0,0,0,.08);
+  z-index: 100;
+  overflow: hidden;
+}
+
+.comprador-menu-item {
+  padding: 10px 16px;
+  font-size: 13px;
+  color: var(--color-sobre-superficie);
+  cursor: pointer;
+}
+
+.comprador-menu-item:hover {
+  background: var(--color-contenedor-superficie-bajo);
+}
+
+/* Ítems que sólo aparecen en el dropdown en mobile */
+.comprador-menu-item--mobile {
+  display: none;
+}
+
+.comprador-btn-carrito {
+  position: relative;
   background: none;
   border: none;
-  font-size: 13px;
-  color: var(--color-sobre-variante-superficie);
+  font-size: 20px;
   cursor: pointer;
-  padding: 0;
+  padding: 4px 6px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
 }
 
-.comprador-cerrar-sesion:hover {
-  color: var(--color-sobre-superficie);
+.comprador-carrito-badge {
+  position: absolute;
+  top: -2px;
+  right: -4px;
+  background: var(--color-primario);
+  color: var(--color-sobre-primario);
+  font-size: 10px;
+  font-weight: 700;
+  min-width: 16px;
+  height: 16px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 3px;
+  box-sizing: border-box;
 }
 
 /* Contenido */
 .comprador-contenido {
   flex: 1;
-  max-width: 1100px;
-  margin: 0 auto;
+  overflow-y: auto;
   padding: 32px 24px;
   width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  box-sizing: border-box;
 }
 
 .comprador-pagina-header {
@@ -247,6 +318,25 @@
   color: var(--color-sobre-superficie);
 }
 
+.comprador-tarjeta-agregar {
+  margin-top: 10px;
+  width: 100%;
+  height: 34px;
+  background: var(--color-primario);
+  color: var(--color-sobre-primario);
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+
+.comprador-tarjeta-agregar:hover {
+  opacity: 0.88;
+}
+
 .comprador-contador {
   margin-top: 24px;
   font-size: 12px;
@@ -276,10 +366,24 @@
     height: 32px;
   }
 
-  .comprador-cambiar-btn,
-  .comprador-nombre,
-  .comprador-cerrar-sesion {
+  /* Ocultar nav-links del header en mobile — van al dropdown */
+  .comprador-nav-link {
     display: none;
+  }
+
+  /* Ocultar nombre en el trigger, dejar sólo avatar + flecha */
+  .comprador-nombre {
+    display: none;
+  }
+
+  /* Mostrar ítems de Mis pedidos y Distribuidora en el dropdown */
+  .comprador-menu-item--mobile {
+    display: block;
+  }
+
+  /* Separador visual entre ítems de nav y cerrar sesión */
+  .comprador-menu-item--mobile:last-of-type {
+    border-bottom: 1px solid var(--color-variante-contorno);
   }
 
   .comprador-avatar {
@@ -289,7 +393,7 @@
   }
 
   .comprador-contenido {
-    padding: 16px 14px 80px;
+    padding: 16px 14px;
   }
 
   .comprador-grilla {
@@ -313,8 +417,6 @@
     align-items: center;
     justify-content: space-around;
     flex-shrink: 0;
-    position: sticky;
-    bottom: 0;
   }
 
   .comprador-bottom-item {
@@ -340,5 +442,28 @@
   .comprador-bottom-item.activo .comprador-bottom-icono,
   .comprador-bottom-item.activo .comprador-bottom-label {
     color: var(--color-sobre-superficie);
+  }
+
+  .comprador-bottom-icono--carrito {
+    position: relative;
+    display: inline-flex;
+  }
+
+  .comprador-bottom-badge {
+    position: absolute;
+    top: -4px;
+    right: -8px;
+    background: var(--color-primario);
+    color: var(--color-sobre-primario);
+    font-size: 9px;
+    font-weight: 700;
+    min-width: 14px;
+    height: 14px;
+    border-radius: 7px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 2px;
+    box-sizing: border-box;
   }
 }
