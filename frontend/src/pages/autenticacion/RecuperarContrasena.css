@@ -195,6 +195,14 @@
   text-align: center;
 }
 
+@media (max-width: 600px) {
+  .recuperar-encabezado { height: 48px; padding: 0 16px; gap: 12px; }
+  .recuperar-buscador, .recuperar-encabezado-derecha { display: none; }
+  .recuperar-contenido { padding: 20px; }
+  .recuperar-tarjeta { width: 100%; padding: 28px 20px; border: none; box-shadow: 0 4px 24px rgba(0,0,0,0.08); }
+  .recuperar-input, .recuperar-boton { height: 44px; }
+}
+
 .recuperar-pie-link {
   background: none;
   border: none;

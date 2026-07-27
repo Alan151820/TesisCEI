@@ -231,3 +231,33 @@
   color: var(--color-sobre-superficie);
   cursor: pointer;
 }
+
+@media (max-width: 600px) {
+  .registro-encabezado {
+    height: 48px;
+    padding: 0 16px;
+    gap: 12px;
+  }
+
+  /* Mobile: solo logo en el header */
+  .registro-buscador,
+  .registro-encabezado-derecha {
+    display: none;
+  }
+
+  .registro-contenido {
+    padding: 20px;
+  }
+
+  .registro-tarjeta {
+    width: 100%;
+    padding: 28px 20px;
+    border: none;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+  }
+
+  .registro-input,
+  .registro-boton-crear {
+    height: 44px;
+  }
+}

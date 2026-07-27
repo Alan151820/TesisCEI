@@ -197,3 +197,11 @@
   color: var(--color-error);
   text-align: center;
 }
+
+@media (max-width: 600px) {
+  .verificarrecuperacion-encabezado { height: 48px; padding: 0 16px; gap: 12px; }
+  .verificarrecuperacion-buscador, .verificarrecuperacion-encabezado-derecha { display: none; }
+  .verificarrecuperacion-contenido { padding: 20px; }
+  .verificarrecuperacion-tarjeta { width: 100%; padding: 28px 20px; border: none; box-shadow: 0 4px 24px rgba(0,0,0,0.08); }
+  .verificarrecuperacion-input, .verificarrecuperacion-boton { height: 44px; }
+}
