@@ -1,0 +1,124 @@
+.pedidos-tabla-header {
+  display: grid;
+  grid-template-columns: 100px 1fr 120px 110px 130px 70px;
+  background: #F5F5F5;
+  border: 1px solid #E4E4E4;
+  border-radius: 6px 6px 0 0;
+  border-bottom: none;
+}
+
+.pedidos-tabla-header > div {
+  padding: 10px 14px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #777;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.pedidos-tabla-fila {
+  display: grid;
+  grid-template-columns: 100px 1fr 120px 110px 130px 70px;
+  background: #FFF;
+  border: 1px solid #E4E4E4;
+  border-top: none;
+}
+
+.pedidos-tabla-fila:last-child {
+  border-radius: 0 0 6px 6px;
+}
+
+.pedidos-celda {
+  padding: 12px 14px;
+  font-size: 13px;
+  color: #444;
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid #F0F0F0;
+}
+
+.pedidos-tabla-fila:last-child .pedidos-celda {
+  border-bottom: none;
+}
+
+.pedidos-numero {
+  font-weight: 600;
+  color: #333;
+}
+
+.pedidos-estado {
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: 3px;
+  background: #E8E8E8;
+  color: #333;
+  white-space: nowrap;
+}
+
+.pedidos-estado--entregado {
+  background: #E6F4EA;
+  color: #1E7E34;
+}
+
+.pedidos-estado--rechazado {
+  background: #FDECEA;
+  color: #C0392B;
+}
+
+.pedidos-estado--en_camino {
+  background: #EAF2FB;
+  color: #1A6BAA;
+}
+
+.pedidos-estado--pendiente {
+  background: #E8E8E8;
+  color: #333;
+}
+
+.pedidos-estado--aceptado {
+  background: #FFF8E1;
+  color: #8A6800;
+}
+
+.pedidos-ver {
+  color: #555;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.pedidos-ver:hover {
+  color: #111;
+}
+
+.pedidos-error {
+  color: #C0392B;
+}
+
+@media (max-width: 768px) {
+  .pedidos-tabla-header {
+    display: none;
+  }
+
+  .pedidos-tabla-fila {
+    display: flex;
+    flex-direction: column;
+    border-radius: 6px;
+    margin-bottom: 8px;
+    border: 1px solid #E4E4E4;
+    border-top: 1px solid #E4E4E4;
+  }
+
+  .pedidos-celda {
+    border-bottom: 1px solid #F0F0F0;
+    padding: 10px 14px;
+  }
+
+  .pedidos-celda:last-child {
+    border-bottom: none;
+  }
+
+  .pedidos-numero {
+    font-size: 14px;
+    font-weight: 700;
+  }
+}
