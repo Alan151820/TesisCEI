@@ -7,6 +7,7 @@ const preciosVolumenRoutes = require('./routes/preciosVolumen')
 const distribuidorRoutes = require('./routes/distribuidor')
 const catalogoRoutes = require('./routes/catalogo')
 const pedidosRoutes = require('./routes/pedidos')
+const notificacionesRoutes = require('./routes/notificaciones')
 
 const app = express()
 
@@ -20,6 +21,7 @@ app.use('/api/productos/:productoId/precios', preciosVolumenRoutes)
 app.use('/distribuidor', distribuidorRoutes)
 app.use('/api/catalogo', catalogoRoutes)
 app.use('/api/pedidos', pedidosRoutes)
+app.use('/api/notificaciones', notificacionesRoutes)
 
 app.use((err, req, res, next) => {
   console.error(err)

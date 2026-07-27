@@ -117,3 +117,16 @@ CREATE TABLE pedido_item (
   precio_venta_congelado DECIMAL NOT NULL
 );
 
+-- RF-024: Notificación de pedido entrante al distribuidor
+CREATE TYPE notificacion_tipo AS ENUM ('cambio_estado_pedido', 'pedido_entrante', 'stock_bajo');
+
+CREATE TABLE notificacion (
+  id SERIAL PRIMARY KEY,
+  usuario_id INTEGER NOT NULL REFERENCES usuario(id),
+  pedido_id INTEGER REFERENCES pedido(id),
+  tipo notificacion_tipo NOT NULL,
+  mensaje VARCHAR NOT NULL,
+  leida BOOLEAN NOT NULL DEFAULT FALSE,
+  fecha_creacion TIMESTAMP NOT NULL DEFAULT NOW()
+);
+
