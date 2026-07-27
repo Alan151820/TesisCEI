@@ -15,5 +15,18 @@ async function listarCatalogo(req, res, next) {
     next(error)
   }
 }
+async function obtenerDetalle(req, res, next) {
+  try {
+    const { id } = req.params
+    const producto = await catalogoServicio.obtenerDetalle(id)
 
-module.exports = { listarCatalogo }
+    if (!producto) {
+      return res.status(404).json({ mensaje: 'Este producto no está disponible.' })
+    }
+
+    res.status(200).json(producto)
+  } catch (error) {
+    next(error)
+  }
+}
+module.exports = { listarCatalogo, obtenerDetalle}

@@ -32,15 +32,6 @@ function RecuperarContrasena() {
       <header className="recuperar-encabezado">
         <span className="recuperar-logo">MarketPlace</span>
 
-        <div className="recuperar-buscador">
-          <span className="recuperar-buscador-icono">⌕</span>
-          <span className="recuperar-buscador-texto">Buscar productos…</span>
-        </div>
-
-        <div className="recuperar-encabezado-derecha">
-          <button className="login-encabezado-link" onClick={() => navigate('/login')}>Iniciar sesión</button>
-          <button type="button" className="recuperar-encabezado-boton">Registrarse</button>
-        </div>
       </header>
 
       <main className="recuperar-contenido">

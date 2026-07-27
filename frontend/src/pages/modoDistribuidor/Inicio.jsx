@@ -36,6 +36,7 @@ function Inicio() {
   const [filtroVisibilidad, setFiltroVisibilidad] = useState('')
   const [filtroStock, setFiltroStock] = useState('')
 
+
   const token = localStorage.getItem('token')
   const headers = { Authorization: `Bearer ${token}` }
 
@@ -55,12 +56,16 @@ function Inicio() {
     }
   }
 
-  useEffect(() => {
-    cargarProductos()
-    axios.get('http://localhost:3000/api/productos/categorias', { headers })
-      .then(res => setCategorias(res.data))
-      .catch(() => {})
-  }, [])
+useEffect(() => {
+  if (!token) {
+    navigate('/catalogo', { replace: true })
+    return
+  }
+  cargarProductos()
+  axios.get('http://localhost:3000/api/productos/categorias', { headers })
+    .then(res => setCategorias(res.data))
+    .catch(() => {})
+}, [])
 
   const filtrarPorCategoria = (e) => {
     setFiltroCategoria(e.target.value)
@@ -107,8 +112,7 @@ function Inicio() {
   const handleCerrarSesion = () => {
     localStorage.removeItem('token')
     localStorage.removeItem('nombre')
-    navigate('/login')
-  }
+navigate('/login', { replace: true })  }
 
   return (
     <div className="panel-root">

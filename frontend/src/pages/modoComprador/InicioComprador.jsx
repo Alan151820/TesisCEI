@@ -17,13 +17,18 @@ function InicioComprador() {
   const [filtroDistribuidor, setFiltroDistribuidor] = useState('')
   const [filtroPrecioMin, setFiltroPrecioMin] = useState('')
   const [filtroPrecioMax, setFiltroPrecioMax] = useState('')
+const token = localStorage.getItem('token')
 
-  useEffect(() => {
-    cargarProductos()
-    axios.get('http://localhost:3000/api/productos/categorias')
-      .then(res => setCategorias(res.data))
-      .catch(() => {})
-  }, [])
+ useEffect(() => {
+  if (!token) {
+    navigate('/catalogo', { replace: true })
+    return
+  }
+  cargarProductos()
+  axios.get('http://localhost:3000/api/productos/categorias')
+    .then(res => setCategorias(res.data))
+    .catch(() => {})
+}, [])
 
   const cargarProductos = async (params = {}) => {
     setCargando(true)
@@ -64,7 +69,7 @@ function InicioComprador() {
     localStorage.removeItem('nombre')
     localStorage.removeItem('telefono')
     localStorage.removeItem('modoDistribuidorActivo')
-    navigate('/')
+    navigate('/', { replace: true })
   }
 
   return (
@@ -140,7 +145,7 @@ function InicioComprador() {
           <>
             <div className="comprador-grilla">
               {productos.map(p => (
-                <div key={p.id} className="comprador-tarjeta">
+                <div key={p.id} className="comprador-tarjeta" onClick={() => navigate(`/producto/${p.id}`)}>
                   {p.imagenUrl
                     ? <img src={`http://localhost:3000${p.imagenUrl}`} alt={p.nombre} className="comprador-tarjeta-imagen" />
                     : <div className="comprador-tarjeta-imagen-placeholder">Sin imagen</div>

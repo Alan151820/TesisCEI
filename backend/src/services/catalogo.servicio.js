@@ -57,4 +57,38 @@ async function listarCatalogo(nombre = '', categoria = '', distribuidor = '', pr
   return resultado.rows
 }
 
-module.exports = { listarCatalogo }
+async function obtenerDetalle(id) {
+  const resultProducto = await pool.query(
+    `SELECT
+       p.id,
+       p.nombre,
+       p.descripcion,
+       p.imagen_url AS "imagenUrl",
+       c.nombre AS categoria,
+       d.id AS "distribuidorId",
+       d.nombre_comercial AS "nombreDistribuidor",
+       (p.stock_total - p.stock_reservado) AS "stockDisponible"
+     FROM producto p
+     JOIN categoria c ON c.id = p.categoria_id
+     JOIN distribuidor d ON d.id = p.distribuidor_id
+     WHERE p.id = $1 AND p.estado_visibilidad = 'publicado' AND p.habilitado = true`,
+    [id]
+  )
+
+  if (resultProducto.rows.length === 0) return null
+
+  const p = resultProducto.rows[0]
+
+  const resultTarifas = await pool.query(
+    `SELECT cantidad_minima AS "cantidadMinima", precio_venta AS "precioVenta"
+     FROM precio_volumen
+     WHERE producto_id = $1
+     ORDER BY cantidad_minima ASC`,
+    [id]
+  )
+
+  p.tarifas = resultTarifas.rows
+  return p
+}
+
+module.exports = { listarCatalogo, obtenerDetalle }

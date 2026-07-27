@@ -5,10 +5,6 @@ import './Catalogo.css'
 
 function Catalogo() {
   const navigate = useNavigate()
-  const token = localStorage.getItem('token')
-  const nombre = localStorage.getItem('nombre') || ''
-  const modoDistribuidorActivo = localStorage.getItem('modoDistribuidorActivo') === 'true'
-  const iniciales = nombre.split(' ').map(p => p[0]).join('').slice(0, 2).toUpperCase()
 
   const [productos, setProductos] = useState([])
   const [cargando, setCargando] = useState(true)
@@ -58,14 +54,6 @@ function Catalogo() {
     cargarProductos()
   }
 
-  const cerrarSesion = () => {
-    localStorage.removeItem('token')
-    localStorage.removeItem('nombre')
-    localStorage.removeItem('telefono')
-    localStorage.removeItem('modoDistribuidorActivo')
-    navigate('/catalogo')
-  }
-
   const hayFiltros = busqueda || filtroCategoria || filtroDistribuidor || filtroPrecioMin || filtroPrecioMax
 
   return (
@@ -84,21 +72,8 @@ function Catalogo() {
           />
         </div>
         <div className="catalogo-header-acciones">
-          {token ? (
-            <>
-              <button className="catalogo-btn-login" onClick={() => navigate(modoDistribuidorActivo ? '/inicio' : '/configurarPerfil')}>Distribuidora</button>
-              <div className="comprador-perfil">
-                <div className="comprador-avatar">{iniciales}</div>
-                <span>{nombre}</span>
-              </div>
-              <button className="catalogo-btn-login" onClick={cerrarSesion}>Cerrar sesión</button>
-            </>
-          ) : (
-            <>
-              <button className="catalogo-btn-login" onClick={() => navigate('/login')}>Iniciar sesión</button>
-              <button className="catalogo-btn-registro" onClick={() => navigate('/registro')}>Registrarse</button>
-            </>
-          )}
+          <button className="catalogo-btn-login" onClick={() => navigate('/login')}>Iniciar sesión</button>
+          <button className="catalogo-btn-registro" onClick={() => navigate('/registro')}>Registrarse</button>
         </div>
       </header>
 
@@ -145,7 +120,7 @@ function Catalogo() {
           <>
             <div className="catalogo-grilla">
               {productos.map(p => (
-                <div key={p.id} className="catalogo-tarjeta">
+                <div key={p.id} className="catalogo-tarjeta" onClick={() => navigate(`/producto/${p.id}`)}>
                   {p.imagenUrl
                     ? <img src={`http://localhost:3000${p.imagenUrl}`} alt={p.nombre} className="catalogo-tarjeta-imagen" />
                     : <div className="catalogo-tarjeta-imagen-placeholder">Sin imagen</div>

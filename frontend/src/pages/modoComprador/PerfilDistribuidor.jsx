@@ -1,10 +1,16 @@
 import { useState, useEffect } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import './PerfilDistribuidor.css'
 
 function PerfilDistribuidor() {
   const { id } = useParams()
+  const navigate = useNavigate()
+  const token = localStorage.getItem('token')
+  const nombre = localStorage.getItem('nombre') || ''
+  const modoDistribuidorActivo = localStorage.getItem('modoDistribuidorActivo') === 'true'
+  const iniciales = nombre.split(' ').map(p => p[0]).join('').slice(0, 2).toUpperCase()
+
   const [distribuidor, setDistribuidor] = useState(null)
   const [productos, setProductos] = useState([])
   const [mensaje, setMensaje] = useState('')
@@ -32,6 +38,14 @@ function PerfilDistribuidor() {
     obtenerProductos()
   }, [id])
 
+  const cerrarSesion = () => {
+    localStorage.removeItem('token')
+    localStorage.removeItem('nombre')
+    localStorage.removeItem('telefono')
+    localStorage.removeItem('modoDistribuidorActivo')
+navigate('/catalogo', { replace: true })
+  }
+
   if (mensaje) return <p className="perfildist-mensaje-pagina">{mensaje}</p>
   if (!distribuidor) return <p className="perfildist-mensaje-pagina">Cargando...</p>
 
@@ -47,8 +61,25 @@ function PerfilDistribuidor() {
           <span className="perfildist-buscador-texto">Buscar productos…</span>
         </div>
         <div className="perfildist-topbar-acciones">
-          <span className="perfildist-topbar-link">Iniciar sesión</span>
-          <span className="perfildist-topbar-registro">Registrarse</span>
+          {token ? (
+            <>
+              <button className="perfildist-btn-distribuidora" onClick={() => navigate(modoDistribuidorActivo ? '/inicio' : '/configurarPerfil')}>
+                Distribuidora
+              </button>
+              <div className="perfildist-perfil">
+                <div className="perfildist-avatar">{iniciales}</div>
+                <span className="perfildist-nombre-usuario">{nombre}</span>
+              </div>
+              <button className="perfildist-btn-cerrar-sesion" onClick={cerrarSesion}>
+                Cerrar sesión
+              </button>
+            </>
+          ) : (
+            <>
+              <button className="perfildist-btn-login" onClick={() => navigate('/login')}>Iniciar sesión</button>
+              <button className="perfildist-btn-registro" onClick={() => navigate('/registro')}>Registrarse</button>
+            </>
+          )}
         </div>
       </header>
 
@@ -94,8 +125,7 @@ function PerfilDistribuidor() {
         ) : (
           <div className="perfildist-grid">
             {productos.map(p => (
-              <div key={p.id} className="perfildist-producto-card">
-                {p.imagenUrl
+<div key={p.id} className="perfildist-producto-card" onClick={() => navigate(`/producto/${p.id}`, { replace: true })}>                {p.imagenUrl
                   ? <img src={`http://localhost:3000${p.imagenUrl}`} alt={p.nombre} className="perfildist-producto-img" />
                   : <div className="perfildist-producto-img-placeholder">[foto]</div>
                 }
