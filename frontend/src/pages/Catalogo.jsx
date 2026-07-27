@@ -1,15 +1,18 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import axios from 'axios'
+import { useCarrito } from '../context/CarritoContext'
+import api from '../lib/axios'
 import './Catalogo.css'
 
 function Catalogo() {
   const navigate = useNavigate()
   const [productos, setProductos] = useState([])
   const [cargando, setCargando] = useState(true)
+  const token = localStorage.getItem('token')
+  const { agregarProducto, totalItems } = useCarrito()
 
   useEffect(() => {
-    axios.get('http://localhost:3000/api/catalogo')
+    api.get('/api/catalogo')
       .then(res => setProductos(res.data))
       .catch(() => setProductos([]))
       .finally(() => setCargando(false))
@@ -29,6 +32,9 @@ function Catalogo() {
           />
         </div>
         <div className="catalogo-header-acciones">
+          <button className="catalogo-btn-carrito" onClick={() => navigate('/carrito')}>
+            🛒{totalItems > 0 && <span className="catalogo-carrito-badge">{totalItems}</span>}
+          </button>
           <button className="catalogo-btn-login" onClick={() => navigate('/login')}>
             Iniciar sesión
           </button>
@@ -39,6 +45,11 @@ function Catalogo() {
       </header>
 
       <div className="catalogo-contenido">
+
+        <div className="catalogo-filtros-mobile">
+          <button className="catalogo-filtros-btn">▽ Filtros</button>
+        </div>
+
         {cargando && (
           <div className="catalogo-vacio">Cargando productos...</div>
         )}
@@ -72,6 +83,12 @@ function Catalogo() {
                         Desde ${Number(p.precioMinimo).toLocaleString('es-AR')}
                       </div>
                     </div>
+                    <button
+                      className="catalogo-tarjeta-agregar"
+                      onClick={() => agregarProducto(p)}
+                    >
+                      + Agregar
+                    </button>
                   </div>
                 </div>
               ))}
@@ -82,6 +99,30 @@ function Catalogo() {
           </>
         )}
       </div>
+
+      <nav className="catalogo-bottom-nav">
+        <div className="catalogo-bottom-item activo">
+          <span className="catalogo-bottom-icono">◻</span>
+          <span className="catalogo-bottom-label">Catálogo</span>
+        </div>
+        <div className="catalogo-bottom-item catalogo-bottom-carrito" onClick={() => navigate('/carrito')}>
+          <span className="catalogo-bottom-icono">
+            🛒{totalItems > 0 && <span className="catalogo-bottom-badge">{totalItems}</span>}
+          </span>
+          <span className="catalogo-bottom-label">Carrito</span>
+        </div>
+        {token ? (
+          <div className="catalogo-bottom-item" onClick={() => navigate('/inicio')}>
+            <span className="catalogo-bottom-icono">⊞</span>
+            <span className="catalogo-bottom-label">Panel</span>
+          </div>
+        ) : (
+          <div className="catalogo-bottom-item" onClick={() => navigate('/login')}>
+            <span className="catalogo-bottom-icono">○</span>
+            <span className="catalogo-bottom-label">Cuenta</span>
+          </div>
+        )}
+      </nav>
 
     </div>
   )

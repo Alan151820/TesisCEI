@@ -96,6 +96,49 @@
   opacity: 0.9;
 }
 
+.catalogo-btn-carrito {
+  position: relative;
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 4px 8px;
+  display: flex;
+  align-items: center;
+}
+
+.catalogo-carrito-badge {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: var(--color-primario);
+  color: var(--color-sobre-primario);
+  font-size: 10px;
+  font-weight: 700;
+  min-width: 16px;
+  height: 16px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 3px;
+  font-family: inherit;
+}
+
+.catalogo-tarjeta-agregar {
+  margin-top: 10px;
+  width: 100%;
+  height: 34px;
+  border: none;
+  border-radius: 5px;
+  background: var(--color-primario);
+  color: var(--color-sobre-primario);
+  font-size: 12px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+}
+
 /* Contenido */
 .catalogo-contenido {
   flex: 1;
@@ -210,6 +253,16 @@
   text-align: right;
 }
 
+/* Bottom nav — solo mobile */
+.catalogo-bottom-nav {
+  display: none;
+}
+
+/* Filtros mobile — oculto en desktop */
+.catalogo-filtros-mobile {
+  display: none;
+}
+
 /* === MOBILE === */
 @media (max-width: 768px) {
   .catalogo-header {
@@ -227,17 +280,31 @@
     height: 32px;
   }
 
-  .catalogo-btn-login {
+  /* Ocultar botones de auth en mobile — van al bottom nav */
+  .catalogo-btn-login,
+  .catalogo-btn-registro {
     display: none;
   }
 
-  .catalogo-btn-registro {
-    padding: 5px 12px;
-    font-size: 12px;
+  .catalogo-contenido {
+    padding: 12px 14px 80px;
   }
 
-  .catalogo-contenido {
-    padding: 16px 16px 20px;
+  /* Botón filtros visible solo en mobile */
+  .catalogo-filtros-mobile {
+    display: flex;
+    margin-bottom: 12px;
+  }
+
+  .catalogo-filtros-btn {
+    background: var(--color-contenedor-superficie-bajo);
+    border: 1px solid var(--color-contorno);
+    border-radius: 4px;
+    padding: 7px 14px;
+    font-size: 13px;
+    color: var(--color-sobre-superficie);
+    font-family: inherit;
+    cursor: pointer;
   }
 
   .catalogo-grilla {
@@ -245,11 +312,90 @@
     gap: 10px;
   }
 
+  /* Cards simplificadas en mobile: solo foto + nombre + precio */
+  .catalogo-tarjeta-categoria,
+  .catalogo-tarjeta-descripcion,
+  .catalogo-tarjeta-distribuidor {
+    display: none;
+  }
+
+  .catalogo-tarjeta-cuerpo {
+    padding: 10px 12px;
+    gap: 6px;
+  }
+
   .catalogo-tarjeta-nombre {
     font-size: 12px;
   }
 
+  .catalogo-tarjeta-pie {
+    padding-top: 0;
+  }
+
   .catalogo-tarjeta-precio {
     font-size: 13px;
+    font-weight: 700;
+  }
+
+  /* Ocultar btn carrito del header en mobile — está en el bottom nav */
+  .catalogo-btn-carrito { display: none; }
+
+  .catalogo-bottom-carrito { position: relative; }
+  .catalogo-bottom-badge {
+    position: absolute;
+    top: 0;
+    right: 50%;
+    transform: translateX(80%);
+    background: var(--color-primario);
+    color: var(--color-sobre-primario);
+    font-size: 9px;
+    font-weight: 700;
+    min-width: 14px;
+    height: 14px;
+    border-radius: 7px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 2px;
+    font-family: inherit;
+  }
+
+  /* Bottom nav */
+  .catalogo-bottom-nav {
+    display: flex;
+    height: 56px;
+    background: var(--color-contenedor-superficie-minimo);
+    border-top: 1px solid var(--color-variante-contorno);
+    align-items: center;
+    justify-content: space-around;
+    flex-shrink: 0;
+    position: sticky;
+    bottom: 0;
+  }
+
+  .catalogo-bottom-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    cursor: pointer;
+    flex: 1;
+    padding: 6px 0;
+  }
+
+  .catalogo-bottom-icono {
+    font-size: 18px;
+    color: var(--color-sobre-variante-superficie);
+  }
+
+  .catalogo-bottom-label {
+    font-size: 9px;
+    color: var(--color-sobre-variante-superficie);
+  }
+
+  .catalogo-bottom-item.activo .catalogo-bottom-icono,
+  .catalogo-bottom-item.activo .catalogo-bottom-label {
+    color: var(--color-sobre-superficie);
+    font-weight: 600;
   }
 }
