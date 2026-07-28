@@ -18,6 +18,8 @@ import EditarPerfil from './pages/modoDistribuidor/EditarPerfil'
 import EditarProducto from './pages/modoDistribuidor/EditarProducto'
 import MisPedidos from './pages/modoDistribuidor/MisPedidos'
 import Catalogo from './pages/Catalogo'
+import DetalleProducto from './pages/modoComprador/DetalleProducto'
+
 
 function App() {
   return (
@@ -42,6 +44,7 @@ function App() {
         <Route path='/misPedidos' element={<MisPedidosComprador />} />
         <Route path='/catalogo' element={<Catalogo />} />
         <Route path='/' element={<Catalogo />} />
+        <Route path='/producto/:id' element={<DetalleProducto />} />
       </Routes>
     </CarritoProvider>
   )
