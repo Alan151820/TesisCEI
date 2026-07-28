@@ -25,16 +25,6 @@ function VerificarRecuperacion() {
     <div className="verificarrecuperacion-pagina">
       <header className="verificarrecuperacion-encabezado">
         <span className="verificarrecuperacion-logo">MarketPlace</span>
-
-        <div className="verificarrecuperacion-buscador">
-          <span className="verificarrecuperacion-buscador-icono">⌕</span>
-          <span className="verificarrecuperacion-buscador-texto">Buscar productos…</span>
-        </div>
-
-        <div className="verificarrecuperacion-encabezado-derecha">
-          <span className="verificarrecuperacion-encabezado-link">Iniciar sesión</span>
-          <button type="button" className="verificarrecuperacion-encabezado-boton">Registrarse</button>
-        </div>
       </header>
 
       <main className="verificarrecuperacion-contenido">

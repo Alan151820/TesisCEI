@@ -29,16 +29,6 @@ function NuevaContrasena() {
     <div className="nuevacontrasena-pagina">
       <header className="nuevacontrasena-encabezado">
         <span className="nuevacontrasena-logo">MarketPlace</span>
-
-        <div className="nuevacontrasena-buscador">
-          <span className="nuevacontrasena-buscador-icono">⌕</span>
-          <span className="nuevacontrasena-buscador-texto">Buscar productos…</span>
-        </div>
-
-        <div className="nuevacontrasena-encabezado-derecha">
-          <span className="nuevacontrasena-encabezado-link">Iniciar sesión</span>
-          <button type="button" className="nuevacontrasena-encabezado-boton">Registrarse</button>
-        </div>
       </header>
 
       <main className="nuevacontrasena-contenido">

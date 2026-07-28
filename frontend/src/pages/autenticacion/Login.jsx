@@ -39,14 +39,7 @@ function Login() {
       <header className="login-encabezado">
         <span className="login-logo">MarketPlace</span>
 
-        <div className="login-buscador">
-          <span className="login-buscador-icono">⌕</span>
-          <input
-            className="login-buscador-input"
-            type="text"
-            placeholder="Buscar productos…"
-          />
-        </div>
+      
 
         <div className="login-encabezado-derecha">
           <div className="auth-tabs">
