@@ -49,4 +49,14 @@ async function pedidosActivos(req, res, next) {
   }
 }
 
-module.exports = { confirmarPedido, historialDistribuidor, historialComprador, pedidosActivos }
+async function aceptarPedido(req, res, next) {
+  const pedidoId = Number(req.params.id)
+  try {
+    const resultado = await pedidosServicio.aceptarPedido(pedidoId, req.usuario.id)
+    res.json(resultado)
+  } catch (error) {
+    next(error)
+  }
+}
+
+module.exports = { confirmarPedido, historialDistribuidor, historialComprador, pedidosActivos, aceptarPedido }

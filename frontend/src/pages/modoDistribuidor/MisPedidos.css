@@ -157,6 +157,15 @@
   color: var(--color-error);
 }
 
+.pedidos-error-accion {
+  font-size: 12px;
+  color: var(--color-error);
+  background: var(--color-contenedor-error);
+  padding: 6px 14px;
+  border: 1px solid var(--color-variante-contorno);
+  border-top: none;
+}
+
 @media (max-width: 768px) {
   .pedidos-tabla-header {
     display: none;
