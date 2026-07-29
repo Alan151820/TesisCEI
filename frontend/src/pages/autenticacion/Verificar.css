@@ -184,3 +184,33 @@
   color: var(--color-error);
   text-align: center;
 }
+
+@media (max-width: 600px) {
+  .verificar-encabezado {
+    height: 48px;
+    padding: 0 16px;
+    gap: 12px;
+  }
+
+  /* Mobile: solo logo en el header */
+  .verificar-buscador,
+  .verificar-encabezado-derecha {
+    display: none;
+  }
+
+  .verificar-contenido {
+    padding: 20px;
+  }
+
+  .verificar-tarjeta {
+    width: 100%;
+    padding: 28px 20px;
+    border: none;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+  }
+
+  .verificar-input,
+  .verificar-boton {
+    height: 44px;
+  }
+}

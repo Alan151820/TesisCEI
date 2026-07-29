@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
-import axios from 'axios'
+import api from '../../lib/axios'
+import { tokenValido } from '../../lib/auth'
 import './Inicio.css'
 import './EditarPerfil.css'
 
@@ -23,6 +24,7 @@ function EditarPerfil() {
   const [mensaje, setMensaje] = useState('')
   const navigate = useNavigate()
   const location = useLocation()
+  useEffect(() => { if (!tokenValido()) navigate('/login') }, [navigate])
   const telefono = localStorage.getItem('telefono')
   const nombre = localStorage.getItem('nombre') || ''
   const iniciales = nombre.split(' ').map(p => p[0]).join('').slice(0, 2).toUpperCase()
@@ -30,7 +32,7 @@ function EditarPerfil() {
   useEffect(() => {
     const cargarPerfil = async () => {
       try {
-        const res = await axios.post('http://localhost:3000/distribuidor/obtenerPerfilPropio', { telefono })
+        const res = await api.post('/distribuidor/obtenerPerfilPropio', { telefono })
         setNombreComercial(res.data.nombreComercial)
         setDescripcionNegocio(res.data.descripcionNegocio)
         setZonaEntrega(res.data.zonaEntrega)
@@ -50,7 +52,7 @@ function EditarPerfil() {
 
   const handleEditar = async () => {
     try {
-      await axios.put('http://localhost:3000/distribuidor/editarPerfil', {
+      await api.put('/distribuidor/editarPerfil', {
         telefono,
         nombreComercial,
         descripcionNegocio,
@@ -61,7 +63,7 @@ function EditarPerfil() {
         const formData = new FormData()
         formData.append('logo', logo)
         formData.append('telefono', telefono)
-        await axios.post('http://localhost:3000/distribuidor/subirLogo', formData)
+        await api.post('/distribuidor/subirLogo', formData)
       }
 
       setMensaje('Perfil actualizado correctamente.')

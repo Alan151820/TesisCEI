@@ -1,6 +1,7 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import axios from 'axios'
+import api from '../../lib/axios'
+import { tokenValido } from '../../lib/auth'
 import './ConfigurarPerfil.css'
 
 function ConfigurarPerfil() {
@@ -9,17 +10,18 @@ function ConfigurarPerfil() {
   const [zonaEntrega, setZonaEntrega] = useState('')
   const [mensaje, setMensaje] = useState('')
   const navigate = useNavigate()
+  useEffect(() => { if (!tokenValido()) navigate('/login') }, [navigate])
   const telefono = localStorage.getItem('telefono')
 
   const handleConfigurar = async () => {
   try {
-    const res = await axios.post('http://localhost:3000/distribuidor/configurarPerfil', {
+    const res = await api.post('/distribuidor/configurarPerfil', {
       telefono,
       nombreComercial,
       descripcionNegocio,
       zonaEntrega
     })
-    await axios.post('http://localhost:3000/auth/activarModoDistribuidor', { telefono })
+    await api.post('/auth/activarModoDistribuidor', { telefono })
     localStorage.setItem('distribuidorId', res.data.distribuidorId)
     localStorage.setItem('modoDistribuidorActivo', 'true')
     navigate('/inicio')
