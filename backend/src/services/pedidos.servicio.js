@@ -118,4 +118,40 @@ async function obtenerHistorialComprador(compradorId) {
   return res.rows
 }
 
-module.exports = { confirmarPedido, obtenerHistorialDistribuidor, obtenerHistorialComprador }
+async function obtenerPedidosActivos(usuarioId) {
+  const res = await pool.query(
+    `SELECT
+       p.id,
+       p.estado,
+       p.fecha_creacion AS "fechaCreacion",
+       u.nombre_completo AS "nombreComprador",
+       u.telefono AS "telefonoComprador",
+       COALESCE(SUM(pi.cantidad * pi.precio_venta_congelado), 0) AS total,
+       COALESCE(
+         json_agg(
+           json_build_object(
+             'productoId', pr.id,
+             'nombreProducto', pr.nombre,
+             'cantidad', pi.cantidad,
+             'stockDisponible', (pr.stock_total - pr.stock_reservado),
+             'tipoProducto', pr.tipo_producto,
+             'metricaVisualizacion', pr.metrica_visualizacion
+           ) ORDER BY pi.id
+         ) FILTER (WHERE pi.id IS NOT NULL),
+         '[]'
+       ) AS items
+     FROM pedido p
+     JOIN distribuidor d ON d.id = p.distribuidor_id
+     JOIN usuario u ON u.id = p.comprador_id
+     LEFT JOIN pedido_item pi ON pi.pedido_id = p.id
+     LEFT JOIN producto pr ON pr.id = pi.producto_id
+     WHERE d.usuario_id = $1
+       AND p.estado IN ('pendiente', 'aceptado', 'en_camino')
+     GROUP BY p.id, u.nombre_completo, u.telefono
+     ORDER BY p.fecha_creacion DESC`,
+    [usuarioId]
+  )
+  return res.rows
+}
+
+module.exports = { confirmarPedido, obtenerHistorialDistribuidor, obtenerHistorialComprador, obtenerPedidosActivos }

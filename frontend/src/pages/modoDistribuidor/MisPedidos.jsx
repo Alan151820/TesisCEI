@@ -18,8 +18,15 @@ const ETIQUETA_ESTADO = {
   pendiente: 'Pendiente',
   aceptado: 'Aceptado',
   en_camino: 'En camino',
-  entregado: 'Entregado',
-  rechazado: 'Rechazado',
+}
+
+function sufijoPorTipo(tipoProducto, metricaVisualizacion) {
+  if (tipoProducto === 'fraccionable') {
+    if (metricaVisualizacion === 'kilogramos') return 'kg'
+    if (metricaVisualizacion === 'litros') return 'L'
+    if (metricaVisualizacion === 'metros') return 'm'
+  }
+  return 'u.'
 }
 
 function formatearFecha(isoString) {
@@ -33,15 +40,15 @@ function MisPedidos() {
   const nombre = localStorage.getItem('nombre') || ''
   const iniciales = nombre.split(' ').map(p => p[0]).join('').slice(0, 2).toUpperCase()
 
-  useEffect(() => { if (!tokenValido()) navigate('/login') }, [navigate])
-
   const [pedidos, setPedidos] = useState([])
   const [cargando, setCargando] = useState(true)
   const [error, setError] = useState(null)
   const [menuAbierto, setMenuAbierto] = useState(false)
 
+  useEffect(() => { if (!tokenValido()) navigate('/login') }, [navigate])
+
   useEffect(() => {
-    api.get('/api/pedidos/historial')
+    api.get('/api/pedidos/activos')
       .then(res => setPedidos(res.data))
       .catch(err => setError(err.response?.data?.error || 'No fue posible completar la operación. Intente nuevamente más tarde.'))
       .finally(() => setCargando(false))
@@ -88,7 +95,7 @@ function MisPedidos() {
 
       <div className="panel-mobile-header">
         <span className="panel-mobile-hamburger" onClick={() => setMenuAbierto(true)}>≡</span>
-        <div className="panel-mobile-titulo">Pedidos</div>
+        <div className="panel-mobile-titulo">Pedidos activos</div>
         <div style={{ width: 40 }} />
       </div>
 
@@ -142,8 +149,8 @@ function MisPedidos() {
 
             <div className="panel-seccion-header">
               <div>
-                <h1 className="panel-h1">Historial de pedidos</h1>
-                <p className="panel-subtitulo">Todos los pedidos: activos, entregados y rechazados.</p>
+                <h1 className="panel-h1">Pedidos activos</h1>
+                <p className="panel-subtitulo">Pedidos en estado Pendiente, Aceptado y En camino.</p>
               </div>
             </div>
 
@@ -156,7 +163,7 @@ function MisPedidos() {
             )}
 
             {!cargando && !error && pedidos.length === 0 && (
-              <div className="panel-tabla-vacio">Aún no recibiste pedidos.</div>
+              <div className="panel-tabla-vacio">No tenés pedidos activos en este momento.</div>
             )}
 
             {!cargando && !error && pedidos.length > 0 && (
@@ -164,28 +171,63 @@ function MisPedidos() {
                 <div className="pedidos-tabla-header">
                   <div>N° Pedido</div>
                   <div>Comprador</div>
-                  <div>Fecha</div>
+                  <div>Productos</div>
                   <div>Total</div>
                   <div>Estado</div>
-                  <div></div>
+                  <div>Acciones</div>
                 </div>
 
                 {pedidos.map(p => (
                   <div key={p.id} className="pedidos-tabla-fila">
                     <div className="pedidos-celda pedidos-numero">#{p.id}</div>
-                    <div className="pedidos-celda">{p.nombreComprador}</div>
-                    <div className="pedidos-celda">{formatearFecha(p.fechaCreacion)}</div>
+                    <div className="pedidos-celda">
+                      <div>
+                        <div>{p.nombreComprador}</div>
+                        <div className="pedidos-telefono">{p.telefonoComprador}</div>
+                      </div>
+                    </div>
+                    <div className="pedidos-celda">
+                      <div className="pedidos-productos-lista">
+                        {p.items.map((item, i) => {
+                          const sufijo = sufijoPorTipo(item.tipoProducto, item.metricaVisualizacion)
+                          return (
+                            <div key={i} className="pedidos-producto-item">
+                              <span>{item.nombreProducto} ×{Number(item.cantidad)} {sufijo}</span>
+                              <span className="pedidos-producto-stock">Stock: {item.stockDisponible} {sufijo}</span>
+                            </div>
+                          )
+                        })}
+                      </div>
+                    </div>
                     <div className="pedidos-celda">${Number(p.total).toLocaleString('es-AR')}</div>
                     <div className="pedidos-celda">
                       <span className={`pedidos-estado pedidos-estado--${p.estado}`}>
                         {ETIQUETA_ESTADO[p.estado] ?? p.estado}
                       </span>
                     </div>
-                    <div className="pedidos-celda pedidos-ver">
-                      <span>Ver →</span>
+                    <div className="pedidos-celda">
+                      <div className="pedidos-acciones">
+                        {p.estado === 'pendiente' && (
+                          <>
+                            <button className="pedidos-accion-btn pedidos-accion-btn--primario">Aceptar</button>
+                            <button className="pedidos-accion-btn pedidos-accion-btn--peligro">Rechazar</button>
+                            <button className="pedidos-accion-btn">Proponer sustituto</button>
+                          </>
+                        )}
+                        {p.estado === 'aceptado' && (
+                          <button className="pedidos-accion-btn pedidos-accion-btn--primario">Marcar En camino</button>
+                        )}
+                        {p.estado === 'en_camino' && (
+                          <button className="pedidos-accion-btn pedidos-accion-btn--primario">Marcar Entregado</button>
+                        )}
+                      </div>
                     </div>
                   </div>
                 ))}
+
+                <div className="panel-tabla-contador">
+                  {pedidos.length} pedido{pedidos.length !== 1 ? 's' : ''} activo{pedidos.length !== 1 ? 's' : ''}
+                </div>
               </div>
             )}
 

@@ -40,4 +40,13 @@ async function historialComprador(req, res, next) {
   }
 }
 
-module.exports = { confirmarPedido, historialDistribuidor, historialComprador }
+async function pedidosActivos(req, res, next) {
+  try {
+    const pedidos = await pedidosServicio.obtenerPedidosActivos(req.usuario.id)
+    res.json(pedidos)
+  } catch (error) {
+    next(error)
+  }
+}
+
+module.exports = { confirmarPedido, historialDistribuidor, historialComprador, pedidosActivos }
