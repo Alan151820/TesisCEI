@@ -13,6 +13,8 @@ import ConfigurarPerfil from './pages/modoDistribuidor/ConfigurarPerfil'
 import EditarPerfil from './pages/modoDistribuidor/EditarPerfil'
 import EditarProducto from './pages/modoDistribuidor/EditarProducto'
 import Catalogo from './pages/Catalogo'
+import DetalleProducto from './pages/modoComprador/DetalleProducto'
+
 
 function App() {
   return (
@@ -32,6 +34,8 @@ function App() {
       <Route path='/editarPerfil' element={<EditarPerfil />} />
       <Route path='/catalogo' element={<Catalogo />} />
       <Route path='/' element={<Catalogo />} />
+      <Route path='/producto/:id' element={<DetalleProducto />} />
+
     </Routes>
   )
 }

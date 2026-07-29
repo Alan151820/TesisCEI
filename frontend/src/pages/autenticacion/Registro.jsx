@@ -37,16 +37,6 @@ function Registro() {
     <div className="registro-pagina">
       <header className="registro-encabezado">
         <span className="registro-logo">MarketPlace</span>
-
-        <div className="registro-buscador">
-          <span className="registro-buscador-icono">⌕</span>
-          <input
-            className="registro-buscador-input"
-            type="text"
-            placeholder="Buscar productos…"
-          />
-        </div>
-
         
         <div className="login-encabezado-derecha">
           <div className="auth-tabs">
