@@ -6,8 +6,17 @@ import './Catalogo.css'
 
 function Catalogo() {
   const navigate = useNavigate()
+
+  const [productos, setProductos] = useState([])
+  const [cargando, setCargando] = useState(true)
   const token = localStorage.getItem('token')
   const { agregarProducto, totalItems } = useCarrito()
+  const [categorias, setCategorias] = useState([])
+  const [busqueda, setBusqueda] = useState('')
+  const [filtroCategoria, setFiltroCategoria] = useState('')
+  const [filtroDistribuidor, setFiltroDistribuidor] = useState('')
+  const [filtroPrecioMin, setFiltroPrecioMin] = useState('')
+  const [filtroPrecioMax, setFiltroPrecioMax] = useState('')
 
   const [productos, setProductos] = useState([])
   const [cargando, setCargando] = useState(true)
@@ -63,7 +72,7 @@ function Catalogo() {
     <div className="catalogo-layout">
 
       <header className="catalogo-header">
-        <div className="catalogo-header-marca">MarketDist</div>
+        <div className="catalogo-header-marca" onClick={() => navigate('/')}>MarketDist</div>
         <div className="catalogo-header-buscador">
           <span className="catalogo-header-buscador-icono">⌕</span>
           <input

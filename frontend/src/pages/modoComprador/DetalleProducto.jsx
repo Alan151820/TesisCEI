@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import axios from 'axios'
+import { useCarrito } from '../../context/CarritoContext'
+import api from '../../lib/axios'
+import { tokenValido } from '../../lib/auth'
 import './DetalleProducto.css'
 
 function DetalleProducto() {
@@ -10,12 +12,21 @@ function DetalleProducto() {
   const nombre = localStorage.getItem('nombre') || ''
   const modoDistribuidorActivo = localStorage.getItem('modoDistribuidorActivo') === 'true'
   const iniciales = nombre.split(' ').map(p => p[0]).join('').slice(0, 2).toUpperCase()
+  const { agregarProducto, totalItems } = useCarrito()
   const [producto, setProducto] = useState(null)
   const [mensaje, setMensaje] = useState('')
+  const [tarifaSeleccionada, setTarifaSeleccionada] = useState(null)
+  const [cantidad, setCantidad] = useState(1)
 
   useEffect(() => {
-    axios.get(`http://localhost:3000/api/catalogo/${id}`)
-      .then(res => setProducto(res.data))
+    api.get(`/api/catalogo/${id}`)
+      .then(res => {
+        setProducto(res.data)
+        if (res.data.tarifas.length > 0) {
+          setTarifaSeleccionada(res.data.tarifas[0])
+          setCantidad(Number(res.data.tarifas[0].cantidadMinima))
+        }
+      })
       .catch(err => {
         setMensaje(err.response?.data?.mensaje || 'No fue posible completar la operación. Intente nuevamente más tarde.')
       })
@@ -26,7 +37,13 @@ function DetalleProducto() {
     localStorage.removeItem('nombre')
     localStorage.removeItem('telefono')
     localStorage.removeItem('modoDistribuidorActivo')
-navigate('/catalogo', { replace: true })
+    window.dispatchEvent(new Event('auth-changed'))
+    navigate('/catalogo', { replace: true })
+  }
+
+  const agregarAlCarrito = () => {
+    if (!tarifaSeleccionada) return
+    agregarProducto({ ...producto, tarifaSeleccionada, cantidad })
   }
 
   if (mensaje) return <p className="detalleproducto-mensaje-pagina">{mensaje}</p>
@@ -35,34 +52,40 @@ navigate('/catalogo', { replace: true })
   return (
     <div className="detalleproducto-layout">
 
-    <header className={token ? 'detalleproducto-header-autenticado' : 'detalleproducto-header'}>
-  <div className="detalleproducto-header-marca">MarketPlace</div>
-  <div className="detalleproducto-header-buscador">
-    <span className="detalleproducto-header-buscador-icono">⌕</span>
-    <span className="detalleproducto-header-buscador-texto">Buscar productos…</span>
-  </div>
-  <div className={token ? 'detalleproducto-acciones-auth' : 'detalleproducto-header-acciones'}>
-    {token ? (
-      <>
-        <button className="detalleproducto-btn-distribuidora" onClick={() => navigate(modoDistribuidorActivo ? '/inicio' : '/configurarPerfil')}>
-          Distribuidora
-        </button>
-        <div className="detalleproducto-perfil">
-          <div className="detalleproducto-avatar">{iniciales}</div>
-          <span className="detalleproducto-nombre-usuario">{nombre}</span>
+      <header className={token ? 'detalleproducto-header-autenticado' : 'detalleproducto-header'}>
+        <div className="detalleproducto-header-marca" onClick={() => navigate(token ? '/inicioComprador' : '/catalogo')}>MarketPlace</div>
+        <div className="detalleproducto-header-buscador">
+          <span className="detalleproducto-header-buscador-icono">⌕</span>
+          <span className="detalleproducto-header-buscador-texto">Buscar productos…</span>
         </div>
-        <button className="detalleproducto-btn-cerrar-sesion" onClick={cerrarSesion}>
-          Cerrar sesión
-        </button>
-      </>
-    ) : (
-      <>
-        <button className="detalleproducto-btn-login" onClick={() => navigate('/login')}>Iniciar sesión</button>
-        <button className="detalleproducto-btn-registro" onClick={() => navigate('/registro')}>Registrarse</button>
-      </>
-    )}
-  </div>
-</header>
+        <div className={token ? 'detalleproducto-acciones-auth' : 'detalleproducto-header-acciones'}>
+          {token ? (
+            <>
+              <button className="detalleproducto-btn-carrito" onClick={() => navigate('/carrito')}>
+                🛒{totalItems > 0 && <span className="detalleproducto-carrito-badge">{totalItems}</span>}
+              </button>
+              <button className="detalleproducto-btn-distribuidora" onClick={() => navigate(modoDistribuidorActivo ? '/inicio' : '/configurarPerfil')}>
+                Distribuidora
+              </button>
+              <div className="detalleproducto-perfil">
+                <div className="detalleproducto-avatar">{iniciales}</div>
+                <span className="detalleproducto-nombre-usuario">{nombre}</span>
+              </div>
+              <button className="detalleproducto-btn-cerrar-sesion" onClick={cerrarSesion}>
+                Cerrar sesión
+              </button>
+            </>
+          ) : (
+            <>
+              <button className="detalleproducto-btn-carrito" onClick={() => navigate('/carrito')}>
+                🛒{totalItems > 0 && <span className="detalleproducto-carrito-badge">{totalItems}</span>}
+              </button>
+              <button className="detalleproducto-btn-login" onClick={() => navigate('/login')}>Iniciar sesión</button>
+              <button className="detalleproducto-btn-registro" onClick={() => navigate('/registro')}>Registrarse</button>
+            </>
+          )}
+        </div>
+      </header>
 
       <div className="detalleproducto-contenido">
         <button className="detalleproducto-volver" onClick={() => navigate(-1)}>← Volver</button>
@@ -81,11 +104,11 @@ navigate('/catalogo', { replace: true })
             <div className="detalleproducto-info-categoria">
               {producto.categoria} ·{' '}
               <button
-  className="detalleproducto-info-distribuidor"
-  onClick={() => navigate(`/perfilDistribuidor/${producto.distribuidorId}`, { replace: true })}
->
-  {producto.nombreDistribuidor}
-</button>
+                className="detalleproducto-info-distribuidor"
+                onClick={() => navigate(`/perfilDistribuidor/${producto.distribuidorId}`, { replace: true })}
+              >
+                {producto.nombreDistribuidor}
+              </button>
             </div>
 
             <h1 className="detalleproducto-nombre">{producto.nombre}</h1>
@@ -105,7 +128,11 @@ navigate('/catalogo', { replace: true })
                 </thead>
                 <tbody>
                   {producto.tarifas.map((t, i) => (
-                    <tr key={i}>
+                    <tr
+                      key={i}
+                      className={tarifaSeleccionada === t ? 'detalleproducto-tarifa-seleccionada' : ''}
+                      onClick={() => { setTarifaSeleccionada(t); setCantidad(Number(t.cantidadMinima)) }}
+                    >
                       <td>{t.cantidadMinima}</td>
                       <td>${Number(t.precioVenta).toLocaleString('es-AR')}</td>
                       <td>{producto.stockDisponible > 0 ? 'Con stock' : 'Sin stock'}</td>
@@ -117,20 +144,36 @@ navigate('/catalogo', { replace: true })
 
             <div className="detalleproducto-carrito-caja">
               <div className="detalleproducto-carrito-titulo">Agregar al carrito</div>
-              {producto.tarifas.length > 0 && (
+              {tarifaSeleccionada && (
                 <div className="detalleproducto-carrito-cantidad-fila">
-                  <div className="detalleproducto-carrito-cantidad-caja">{producto.tarifas[0].cantidadMinima}</div>
+                  <input
+                    type="number"
+                    className="detalleproducto-carrito-cantidad-caja"
+                    value={cantidad}
+                    min={Number(tarifaSeleccionada.cantidadMinima)}
+                    onChange={e => setCantidad(Number(e.target.value))}
+                  />
                   <div className="detalleproducto-carrito-cantidad-info">
-                    unidades · <strong>${Number(producto.tarifas[0].precioVenta).toLocaleString('es-AR')} c/u</strong>
+                    unidades · <strong>${Number(tarifaSeleccionada.precioVenta).toLocaleString('es-AR')} c/u</strong>
                   </div>
                 </div>
               )}
               {token ? (
-                <button className="detalleproducto-carrito-boton">Agregar al carrito</button>
+                <button
+                  className="detalleproducto-carrito-boton"
+                  onClick={agregarAlCarrito}
+                  disabled={producto.stockDisponible === 0}
+                >
+                  {producto.stockDisponible === 0 ? 'Sin stock' : 'Agregar al carrito'}
+                </button>
               ) : (
                 <>
-                  <button className="detalleproducto-carrito-boton" disabled>Agregar al carrito</button>
-                  <div className="detalleproducto-carrito-nota">Iniciá sesión para comprar</div>
+                  <button className="detalleproducto-carrito-boton" onClick={() => navigate('/login')}>
+                    Iniciá sesión para comprar
+                  </button>
+                  <div className="detalleproducto-carrito-nota">
+                    O <span onClick={() => navigate('/registro')} style={{ cursor: 'pointer', textDecoration: 'underline' }}>registrate gratis</span>
+                  </div>
                 </>
               )}
             </div>

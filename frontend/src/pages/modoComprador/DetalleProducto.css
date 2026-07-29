@@ -31,6 +31,7 @@
   font-weight: 700;
   color: var(--color-sobre-superficie);
   flex-shrink: 0;
+  cursor: pointer;
 }
 
 .detalleproducto-header-buscador {
@@ -252,6 +253,48 @@
   gap: 16px;
 }
 
+.detalleproducto-btn-carrito {
+  position: relative;
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 4px 8px;
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.detalleproducto-carrito-badge {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: var(--color-primario);
+  color: var(--color-sobre-primario);
+  font-size: 10px;
+  font-weight: 700;
+  min-width: 16px;
+  height: 16px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 3px;
+  font-family: inherit;
+}
+
+.detalleproducto-nav-link {
+  font-size: 13px;
+  color: var(--color-sobre-variante-superficie);
+  cursor: pointer;
+  white-space: nowrap;
+  padding: 4px 0;
+  border-bottom: 1px solid transparent;
+}
+
+.detalleproducto-nav-link:hover {
+  color: var(--color-sobre-superficie);
+  border-bottom-color: var(--color-sobre-superficie);
 .detalleproducto-btn-distribuidora {
   background: none;
   border: 1px solid var(--color-contorno);
@@ -353,6 +396,42 @@
   margin-bottom: 10px;
 }
 
+.detalleproducto-carrito-stepper {
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--color-contorno);
+  border-radius: 4px;
+  overflow: hidden;
+  height: 38px;
+}
+
+.detalleproducto-stepper-btn {
+  width: 36px;
+  height: 38px;
+  background: var(--color-contenedor-superficie-bajo);
+  border: none;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-sobre-superficie);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: inherit;
+  flex-shrink: 0;
+}
+
+.detalleproducto-stepper-btn:hover {
+  background: var(--color-contenedor-superficie-alto);
+}
+
+.detalleproducto-stepper-valor {
+  min-width: 40px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-sobre-superficie);
+  padding: 0 8px;
 .detalleproducto-carrito-cantidad-caja {
   width: 100px;
   height: 38px;
@@ -381,6 +460,7 @@
   font-size: 14px;
   font-weight: 500;
   font-family: inherit;
+  cursor: pointer;
 }
 
 .detalleproducto-carrito-boton:disabled {

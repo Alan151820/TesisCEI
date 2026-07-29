@@ -20,6 +20,7 @@ import MisPedidos from './pages/modoDistribuidor/MisPedidos'
 import Catalogo from './pages/Catalogo'
 import DetalleProducto from './pages/modoComprador/DetalleProducto'
 
+
 function App() {
   return (
     <CarritoProvider>
