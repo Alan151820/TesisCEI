@@ -101,9 +101,7 @@ function InicioComprador() {
         </div>
         <div className="comprador-acciones">
           <span className="comprador-nav-link" onClick={() => navigate('/misPedidos')}>Mis pedidos</span>
-          <button className="comprador-cambiar-btn" onClick={() => navigate(modoDistribuidorActivo ? '/inicio' : '/configurarPerfil')}>
-            Distribuidora
-          </button>
+          <span className="comprador-nav-link" onClick={() => navigate(modoDistribuidorActivo ? '/inicio' : '/configurarPerfil')}>Distribuidora</span>
           <button className="comprador-btn-carrito" onClick={() => navigate('/carrito')}>
             🛒{totalItems > 0 && <span className="comprador-carrito-badge">{totalItems}</span>}
           </button>

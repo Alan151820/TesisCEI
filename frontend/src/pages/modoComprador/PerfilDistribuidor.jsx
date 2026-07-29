@@ -60,7 +60,7 @@ navigate('/catalogo', { replace: true })
       </div>
 
       <header className="perfildist-topbar">
-        <div className="perfildist-marca">MarketPlace</div>
+        <div className="perfildist-marca" onClick={() => navigate('/')}>MarketDist</div>
         <div className="perfildist-buscador">
           <span className="perfildist-buscador-icono">⌕</span>
           <span className="perfildist-buscador-texto">Buscar productos…</span>
@@ -68,9 +68,9 @@ navigate('/catalogo', { replace: true })
         <div className="perfildist-topbar-acciones">
           {token ? (
             <>
-              <button className="perfildist-btn-distribuidora" onClick={() => navigate(modoDistribuidorActivo ? '/inicio' : '/configurarPerfil')}>
+              <span className="perfildist-nav-link" onClick={() => navigate(modoDistribuidorActivo ? '/inicio' : '/configurarPerfil')}>
                 Distribuidora
-              </button>
+              </span>
               <div className="perfildist-perfil">
                 <div className="perfildist-avatar">{iniciales}</div>
                 <span className="perfildist-nombre-usuario">{nombre}</span>

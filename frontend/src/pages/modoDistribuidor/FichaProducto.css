@@ -1,5 +1,5 @@
 .ficha-fondo {
-  background: var(--color-superficie, #f8f8f8);
+  background: var(--color-variante-superficie);
   min-height: 100vh;
   padding: 28px 32px;
   font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
@@ -16,16 +16,16 @@
   gap: 8px;
   margin-bottom: 20px;
   font-size: 13px;
-  color: var(--color-sobre-superficie, #333);
+  color: var(--color-sobre-superficie);
 }
 
 .ficha-breadcrumb-link {
-  color: var(--color-primario, #888);
+  color: var(--color-sobre-variante-superficie);
   cursor: pointer;
 }
 
 .ficha-breadcrumb-sep {
-  color: #ccc;
+  color: var(--color-variante-contorno);
 }
 
 .ficha-layout {
@@ -48,8 +48,8 @@
 }
 
 .ficha-card {
-  background: #fff;
-  border: 1px solid #e4e4e4;
+  background: var(--color-contenedor-superficie-minimo);
+  border: 1px solid var(--color-variante-contorno);
   border-radius: 6px;
   padding: 24px;
   margin-bottom: 16px;
@@ -58,7 +58,7 @@
 .ficha-card-titulo {
   font-size: 15px;
   font-weight: 700;
-  color: var(--color-sobre-superficie, #111);
+  color: var(--color-sobre-superficie);
   margin-bottom: 16px;
 }
 
@@ -72,19 +72,19 @@
   width: 110px;
   height: 110px;
   flex-shrink: 0;
-  border: 1px dashed #ccc;
+  border: 1px dashed var(--color-contorno);
   border-radius: 4px;
   cursor: pointer;
   overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #fafafa;
+  background: var(--color-contenedor-superficie-bajo);
 }
 
 .ficha-imagen-zona:hover {
-  border-color: #999;
-  background: #f0f0f0;
+  border-color: var(--color-sobre-variante-superficie);
+  background: var(--color-contenedor-superficie);
 }
 
 .ficha-imagen-preview {
@@ -95,7 +95,7 @@
 
 .ficha-imagen-texto {
   font-size: 12px;
-  color: #aaa;
+  color: var(--color-sobre-variante-superficie);
   text-align: center;
   padding: 8px;
 }
@@ -108,22 +108,22 @@
   gap: 6px;
   align-items: center;
   justify-content: center;
-  background: #e0e0e0;
-  border: 1px dashed #c8c8c8;
+  background: var(--color-contenedor-superficie-bajo);
+  border: 1px dashed var(--color-contorno);
   border-radius: 4px;
   padding: 8px;
   font-size: 11px;
-  color: #aaa;
+  color: var(--color-sobre-variante-superficie);
   text-align: center;
 }
 
 .ficha-input-url {
   width: 100%;
   font-size: 10px;
-  border: 1px solid #ccc;
+  border: 1px solid var(--color-contorno);
   border-radius: 3px;
   padding: 3px 5px;
-  background: #fff;
+  background: var(--color-contenedor-superficie-minimo);
   box-sizing: border-box;
 }
 
@@ -161,25 +161,26 @@
   display: block;
   font-size: 12px;
   font-weight: 600;
-  color: var(--color-sobre-superficie, #333);
+  color: var(--color-sobre-superficie);
   margin-bottom: 5px;
 }
 
 .ficha-requerido {
-  color: #c00;
+  color: var(--color-error);
 }
 
 .ficha-input,
 .ficha-select {
   width: 100%;
   height: 38px;
-  border: 1px solid #ccc;
+  border: 1px solid var(--color-contorno);
   border-radius: 4px;
-  background: #fff;
+  background: var(--color-contenedor-superficie-minimo);
   padding: 0 12px;
   font-size: 13px;
-  color: #333;
+  color: var(--color-sobre-superficie);
   box-sizing: border-box;
+  font-family: inherit;
 }
 
 .ficha-input-angosto {
@@ -189,14 +190,15 @@
 .ficha-textarea {
   width: 100%;
   height: 60px;
-  border: 1px solid #ccc;
+  border: 1px solid var(--color-contorno);
   border-radius: 4px;
-  background: #fff;
+  background: var(--color-contenedor-superficie-minimo);
   padding: 8px 12px;
   font-size: 13px;
-  color: #333;
+  color: var(--color-sobre-superficie);
   resize: vertical;
   box-sizing: border-box;
+  font-family: inherit;
 }
 
 .ficha-radio-grupo {
@@ -211,20 +213,20 @@
   align-items: center;
   gap: 6px;
   font-size: 13px;
-  color: #333;
+  color: var(--color-sobre-superficie);
   cursor: pointer;
 }
 
 .ficha-ayuda {
   display: block;
   font-size: 11px;
-  color: #999;
+  color: var(--color-sobre-variante-superficie);
   margin-top: 3px;
 }
 
 .ficha-error {
-  background: oklch(95% 0.03 25);
-  color: oklch(35% 0.2 25);
+  background: var(--color-contenedor-error);
+  color: var(--color-error);
   border-radius: 4px;
   padding: 10px 12px;
   font-size: 13px;
@@ -240,7 +242,7 @@
 .ficha-sidebar-titulo {
   font-size: 12px;
   font-weight: 600;
-  color: #888;
+  color: var(--color-sobre-variante-superficie);
   text-transform: uppercase;
   letter-spacing: 0.5px;
   margin-bottom: 10px;
@@ -248,25 +250,26 @@
 
 .ficha-estado-texto {
   font-size: 13px;
-  color: #333;
+  color: var(--color-sobre-superficie);
   margin-bottom: 6px;
 }
 
 .ficha-estado-nota {
   font-size: 11px;
-  color: #aaa;
+  color: var(--color-sobre-variante-superficie);
   line-height: 1.4;
 }
 
 .ficha-btn-guardar {
   width: 100%;
   height: 40px;
-  background: var(--color-primario, #222);
-  color: var(--color-sobre-primario, #fff);
+  background: var(--color-primario);
+  color: var(--color-sobre-primario);
   border: none;
   border-radius: 4px;
   font-size: 13px;
   font-weight: 500;
+  font-family: inherit;
   cursor: pointer;
   margin-bottom: 8px;
 }
@@ -279,12 +282,13 @@
 .ficha-btn-cancelar {
   width: 100%;
   height: 40px;
-  background: #fff;
-  color: #333;
-  border: 1px solid #aaa;
+  background: var(--color-contenedor-superficie-minimo);
+  color: var(--color-sobre-superficie);
+  border: 1px solid var(--color-contorno);
   border-radius: 4px;
   font-size: 13px;
   font-weight: 500;
+  font-family: inherit;
   cursor: pointer;
 }
 
@@ -307,16 +311,17 @@
 
 .ficha-btn-agregar-precio {
   background: none;
-  border: 1px solid var(--color-primario, #222);
-  color: var(--color-primario, #222);
+  border: 1px solid var(--color-primario);
+  color: var(--color-primario);
   border-radius: 4px;
   padding: 6px 14px;
   font-size: 13px;
+  font-family: inherit;
   cursor: pointer;
 }
 
 .ficha-precios-tabla {
-  border: 1px solid #e4e4e4;
+  border: 1px solid var(--color-variante-contorno);
   border-radius: 4px;
   overflow: hidden;
   margin-bottom: 12px;
@@ -325,11 +330,11 @@
 .ficha-precios-thead {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 40px;
-  background: #f5f5f5;
+  background: var(--color-contenedor-superficie-bajo);
   padding: 8px 12px;
   font-size: 11px;
   font-weight: 700;
-  color: #888;
+  color: var(--color-sobre-variante-superficie);
   text-transform: uppercase;
   letter-spacing: 0.4px;
   gap: 8px;
@@ -339,9 +344,9 @@
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 40px;
   padding: 10px 12px;
-  border-top: 1px solid #e4e4e4;
+  border-top: 1px solid var(--color-variante-contorno);
   font-size: 13px;
-  color: #333;
+  color: var(--color-sobre-superficie);
   gap: 8px;
   align-items: center;
 }
@@ -349,23 +354,23 @@
 .ficha-precios-vacio {
   padding: 16px 12px;
   font-size: 13px;
-  color: #aaa;
-  border-top: 1px solid #e4e4e4;
+  color: var(--color-sobre-variante-superficie);
+  border-top: 1px solid var(--color-variante-contorno);
 }
 
 .ficha-precio-eliminar {
-  color: #ccc;
+  color: var(--color-variante-contorno);
   cursor: pointer;
   font-size: 14px;
 }
 
 .ficha-precio-eliminar:hover {
-  color: #c00;
+  color: var(--color-error);
 }
 
 .ficha-form-precio {
-  background: #f9f9f9;
-  border: 1px solid #e4e4e4;
+  background: var(--color-contenedor-superficie-bajo);
+  border: 1px solid var(--color-variante-contorno);
   border-radius: 4px;
   padding: 16px;
   margin-bottom: 12px;
@@ -385,7 +390,7 @@
 
 .ficha-precios-nota {
   font-size: 11px;
-  color: #aaa;
+  color: var(--color-sobre-variante-superficie);
   line-height: 1.4;
 }
 

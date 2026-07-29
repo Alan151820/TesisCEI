@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import axios from 'axios'
+import api from '../../lib/axios'
+import { useCarrito } from '../../context/CarritoContext'
 import './DetalleProducto.css'
 
 function DetalleProducto() {
@@ -12,10 +13,15 @@ function DetalleProducto() {
   const iniciales = nombre.split(' ').map(p => p[0]).join('').slice(0, 2).toUpperCase()
   const [producto, setProducto] = useState(null)
   const [mensaje, setMensaje] = useState('')
+  const [cantidad, setCantidad] = useState(1)
+  const { agregarProducto, totalItems } = useCarrito()
 
   useEffect(() => {
-    axios.get(`http://localhost:3000/api/catalogo/${id}`)
-      .then(res => setProducto(res.data))
+    api.get(`/api/catalogo/${id}`)
+      .then(res => {
+        setProducto(res.data)
+        setCantidad(1)
+      })
       .catch(err => {
         setMensaje(err.response?.data?.mensaje || 'No fue posible completar la operación. Intente nuevamente más tarde.')
       })
@@ -26,7 +32,15 @@ function DetalleProducto() {
     localStorage.removeItem('nombre')
     localStorage.removeItem('telefono')
     localStorage.removeItem('modoDistribuidorActivo')
-navigate('/catalogo', { replace: true })
+    navigate('/catalogo', { replace: true })
+  }
+
+  const decrementar = () => {
+    setCantidad(prev => Math.max(1, prev - 1))
+  }
+
+  const incrementar = () => {
+    setCantidad(prev => prev + 1)
   }
 
   if (mensaje) return <p className="detalleproducto-mensaje-pagina">{mensaje}</p>
@@ -35,34 +49,37 @@ navigate('/catalogo', { replace: true })
   return (
     <div className="detalleproducto-layout">
 
-    <header className={token ? 'detalleproducto-header-autenticado' : 'detalleproducto-header'}>
-  <div className="detalleproducto-header-marca">MarketPlace</div>
-  <div className="detalleproducto-header-buscador">
-    <span className="detalleproducto-header-buscador-icono">⌕</span>
-    <span className="detalleproducto-header-buscador-texto">Buscar productos…</span>
-  </div>
-  <div className={token ? 'detalleproducto-acciones-auth' : 'detalleproducto-header-acciones'}>
-    {token ? (
-      <>
-        <button className="detalleproducto-btn-distribuidora" onClick={() => navigate(modoDistribuidorActivo ? '/inicio' : '/configurarPerfil')}>
-          Distribuidora
-        </button>
-        <div className="detalleproducto-perfil">
-          <div className="detalleproducto-avatar">{iniciales}</div>
-          <span className="detalleproducto-nombre-usuario">{nombre}</span>
+      <header className={token ? 'detalleproducto-header-autenticado' : 'detalleproducto-header'}>
+        <div className="detalleproducto-header-marca" onClick={() => navigate('/')}>MarketDist</div>
+        <div className="detalleproducto-header-buscador">
+          <span className="detalleproducto-header-buscador-icono">⌕</span>
+          <span className="detalleproducto-header-buscador-texto">Buscar productos…</span>
         </div>
-        <button className="detalleproducto-btn-cerrar-sesion" onClick={cerrarSesion}>
-          Cerrar sesión
-        </button>
-      </>
-    ) : (
-      <>
-        <button className="detalleproducto-btn-login" onClick={() => navigate('/login')}>Iniciar sesión</button>
-        <button className="detalleproducto-btn-registro" onClick={() => navigate('/registro')}>Registrarse</button>
-      </>
-    )}
-  </div>
-</header>
+        <div className={token ? 'detalleproducto-acciones-auth' : 'detalleproducto-header-acciones'}>
+          <button className="detalleproducto-btn-carrito" onClick={() => navigate('/carrito')}>
+            🛒{totalItems > 0 && <span className="detalleproducto-carrito-badge">{totalItems}</span>}
+          </button>
+          {token ? (
+            <>
+              <span className="detalleproducto-nav-link" onClick={() => navigate(modoDistribuidorActivo ? '/inicio' : '/configurarPerfil')}>
+                Distribuidora
+              </span>
+              <div className="detalleproducto-perfil">
+                <div className="detalleproducto-avatar">{iniciales}</div>
+                <span className="detalleproducto-nombre-usuario">{nombre}</span>
+              </div>
+              <button className="detalleproducto-btn-cerrar-sesion" onClick={cerrarSesion}>
+                Cerrar sesión
+              </button>
+            </>
+          ) : (
+            <>
+              <button className="detalleproducto-btn-login" onClick={() => navigate('/login')}>Iniciar sesión</button>
+              <button className="detalleproducto-btn-registro" onClick={() => navigate('/registro')}>Registrarse</button>
+            </>
+          )}
+        </div>
+      </header>
 
       <div className="detalleproducto-contenido">
         <button className="detalleproducto-volver" onClick={() => navigate(-1)}>← Volver</button>
@@ -81,11 +98,11 @@ navigate('/catalogo', { replace: true })
             <div className="detalleproducto-info-categoria">
               {producto.categoria} ·{' '}
               <button
-  className="detalleproducto-info-distribuidor"
-  onClick={() => navigate(`/perfilDistribuidor/${producto.distribuidorId}`, { replace: true })}
->
-  {producto.nombreDistribuidor}
-</button>
+                className="detalleproducto-info-distribuidor"
+                onClick={() => navigate(`/perfilDistribuidor/${producto.distribuidorId}`, { replace: true })}
+              >
+                {producto.nombreDistribuidor}
+              </button>
             </div>
 
             <h1 className="detalleproducto-nombre">{producto.nombre}</h1>
@@ -119,14 +136,26 @@ navigate('/catalogo', { replace: true })
               <div className="detalleproducto-carrito-titulo">Agregar al carrito</div>
               {producto.tarifas.length > 0 && (
                 <div className="detalleproducto-carrito-cantidad-fila">
-                  <div className="detalleproducto-carrito-cantidad-caja">{producto.tarifas[0].cantidadMinima}</div>
+                  <div className="detalleproducto-carrito-stepper">
+                    <button className="detalleproducto-stepper-btn" onClick={decrementar}>−</button>
+                    <span className="detalleproducto-stepper-valor">{cantidad}</span>
+                    <button className="detalleproducto-stepper-btn" onClick={incrementar}>+</button>
+                  </div>
                   <div className="detalleproducto-carrito-cantidad-info">
                     unidades · <strong>${Number(producto.tarifas[0].precioVenta).toLocaleString('es-AR')} c/u</strong>
                   </div>
                 </div>
               )}
               {token ? (
-                <button className="detalleproducto-carrito-boton">Agregar al carrito</button>
+                <button
+                  className="detalleproducto-carrito-boton"
+                  onClick={() => {
+                    const precioMinimo = producto.precioMinimo ?? producto.tarifas?.[0]?.precioVenta
+                    agregarProducto({ ...producto, precioMinimo }, cantidad)
+                  }}
+                >
+                  Agregar al carrito
+                </button>
               ) : (
                 <>
                   <button className="detalleproducto-carrito-boton" disabled>Agregar al carrito</button>

@@ -335,7 +335,7 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  background: #F8F8F8;
+  background: var(--color-variante-superficie);
 }
 
 
@@ -356,21 +356,21 @@
 .panel-h1 {
   font-size: 22px;
   font-weight: 700;
-  color: #111;
+  color: var(--color-sobre-superficie);
   letter-spacing: -0.5px;
   margin: 0 0 4px 0;
 }
 
 .panel-subtitulo {
   font-size: 13px;
-  color: #888;
+  color: var(--color-sobre-variante-superficie);
   margin: 0;
 }
 
 .panel-btn-nuevo {
   height: 38px;
-  background: #222;
-  color: #FFF;
+  background: var(--color-primario);
+  color: var(--color-sobre-primario);
   border: none;
   border-radius: 4px;
   padding: 0 16px;
@@ -381,7 +381,7 @@
 }
 
 .panel-btn-nuevo:hover {
-  background: #333;
+  opacity: 0.9;
 }
 
 /* Filtros */
@@ -397,34 +397,34 @@
 
 .panel-filtro-chip {
   height: 34px;
-  border: 1px solid #CCC;
+  border: 1px solid var(--color-contorno);
   border-radius: 4px;
   padding: 0 12px;
   display: flex;
   align-items: center;
   font-size: 12px;
-  color: #777;
-  background: #FFF;
+  color: var(--color-sobre-variante-superficie);
+  background: var(--color-contenedor-superficie-minimo);
   cursor: pointer;
 }
 
 .panel-filtro-limpiar {
   height: 34px;
-  border: 1px solid #DDD;
+  border: 1px solid var(--color-variante-contorno);
   border-radius: 4px;
   padding: 0 10px;
   display: flex;
   align-items: center;
   font-size: 12px;
-  color: #AAA;
-  background: #FFF;
+  color: var(--color-sobre-variante-superficie);
+  background: var(--color-contenedor-superficie-minimo);
   cursor: pointer;
 }
 
 /* Tabla */
 .panel-tabla-wrapper {
-  background: #FFF;
-  border: 1px solid #E4E4E4;
+  background: var(--color-contenedor-superficie-minimo);
+  border: 1px solid var(--color-variante-contorno);
   border-radius: 6px;
   overflow-x: auto;
 }
@@ -432,15 +432,15 @@
 .panel-tabla-header {
   display: grid;
   grid-template-columns: 52px 1fr 140px 120px 120px 120px 180px;
-  background: #F5F5F5;
-  border-bottom: 1px solid #E4E4E4;
+  background: var(--color-contenedor-superficie-bajo);
+  border-bottom: 1px solid var(--color-variante-contorno);
 }
 
 .panel-tabla-header > div {
   padding: 10px 14px;
   font-size: 11px;
   font-weight: 700;
-  color: #777;
+  color: var(--color-sobre-variante-superficie);
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
@@ -448,12 +448,12 @@
 .panel-tabla-vacio {
   padding: 40px 24px;
   font-size: 13px;
-  color: #AAA;
+  color: var(--color-sobre-variante-superficie);
   text-align: center;
 }
 
 .panel-tabla-vacio-link {
-  color: #333;
+  color: var(--color-sobre-superficie);
   font-weight: 500;
   cursor: pointer;
   text-decoration: underline;
@@ -463,8 +463,8 @@
 .panel-tabla-fila {
   display: grid;
   grid-template-columns: 52px 1fr 140px 120px 120px 120px 180px;
-  border-bottom: 1px solid #F0F0F0;
-  background: #FFF;
+  border-bottom: 1px solid var(--color-contenedor-superficie-bajo);
+  background: var(--color-contenedor-superficie-minimo);
 }
 
 .panel-tabla-fila:last-child {
@@ -474,25 +474,25 @@
 .panel-tabla-celda {
   padding: 12px 14px;
   font-size: 13px;
-  color: #444;
+  color: var(--color-sobre-superficie);
   display: flex;
   align-items: center;
 }
 
 .panel-tabla-celda.stock-cero {
-  color: #C00;
+  color: var(--color-error);
 }
 
 .panel-producto-foto {
   width: 36px;
   height: 36px;
-  background: #E8E8E8;
+  background: var(--color-contenedor-superficie-bajo);
   border-radius: 3px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 9px;
-  color: #AAA;
+  color: var(--color-sobre-variante-superficie);
 }
 
 .panel-producto-foto-img {
@@ -509,45 +509,45 @@
 }
 
 .panel-estado-badge.publicado {
-  background: #E8E8E8;
-  color: #333;
+  background: var(--color-contenedor-superficie-maximo);
+  color: var(--color-sobre-superficie);
 }
 
 .panel-estado-badge.pausado {
-  background: #F5F5F5;
-  color: #AAA;
+  background: var(--color-contenedor-superficie);
+  color: var(--color-sobre-variante-superficie);
 }
 
 .panel-acciones {
   font-size: 12px;
-  color: #444;
+  color: var(--color-sobre-superficie);
   cursor: pointer;
   gap: 4px;
 }
 
 .panel-tabla-contador {
   font-size: 12px;
-  color: #AAA;
+  color: var(--color-sobre-variante-superficie);
   margin-top: 10px;
 }
 
 .panel-accion-link {
-  color: #444;
+  color: var(--color-sobre-superficie);
   cursor: pointer;
   font-size: 12px;
 }
 
 .panel-accion-link:hover {
-  color: #111;
+  color: var(--color-sobre-superficie);
   text-decoration: underline;
 }
 
 .panel-error-visibilidad {
   padding: 6px 14px 8px 66px;
   font-size: 12px;
-  color: oklch(35% 0.2 25);
-  background: oklch(97% 0.02 25);
-  border-top: 1px solid oklch(90% 0.05 25);
+  color: var(--color-error);
+  background: var(--color-contenedor-error);
+  border-top: 1px solid var(--color-variante-contorno);
 }
 
 /* Drawer — oculto siempre (solo existe via React conditional) */
@@ -723,10 +723,10 @@
     position: sticky;
     top: 0;
     z-index: 5;
-    background: #F8F8F8;
+    background: var(--color-variante-superficie);
     padding: 10px 14px;
     margin-bottom: 0;
-    border-bottom: 1px solid #E4E4E4;
+    border-bottom: 1px solid var(--color-variante-contorno);
   }
   .panel-filtro-chip { height: 30px; font-size: 11px; white-space: nowrap; flex-shrink: 0; }
   .panel-filtro-limpiar { height: 30px; font-size: 11px; white-space: nowrap; flex-shrink: 0; }
@@ -743,8 +743,8 @@
     align-items: center;
     padding: 12px 14px;
     gap: 10px;
-    border-bottom: 1px solid #F0F0F0;
-    background: #FFF;
+    border-bottom: 1px solid var(--color-contenedor-superficie-bajo);
+    background: var(--color-contenedor-superficie-minimo);
   }
 
   .panel-lista-foto {
@@ -753,12 +753,12 @@
     border-radius: 4px;
     flex-shrink: 0;
     overflow: hidden;
-    background: #E8E8E8;
+    background: var(--color-contenedor-superficie-bajo);
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 10px;
-    color: #AAA;
+    color: var(--color-sobre-variante-superficie);
   }
 
   .panel-lista-foto-img {
@@ -779,7 +779,7 @@
   .panel-lista-nombre {
     font-size: 13px;
     font-weight: 500;
-    color: #222;
+    color: var(--color-sobre-superficie);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -787,7 +787,7 @@
 
   .panel-lista-stock {
     font-size: 11px;
-    color: #888;
+    color: var(--color-sobre-variante-superficie);
   }
 
   /* Fix 5: columna vertical explícita */
@@ -802,7 +802,7 @@
 
   .panel-lista-editar {
     font-size: 12px;
-    color: #444;
+    color: var(--color-sobre-superficie);
     cursor: pointer;
     min-height: 28px;
     display: flex;
@@ -810,7 +810,7 @@
   }
 
   .panel-lista-editar:hover {
-    color: #111;
+    color: var(--color-sobre-superficie);
     text-decoration: underline;
   }
 

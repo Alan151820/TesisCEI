@@ -1,6 +1,6 @@
 .configperfil-fondo {
   min-height: 100vh;
-  background: #F8F8F8;
+  background: var(--color-variante-superficie);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -12,8 +12,8 @@
 .configperfil-card {
   width: 520px;
   max-width: 100%;
-  background: #FFF;
-  border: 1px solid #E0E0E0;
+  background: var(--color-contenedor-superficie-minimo);
+  border: 1px solid var(--color-variante-contorno);
   border-radius: 8px;
   padding: 36px 40px;
   box-sizing: border-box;
@@ -22,7 +22,7 @@
 .configperfil-eyebrow {
   font-size: 10px;
   font-weight: 600;
-  color: #888;
+  color: var(--color-sobre-variante-superficie);
   text-transform: uppercase;
   letter-spacing: 1px;
   margin-bottom: 8px;
@@ -31,13 +31,13 @@
 .configperfil-titulo {
   font-size: 22px;
   font-weight: 700;
-  color: var(--color-sobre-superficie, #111);
+  color: var(--color-sobre-superficie);
   margin: 0 0 6px 0;
 }
 
 .configperfil-subtitulo {
   font-size: 13px;
-  color: #888;
+  color: var(--color-sobre-variante-superficie);
   margin: 0 0 24px 0;
 }
 
@@ -49,18 +49,18 @@
   display: block;
   font-size: 12px;
   font-weight: 600;
-  color: var(--color-sobre-superficie, #333);
+  color: var(--color-sobre-superficie);
   margin-bottom: 5px;
 }
 
 .configperfil-input,
 .configperfil-textarea {
   width: 100%;
-  border: 1px solid #CCC;
+  border: 1px solid var(--color-contorno);
   border-radius: 4px;
-  background: #FFF;
+  background: var(--color-contenedor-superficie-minimo);
   font-size: 13px;
-  color: var(--color-sobre-superficie, #333);
+  color: var(--color-sobre-superficie);
   box-sizing: border-box;
   font-family: inherit;
 }
@@ -76,10 +76,15 @@
   resize: vertical;
 }
 
+.configperfil-input::placeholder,
+.configperfil-textarea::placeholder {
+  color: var(--color-sobre-variante-superficie);
+}
+
 .configperfil-ayuda {
   display: block;
   font-size: 11px;
-  color: #999;
+  color: var(--color-sobre-variante-superficie);
   margin-top: 3px;
 }
 
@@ -91,9 +96,10 @@
   font-size: 13px;
   font-weight: 500;
   cursor: pointer;
-  background: var(--color-primario, #222);
-  color: var(--color-sobre-primario, #FFF);
+  background: var(--color-primario);
+  color: var(--color-sobre-primario);
   border: none;
+  font-family: inherit;
 }
 
 .configperfil-btn-guardar:hover {
@@ -106,8 +112,8 @@
 
 .configperfil-mensaje:not(:empty) {
   font-size: 13px;
-  color: var(--color-error, oklch(35% 0.2 25));
-  background: oklch(95% 0.03 25);
+  color: var(--color-error);
+  background: var(--color-contenedor-error);
   border-radius: 4px;
   padding: 10px 12px;
   margin: 14px 0 0 0;

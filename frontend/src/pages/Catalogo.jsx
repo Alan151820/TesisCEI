@@ -63,7 +63,7 @@ function Catalogo() {
     <div className="catalogo-layout">
 
       <header className="catalogo-header">
-        <div className="catalogo-header-marca">MarketDist</div>
+        <div className="catalogo-header-marca" onClick={() => navigate('/')}>MarketDist</div>
         <div className="catalogo-header-buscador">
           <span className="catalogo-header-buscador-icono">⌕</span>
           <input

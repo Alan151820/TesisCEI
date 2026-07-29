@@ -2,15 +2,15 @@
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  background: #F8F8F8;
+  background: var(--color-variante-superficie);
   font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
 }
 
 /* ── Header desktop ── */
 .mispedidos-header-desktop {
   height: 56px;
-  background: #FFF;
-  border-bottom: 1px solid #E0E0E0;
+  background: var(--color-contenedor-superficie-minimo);
+  border-bottom: 1px solid var(--color-variante-contorno);
   display: flex;
   align-items: center;
   padding: 0 40px;
@@ -21,7 +21,7 @@
 .mispedidos-header-logo {
   font-size: 17px;
   font-weight: 700;
-  color: #111;
+  color: var(--color-sobre-superficie);
   flex-shrink: 0;
 }
 
@@ -29,8 +29,8 @@
   flex: 1;
   max-width: 560px;
   height: 36px;
-  background: #F8F8F8;
-  border: 1px solid #C8C8C8;
+  background: var(--color-contenedor-superficie-bajo);
+  border: 1px solid var(--color-contorno);
   border-radius: 4px;
   display: flex;
   align-items: center;
@@ -40,19 +40,19 @@
 
 .mispedidos-header-buscador-icono {
   font-size: 13px;
-  color: #AAA;
+  color: var(--color-sobre-variante-superficie);
 }
 
 .mispedidos-header-buscador-input {
   border: none;
   background: transparent;
   font-size: 13px;
-  color: #333;
+  color: var(--color-sobre-superficie);
   outline: none;
   width: 100%;
 }
 
-.mispedidos-header-buscador-input::placeholder { color: #C0C0C0; }
+.mispedidos-header-buscador-input::placeholder { color: var(--color-sobre-variante-superficie); }
 
 .mispedidos-header-acciones {
   margin-left: auto;
@@ -65,9 +65,9 @@
   position: relative;
   width: 36px;
   height: 36px;
-  border: 1px solid #DDD;
+  border: 1px solid var(--color-variante-contorno);
   border-radius: 4px;
-  background: #FFF;
+  background: var(--color-contenedor-superficie-minimo);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -79,8 +79,8 @@
   position: absolute;
   top: -5px;
   right: -5px;
-  background: #333;
-  color: #FFF;
+  background: var(--color-primario);
+  color: var(--color-sobre-primario);
   font-size: 9px;
   width: 16px;
   height: 16px;
@@ -99,31 +99,31 @@
 .mispedidos-header-avatar {
   width: 32px;
   height: 32px;
-  background: #E0E0E0;
+  background: var(--color-contenedor-superficie-alto);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 12px;
   font-weight: 600;
-  color: #666;
+  color: var(--color-sobre-variante-superficie);
 }
 
 .mispedidos-header-nombre {
   font-size: 13px;
-  color: #444;
+  color: var(--color-sobre-superficie);
 }
 
 .mispedidos-header-cerrar {
   font-size: 12px;
-  color: #888;
+  color: var(--color-sobre-variante-superficie);
   background: none;
   border: none;
   cursor: pointer;
   padding: 0;
 }
 
-.mispedidos-header-cerrar:hover { color: #333; }
+.mispedidos-header-cerrar:hover { color: var(--color-sobre-superficie); }
 
 /* ── Header mobile (oculto en desktop) ── */
 .mispedidos-header-mobile {
@@ -144,14 +144,14 @@
 .mispedidos-titulo {
   font-size: 22px;
   font-weight: 700;
-  color: #111;
+  color: var(--color-sobre-superficie);
   letter-spacing: -0.5px;
   margin: 0 0 4px 0;
 }
 
 .mispedidos-subtitulo {
   font-size: 13px;
-  color: #888;
+  color: var(--color-sobre-variante-superficie);
   margin: 0;
 }
 
@@ -159,15 +159,15 @@
   text-align: center;
   padding: 48px 16px;
   font-size: 14px;
-  color: #888;
+  color: var(--color-sobre-variante-superficie);
 }
 
-.mispedidos-error { color: #C0392B; }
+.mispedidos-error { color: var(--color-error); }
 
 /* ── Tabla desktop ── */
 .mispedidos-tabla {
-  background: #FFF;
-  border: 1px solid #E4E4E4;
+  background: var(--color-contenedor-superficie-minimo);
+  border: 1px solid var(--color-variante-contorno);
   border-radius: 6px;
   overflow: hidden;
 }
@@ -175,15 +175,15 @@
 .mispedidos-tabla-header {
   display: grid;
   grid-template-columns: 120px 200px 130px 120px 130px 80px;
-  background: #F5F5F5;
-  border-bottom: 1px solid #E4E4E4;
+  background: var(--color-contenedor-superficie-bajo);
+  border-bottom: 1px solid var(--color-variante-contorno);
 }
 
 .mispedidos-tabla-header > div {
   padding: 10px 14px;
   font-size: 11px;
   font-weight: 700;
-  color: #777;
+  color: var(--color-sobre-variante-superficie);
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
@@ -191,7 +191,7 @@
 .mispedidos-tabla-fila {
   display: grid;
   grid-template-columns: 120px 200px 130px 120px 130px 80px;
-  border-bottom: 1px solid #F0F0F0;
+  border-bottom: 1px solid var(--color-contenedor-superficie-bajo);
 }
 
 .mispedidos-tabla-fila:last-child { border-bottom: none; }
@@ -199,38 +199,38 @@
 .mispedidos-celda {
   padding: 12px 14px;
   font-size: 13px;
-  color: #444;
+  color: var(--color-sobre-superficie);
   display: flex;
   align-items: center;
 }
 
 .mispedidos-numero {
   font-weight: 600;
-  color: #333;
+  color: var(--color-sobre-superficie);
 }
 
 .mispedidos-ver {
-  color: #555;
+  color: var(--color-sobre-variante-superficie);
   cursor: pointer;
   font-size: 12px;
 }
 
-.mispedidos-ver:hover { color: #111; }
+.mispedidos-ver:hover { color: var(--color-sobre-superficie); }
 
 /* ── Estado badges ── */
 .mispedidos-estado {
   font-size: 11px;
   padding: 3px 8px;
   border-radius: 3px;
-  background: #E8E8E8;
-  color: #333;
+  background: var(--color-contenedor-superficie-maximo);
+  color: var(--color-sobre-superficie);
   white-space: nowrap;
 }
 
 .mispedidos-estado--entregado  { background: #E6F4EA; color: #1E7E34; }
-.mispedidos-estado--rechazado  { background: #FDECEA; color: #C0392B; }
+.mispedidos-estado--rechazado  { background: var(--color-contenedor-error); color: var(--color-sobre-contenedor-error); }
 .mispedidos-estado--en_camino  { background: #EAF2FB; color: #1A6BAA; }
-.mispedidos-estado--pendiente  { background: #E8E8E8; color: #333;    }
+.mispedidos-estado--pendiente  { background: var(--color-contenedor-superficie-maximo); color: var(--color-sobre-superficie); }
 .mispedidos-estado--aceptado   { background: #FFF8E1; color: #8A6800; }
 
 /* ── Cards mobile (ocultas en desktop) ── */
@@ -250,8 +250,8 @@
   .mispedidos-header-mobile {
     display: flex;
     height: 52px;
-    background: #FFF;
-    border-bottom: 1px solid #E8E8E8;
+    background: var(--color-contenedor-superficie-minimo);
+    border-bottom: 1px solid var(--color-variante-contorno);
     align-items: center;
     padding: 0 14px;
     gap: 10px;
@@ -264,15 +264,15 @@
   .mispedidos-header-logo {
     font-size: 13px;
     font-weight: 700;
-    color: #111;
+    color: var(--color-sobre-superficie);
     flex-shrink: 0;
   }
 
   .mispedidos-header-buscador-mobile {
     flex: 1;
     height: 28px;
-    background: #F5F5F5;
-    border: 1px solid #DDD;
+    background: var(--color-contenedor-superficie-bajo);
+    border: 1px solid var(--color-variante-contorno);
     border-radius: 4px;
     display: flex;
     align-items: center;
@@ -282,7 +282,7 @@
 
   .mispedidos-header-buscador-mobile .mispedidos-header-buscador-icono {
     font-size: 11px;
-    color: #BBB;
+    color: var(--color-sobre-variante-superficie);
   }
 
   .mispedidos-header-buscador-mobile .mispedidos-header-buscador-input {
@@ -293,18 +293,18 @@
     width: 100%;
   }
 
-  .mispedidos-header-buscador-mobile .mispedidos-header-buscador-input::placeholder { color: #BBB; }
+  .mispedidos-header-buscador-mobile .mispedidos-header-buscador-input::placeholder { color: var(--color-sobre-variante-superficie); }
 
   .mispedidos-header-avatar-mobile {
     width: 28px;
     height: 28px;
-    background: #E8E8E8;
+    background: var(--color-contenedor-superficie-alto);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 10px;
-    color: #555;
+    color: var(--color-sobre-variante-superficie);
     font-weight: 600;
     flex-shrink: 0;
   }
@@ -327,8 +327,8 @@
   }
 
   .mispedidos-card {
-    background: #FFF;
-    border: 1px solid #E4E4E4;
+    background: var(--color-contenedor-superficie-minimo);
+    border: 1px solid var(--color-variante-contorno);
     border-radius: 8px;
     padding: 14px;
     display: flex;
@@ -345,12 +345,12 @@
   .mispedidos-card-numero {
     font-size: 14px;
     font-weight: 700;
-    color: #111;
+    color: var(--color-sobre-superficie);
   }
 
   .mispedidos-card-distribuidor {
     font-size: 13px;
-    color: #555;
+    color: var(--color-sobre-variante-superficie);
   }
 
   .mispedidos-card-footer {
@@ -359,21 +359,21 @@
 
   .mispedidos-card-fecha {
     font-size: 12px;
-    color: #AAA;
+    color: var(--color-sobre-variante-superficie);
   }
 
   .mispedidos-card-total {
     font-size: 14px;
     font-weight: 600;
-    color: #333;
+    color: var(--color-sobre-superficie);
   }
 
   /* Bottom nav */
   .mispedidos-bottom-nav {
     display: flex;
     height: 56px;
-    background: #FFF;
-    border-top: 1px solid #E8E8E8;
+    background: var(--color-contenedor-superficie-minimo);
+    border-top: 1px solid var(--color-variante-contorno);
     align-items: center;
     justify-content: space-around;
     position: fixed;
@@ -394,20 +394,20 @@
 
   .mispedidos-bottom-icono {
     font-size: 18px;
-    color: #AAA;
+    color: var(--color-sobre-variante-superficie);
     position: relative;
   }
 
-  .mispedidos-bottom-item.activo .mispedidos-bottom-icono { color: #111; }
+  .mispedidos-bottom-item.activo .mispedidos-bottom-icono { color: var(--color-sobre-superficie); }
 
   .mispedidos-bottom-label {
     font-size: 10px;
-    color: #AAA;
+    color: var(--color-sobre-variante-superficie);
     font-weight: 500;
   }
 
   .mispedidos-bottom-item.activo .mispedidos-bottom-label {
-    color: #111;
+    color: var(--color-sobre-superficie);
     font-weight: 700;
   }
 
@@ -415,8 +415,8 @@
     position: absolute;
     top: -4px;
     right: -6px;
-    background: #333;
-    color: #FFF;
+    background: var(--color-primario);
+    color: var(--color-sobre-primario);
     font-size: 8px;
     width: 14px;
     height: 14px;
