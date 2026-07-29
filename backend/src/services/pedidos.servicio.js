@@ -49,6 +49,22 @@ async function confirmarPedido(compradorId, direccionEntrega, latitud, longitud,
         )
       }
 
+      // Obtener usuario_id del distribuidor y nombre del comprador para la notificación
+      const resInfo = await cliente.query(
+        `SELECT d.usuario_id AS "distribuidorUsuarioId", u.nombre_completo AS "nombreComprador"
+         FROM distribuidor d
+         JOIN usuario u ON u.id = $2
+         WHERE d.id = $1`,
+        [Number(distribuidorId), compradorId]
+      )
+      const { distribuidorUsuarioId, nombreComprador } = resInfo.rows[0]
+
+      await cliente.query(
+        `INSERT INTO notificacion (usuario_id, pedido_id, tipo, mensaje)
+         VALUES ($1, $2, 'pedido_entrante', $3)`,
+        [distribuidorUsuarioId, pedidoId, `Nuevo pedido #${pedidoId} de ${nombreComprador}.`]
+      )
+
       pedidosCreados.push({ pedidoId, distribuidorId: Number(distribuidorId) })
     }
 

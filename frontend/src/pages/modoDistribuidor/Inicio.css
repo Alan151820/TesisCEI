@@ -68,6 +68,121 @@
   margin-left: auto;
 }
 
+/* Notificaciones */
+.panel-notif {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.panel-notif-btn {
+  position: relative;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  padding: 4px 6px;
+  line-height: 1;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.panel-notif-btn:hover {
+  background: var(--color-contenedor-superficie);
+}
+
+.panel-notif-badge {
+  position: absolute;
+  top: 0;
+  right: 0;
+  min-width: 16px;
+  height: 16px;
+  background: var(--color-error);
+  color: var(--color-sobre-error);
+  border-radius: 8px;
+  font-size: 10px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 3px;
+}
+
+.panel-notif-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  width: 320px;
+  background: var(--color-contenedor-superficie-minimo);
+  border: 1px solid var(--color-variante-contorno);
+  border-radius: 6px;
+  box-shadow: 0 4px 16px rgba(0,0,0,.12);
+  z-index: 100;
+  overflow: hidden;
+  max-height: 360px;
+  overflow-y: auto;
+}
+
+.panel-notif-vacio {
+  padding: 20px;
+  text-align: center;
+  font-size: 13px;
+  color: var(--color-sobre-variante-superficie);
+}
+
+.panel-notif-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--color-variante-contorno);
+  cursor: pointer;
+  transition: background .1s;
+}
+
+.panel-notif-item:last-child {
+  border-bottom: none;
+}
+
+.panel-notif-item:hover {
+  background: var(--color-contenedor-superficie-bajo);
+}
+
+.panel-notif-item.no-leida {
+  background: var(--color-contenedor-superficie-bajo);
+}
+
+.panel-notif-punto {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-sobre-superficie);
+  flex-shrink: 0;
+  margin-top: 4px;
+}
+
+.panel-notif-cuerpo {
+  flex: 1;
+}
+
+.panel-notif-mensaje {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-sobre-superficie);
+  line-height: 1.4;
+  margin-bottom: 3px;
+}
+
+.panel-notif-item:not(.no-leida) .panel-notif-mensaje {
+  font-weight: 400;
+}
+
+.panel-notif-fecha {
+  font-size: 11px;
+  color: var(--color-sobre-variante-superficie);
+}
+
 .panel-master-header-avatar {
   width: 34px;
   height: 34px;

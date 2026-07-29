@@ -1,157 +1,257 @@
 import { useState, useEffect } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
-import { useCarrito } from '../../context/CarritoContext'
+import { useNavigate, useLocation } from 'react-router-dom'
 import api from '../../lib/axios'
-import './PerfilDistribuidor.css'
+import './Inicio.css'
 
-function PerfilDistribuidor() {
-  const { id } = useParams()
+const NAV_ITEMS = [
+  { label: 'Pedidos', ruta: '/pedidos' },
+  { label: 'Productos', ruta: '/inicio' },
+  { label: 'Proveedores', ruta: '/proveedores' },
+  { label: 'Reparto', ruta: '/reparto' },
+  { label: 'Reportes', ruta: '/reportes' },
+  { label: 'Empleados', ruta: '/empleados' },
+  { label: 'Editar perfil', ruta: '/editarPerfil' },
+]
+
+function Inicio() {
   const navigate = useNavigate()
-  const token = localStorage.getItem('token')
+  const location = useLocation()
   const nombre = localStorage.getItem('nombre') || ''
-  const modoDistribuidorActivo = localStorage.getItem('modoDistribuidorActivo') === 'true'
+  const token = localStorage.getItem('token')
   const iniciales = nombre.split(' ').map(p => p[0]).join('').slice(0, 2).toUpperCase()
-  const { totalItems } = useCarrito()
 
-  const [distribuidor, setDistribuidor] = useState(null)
   const [productos, setProductos] = useState([])
-  const [mensaje, setMensaje] = useState('')
+  const [cargando, setCargando] = useState(true)
+  const [errorVisibilidad, setErrorVisibilidad] = useState({})
+  const [categorias, setCategorias] = useState([])
+  const [filtroCategoria, setFiltroCategoria] = useState('')
+  const [filtroVisibilidad, setFiltroVisibilidad] = useState('')
+  const [filtroStock, setFiltroStock] = useState('')
 
-  useEffect(() => {
-    const obtenerPerfil = async () => {
-      try {
-        const res = await api.get(`/distribuidor/perfilDistribuidor/${id}`)
-        setDistribuidor(res.data)
-      } catch (error) {
-        setMensaje(error.response?.data?.mensaje || 'No fue posible completar la operación. Intente nuevamente más tarde.')
-      }
+  const headers = { Authorization: `Bearer ${token}` }
+
+  const cargarProductos = async (categoria = '', visibilidad = '', stock = '') => {
+    setCargando(true)
+    try {
+      const params = {}
+      if (categoria) params.categoria = categoria
+      if (visibilidad) params.visibilidad = visibilidad
+      if (stock) params.stock = stock
+      const res = await api.get('/api/productos', { params })
+      setProductos(res.data)
+    } catch {
+      setProductos([])
+    } finally {
+      setCargando(false)
     }
-
-    const obtenerProductos = async () => {
-      try {
-        const res = await api.get(`/distribuidor/${id}/productos`)
-        setProductos(res.data)
-      } catch {
-        setProductos([])
-      }
-    }
-
-    obtenerPerfil()
-    obtenerProductos()
-  }, [id])
-
-  const cerrarSesion = () => {
-    localStorage.removeItem('token')
-    localStorage.removeItem('nombre')
-    localStorage.removeItem('telefono')
-    localStorage.removeItem('modoDistribuidorActivo')
-    window.dispatchEvent(new Event('auth-changed'))
-    navigate('/catalogo', { replace: true })
   }
 
-  if (mensaje) return <p className="perfildist-mensaje-pagina">{mensaje}</p>
-  if (!distribuidor) return <p className="perfildist-mensaje-pagina">Cargando...</p>
+  useEffect(() => {
+    if (!token) {
+      navigate('/login', { replace: true })
+      return
+    }
+    cargarProductos()
+    api.get('/api/productos/categorias')
+      .then(res => setCategorias(res.data))
+      .catch(() => {})
+  }, [])
 
-  const calificacionRedondeada = distribuidor.calificacionPromedio ? Math.round(distribuidor.calificacionPromedio) : 0
+  const filtrarPorCategoria = (e) => {
+    setFiltroCategoria(e.target.value)
+    cargarProductos(e.target.value, filtroVisibilidad, filtroStock)
+  }
+
+  const filtrarPorVisibilidad = (e) => {
+    setFiltroVisibilidad(e.target.value)
+    cargarProductos(filtroCategoria, e.target.value, filtroStock)
+  }
+
+  const filtrarPorStock = (e) => {
+    setFiltroStock(e.target.value)
+    cargarProductos(filtroCategoria, filtroVisibilidad, e.target.value)
+  }
+
+  const limpiarFiltros = () => {
+    setFiltroCategoria('')
+    setFiltroVisibilidad('')
+    setFiltroStock('')
+    cargarProductos()
+  }
+
+  const cambiarVisibilidad = async (productoId, nuevoEstado) => {
+    setErrorVisibilidad(prev => ({ ...prev, [productoId]: null }))
+    try {
+      const res = await api.patch(`/api/productos/${productoId}/visibilidad`, { nuevoEstado })
+      const productoActualizado = res.data.producto
+      setProductos(prev =>
+        prev.map(p =>
+          p.id === productoId ? { ...p, estadoVisibilidad: productoActualizado.estadoVisibilidad } : p
+        )
+      )
+    } catch (err) {
+      const mensaje = err.response?.data?.error || 'No fue posible completar la operación. Intente nuevamente más tarde.'
+      setErrorVisibilidad(prev => ({ ...prev, [productoId]: mensaje }))
+    }
+  }
+
+  const handleCerrarSesion = () => {
+    localStorage.removeItem('token')
+    localStorage.removeItem('nombre')
+    navigate('/login', { replace: true })
+  }
 
   return (
-    <div className="perfildist-fondo">
+    <div className="panel-layout">
 
-      <header className="perfildist-topbar">
-        <div className="perfildist-marca" onClick={() => navigate(token ? '/inicioComprador' : '/catalogo')}>MarketPlace</div>
-        <div className="perfildist-buscador">
-          <span className="perfildist-buscador-icono">⌕</span>
-          <span className="perfildist-buscador-texto">Buscar productos…</span>
+      <aside className="panel-sidebar">
+        <div className="panel-sidebar-marca">
+          <div className="panel-sidebar-titulo">MarketDist</div>
+          <div className="panel-sidebar-subtitulo">Panel del Distribuidor</div>
         </div>
-        <div className="perfildist-topbar-acciones">
-          {token ? (
-            <>
-              <button className="perfildist-btn-carrito" onClick={() => navigate('/carrito')}>
-                🛒{totalItems > 0 && <span className="perfildist-carrito-badge">{totalItems}</span>}
-              </button>
-              <button className="perfildist-btn-distribuidora" onClick={() => navigate(modoDistribuidorActivo ? '/inicio' : '/configurarPerfil')}>
-                Distribuidora
-              </button>
-              <div className="perfildist-perfil">
-                <div className="perfildist-avatar">{iniciales}</div>
-                <span className="perfildist-nombre-usuario">{nombre}</span>
-              </div>
-              <button className="perfildist-btn-cerrar-sesion" onClick={cerrarSesion}>
-                Cerrar sesión
-              </button>
-            </>
-          ) : (
-            <>
-              <button className="perfildist-btn-carrito" onClick={() => navigate('/carrito')}>
-                🛒{totalItems > 0 && <span className="perfildist-carrito-badge">{totalItems}</span>}
-              </button>
-              <button className="perfildist-btn-login" onClick={() => navigate('/login')}>Iniciar sesión</button>
-              <button className="perfildist-btn-registro" onClick={() => navigate('/registro')}>Registrarse</button>
-            </>
-          )}
-        </div>
-      </header>
 
-      <div className="perfildist-cabecera">
-        <div className="perfildist-logo">
-          {distribuidor.logoUrl
-            ? <img src={`http://localhost:3000${distribuidor.logoUrl}`} alt='Logo del distribuidor' className="perfildist-logo-img" />
-            : <span className="perfildist-logo-placeholder">[logo]</span>
-          }
-        </div>
-        <div className="perfildist-datos">
-          <h1 className="perfildist-nombre">{distribuidor.nombreComercial}</h1>
-          <p className="perfildist-descripcion">{distribuidor.descripcionNegocio}</p>
-          <div className="perfildist-info-fila">
-            <div className="perfildist-info-bloque">
-              <span className="perfildist-info-label">Zona de entrega</span>
-              <span className="perfildist-info-valor">{distribuidor.zonaEntrega}</span>
+        <nav className="panel-nav">
+          {NAV_ITEMS.map(item => (
+            <div
+              key={item.ruta}
+              className={`panel-nav-item${location.pathname === item.ruta ? ' activo' : ''}`}
+              onClick={() => navigate(item.ruta)}
+            >
+              {item.label}
             </div>
-            <div className="perfildist-info-bloque">
-              <span className="perfildist-info-label">Calificación</span>
-              {distribuidor.calificacionPromedio ? (
-                <div className="perfildist-calificacion">
-                  <span className="perfildist-estrellas">
-                    {[1, 2, 3, 4, 5].map(n => (
-                      <span key={n} className={n <= calificacionRedondeada ? 'perfildist-estrella-llena' : 'perfildist-estrella-vacia'}>★</span>
-                    ))}
-                  </span>
-                  <span className="perfildist-info-valor">{distribuidor.calificacionPromedio} / 5</span>
-                </div>
-              ) : (
-                <span className="perfildist-info-valor">Sin calificaciones</span>
-              )}
+          ))}
+          <button className='panel-nav-item' onClick={() => navigate('/inicioComprador')}>Cambiar a modo comprador</button>
+        </nav>
+
+        <div className="panel-sidebar-footer">
+          <div className="panel-sidebar-usuario">
+            <div className="panel-avatar-small">{iniciales}</div>
+            <div>
+              <div className="panel-sidebar-nombre">{nombre}</div>
+              <div className="panel-sidebar-rol">Distribuidor</div>
             </div>
           </div>
+          <div className="panel-sidebar-accion" onClick={handleCerrarSesion}>Cerrar sesión</div>
         </div>
-      </div>
+      </aside>
 
-      <div className="perfildist-catalogo">
-        <h2 className="perfildist-catalogo-titulo">Productos publicados ({productos.length})</h2>
+      <main className="panel-main">
 
-        {productos.length === 0 ? (
-          <p className="perfildist-catalogo-vacio">Este distribuidor no tiene productos publicados actualmente.</p>
-        ) : (
-          <div className="perfildist-grid">
-            {productos.map(p => (
-              <div key={p.id} className="perfildist-producto-card" onClick={() => navigate(`/producto/${p.id}`, { replace: true })}>
-                {p.imagenUrl
-                  ? <img src={`http://localhost:3000${p.imagenUrl}`} alt={p.nombre} className="perfildist-producto-img" />
-                  : <div className="perfildist-producto-img-placeholder">[foto]</div>
+        <header className="panel-topbar">
+          <span className="panel-topbar-titulo">Panel del Distribuidor</span>
+          <div className="panel-avatar">{iniciales}</div>
+        </header>
+
+        <div className="panel-contenido">
+
+          <div className="panel-seccion-header">
+            <div>
+              <h1 className="panel-h1">Mis productos</h1>
+              <p className="panel-subtitulo">Gestioná el catálogo de tu distribuidora.</p>
+            </div>
+            <button className="panel-btn-nuevo" onClick={() => navigate('/producto/nuevo')}>
+              + Nuevo producto
+            </button>
+          </div>
+
+          <div className="panel-filtros">
+            <select className="panel-filtro-chip" value={filtroCategoria} onChange={filtrarPorCategoria}>
+              <option value=''>Categoría</option>
+              {categorias.map(c => (
+                <option key={c.id} value={c.nombre}>{c.nombre}</option>
+              ))}
+            </select>
+
+            <select className="panel-filtro-chip" value={filtroVisibilidad} onChange={filtrarPorVisibilidad}>
+              <option value=''>Visibilidad</option>
+              <option value='publicado'>Publicado</option>
+              <option value='pausado'>Pausado</option>
+            </select>
+
+            <select className="panel-filtro-chip" value={filtroStock} onChange={filtrarPorStock}>
+              <option value=''>Stock</option>
+              <option value='con_stock'>Con stock</option>
+              <option value='sin_stock'>Sin stock</option>
+            </select>
+
+            <div className="panel-filtro-limpiar" onClick={limpiarFiltros}>Limpiar filtros</div>
+          </div>
+
+          <div className="panel-tabla-wrapper">
+            <div className="panel-tabla-header">
+              <div></div>
+              <div>Producto</div>
+              <div>Categoría</div>
+              <div>Stock disp.</div>
+              <div>Stock res.</div>
+              <div>Estado</div>
+              <div>Acciones</div>
+            </div>
+
+            {cargando && (
+              <div className="panel-tabla-vacio">Cargando productos...</div>
+            )}
+
+            {!cargando && productos.length === 0 && (
+              <div className="panel-tabla-vacio">
+                {filtroCategoria || filtroVisibilidad || filtroStock
+                  ? 'No hay productos que coincidan con los filtros aplicados.'
+                  : <>Aún no tenés productos. Creá el primero con el botón{' '}
+                    <span className="panel-tabla-vacio-link" onClick={() => navigate('/producto/nuevo')}>
+                      + Nuevo producto
+                    </span>.</>
                 }
-                <div className="perfildist-producto-info">
-                  <div className="perfildist-producto-categoria">{p.categoria}</div>
-                  <h3 className="perfildist-producto-nombre">{p.nombre}</h3>
-                  <p className="perfildist-producto-descripcion">{p.descripcion}</p>
+              </div>
+            )}
+
+            {!cargando && productos.map(p => (
+              <div key={p.id}>
+                <div className="panel-tabla-fila">
+                  <div className="panel-tabla-celda">
+                    {p.imagenUrl
+                      ? <img src={`http://localhost:3000${p.imagenUrl}`} alt={p.nombre} className="panel-producto-foto-img" />
+                      : <div className="panel-producto-foto">—</div>
+                    }
+                  </div>
+                  <div className="panel-tabla-celda">{p.nombre}</div>
+                  <div className="panel-tabla-celda">{p.categoria}</div>
+                  <div className={`panel-tabla-celda${p.stockDisponible === 0 ? ' stock-cero' : ''}`}>
+                    {p.stockDisponible} u.
+                  </div>
+                  <div className="panel-tabla-celda">{p.stockReservado} u.</div>
+                  <div className="panel-tabla-celda">
+                    <span className={`panel-estado-badge ${p.estadoVisibilidad}`}>
+                      {p.estadoVisibilidad === 'publicado' ? 'Publicado' : 'Pausado'}
+                    </span>
+                  </div>
+                  <div className="panel-tabla-celda panel-acciones">
+                    {p.estadoVisibilidad === 'publicado' ? (
+                      <span className="panel-accion-link" onClick={() => cambiarVisibilidad(p.id, 'pausado')}>Pausar</span>
+                    ) : (
+                      <span className="panel-accion-link" onClick={() => cambiarVisibilidad(p.id, 'publicado')}>Publicar</span>
+                    )}
+                    {' · '}
+                    <span className="panel-accion-link" onClick={() => navigate(`/producto/editar/${p.id}`)}>Editar</span>
+                  </div>
                 </div>
+                {errorVisibilidad[p.id] && (
+                  <div className="panel-error-visibilidad">{errorVisibilidad[p.id]}</div>
+                )}
               </div>
             ))}
           </div>
-        )}
-      </div>
+
+          {!cargando && productos.length > 0 && (
+            <div className="panel-tabla-contador">
+              Mostrando {productos.length} producto{productos.length !== 1 ? 's' : ''}
+            </div>
+          )}
+
+        </div>
+      </main>
 
     </div>
   )
 }
 
-export default PerfilDistribuidor
+export default Inicio
