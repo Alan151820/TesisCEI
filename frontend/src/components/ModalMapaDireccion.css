@@ -1,0 +1,212 @@
+.mapa-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.mapa-modal {
+  background: var(--color-contenedor-superficie-minimo);
+  border: 1px solid var(--color-variante-contorno);
+  border-radius: 12px;
+  width: 100%;
+  max-width: 640px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+.mapa-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px 12px;
+  border-bottom: 1px solid var(--color-variante-contorno);
+  flex-shrink: 0;
+}
+
+.mapa-titulo {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--color-sobre-superficie);
+}
+
+.mapa-cerrar {
+  background: none;
+  border: none;
+  font-size: 16px;
+  color: var(--color-sobre-variante-superficie);
+  cursor: pointer;
+  padding: 4px;
+  line-height: 1;
+  min-width: 32px;
+  min-height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+}
+
+.mapa-cerrar:hover {
+  background: var(--color-contenedor-superficie);
+}
+
+.mapa-instruccion {
+  font-size: 12px;
+  color: var(--color-sobre-variante-superficie);
+  padding: 10px 20px 0;
+  flex-shrink: 0;
+}
+
+.mapa-ubicacion-btn-wrap {
+  padding: 8px 20px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.mapa-btn-ubicacion {
+  align-self: flex-start;
+  background: var(--color-contenedor-primario);
+  color: var(--color-sobre-contenedor-primario);
+  border: 1px solid var(--color-variante-contorno);
+  border-radius: 6px;
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+
+.mapa-btn-ubicacion:hover:not(:disabled) {
+  opacity: 0.85;
+}
+
+.mapa-btn-ubicacion:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.mapa-error-ubicacion {
+  font-size: 11px;
+  color: var(--color-error);
+}
+
+.mapa-contenedor {
+  flex: 1;
+  min-height: 300px;
+  margin: 8px 20px 0;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid var(--color-variante-contorno);
+}
+
+/* Leaflet necesita height explícita en el contenedor */
+.mapa-leaflet {
+  width: 100%;
+  height: 100%;
+  min-height: 300px;
+}
+
+.mapa-direccion-seleccionada {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  padding: 8px 20px 0;
+  font-size: 12px;
+  color: var(--color-sobre-superficie);
+  flex-shrink: 0;
+  line-height: 1.4;
+}
+
+.mapa-direccion-icono {
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.mapa-direccion-placeholder {
+  padding: 8px 20px 0;
+  font-size: 12px;
+  color: var(--color-sobre-variante-superficie);
+  font-style: italic;
+  flex-shrink: 0;
+}
+
+.mapa-footer {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  padding: 12px 20px;
+  border-top: 1px solid var(--color-variante-contorno);
+  margin-top: 8px;
+  flex-shrink: 0;
+}
+
+.mapa-btn-cancelar {
+  background: none;
+  border: 1px solid var(--color-variante-contorno);
+  border-radius: 6px;
+  padding: 8px 18px;
+  font-size: 13px;
+  font-family: inherit;
+  color: var(--color-sobre-superficie);
+  cursor: pointer;
+}
+
+.mapa-btn-cancelar:hover {
+  background: var(--color-contenedor-superficie-bajo);
+}
+
+.mapa-btn-confirmar {
+  background: var(--color-primario);
+  color: var(--color-sobre-primario);
+  border: none;
+  border-radius: 6px;
+  padding: 8px 20px;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+
+.mapa-btn-confirmar:hover:not(:disabled) {
+  opacity: 0.88;
+}
+
+.mapa-btn-confirmar:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+@media (max-width: 640px) {
+  .mapa-overlay {
+    padding: 0;
+    align-items: flex-end;
+  }
+
+  .mapa-modal {
+    border-radius: 16px 16px 0 0;
+    max-height: 92vh;
+    max-width: 100%;
+    border-left: none;
+    border-right: none;
+    border-bottom: none;
+  }
+
+  .mapa-contenedor {
+    min-height: 260px;
+  }
+
+  .mapa-leaflet {
+    min-height: 260px;
+  }
+}
