@@ -18,6 +18,15 @@ function Catalogo() {
   const [filtroPrecioMin, setFiltroPrecioMin] = useState('')
   const [filtroPrecioMax, setFiltroPrecioMax] = useState('')
 
+  const [productos, setProductos] = useState([])
+  const [cargando, setCargando] = useState(true)
+  const [categorias, setCategorias] = useState([])
+  const [busqueda, setBusqueda] = useState('')
+  const [filtroCategoria, setFiltroCategoria] = useState('')
+  const [filtroDistribuidor, setFiltroDistribuidor] = useState('')
+  const [filtroPrecioMin, setFiltroPrecioMin] = useState('')
+  const [filtroPrecioMax, setFiltroPrecioMax] = useState('')
+
   useEffect(() => {
     cargarProductos()
     api.get('/api/productos/categorias')
@@ -143,7 +152,7 @@ function Catalogo() {
                     </div>
                     <button
                       className="catalogo-tarjeta-agregar"
-                      onClick={() => agregarProducto(p)}
+                      onClick={e => { e.stopPropagation(); agregarProducto(p) }}
                     >
                       + Agregar
                     </button>

@@ -138,6 +138,57 @@
   font-weight: 600;
   font-family: inherit;
   cursor: pointer;
+/* Filtros */
+.catalogo-filtros {
+  display: flex;
+  gap: 12px;
+  padding: 16px 40px;
+  background: var(--color-contenedor-superficie-minimo);
+  border-bottom: 1px solid var(--color-variante-contorno);
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.catalogo-filtros select,
+.catalogo-filtros input {
+  height: 36px;
+  padding: 0 12px;
+  border: 1px solid var(--color-contorno);
+  border-radius: 4px;
+  background: var(--color-contenedor-superficie-bajo);
+  font-size: 13px;
+  font-family: inherit;
+  color: var(--color-sobre-superficie);
+  outline: none;
+}
+
+.catalogo-filtros select {
+  min-width: 140px;
+}
+
+.catalogo-filtros input[type="number"] {
+  width: 120px;
+}
+
+.catalogo-filtros input[type="text"] {
+  width: 160px;
+}
+
+.catalogo-filtros button {
+  height: 36px;
+  padding: 0 14px;
+  border: none;
+  border-radius: 4px;
+  background: none;
+  font-size: 13px;
+  font-family: inherit;
+  color: var(--color-sobre-variante-superficie);
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.catalogo-filtros button:hover {
+  color: var(--color-sobre-superficie);
 }
 
 /* Filtros */
