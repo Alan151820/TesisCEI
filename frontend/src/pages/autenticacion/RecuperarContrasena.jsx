@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import axios from 'axios'
+import api from '../../lib/axios'
 import './RecuperarContrasena.css'
 
 function RecuperarContrasena() {
@@ -19,7 +19,7 @@ function RecuperarContrasena() {
   const handleRecuperar = async () => {
     const telefono = formatearTelefono(telefonoInput)
     try {
-      const res = await axios.post('http://localhost:3000/auth/recuperarContrasena', { telefono })
+      const res = await api.post('/auth/recuperarContrasena', { telefono })
       setMensaje(res.data.mensaje)
       navigate('/verificarRecuperacion', { state: { telefono, codigoDev: res.data.codigo_dev } })
     } catch (error) {

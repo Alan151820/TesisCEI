@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
-import axios from 'axios'
+import api from '../../lib/axios'
 import './NuevaContrasena.css'
 
 function NuevaContrasena() {
@@ -17,7 +17,7 @@ function NuevaContrasena() {
       return
     }
     try {
-      const res = await axios.post('http://localhost:3000/auth/nuevaContrasena', { telefono, contrasena })
+      const res = await api.post('/auth/nuevaContrasena', { telefono, contrasena })
       setMensaje(res.data.mensaje)
       navigate('/login')
     } catch (error) {

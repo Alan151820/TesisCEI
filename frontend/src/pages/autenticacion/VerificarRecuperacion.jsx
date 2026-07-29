@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
-import axios from 'axios'
+import api from '../../lib/axios'
 import './VerificarRecuperacion.css'
 
 function VerificarRecuperacion() {
@@ -13,7 +13,7 @@ function VerificarRecuperacion() {
 
   const handleVerificar = async () => {
     try {
-      const res = await axios.post('http://localhost:3000/auth/verificarRecuperacion', { telefono, codigo })
+      const res = await api.post('/auth/verificarRecuperacion', { telefono, codigo })
       setMensaje(res.data.mensaje)
       navigate('/nuevaContrasena', { state: { telefono } })
     } catch (error) {

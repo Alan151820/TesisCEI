@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
-import axios from 'axios'
+import api from '../../lib/axios'
 import './Verificar.css'
 
 function Verificar() {
@@ -14,7 +14,7 @@ function Verificar() {
 
   const handleVerificar = async () => {
     try {
-      const res = await axios.post('http://localhost:3000/auth/verificar', {
+      const res = await api.post('/auth/verificar', {
         telefono,
         codigo
       })
@@ -22,6 +22,7 @@ function Verificar() {
       localStorage.setItem('nombre', res.data.nombre || nombre)
       localStorage.setItem('modoDistribuidorActivo', 'false')
       localStorage.setItem('token', res.data.token)
+      window.dispatchEvent(new Event('auth-changed'))
       navigate('/inicioComprador')
     } catch (error) {
       setMensaje(error.response.data.mensaje)

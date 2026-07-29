@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import axios from 'axios'
+import api from '../../lib/axios'
 import './Login.css'
 
 function Login() {
@@ -20,7 +20,7 @@ function Login() {
   const handleLogin = async () => {
     const telefono = formatearTelefono(telefonoInput)
     try {
-      const res = await axios.post('http://localhost:3000/auth/login', {
+      const res = await api.post('/auth/login', {
         telefono,
         contrasena
       })
@@ -28,6 +28,7 @@ function Login() {
       localStorage.setItem('nombre', res.data.nombre)
       localStorage.setItem('modoDistribuidorActivo', String(res.data.modoDistribuidorActivo))
       localStorage.setItem('telefono', formatearTelefono(telefonoInput))
+      window.dispatchEvent(new Event('auth-changed'))
       navigate('/inicioComprador')
     } catch (error) {
       setMensaje(error.response.data.mensaje)

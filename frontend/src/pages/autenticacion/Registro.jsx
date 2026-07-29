@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import axios from 'axios'
+import api from '../../lib/axios'
 import './Registro.css'
 
 function Registro() {
@@ -21,7 +21,7 @@ function Registro() {
   const handleRegistro = async () => {
     const telefono = formatearTelefono(telefonoInput)
     try {
-      const res = await axios.post('http://localhost:3000/auth/registro', {
+      const res = await api.post('/auth/registro', {
         nombre,
         telefono,
         contrasena
