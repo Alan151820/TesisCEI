@@ -1,0 +1,428 @@
+.mispedidos-pagina {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: #F8F8F8;
+  font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+}
+
+/* ── Header desktop ── */
+.mispedidos-header-desktop {
+  height: 56px;
+  background: #FFF;
+  border-bottom: 1px solid #E0E0E0;
+  display: flex;
+  align-items: center;
+  padding: 0 40px;
+  gap: 24px;
+  flex-shrink: 0;
+}
+
+.mispedidos-header-logo {
+  font-size: 17px;
+  font-weight: 700;
+  color: #111;
+  flex-shrink: 0;
+}
+
+.mispedidos-header-buscador {
+  flex: 1;
+  max-width: 560px;
+  height: 36px;
+  background: #F8F8F8;
+  border: 1px solid #C8C8C8;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  padding: 0 14px;
+  gap: 8px;
+}
+
+.mispedidos-header-buscador-icono {
+  font-size: 13px;
+  color: #AAA;
+}
+
+.mispedidos-header-buscador-input {
+  border: none;
+  background: transparent;
+  font-size: 13px;
+  color: #333;
+  outline: none;
+  width: 100%;
+}
+
+.mispedidos-header-buscador-input::placeholder { color: #C0C0C0; }
+
+.mispedidos-header-acciones {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.mispedidos-header-carrito {
+  position: relative;
+  width: 36px;
+  height: 36px;
+  border: 1px solid #DDD;
+  border-radius: 4px;
+  background: #FFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.mispedidos-header-carrito-badge {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background: #333;
+  color: #FFF;
+  font-size: 9px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mispedidos-header-perfil {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.mispedidos-header-avatar {
+  width: 32px;
+  height: 32px;
+  background: #E0E0E0;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 600;
+  color: #666;
+}
+
+.mispedidos-header-nombre {
+  font-size: 13px;
+  color: #444;
+}
+
+.mispedidos-header-cerrar {
+  font-size: 12px;
+  color: #888;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+.mispedidos-header-cerrar:hover { color: #333; }
+
+/* ── Header mobile (oculto en desktop) ── */
+.mispedidos-header-mobile {
+  display: none;
+}
+
+/* ── Main ── */
+.mispedidos-main {
+  flex: 1;
+  padding: 28px 40px;
+  overflow: auto;
+}
+
+.mispedidos-encabezado {
+  margin-bottom: 24px;
+}
+
+.mispedidos-titulo {
+  font-size: 22px;
+  font-weight: 700;
+  color: #111;
+  letter-spacing: -0.5px;
+  margin: 0 0 4px 0;
+}
+
+.mispedidos-subtitulo {
+  font-size: 13px;
+  color: #888;
+  margin: 0;
+}
+
+.mispedidos-vacio {
+  text-align: center;
+  padding: 48px 16px;
+  font-size: 14px;
+  color: #888;
+}
+
+.mispedidos-error { color: #C0392B; }
+
+/* ── Tabla desktop ── */
+.mispedidos-tabla {
+  background: #FFF;
+  border: 1px solid #E4E4E4;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.mispedidos-tabla-header {
+  display: grid;
+  grid-template-columns: 120px 200px 130px 120px 130px 80px;
+  background: #F5F5F5;
+  border-bottom: 1px solid #E4E4E4;
+}
+
+.mispedidos-tabla-header > div {
+  padding: 10px 14px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #777;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.mispedidos-tabla-fila {
+  display: grid;
+  grid-template-columns: 120px 200px 130px 120px 130px 80px;
+  border-bottom: 1px solid #F0F0F0;
+}
+
+.mispedidos-tabla-fila:last-child { border-bottom: none; }
+
+.mispedidos-celda {
+  padding: 12px 14px;
+  font-size: 13px;
+  color: #444;
+  display: flex;
+  align-items: center;
+}
+
+.mispedidos-numero {
+  font-weight: 600;
+  color: #333;
+}
+
+.mispedidos-ver {
+  color: #555;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.mispedidos-ver:hover { color: #111; }
+
+/* ── Estado badges ── */
+.mispedidos-estado {
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: 3px;
+  background: #E8E8E8;
+  color: #333;
+  white-space: nowrap;
+}
+
+.mispedidos-estado--entregado  { background: #E6F4EA; color: #1E7E34; }
+.mispedidos-estado--rechazado  { background: #FDECEA; color: #C0392B; }
+.mispedidos-estado--en_camino  { background: #EAF2FB; color: #1A6BAA; }
+.mispedidos-estado--pendiente  { background: #E8E8E8; color: #333;    }
+.mispedidos-estado--aceptado   { background: #FFF8E1; color: #8A6800; }
+
+/* ── Cards mobile (ocultas en desktop) ── */
+.mispedidos-cards { display: none; }
+
+/* ── Bottom nav (oculta en desktop) ── */
+.mispedidos-bottom-nav { display: none; }
+
+/* ═══════════════════════════════════════
+   MOBILE  (≤ 768px)
+   ═══════════════════════════════════════ */
+@media (max-width: 768px) {
+
+  /* Ocultar desktop, mostrar mobile */
+  .mispedidos-header-desktop { display: none; }
+
+  .mispedidos-header-mobile {
+    display: flex;
+    height: 52px;
+    background: #FFF;
+    border-bottom: 1px solid #E8E8E8;
+    align-items: center;
+    padding: 0 14px;
+    gap: 10px;
+    flex-shrink: 0;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+
+  .mispedidos-header-logo {
+    font-size: 13px;
+    font-weight: 700;
+    color: #111;
+    flex-shrink: 0;
+  }
+
+  .mispedidos-header-buscador-mobile {
+    flex: 1;
+    height: 28px;
+    background: #F5F5F5;
+    border: 1px solid #DDD;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    padding: 0 8px;
+    gap: 6px;
+  }
+
+  .mispedidos-header-buscador-mobile .mispedidos-header-buscador-icono {
+    font-size: 11px;
+    color: #BBB;
+  }
+
+  .mispedidos-header-buscador-mobile .mispedidos-header-buscador-input {
+    font-size: 11px;
+    border: none;
+    background: transparent;
+    outline: none;
+    width: 100%;
+  }
+
+  .mispedidos-header-buscador-mobile .mispedidos-header-buscador-input::placeholder { color: #BBB; }
+
+  .mispedidos-header-avatar-mobile {
+    width: 28px;
+    height: 28px;
+    background: #E8E8E8;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    color: #555;
+    font-weight: 600;
+    flex-shrink: 0;
+  }
+
+  .mispedidos-main {
+    padding: 16px;
+    padding-bottom: 72px;
+  }
+
+  .mispedidos-titulo  { font-size: 18px; }
+  .mispedidos-subtitulo { font-size: 12px; }
+
+  /* Ocultar tabla, mostrar cards */
+  .mispedidos-tabla { display: none; }
+
+  .mispedidos-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .mispedidos-card {
+    background: #FFF;
+    border: 1px solid #E4E4E4;
+    border-radius: 8px;
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .mispedidos-card-fila {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .mispedidos-card-numero {
+    font-size: 14px;
+    font-weight: 700;
+    color: #111;
+  }
+
+  .mispedidos-card-distribuidor {
+    font-size: 13px;
+    color: #555;
+  }
+
+  .mispedidos-card-footer {
+    margin-top: 4px;
+  }
+
+  .mispedidos-card-fecha {
+    font-size: 12px;
+    color: #AAA;
+  }
+
+  .mispedidos-card-total {
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+  }
+
+  /* Bottom nav */
+  .mispedidos-bottom-nav {
+    display: flex;
+    height: 56px;
+    background: #FFF;
+    border-top: 1px solid #E8E8E8;
+    align-items: center;
+    justify-content: space-around;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+  }
+
+  .mispedidos-bottom-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    cursor: pointer;
+    min-width: 60px;
+  }
+
+  .mispedidos-bottom-icono {
+    font-size: 18px;
+    color: #AAA;
+    position: relative;
+  }
+
+  .mispedidos-bottom-item.activo .mispedidos-bottom-icono { color: #111; }
+
+  .mispedidos-bottom-label {
+    font-size: 10px;
+    color: #AAA;
+    font-weight: 500;
+  }
+
+  .mispedidos-bottom-item.activo .mispedidos-bottom-label {
+    color: #111;
+    font-weight: 700;
+  }
+
+  .mispedidos-bottom-badge {
+    position: absolute;
+    top: -4px;
+    right: -6px;
+    background: #333;
+    color: #FFF;
+    font-size: 8px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
