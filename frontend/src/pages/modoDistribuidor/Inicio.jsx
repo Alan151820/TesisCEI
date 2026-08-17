@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom'
 import api from '../../lib/axios'
 import { tokenValido } from '../../lib/auth'
 import CampanaNotificaciones from '../../components/CampanaNotificaciones'
+import ToggleTema from '../../components/ToggleTema'
 import './Inicio.css'
 
 const NAV_ITEMS = [
@@ -169,6 +170,7 @@ function Inicio() {
             </button>
             {menuPerfil && (
               <div className="comprador-menu-desplegable">
+                <ToggleTema />
                 <div className="comprador-menu-item" onClick={handleCerrarSesion}>Cerrar sesión</div>
               </div>
             )}

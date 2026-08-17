@@ -1,0 +1,35 @@
+.toggle-tema-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.toggle-tema {
+  position: relative;
+  width: 34px;
+  height: 20px;
+  flex-shrink: 0;
+  border-radius: 10px;
+  background: var(--color-variante-contorno);
+  transition: background 0.15s;
+}
+
+.toggle-tema[aria-checked="true"] {
+  background: var(--color-primario);
+}
+
+.toggle-tema-perilla {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--color-contenedor-superficie-minimo);
+  transition: transform 0.15s;
+}
+
+.toggle-tema[aria-checked="true"] .toggle-tema-perilla {
+  transform: translateX(14px);
+}

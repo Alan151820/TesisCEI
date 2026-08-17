@@ -7,6 +7,7 @@ import CampanaNotificaciones from '../../components/CampanaNotificaciones'
 import ModalMapaDireccion from '../../components/ModalMapaDireccion'
 import BottomNavComprador from '../../components/BottomNavComprador'
 import EstadoBadge from '../../components/EstadoBadge'
+import ToggleTema from '../../components/ToggleTema'
 import './InicioComprador.css'
 import './MisPedidos.css'
 
@@ -82,6 +83,7 @@ function MisPedidos() {
               <div className="comprador-menu-desplegable">
                 <div className="comprador-menu-item comprador-menu-item--mobile" onClick={() => { setMenuPerfil(false); navigate('/misPedidos') }}>Mis pedidos</div>
                 <div className="comprador-menu-item comprador-menu-item--mobile" onClick={() => { setMenuPerfil(false); navigate(modoDistribuidorActivo ? '/inicio' : '/configurarPerfil') }}>Distribuidora</div>
+                <ToggleTema />
                 <div className="comprador-menu-item" onClick={handleCerrarSesion}>Cerrar sesión</div>
               </div>
             )}

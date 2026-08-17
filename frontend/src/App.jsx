@@ -1,5 +1,6 @@
 import { Routes, Route } from 'react-router-dom'
 import { CarritoProvider } from './context/CarritoContext'
+import { TemaProvider } from './context/TemaContext'
 import Registro from './pages/autenticacion/Registro'
 import Verificar from './pages/autenticacion/Verificar'
 import Login from './pages/autenticacion/Login'
@@ -25,32 +26,34 @@ import DetallePedidoDistribuidor from './pages/modoDistribuidor/DetallePedido'
 
 function App() {
   return (
-    <CarritoProvider>
-      <Routes>
-        <Route path='/registro' element={<Registro />} />
-        <Route path='/verificar' element={<Verificar />} />
-        <Route path='/login' element={<Login />} />
-        <Route path='/recuperarContrasena' element={<RecuperarContrasena />} />
-        <Route path='/verificarRecuperacion' element={<VerificarRecuperacion />} />
-        <Route path='/nuevaContrasena' element={<NuevaContrasena />} />
-        <Route path='/inicio' element={<Inicio />} />
-        <Route path='/producto/nuevo' element={<FichaProducto />} />
-        <Route path='/producto/editar/:id' element={<EditarProducto />} />
-        <Route path='/inicioComprador' element={<InicioComprador />} />
-        <Route path='/perfilDistribuidor/:id' element={<PerfilDistribuidor />} />
-        <Route path='/carrito' element={<Carrito />} />
-        <Route path='/confirmar-pedido' element={<ConfirmacionPedido />} />
-        <Route path='/configurarPerfil' element={<ConfigurarPerfil />} />
-        <Route path='/editarPerfil' element={<EditarPerfil />} />
-        <Route path='/pedidos' element={<MisPedidos />} />
-        <Route path='/pedidos/:id' element={<DetallePedidoDistribuidor />} />
-        <Route path='/misPedidos' element={<MisPedidosComprador />} />
-        <Route path='/pedido/:id' element={<DetallePedido />} />
-        <Route path='/catalogo' element={<Catalogo />} />
-        <Route path='/' element={<Catalogo />} />
-        <Route path='/producto/:id' element={<DetalleProducto />} />
-      </Routes>
-    </CarritoProvider>
+    <TemaProvider>
+      <CarritoProvider>
+        <Routes>
+          <Route path='/registro' element={<Registro />} />
+          <Route path='/verificar' element={<Verificar />} />
+          <Route path='/login' element={<Login />} />
+          <Route path='/recuperarContrasena' element={<RecuperarContrasena />} />
+          <Route path='/verificarRecuperacion' element={<VerificarRecuperacion />} />
+          <Route path='/nuevaContrasena' element={<NuevaContrasena />} />
+          <Route path='/inicio' element={<Inicio />} />
+          <Route path='/producto/nuevo' element={<FichaProducto />} />
+          <Route path='/producto/editar/:id' element={<EditarProducto />} />
+          <Route path='/inicioComprador' element={<InicioComprador />} />
+          <Route path='/perfilDistribuidor/:id' element={<PerfilDistribuidor />} />
+          <Route path='/carrito' element={<Carrito />} />
+          <Route path='/confirmar-pedido' element={<ConfirmacionPedido />} />
+          <Route path='/configurarPerfil' element={<ConfigurarPerfil />} />
+          <Route path='/editarPerfil' element={<EditarPerfil />} />
+          <Route path='/pedidos' element={<MisPedidos />} />
+          <Route path='/pedidos/:id' element={<DetallePedidoDistribuidor />} />
+          <Route path='/misPedidos' element={<MisPedidosComprador />} />
+          <Route path='/pedido/:id' element={<DetallePedido />} />
+          <Route path='/catalogo' element={<Catalogo />} />
+          <Route path='/' element={<Catalogo />} />
+          <Route path='/producto/:id' element={<DetalleProducto />} />
+        </Routes>
+      </CarritoProvider>
+    </TemaProvider>
   )
 }
 
