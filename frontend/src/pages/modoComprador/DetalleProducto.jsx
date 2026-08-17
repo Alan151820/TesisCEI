@@ -2,6 +2,9 @@ import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import api from '../../lib/axios'
 import { useCarrito } from '../../context/CarritoContext'
+import CampanaNotificaciones from '../../components/CampanaNotificaciones'
+import BottomNavComprador from '../../components/BottomNavComprador'
+import { construirTituloProducto } from '../../lib/producto'
 import './DetalleProducto.css'
 
 function DetalleProducto() {
@@ -36,15 +39,34 @@ function DetalleProducto() {
   }
 
   const decrementar = () => {
-    setCantidad(prev => Math.max(1, prev - 1))
+    setCantidad(prev => Math.max(1, (Number(prev) || 1) - 1))
   }
 
   const incrementar = () => {
-    setCantidad(prev => prev + 1)
+    setCantidad(prev => (Number(prev) || 1) + 1)
+  }
+
+  const handleCantidadChange = (e) => {
+    const valor = e.target.value
+    if (valor === '') {
+      setCantidad('')
+      return
+    }
+    const num = parseInt(valor, 10)
+    if (!isNaN(num)) setCantidad(Math.max(1, num))
+  }
+
+  const handleCantidadBlur = () => {
+    if (cantidad === '' || Number(cantidad) < 1) setCantidad(1)
   }
 
   if (mensaje) return <p className="detalleproducto-mensaje-pagina">{mensaje}</p>
   if (!producto) return <p className="detalleproducto-mensaje-pagina">Cargando...</p>
+
+  const titulo = construirTituloProducto(producto)
+  const preciosVol = (producto.tarifas || []).map(t => Number(t.precioVenta))
+  const precioBase = producto.tarifas?.[0] ? Number(producto.tarifas[0].precioVenta) : null
+  const precioMinimo = preciosVol.length ? Math.min(...preciosVol) : null
 
   return (
     <div className="detalleproducto-layout">
@@ -64,6 +86,7 @@ function DetalleProducto() {
               <span className="detalleproducto-nav-link" onClick={() => navigate(modoDistribuidorActivo ? '/inicio' : '/configurarPerfil')}>
                 Distribuidora
               </span>
+              <CampanaNotificaciones rutaDestino="/misPedidos" rutaDetalle="/pedido" />
               <div className="detalleproducto-perfil">
                 <div className="detalleproducto-avatar">{iniciales}</div>
                 <span className="detalleproducto-nombre-usuario">{nombre}</span>
@@ -105,8 +128,20 @@ function DetalleProducto() {
               </button>
             </div>
 
-            <h1 className="detalleproducto-nombre">{producto.nombre}</h1>
+            <h1 className="detalleproducto-nombre">{titulo}</h1>
             <p className="detalleproducto-descripcion">{producto.descripcion}</p>
+
+            {producto.tarifas.length > 0 && (
+              <div className="detalleproducto-rango">
+                <span className="detalleproducto-rango-desde">Desde ${precioMinimo.toLocaleString('es-AR')}</span>
+                {precioBase != null && precioBase !== precioMinimo && (
+                  <span className="detalleproducto-rango-hasta">hasta ${precioBase.toLocaleString('es-AR')}</span>
+                )}
+              </div>
+            )}
+            {producto.stockDisponible <= 0 && (
+              <div className="detalleproducto-sin-stock">Sin stock disponible</div>
+            )}
 
             <h2 className="detalleproducto-tarifas-titulo">Precios por volumen</h2>
             {producto.tarifas.length === 0 ? (
@@ -117,15 +152,13 @@ function DetalleProducto() {
                   <tr>
                     <th>Cantidad mínima</th>
                     <th>Precio unitario</th>
-                    <th>Disponibilidad</th>
                   </tr>
                 </thead>
                 <tbody>
                   {producto.tarifas.map((t, i) => (
                     <tr key={i}>
-                      <td>{t.cantidadMinima}</td>
+                      <td>{t.cantidadMinima} u.</td>
                       <td>${Number(t.precioVenta).toLocaleString('es-AR')}</td>
-                      <td>{producto.stockDisponible > 0 ? 'Con stock' : 'Sin stock'}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -138,7 +171,14 @@ function DetalleProducto() {
                 <div className="detalleproducto-carrito-cantidad-fila">
                   <div className="detalleproducto-carrito-stepper">
                     <button className="detalleproducto-stepper-btn" onClick={decrementar}>−</button>
-                    <span className="detalleproducto-stepper-valor">{cantidad}</span>
+                    <input
+                      type="number"
+                      className="detalleproducto-stepper-valor"
+                      min="1"
+                      value={cantidad}
+                      onChange={handleCantidadChange}
+                      onBlur={handleCantidadBlur}
+                    />
                     <button className="detalleproducto-stepper-btn" onClick={incrementar}>+</button>
                   </div>
                   <div className="detalleproducto-carrito-cantidad-info">
@@ -149,10 +189,7 @@ function DetalleProducto() {
               {token ? (
                 <button
                   className="detalleproducto-carrito-boton"
-                  onClick={() => {
-                    const precioMinimo = producto.precioMinimo ?? producto.tarifas?.[0]?.precioVenta
-                    agregarProducto({ ...producto, precioMinimo }, cantidad)
-                  }}
+                  onClick={() => agregarProducto({ ...producto, precioMinimo }, Number(cantidad) || 1)}
                 >
                   Agregar al carrito
                 </button>
@@ -166,6 +203,8 @@ function DetalleProducto() {
           </div>
         </div>
       </div>
+
+      {token && <BottomNavComprador />}
 
     </div>
   )

@@ -12,38 +12,49 @@ async function listarCategorias(req, res, next) {
 async function crearProducto(req, res, next) {
   const {
     nombre,
+    marca,
     descripcion,
     categoriaId,
-    tipo,
+    magnitudValor,
+    magnitudUnidad,
     stockInicial,
-    cantidadMinimaCompra,
-    descripcionUnidadVenta,
-    unidadBaseInterna,
-    incrementoVenta,
-    metricaVisualizacion,
+    precioBase,
+    precioCosto,
+    preciosAdicionales,
   } = req.body
 
   if (!categoriaId) {
     return res.status(400).json({ error: 'Debés seleccionar una categoría.' })
   }
 
+  // Los tramos adicionales (RF-015) viajan como JSON dentro del FormData
+  // (junto con la imagen), no como un array nativo.
+  let tramos = []
+  if (preciosAdicionales) {
+    try {
+      tramos = JSON.parse(preciosAdicionales)
+    } catch {
+      return res.status(400).json({ error: 'Los precios por volumen ingresados no son válidos.' })
+    }
+  }
+
   const imagenUrl = req.file ? `/uploads/${req.file.filename}` : null
 
   try {
-    const producto = await productosServicio.crearProducto(req.usuario.id, {
+    const { producto, precios } = await productosServicio.crearProducto(req.usuario.id, {
       nombre,
+      marca,
       descripcion,
       imagenUrl,
       categoriaId,
-      tipo,
+      magnitudValor: magnitudValor ? Number(magnitudValor) : null,
+      magnitudUnidad: magnitudUnidad || null,
       stockInicial: Number(stockInicial) || 0,
-      cantidadMinimaCompra: Number(cantidadMinimaCompra),
-      descripcionUnidadVenta,
-      unidadBaseInterna,
-      incrementoVenta: incrementoVenta ? Number(incrementoVenta) : null,
-      metricaVisualizacion,
+      precioBase: Number(precioBase),
+      precioCosto: precioCosto ? Number(precioCosto) : null,
+      preciosAdicionales: tramos,
     })
-    res.status(201).json({ mensaje: 'Producto creado correctamente.', producto })
+    res.status(201).json({ mensaje: 'Producto creado correctamente.', producto, precios })
   } catch (error) {
     if (error.status) {
       return res.status(error.status).json({ error: error.mensaje })
@@ -94,8 +105,9 @@ async function editarProducto(req, res, next) {
   const imagenUrl = req.file ? `/uploads/${req.file.filename}` : undefined
   const datos = { ...req.body, imagenUrl }
   if (datos.stockTotal !== undefined) datos.stockTotal = Number(datos.stockTotal)
-  if (datos.cantidadMinimaCompra !== undefined) datos.cantidadMinimaCompra = Number(datos.cantidadMinimaCompra)
-  if (datos.incrementoVenta !== undefined) datos.incrementoVenta = datos.incrementoVenta ? Number(datos.incrementoVenta) : null
+  if (datos.magnitudValor !== undefined) datos.magnitudValor = datos.magnitudValor ? Number(datos.magnitudValor) : null
+  if (datos.magnitudUnidad !== undefined) datos.magnitudUnidad = datos.magnitudUnidad || null
+  if (datos.precioCosto !== undefined) datos.precioCosto = datos.precioCosto === '' ? null : Number(datos.precioCosto)
   try {
     const producto = await productosServicio.editarProducto(productoId, req.usuario.id, datos)
     res.status(200).json({ mensaje: 'Producto actualizado correctamente.', producto })

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useCarrito } from '../context/CarritoContext'
 import api from '../lib/axios'
+import { construirTituloProducto } from '../lib/producto'
 import './Catalogo.css'
 
 function Catalogo() {
@@ -133,12 +134,15 @@ function Catalogo() {
                   }
                   <div className="catalogo-tarjeta-cuerpo">
                     <div className="catalogo-tarjeta-categoria">{p.categoria}</div>
-                    <div className="catalogo-tarjeta-nombre">{p.nombre}</div>
+                    <div className="catalogo-tarjeta-nombre">{construirTituloProducto(p)}</div>
                     {p.descripcion && <div className="catalogo-tarjeta-descripcion">{p.descripcion}</div>}
                     <div className="catalogo-tarjeta-pie">
                       <div className="catalogo-tarjeta-distribuidor">{p.nombreDistribuidor}</div>
                       <div className="catalogo-tarjeta-precio">
-                        Desde ${Number(p.precioMinimo).toLocaleString('es-AR')}
+                        <div>Desde ${Number(p.precioMinimo).toLocaleString('es-AR')}</div>
+                        {Number(p.precioBase) > Number(p.precioMinimo) && (
+                          <div className="catalogo-tarjeta-precio-hasta">Hasta ${Number(p.precioBase).toLocaleString('es-AR')}</div>
+                        )}
                       </div>
                     </div>
                     <button

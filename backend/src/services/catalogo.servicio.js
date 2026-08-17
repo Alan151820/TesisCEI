@@ -38,18 +38,22 @@ async function listarCatalogo(nombre = '', categoria = '', distribuidor = '', pr
     `SELECT
        p.id,
        p.nombre,
+       p.marca,
        p.descripcion,
        p.imagen_url AS "imagenUrl",
+       p.magnitud_valor AS "magnitudValor",
+       p.magnitud_unidad AS "magnitudUnidad",
        c.nombre AS categoria,
        d.nombre_comercial AS "nombreDistribuidor",
        d.id AS "distribuidorId",
-       MIN(pv.precio_venta) AS "precioMinimo"
+       MIN(pv.precio_venta) AS "precioMinimo",
+       MAX(pv.precio_venta) FILTER (WHERE pv.cantidad_minima = 1) AS "precioBase"
      FROM producto p
      JOIN categoria c ON c.id = p.categoria_id
      JOIN distribuidor d ON d.id = p.distribuidor_id
      JOIN precio_volumen pv ON pv.producto_id = p.id
      WHERE ${where}
-     GROUP BY p.id, p.nombre, p.descripcion, p.imagen_url, c.nombre, d.nombre_comercial, d.id
+     GROUP BY p.id, p.nombre, p.marca, p.descripcion, p.imagen_url, p.magnitud_valor, p.magnitud_unidad, c.nombre, d.nombre_comercial, d.id
      ${havingClause}
      ORDER BY p.fecha_creacion DESC`,
     params
@@ -62,8 +66,11 @@ async function obtenerDetalle(id) {
     `SELECT
        p.id,
        p.nombre,
+       p.marca,
        p.descripcion,
        p.imagen_url AS "imagenUrl",
+       p.magnitud_valor AS "magnitudValor",
+       p.magnitud_unidad AS "magnitudUnidad",
        c.nombre AS categoria,
        d.id AS "distribuidorId",
        d.nombre_comercial AS "nombreDistribuidor",
