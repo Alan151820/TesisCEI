@@ -11,9 +11,11 @@
   height: 56px;
   background: var(--color-contenedor-superficie-minimo);
   border-bottom: 1px solid var(--color-variante-contorno);
-  display: flex;
+  display: grid;
+  grid-template-columns: auto minmax(200px, 1fr) auto;
   align-items: center;
-  padding: 0 40px;
+  width: 100%;
+  padding: 0 max(40px, calc((100% - 1280px) / 2));
   gap: 24px;
   flex-shrink: 0;
 }
@@ -27,8 +29,8 @@
 }
 
 .comprador-buscador {
-  flex: 1;
-  max-width: 560px;
+  width: 100%;
+  min-width: 0;
   height: 36px;
   background: var(--color-contenedor-superficie-bajo);
   border: 1px solid var(--color-contorno);
@@ -48,6 +50,7 @@
 
 .comprador-buscador-input {
   flex: 1;
+  min-width: 0;
   background: none;
   border: none;
   outline: none;
@@ -61,7 +64,6 @@
 }
 
 .comprador-acciones {
-  margin-left: auto;
   display: flex;
   align-items: center;
   gap: 16px;
@@ -192,6 +194,9 @@
 /* Contenido */
 .comprador-contenido {
   flex: 1;
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
   padding: 32px 40px;
 }
 
@@ -349,7 +354,8 @@
 .comprador-filtros {
   display: flex;
   gap: 12px;
-  padding: 16px 40px;
+  width: 100%;
+  padding: 16px max(40px, calc((100% - 1280px) / 2));
   background: var(--color-contenedor-superficie-minimo);
   border-bottom: 1px solid var(--color-variante-contorno);
   flex-wrap: wrap;
@@ -401,6 +407,7 @@
 /* === MOBILE === */
 @media (max-width: 768px) {
   .comprador-encabezado {
+    display: flex;
     height: 52px;
     padding: 0 16px;
     gap: 12px;
@@ -411,6 +418,7 @@
   }
 
   .comprador-buscador {
+    flex: 1;
     max-width: none;
     height: 32px;
   }
