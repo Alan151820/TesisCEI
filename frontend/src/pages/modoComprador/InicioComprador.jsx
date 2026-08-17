@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import api from '../../lib/axios'
 import { tokenValido, rutaInicio } from '../../lib/auth'
 import { useCarrito } from '../../context/CarritoContext'
+import { construirTituloProducto } from '../../lib/producto'
 import './InicioComprador.css'
 
 function InicioComprador() {
@@ -173,12 +174,15 @@ function InicioComprador() {
                   }
                   <div className="comprador-tarjeta-cuerpo">
                     <div className="comprador-tarjeta-categoria">{p.categoria}</div>
-                    <div className="comprador-tarjeta-nombre">{p.nombre}</div>
+                    <div className="comprador-tarjeta-nombre">{construirTituloProducto(p)}</div>
                     {p.descripcion && <div className="comprador-tarjeta-descripcion">{p.descripcion}</div>}
                     <div className="comprador-tarjeta-pie">
                       <div className="comprador-tarjeta-distribuidor">{p.nombreDistribuidor}</div>
                       <div className="comprador-tarjeta-precio">
-                        Desde ${Number(p.precioMinimo).toLocaleString('es-AR')}
+                        <div>Desde ${Number(p.precioMinimo).toLocaleString('es-AR')}</div>
+                        {Number(p.precioBase) > Number(p.precioMinimo) && (
+                          <div className="comprador-tarjeta-precio-hasta">Hasta ${Number(p.precioBase).toLocaleString('es-AR')}</div>
+                        )}
                       </div>
                     </div>
                     <button
