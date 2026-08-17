@@ -1,6 +1,29 @@
+.pedidos-tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid var(--color-variante-contorno);
+}
+
+.pedidos-tab {
+  background: none;
+  border: none;
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-sobre-variante-superficie);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+}
+
+.pedidos-tab--activo {
+  color: var(--color-primario);
+  border-bottom-color: var(--color-primario);
+}
+
 .pedidos-tabla-header {
   display: grid;
-  grid-template-columns: 120px 180px 1fr 120px 130px 260px;
+  grid-template-columns: 80px 100px 150px 1fr 100px 110px 180px;
   background: var(--color-contenedor-superficie-bajo);
   border: 1px solid var(--color-variante-contorno);
   border-radius: 6px 6px 0 0;
@@ -18,7 +41,7 @@
 
 .pedidos-tabla-fila {
   display: grid;
-  grid-template-columns: 120px 180px 1fr 120px 130px 260px;
+  grid-template-columns: 80px 100px 150px 1fr 100px 110px 180px;
   background: var(--color-superficie);
   border: 1px solid var(--color-variante-contorno);
   border-top: none;
@@ -27,6 +50,9 @@
 .pedidos-tabla-fila:last-of-type {
   border-radius: 0 0 6px 6px;
 }
+
+.pedidos-fila-clickeable { cursor: pointer; }
+.pedidos-fila-clickeable:hover { background: var(--color-contenedor-superficie-bajo); }
 
 .pedidos-celda {
   padding: 12px 14px;
@@ -52,41 +78,6 @@
   margin-top: 2px;
 }
 
-/* Estados */
-.pedidos-estado {
-  font-size: 11px;
-  padding: 3px 8px;
-  border-radius: 3px;
-  white-space: nowrap;
-  background: var(--color-contenedor-superficie-maximo);
-  color: var(--color-sobre-superficie);
-}
-
-.pedidos-estado--pendiente {
-  background: var(--color-contenedor-superficie-maximo);
-  color: var(--color-sobre-superficie);
-}
-
-.pedidos-estado--aceptado {
-  background: #FFF8E1;
-  color: #8A6800;
-}
-
-.pedidos-estado--en_camino {
-  background: #EAF2FB;
-  color: #1A6BAA;
-}
-
-.pedidos-estado--entregado {
-  background: #E6F4EA;
-  color: #1E7E34;
-}
-
-.pedidos-estado--rechazado {
-  background: var(--color-contenedor-error);
-  color: var(--color-sobre-contenedor-error);
-}
-
 /* Lista de productos */
 .pedidos-productos-lista {
   display: flex;
@@ -101,6 +92,32 @@
   font-size: 12px;
   color: var(--color-sobre-superficie);
   line-height: 1.4;
+}
+
+.pedidos-producto-item--imagen {
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+}
+
+.pedidos-thumb {
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--color-variante-contorno);
+  border-radius: 6px;
+  object-fit: cover;
+  flex-shrink: 0;
+  background: var(--color-contenedor-superficie-bajo);
+}
+
+.pedidos-thumb-sinimg {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 7px;
+  color: var(--color-sobre-variante-superficie);
+  text-align: center;
+  line-height: 1.1;
 }
 
 .pedidos-producto-stock {
@@ -164,6 +181,95 @@
   padding: 6px 14px;
   border: 1px solid var(--color-variante-contorno);
   border-top: none;
+}
+
+/* Modal de rechazo de pedido (RF-026) */
+.rechazo-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 60px 16px;
+  z-index: 100;
+}
+
+.rechazo-modal {
+  width: 100%;
+  max-width: 440px;
+  background: var(--color-contenedor-superficie-maximo);
+  border: 1px solid var(--color-variante-contorno);
+  border-radius: 8px;
+  padding: 24px 28px;
+}
+
+.rechazo-titulo {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--color-sobre-superficie);
+  margin-bottom: 6px;
+}
+
+.rechazo-subtitulo {
+  font-size: 13px;
+  color: var(--color-sobre-variante-superficie);
+  margin-bottom: 18px;
+}
+
+.rechazo-motivos {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-bottom: 16px;
+}
+
+.rechazo-motivo-opcion {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  color: var(--color-sobre-superficie);
+  padding: 8px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.rechazo-motivo-opcion:hover {
+  background: var(--color-contenedor-superficie);
+}
+
+.rechazo-textarea {
+  width: 100%;
+  box-sizing: border-box;
+  font-size: 13px;
+  font-family: inherit;
+  color: var(--color-sobre-superficie);
+  background: var(--color-superficie);
+  border: 1px solid var(--color-contorno);
+  border-radius: 4px;
+  padding: 10px;
+  margin-bottom: 16px;
+  resize: vertical;
+}
+
+.rechazo-error {
+  font-size: 12px;
+  color: var(--color-error);
+  background: var(--color-contenedor-error);
+  border-radius: 4px;
+  padding: 8px 10px;
+  margin-bottom: 12px;
+}
+
+.rechazo-acciones {
+  display: flex;
+  gap: 10px;
+}
+
+.rechazo-btn {
+  width: auto;
+  text-align: center;
 }
 
 @media (max-width: 768px) {

@@ -19,6 +19,8 @@ import EditarProducto from './pages/modoDistribuidor/EditarProducto'
 import MisPedidos from './pages/modoDistribuidor/MisPedidos'
 import Catalogo from './pages/Catalogo'
 import DetalleProducto from './pages/modoComprador/DetalleProducto'
+import DetallePedido from './pages/modoComprador/DetallePedido'
+import DetallePedidoDistribuidor from './pages/modoDistribuidor/DetallePedido'
 
 
 function App() {
@@ -41,7 +43,9 @@ function App() {
         <Route path='/configurarPerfil' element={<ConfigurarPerfil />} />
         <Route path='/editarPerfil' element={<EditarPerfil />} />
         <Route path='/pedidos' element={<MisPedidos />} />
+        <Route path='/pedidos/:id' element={<DetallePedidoDistribuidor />} />
         <Route path='/misPedidos' element={<MisPedidosComprador />} />
+        <Route path='/pedido/:id' element={<DetallePedido />} />
         <Route path='/catalogo' element={<Catalogo />} />
         <Route path='/' element={<Catalogo />} />
         <Route path='/producto/:id' element={<DetalleProducto />} />
