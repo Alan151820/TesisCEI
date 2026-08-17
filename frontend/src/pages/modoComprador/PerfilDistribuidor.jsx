@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import api from '../../lib/axios'
+import CampanaNotificaciones from '../../components/CampanaNotificaciones'
+import BottomNavComprador from '../../components/BottomNavComprador'
+import { construirTituloProducto } from '../../lib/producto'
 import './PerfilDistribuidor.css'
 
 function PerfilDistribuidor() {
@@ -55,7 +58,7 @@ navigate('/catalogo', { replace: true })
     <div className="perfildist-fondo">
 
       <div className="perfildist-mobile-header">
-        <span className="perfildist-mobile-volver" onClick={() => window.history.back()}>←</span>
+        <button type="button" className="perfildist-mobile-volver" onClick={() => window.history.back()}>←</button>
         <div className="perfildist-mobile-titulo">Perfil del distribuidor</div>
       </div>
 
@@ -71,6 +74,7 @@ navigate('/catalogo', { replace: true })
               <span className="perfildist-nav-link" onClick={() => navigate(modoDistribuidorActivo ? '/inicio' : '/configurarPerfil')}>
                 Distribuidora
               </span>
+              <CampanaNotificaciones rutaDestino="/misPedidos" rutaDetalle="/pedido" />
               <div className="perfildist-perfil">
                 <div className="perfildist-avatar">{iniciales}</div>
                 <span className="perfildist-nombre-usuario">{nombre}</span>
@@ -136,7 +140,7 @@ navigate('/catalogo', { replace: true })
                 }
                 <div className="perfildist-producto-info">
                   <div className="perfildist-producto-categoria">{p.categoria}</div>
-                  <h3 className="perfildist-producto-nombre">{p.nombre}</h3>
+                  <h3 className="perfildist-producto-nombre">{construirTituloProducto(p)}</h3>
                   <p className="perfildist-producto-descripcion">{p.descripcion}</p>
                 </div>
               </div>
@@ -144,6 +148,8 @@ navigate('/catalogo', { replace: true })
           </div>
         )}
       </div>
+
+      {token && <BottomNavComprador />}
 
     </div>
   )

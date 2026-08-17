@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import api from '../../lib/axios'
 import { tokenValido } from '../../lib/auth'
+import CampanaNotificaciones from '../../components/CampanaNotificaciones'
 import './Inicio.css'
 
 const NAV_ITEMS = [
@@ -37,11 +38,17 @@ function Inicio() {
   const [filtroVisibilidad, setFiltroVisibilidad] = useState('')
   const [filtroStock, setFiltroStock] = useState('')
   const [menuAbierto, setMenuAbierto] = useState(false)
-  const [notificaciones, setNotificaciones] = useState([])
-  const [notifAbierta, setNotifAbierta] = useState(false)
-  const notifRef = useRef(null)
+  const [menuPerfil, setMenuPerfil] = useState(false)
+  const perfilRef = useRef(null)
 
   useEffect(() => { if (!tokenValido()) navigate('/login') }, [navigate])
+
+  useEffect(() => {
+    if (!menuPerfil) return
+    const cerrar = (e) => { if (!perfilRef.current?.contains(e.target)) setMenuPerfil(false) }
+    document.addEventListener('mousedown', cerrar)
+    return () => document.removeEventListener('mousedown', cerrar)
+  }, [menuPerfil])
 
   const cargarProductos = async (categoria = '', visibilidad = '', stock = '') => {
     setCargando(true)
@@ -64,35 +71,7 @@ function Inicio() {
     api.get('/api/productos/categorias')
       .then(res => setCategorias(res.data))
       .catch(() => {})
-    api.get('/api/notificaciones')
-      .then(res => setNotificaciones(res.data))
-      .catch(() => {})
   }, [])
-
-  useEffect(() => {
-    if (!notifAbierta) return
-    const handler = (e) => {
-      if (notifRef.current && !notifRef.current.contains(e.target)) {
-        setNotifAbierta(false)
-      }
-    }
-    document.addEventListener('mousedown', handler)
-    return () => document.removeEventListener('mousedown', handler)
-  }, [notifAbierta])
-
-  const marcarLeida = async (id) => {
-    try {
-      await api.patch(`/api/notificaciones/${id}/leer`)
-      setNotificaciones(prev => prev.map(n => n.id === id ? { ...n, leida: true } : n))
-    } catch {}
-  }
-
-  const noLeidas = notificaciones.filter(n => !n.leida).length
-
-  const formatFecha = (iso) => {
-    const d = new Date(iso)
-    return d.toLocaleDateString('es-UY', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })
-  }
 
   const filtrarPorCategoria = (e) => {
     setFiltroCategoria(e.target.value)
@@ -187,33 +166,22 @@ function Inicio() {
           <input className="panel-master-header-buscador-input" type="text" placeholder="Buscar productos…" />
         </div>
         <div className="panel-master-header-perfil">
-          <div className="panel-notif" ref={notifRef}>
-            <button className="panel-notif-btn" onClick={() => setNotifAbierta(v => !v)}>
-              🔔
-              {noLeidas > 0 && <span className="panel-notif-badge">{noLeidas}</span>}
+          <button className="panel-header-salir-btn" onClick={() => navigate('/inicioComprador')}>
+            Salir de distribuidora
+          </button>
+          <CampanaNotificaciones rutaDestino="/pedidos" />
+          <div className="comprador-perfil-wrapper" ref={perfilRef}>
+            <button className="comprador-perfil-trigger" onClick={() => setMenuPerfil(v => !v)}>
+              <div className="comprador-avatar">{iniciales}</div>
+              <span className="comprador-nombre">{nombre}</span>
+              <span className="comprador-perfil-flecha">{menuPerfil ? '▴' : '▾'}</span>
             </button>
-            {notifAbierta && (
-              <div className="panel-notif-dropdown">
-                {notificaciones.length === 0
-                  ? <div className="panel-notif-vacio">No tenés notificaciones.</div>
-                  : notificaciones.map(n => (
-                    <div
-                      key={n.id}
-                      className={`panel-notif-item${!n.leida ? ' no-leida' : ''}`}
-                      onClick={() => marcarLeida(n.id)}
-                    >
-                      {!n.leida && <span className="panel-notif-punto" />}
-                      <div className="panel-notif-cuerpo">
-                        <div className="panel-notif-mensaje">{n.mensaje}</div>
-                        <div className="panel-notif-fecha">{formatFecha(n.fechaCreacion)}</div>
-                      </div>
-                    </div>
-                  ))
-                }
+            {menuPerfil && (
+              <div className="comprador-menu-desplegable">
+                <div className="comprador-menu-item" onClick={handleCerrarSesion}>Cerrar sesión</div>
               </div>
             )}
           </div>
-          <div className="panel-master-header-avatar">{iniciales}</div>
         </div>
       </header>
 
@@ -236,12 +204,6 @@ function Inicio() {
               </div>
             ))}
           </nav>
-
-          <div className="panel-sidebar-cambiar-modo">
-            <button className="panel-sidebar-cambiar-btn" onClick={() => navigate('/inicioComprador')}>
-              ← Cambiar a modo comprador
-            </button>
-          </div>
 
           <div className="panel-sidebar-footer">
             <div className="panel-sidebar-usuario">

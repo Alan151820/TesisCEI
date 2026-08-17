@@ -1,0 +1,62 @@
+.comprador-bottom-nav {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .comprador-bottom-nav {
+    display: flex;
+    height: 56px;
+    background: var(--color-contenedor-superficie-minimo);
+    border-top: 1px solid var(--color-variante-contorno);
+    align-items: center;
+    justify-content: space-around;
+    flex-shrink: 0;
+  }
+
+  .comprador-bottom-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    cursor: pointer;
+    flex: 1;
+    padding: 6px 0;
+  }
+
+  .comprador-bottom-icono {
+    font-size: 18px;
+    color: var(--color-sobre-variante-superficie);
+  }
+
+  .comprador-bottom-label {
+    font-size: 9px;
+    color: var(--color-sobre-variante-superficie);
+  }
+
+  .comprador-bottom-item.activo .comprador-bottom-icono,
+  .comprador-bottom-item.activo .comprador-bottom-label {
+    color: var(--color-sobre-superficie);
+  }
+
+  .comprador-bottom-icono--carrito {
+    position: relative;
+    display: inline-flex;
+  }
+
+  .comprador-bottom-badge {
+    position: absolute;
+    top: -4px;
+    right: -8px;
+    background: var(--color-primario);
+    color: var(--color-sobre-primario);
+    font-size: 9px;
+    font-weight: 700;
+    min-width: 14px;
+    height: 14px;
+    border-radius: 7px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 2px;
+  }
+}

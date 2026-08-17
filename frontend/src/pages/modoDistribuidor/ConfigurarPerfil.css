@@ -88,9 +88,14 @@
   margin-top: 3px;
 }
 
+.configperfil-acciones {
+  display: flex;
+  gap: 10px;
+}
+
 .configperfil-btn-guardar {
   height: 40px;
-  width: 100%;
+  flex: 1;
   border-radius: 4px;
   padding: 0 20px;
   font-size: 13px;
@@ -104,6 +109,24 @@
 
 .configperfil-btn-guardar:hover {
   opacity: 0.9;
+}
+
+.configperfil-btn-cancelar {
+  height: 40px;
+  flex: 1;
+  border-radius: 4px;
+  padding: 0 20px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  background: var(--color-contenedor-superficie-minimo);
+  color: var(--color-sobre-superficie);
+  border: 1px solid var(--color-contorno);
+  font-family: inherit;
+}
+
+.configperfil-btn-cancelar:hover {
+  background: var(--color-contenedor-superficie-bajo);
 }
 
 .configperfil-mensaje:empty {
@@ -129,5 +152,13 @@
   }
 
   .configperfil-input { height: 44px; }
-  .configperfil-btn-guardar { height: 44px; }
+
+  .configperfil-acciones {
+    flex-direction: column;
+  }
+
+  .configperfil-btn-guardar,
+  .configperfil-btn-cancelar {
+    height: 44px;
+  }
 }
