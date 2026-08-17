@@ -2,6 +2,7 @@ const pool = require('../config/db')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const twilio = require('twilio')
+const CodigoVerificacion = require('./CodigoVerificacion')
 
 const client = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN)
 
@@ -19,12 +20,10 @@ class Usuario {
     this.fechaCreacion = data.fecha_creacion
   }
 
-  static generarCodigo() {
-    return Math.floor(100000 + Math.random() * 900000).toString()
-  }
-
-  static calcularExpiracion() {
-    return new Date(Date.now() + 10 * 60 * 1000)
+  static async obtenerPorId(id) {
+    const resultado = await pool.query('SELECT * FROM usuario WHERE id = $1', [id])
+    if (resultado.rows.length === 0) return null
+    return new Usuario(resultado.rows[0])
   }
 
   static async registrarCuenta(nombre, telefono, contrasena) {
@@ -33,17 +32,21 @@ class Usuario {
       throw new Error('El número de teléfono ya está registrado. Iniciá sesión o recuperá tu contraseña.')
     }
 
-    const codigo = Usuario.generarCodigo()
-    const expiracion = Usuario.calcularExpiracion()
+    const codigo = CodigoVerificacion.generarCodigo()
+    const expiracion = CodigoVerificacion.calcularExpiracion()
     const contrasenaHash = await bcrypt.hash(contrasena, 10)
 
     registrosPendientes.push({ nombre, telefono, contrasenaHash, codigo, expiracion })
 
-    await client.messages.create({
-      body: `Tu código de verificación es: ${codigo}`,
-      from: process.env.TWILIO_PHONE_NUMBER,
-      to: telefono
-    })
+    try {
+      await client.messages.create({
+        body: `Tu código de verificación es: ${codigo}`,
+        from: process.env.TWILIO_PHONE_NUMBER,
+        to: telefono
+      })
+    } catch (twilioError) {
+      console.log('SMS no enviado:', twilioError.message)
+    }
 
     return codigo
   }
@@ -59,14 +62,19 @@ class Usuario {
       [pendiente.nombre, pendiente.telefono, pendiente.contrasenaHash, true, true]
     )
 
-    await pool.query(
-      'INSERT INTO codigo_verificacion (usuario_id, codigo, proposito, fecha_expiracion, usado) VALUES ($1, $2, $3, $4, $5)',
-      [resultado.rows[0].id, pendiente.codigo, 'activacion_cuenta', pendiente.expiracion, true]
-    )
+    await CodigoVerificacion.crear(resultado.rows[0].id, pendiente.codigo, 'activacion_cuenta', pendiente.expiracion, true)
 
     registrosPendientes.splice(registrosPendientes.indexOf(pendiente), 1)
 
-    return new Usuario(resultado.rows[0])
+    const usuario = new Usuario(resultado.rows[0])
+
+    const token = jwt.sign(
+      { id: usuario.id, nombre: usuario.nombreCompleto },
+      process.env.JWT_SECRET,
+      { expiresIn: process.env.JWT_EXPIRES_IN }
+    )
+
+    return { token, nombre: usuario.nombreCompleto, modoDistribuidorActivo: usuario.modoDistribuidorActivo, telefono: usuario.telefono }
   }
 
   static async iniciarSesion(telefono, contrasena) {
@@ -85,7 +93,7 @@ class Usuario {
       process.env.JWT_SECRET,
       { expiresIn: process.env.JWT_EXPIRES_IN }
     )
-console.log('usuario:', usuario)
+
     return { token, nombre: usuario.nombreCompleto, modoDistribuidorActivo: usuario.modoDistribuidorActivo, telefono: usuario.telefono }
   }
 
@@ -93,19 +101,20 @@ console.log('usuario:', usuario)
     const resultado = await pool.query('SELECT id FROM usuario WHERE telefono = $1', [telefono])
     if (resultado.rows.length === 0) throw new Error('No encontramos una cuenta con ese número de teléfono.')
 
-    const codigo = Usuario.generarCodigo()
-    const expiracion = Usuario.calcularExpiracion()
+    const codigo = CodigoVerificacion.generarCodigo()
+    const expiracion = CodigoVerificacion.calcularExpiracion()
 
-    await pool.query(
-      'INSERT INTO codigo_verificacion (usuario_id, codigo, proposito, fecha_expiracion) VALUES ($1, $2, $3, $4)',
-      [resultado.rows[0].id, codigo, 'recuperacion_password', expiracion]
-    )
+    await CodigoVerificacion.crear(resultado.rows[0].id, codigo, 'recuperacion_password', expiracion)
 
-    await client.messages.create({
-      body: `Tu código de recuperación es: ${codigo}`,
-      from: process.env.TWILIO_PHONE_NUMBER,
-      to: telefono
-    })
+    try {
+      await client.messages.create({
+        body: `Tu código de recuperación es: ${codigo}`,
+        from: process.env.TWILIO_PHONE_NUMBER,
+        to: telefono
+      })
+    } catch (twilioError) {
+      console.log('SMS no enviado:', twilioError.message)
+    }
 
     return codigo
   }
@@ -114,15 +123,12 @@ console.log('usuario:', usuario)
     const usuario = await pool.query('SELECT id FROM usuario WHERE telefono = $1', [telefono])
     if (usuario.rows.length === 0) throw new Error('No encontramos una cuenta con ese número de teléfono.')
 
-    const registro = await pool.query(
-      'SELECT * FROM codigo_verificacion WHERE usuario_id = $1 AND codigo = $2 AND proposito = $3 AND usado = FALSE',
-      [usuario.rows[0].id, codigo, 'recuperacion_password']
-    )
+    const registro = await CodigoVerificacion.buscarVigente(usuario.rows[0].id, codigo, 'recuperacion_password')
 
-    if (registro.rows.length === 0) throw new Error('El código ingresado no es válido. Intentá de nuevo.')
-    if (new Date() > new Date(registro.rows[0].fecha_expiracion)) throw new Error('El código expiró. Solicitá uno nuevo.')
+    if (!registro) throw new Error('El código ingresado no es válido. Intentá de nuevo.')
+    if (registro.haVencido()) throw new Error('El código expiró. Solicitá uno nuevo.')
 
-    await pool.query('UPDATE codigo_verificacion SET usado = TRUE WHERE id = $1', [registro.rows[0].id])
+    await registro.marcarComoUsado()
 
     return true
   }
