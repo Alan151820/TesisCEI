@@ -5,7 +5,6 @@ import { tokenValido, rutaInicio } from '../../lib/auth'
 import { useCarrito } from '../../context/CarritoContext'
 import CampanaNotificaciones from '../../components/CampanaNotificaciones'
 import BottomNavComprador from '../../components/BottomNavComprador'
-import ToggleTema from '../../components/ToggleTema'
 import { construirTituloProducto } from '../../lib/producto'
 import './InicioComprador.css'
 
@@ -120,7 +119,6 @@ function InicioComprador() {
               <div className="comprador-menu-desplegable">
                 <div className="comprador-menu-item comprador-menu-item--mobile" onClick={() => { setMenuPerfil(false); navigate('/misPedidos') }}>Mis pedidos</div>
                 <div className="comprador-menu-item comprador-menu-item--mobile" onClick={() => { setMenuPerfil(false); navigate(modoDistribuidorActivo ? '/inicio' : '/configurarPerfil') }}>Distribuidora</div>
-                <ToggleTema />
                 <div className="comprador-menu-item" onClick={handleCerrarSesion}>Cerrar sesión</div>
               </div>
             )}
