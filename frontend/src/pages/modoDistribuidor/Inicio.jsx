@@ -15,15 +15,6 @@ const NAV_ITEMS = [
   { label: 'Editar perfil', ruta: '/editarPerfil' },
 ]
 
-function sufijoPorTipo(tipoProducto, metricaVisualizacion) {
-  if (tipoProducto === 'fraccionable') {
-    if (metricaVisualizacion === 'kilogramos') return 'kg'
-    if (metricaVisualizacion === 'litros') return 'L'
-    if (metricaVisualizacion === 'metros') return 'm'
-  }
-  return 'u.'
-}
-
 function Inicio() {
   const navigate = useNavigate()
   const location = useLocation()
@@ -292,9 +283,9 @@ function Inicio() {
                   <div className="panel-tabla-celda">{p.nombre}</div>
                   <div className="panel-tabla-celda">{p.categoria}</div>
                   <div className={`panel-tabla-celda${p.stockDisponible === 0 ? ' stock-cero' : ''}`}>
-                    {p.stockDisponible === 0 ? 'Sin stock disponible.' : `${p.stockDisponible} ${sufijoPorTipo(p.tipoProducto, p.metricaVisualizacion)}`}
+                    {p.stockDisponible === 0 ? 'Sin stock disponible.' : `${p.stockDisponible} u.`}
                   </div>
-                  <div className="panel-tabla-celda">{p.stockReservado} {sufijoPorTipo(p.tipoProducto, p.metricaVisualizacion)}</div>
+                  <div className="panel-tabla-celda">{p.stockReservado} u.</div>
                   <div className="panel-tabla-celda">
                     <span className={`panel-estado-badge ${p.estadoVisibilidad}`}>
                       {p.estadoVisibilidad === 'publicado' ? 'Publicado' : 'Pausado'}
@@ -320,7 +311,7 @@ function Inicio() {
                   </div>
                   <div className="panel-lista-info">
                     <div className="panel-lista-nombre">{p.nombre}</div>
-                    <div className="panel-lista-stock">Stock: {p.stockDisponible} {sufijoPorTipo(p.tipoProducto, p.metricaVisualizacion)}</div>
+                    <div className="panel-lista-stock">Stock: {p.stockDisponible} u.</div>
                   </div>
                   <div className="panel-lista-derecha">
                     <span
