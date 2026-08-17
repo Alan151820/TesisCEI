@@ -1,0 +1,14 @@
+.estado-badge {
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: 3px;
+  background: var(--color-contenedor-superficie-maximo);
+  color: var(--color-sobre-superficie);
+  white-space: nowrap;
+}
+
+.estado-badge--entregado  { background: var(--color-contenedor-exito); color: var(--color-sobre-contenedor-exito); }
+.estado-badge--rechazado  { background: var(--color-contenedor-error); color: var(--color-sobre-contenedor-error); }
+.estado-badge--en_camino  { background: var(--color-contenedor-info); color: var(--color-sobre-contenedor-info); }
+.estado-badge--pendiente  { background: var(--color-contenedor-superficie-maximo); color: var(--color-sobre-superficie); }
+.estado-badge--aceptado   { background: var(--color-contenedor-advertencia); color: var(--color-sobre-contenedor-advertencia); }
