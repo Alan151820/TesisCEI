@@ -52,6 +52,18 @@ async actualizarLogo(logoUrl) {
   this.logoUrl = logoUrl
   return true
 }
+
+async actualizarDireccionPartida(direccionPartida) {
+  await pool.query('UPDATE distribuidor SET direccion_partida = $1 WHERE id = $2', [direccionPartida, this.id])
+  this.direccionPartida = direccionPartida
+  return true
+}
+
+static async obtenerPorUsuarioId(usuarioId) {
+  const resultado = await pool.query('SELECT * FROM distribuidor WHERE usuario_id = $1', [usuarioId])
+  if (resultado.rows.length === 0) return null
+  return new Distribuidor(resultado.rows[0])
+}
 }
 
 module.exports = Distribuidor

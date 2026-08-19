@@ -1,14 +1,16 @@
 const express = require('express')
 const router = express.Router()
 const upload = require('../config/multer')
-const { obtenerPerfil, configurarPerfil, verificarPerfil, obtenerPerfilPropio, editarPerfil, subirLogo, obtenerProductosPublicados } = require('../controllers/distribuidorController')
+const { verificarToken } = require('../middleware/autenticacion')
+const { obtenerPerfil, configurarPerfil, verificarPerfil, obtenerPerfilPropio, editarPerfil, subirLogo, actualizarDireccionPartida, obtenerProductosPublicados } = require('../controllers/distribuidorController')
 
 router.get('/perfilDistribuidor/:id', obtenerPerfil)
-router.post('/configurarPerfil', configurarPerfil)
-router.post('/verificarPerfil', verificarPerfil)
-router.post('/obtenerPerfilPropio', obtenerPerfilPropio)
-router.put('/editarPerfil', editarPerfil)
-router.post('/subirLogo', upload.single('logo'), subirLogo)
+router.post('/configurarPerfil', verificarToken, configurarPerfil)
+router.post('/verificarPerfil', verificarToken, verificarPerfil)
+router.post('/obtenerPerfilPropio', verificarToken, obtenerPerfilPropio)
+router.put('/editarPerfil', verificarToken, editarPerfil)
+router.post('/subirLogo', verificarToken, upload.single('logo'), subirLogo)
+router.put('/direccionPartida', verificarToken, actualizarDireccionPartida)
 router.get('/:id/productos', obtenerProductosPublicados)
 
 

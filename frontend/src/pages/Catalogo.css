@@ -222,17 +222,19 @@
   border: 1px solid var(--color-variante-contorno);
   display: flex;
   flex-direction: column;
-  transition: box-shadow 0.15s;
+  cursor: pointer;
+  transition: box-shadow 0.15s, border-color 0.15s;
 }
 
 .catalogo-tarjeta:hover {
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  border-color: var(--color-primario);
 }
 
 .catalogo-tarjeta-imagen {
   width: 100%;
   aspect-ratio: 4 / 3;
-  object-fit: cover;
+  object-fit: contain;
   background: var(--color-contenedor-superficie-bajo);
   display: block;
 }
@@ -295,6 +297,10 @@
 }
 
 .catalogo-tarjeta-precio {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  column-gap: 6px;
   font-size: 15px;
   font-weight: 700;
   color: var(--color-sobre-superficie);
@@ -485,3 +491,4 @@
     width: 120px;
   }
 }
+.catalogo-tarjeta-precio-hasta { font-size: 0.87em; font-weight: 400; color: var(--color-sobre-variante-superficie); }

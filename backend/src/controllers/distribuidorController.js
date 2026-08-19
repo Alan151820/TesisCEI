@@ -1,4 +1,5 @@
 const Distribuidor = require('../models/Distribuidor')
+const Producto = require('../models/Producto')
 
 const obtenerPerfil = async (req, res) => {
   try {
@@ -26,19 +27,13 @@ const obtenerPerfil = async (req, res) => {
 }
 const configurarPerfil = async (req, res) => {
   try {
-    const { telefono, nombreComercial, descripcionNegocio, zonaEntrega } = req.body
+    const { nombreComercial, descripcionNegocio, zonaEntrega } = req.body
 
     if (!nombreComercial) {
       return res.status(400).json({ mensaje: 'El nombre comercial es obligatorio para continuar.' })
     }
 
-    const usuarioResultado = await require('../config/db').query('SELECT id FROM usuario WHERE telefono = $1', [telefono])
-    if (usuarioResultado.rows.length === 0) {
-      return res.status(400).json({ mensaje: 'No encontramos una cuenta con ese número de teléfono.' })
-    }
-
-    const usuarioId = usuarioResultado.rows[0].id
-    const distribuidor = await Distribuidor.configurarPerfilInicial(usuarioId, nombreComercial, descripcionNegocio, zonaEntrega)
+    const distribuidor = await Distribuidor.configurarPerfilInicial(req.usuario.id, nombreComercial, descripcionNegocio, zonaEntrega)
 
     res.json({ mensaje: 'Perfil configurado correctamente.', distribuidorId: distribuidor.id })
   } catch (error) {
@@ -47,38 +42,28 @@ const configurarPerfil = async (req, res) => {
  }
 const verificarPerfil = async (req, res) => {
   try {
-    const { telefono } = req.body
-    const db = require('../config/db')
-    
-    const usuario = await db.query('SELECT id FROM usuario WHERE telefono = $1', [telefono])
-    if (usuario.rows.length === 0) return res.status(400).json({ mensaje: 'No encontramos una cuenta con ese número de teléfono.' })
-
-    const distribuidor = await db.query('SELECT id, perfil_configurado FROM distribuidor WHERE usuario_id = $1', [usuario.rows[0].id])
-
-    if (distribuidor.rows.length === 0) {
+    const distribuidor = await Distribuidor.obtenerPorUsuarioId(req.usuario.id)
+    if (!distribuidor) {
       return res.json({ perfilConfigurado: false })
     }
-
-    res.json({ perfilConfigurado: distribuidor.rows[0].perfil_configurado, distribuidorId: distribuidor.rows[0].id })
+    res.json({ perfilConfigurado: distribuidor.perfilConfigurado, distribuidorId: distribuidor.id })
   } catch (error) {
     res.status(500).json({ mensaje: 'No fue posible completar la operación. Intente nuevamente más tarde.' })
   }
 }
 const obtenerPerfilPropio = async (req, res) => {
   try {
-    const { telefono } = req.body
-    const db = require('../config/db')
-    const usuario = await db.query('SELECT id FROM usuario WHERE telefono = $1', [telefono])
-    if (usuario.rows.length === 0) return res.status(400).json({ mensaje: 'No encontramos una cuenta con ese número de teléfono.' })
-
-    const distribuidor = await Distribuidor.obtenerPorId(
-      (await db.query('SELECT id FROM distribuidor WHERE usuario_id = $1', [usuario.rows[0].id])).rows[0].id
-    )
+    const distribuidor = await Distribuidor.obtenerPorUsuarioId(req.usuario.id)
+    if (!distribuidor) {
+      return res.status(404).json({ mensaje: 'No tenés un perfil de distribuidor configurado.' })
+    }
 
     res.json({
       nombreComercial: distribuidor.nombreComercial,
       descripcionNegocio: distribuidor.descripcionNegocio,
-      zonaEntrega: distribuidor.zonaEntrega
+      zonaEntrega: distribuidor.zonaEntrega,
+      direccionPartida: distribuidor.direccionPartida,
+      logoUrl: distribuidor.logoUrl,
     })
   } catch (error) {
     res.status(500).json({ mensaje: 'No fue posible completar la operación. Intente nuevamente más tarde.' })
@@ -87,13 +72,11 @@ const obtenerPerfilPropio = async (req, res) => {
 
 const editarPerfil = async (req, res) => {
   try {
-    const { telefono, nombreComercial, descripcionNegocio, zonaEntrega } = req.body
-    const db = require('../config/db')
-    const usuario = await db.query('SELECT id FROM usuario WHERE telefono = $1', [telefono])
-    if (usuario.rows.length === 0) return res.status(400).json({ mensaje: 'No encontramos una cuenta con ese número de teléfono.' })
-
-    const distResult = await db.query('SELECT id FROM distribuidor WHERE usuario_id = $1', [usuario.rows[0].id])
-    const distribuidor = await Distribuidor.obtenerPorId(distResult.rows[0].id)
+    const { nombreComercial, descripcionNegocio, zonaEntrega } = req.body
+    const distribuidor = await Distribuidor.obtenerPorUsuarioId(req.usuario.id)
+    if (!distribuidor) {
+      return res.status(404).json({ mensaje: 'No tenés un perfil de distribuidor configurado.' })
+    }
     await distribuidor.editarPerfil(nombreComercial, descripcionNegocio, zonaEntrega)
 
     res.json({ mensaje: 'Perfil actualizado correctamente.' })
@@ -103,14 +86,10 @@ const editarPerfil = async (req, res) => {
 }
 const subirLogo = async (req, res) => {
   try {
-    const telefono = req.body.telefono
-    const db = require('../config/db')
-
-    const usuario = await db.query('SELECT id FROM usuario WHERE telefono = $1', [telefono])
-    if (usuario.rows.length === 0) return res.status(400).json({ mensaje: 'No encontramos una cuenta con ese número de teléfono.' })
-
-    const distResult = await db.query('SELECT id FROM distribuidor WHERE usuario_id = $1', [usuario.rows[0].id])
-    const distribuidor = await Distribuidor.obtenerPorId(distResult.rows[0].id)
+    const distribuidor = await Distribuidor.obtenerPorUsuarioId(req.usuario.id)
+    if (!distribuidor) {
+      return res.status(404).json({ mensaje: 'No tenés un perfil de distribuidor configurado.' })
+    }
 
     const logoUrl = `/uploads/${req.file.filename}`
     await distribuidor.actualizarLogo(logoUrl)
@@ -122,21 +101,33 @@ const subirLogo = async (req, res) => {
   }
 }
 
+// RF-046: dirección de partida del depósito, usada como referencia para la
+// planificación de reparto. Es una acción propia, separada de RF-053 (editar
+// perfil general).
+const actualizarDireccionPartida = async (req, res) => {
+  try {
+    const direccionPartida = (req.body.direccionPartida || '').trim()
+    if (!direccionPartida) {
+      return res.status(400).json({ mensaje: 'Ingresá la dirección de partida antes de guardar.' })
+    }
+
+    const distribuidor = await Distribuidor.obtenerPorUsuarioId(req.usuario.id)
+    if (!distribuidor) {
+      return res.status(404).json({ mensaje: 'No tenés un perfil de distribuidor configurado.' })
+    }
+    await distribuidor.actualizarDireccionPartida(direccionPartida)
+
+    res.json({ mensaje: 'Dirección de partida registrada correctamente.', direccionPartida })
+  } catch (error) {
+    res.status(500).json({ mensaje: 'No fue posible completar la operación. Intente nuevamente más tarde.' })
+  }
+}
+
 const obtenerProductosPublicados = async (req, res) => {
   try {
     const { id } = req.params
-    const db = require('../config/db')
-
-    const productos = await db.query(
-      `SELECT p.id, p.nombre, p.descripcion, p.imagen_url AS "imagenUrl", c.nombre AS categoria
-       FROM producto p
-       JOIN categoria c ON c.id = p.categoria_id
-       WHERE p.distribuidor_id = $1 AND p.estado_visibilidad = 'publicado' AND p.habilitado = true
-       ORDER BY p.fecha_creacion DESC`,
-      [id]
-    )
-
-    res.json(productos.rows)
+    const productos = await Producto.listarPublicadosPorDistribuidor(id)
+    res.json(productos)
   } catch (error) {
     console.log(error)
     res.status(500).json({ mensaje: 'No fue posible completar la operación. Intente nuevamente más tarde.' })
@@ -144,4 +135,4 @@ const obtenerProductosPublicados = async (req, res) => {
 }
 
 
-module.exports = { obtenerPerfil, configurarPerfil, verificarPerfil, obtenerPerfilPropio, editarPerfil, subirLogo, obtenerProductosPublicados }
+module.exports = { obtenerPerfil, configurarPerfil, verificarPerfil, obtenerPerfilPropio, editarPerfil, subirLogo, actualizarDireccionPartida, obtenerProductosPublicados }

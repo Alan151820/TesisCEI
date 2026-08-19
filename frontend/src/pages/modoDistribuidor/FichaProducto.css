@@ -165,6 +165,56 @@
   margin-bottom: 5px;
 }
 
+.ficha-label-fila {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.ficha-label-fila .ficha-label {
+  margin-bottom: 5px;
+}
+
+.ficha-checkbox-fila {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ficha-checkbox-ayuda {
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--color-sobre-variante-superficie);
+}
+
+.ficha-checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-sobre-superficie);
+  cursor: pointer;
+}
+
+.ficha-checkbox-label input[type="checkbox"] {
+  cursor: pointer;
+}
+
+.ficha-nombre-fila {
+  display: flex;
+  gap: 8px;
+}
+
+.ficha-nombre-fila .ficha-input {
+  flex: 1;
+}
+
+.ficha-input-cantidad {
+  width: 90px;
+  flex: 0 0 auto;
+}
+
 .ficha-requerido {
   color: var(--color-error);
 }
@@ -185,6 +235,12 @@
 
 .ficha-input-angosto {
   max-width: 160px;
+}
+
+.ficha-input-solo-lectura {
+  background: var(--color-contenedor-superficie-bajo);
+  color: var(--color-sobre-variante-superficie);
+  cursor: default;
 }
 
 .ficha-textarea {
@@ -329,7 +385,7 @@
 
 .ficha-precios-thead {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 40px;
+  grid-template-columns: 0.8fr 1fr 1fr 40px;
   background: var(--color-contenedor-superficie-bajo);
   padding: 8px 12px;
   font-size: 11px;
@@ -342,7 +398,7 @@
 
 .ficha-precios-fila {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 40px;
+  grid-template-columns: 0.8fr 1fr 1fr 40px;
   padding: 10px 12px;
   border-top: 1px solid var(--color-variante-contorno);
   font-size: 13px;
@@ -400,18 +456,18 @@
   align-items: center;
   gap: 10px;
   padding: 14px 20px;
-  background: oklch(95% 0.04 145);
-  border-color: oklch(80% 0.1 145);
+  background: var(--color-contenedor-exito);
+  border-color: var(--color-exito);
 }
 
 .ficha-ok-icono {
   font-size: 18px;
-  color: oklch(45% 0.15 145);
+  color: var(--color-exito);
 }
 
 .ficha-ok-texto {
   font-size: 14px;
-  color: oklch(30% 0.1 145);
+  color: var(--color-sobre-contenedor-exito);
 }
 
 .ficha-mobile-header { display: none; }
@@ -469,3 +525,39 @@
   .ficha-btn-guardar,
   .ficha-btn-cancelar { height: 44px; }
 }
+
+.ficha-preview-bloque { display: flex; flex-direction: column; gap: 8px; }
+
+.ficha-info-box {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: var(--color-contenedor-primario);
+  color: var(--color-sobre-contenedor-primario);
+  border-radius: 4px;
+  padding: 12px 14px;
+  font-size: 12px;
+  line-height: 1.5;
+  margin-bottom: 16px;
+}
+
+.ficha-info-opcion {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.ficha-info-icono {
+  font-size: 16px;
+  line-height: 1.4;
+  flex-shrink: 0;
+}
+
+/* --- Modelo "todo por unidad": marca, peso/longitud, tramos, descuento total --- */
+.ficha-magnitud { display: flex; gap: 8px; }
+.ficha-magnitud .ficha-input { flex: 1; min-width: 0; }
+.ficha-magnitud .ficha-select { width: 84px; flex: 0 0 auto; }
+.ficha-ayuda-inline { font-size: 12px; font-weight: 400; color: var(--color-sobre-variante-superficie); margin-left: 6px; }
+.ficha-cant-mas { color: var(--color-primario); font-weight: 700; margin-right: 1px; }
+.ficha-tramo-desc { color: var(--color-primario); font-weight: 700; font-size: 12px; margin-left: 8px; }
+.ficha-descuento-fila { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }

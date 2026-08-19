@@ -1,3 +1,8 @@
+-- El archivo está en UTF-8. Forzar el encoding del cliente evita que una
+-- importación desde una terminal Windows (cuyo default es WIN1252) corrompa
+-- los caracteres acentuados (tildes, ñ) por doble codificación.
+SET client_encoding = 'UTF8';
+
 CREATE TYPE codigo_verificacion_proposito AS ENUM (
   'activacion_cuenta',
   'recuperacion_password'
