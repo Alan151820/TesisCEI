@@ -1,0 +1,54 @@
+@import '../../styles/detallePedido.css';
+
+.detallepedido-tabla-header--dist,
+.detallepedido-tabla-fila--dist {
+  grid-template-columns: 1fr 100px 120px 120px 110px;
+}
+
+.detallepedido-stock-cero {
+  color: var(--color-error);
+  font-weight: 600;
+}
+
+.detallepedido-pie-tarjeta {
+  padding: 14px 0 0;
+  border-top: 1px solid var(--color-variante-contorno);
+  margin-top: 14px;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.detallepedido-acciones-panel {
+  margin-top: 16px;
+  background: var(--color-contenedor-superficie-minimo);
+  border: 1px solid var(--color-variante-contorno);
+  border-radius: 6px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.detallepedido-acciones-titulo {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-sobre-variante-superficie);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 4px;
+}
+
+.detallepedido-sin-acciones {
+  font-size: 12px;
+  color: var(--color-sobre-variante-superficie);
+}
+
+@media (max-width: 768px) {
+  .detallepedido-tabla-header--dist { display: none; }
+
+  .detallepedido-tabla-fila--dist {
+    grid-template-columns: 1fr;
+  }
+
+  .detallepedido-celda:nth-child(5)::before { content: 'Stock disponible: '; color: var(--color-sobre-variante-superficie); }
+}

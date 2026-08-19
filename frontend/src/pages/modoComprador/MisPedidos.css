@@ -135,6 +135,10 @@
   flex: 1;
   padding: 28px 40px;
   overflow: auto;
+  max-width: 900px;
+  width: 100%;
+  margin: 0 auto;
+  box-sizing: border-box;
 }
 
 .mispedidos-encabezado {
@@ -174,7 +178,7 @@
 
 .mispedidos-tabla-header {
   display: grid;
-  grid-template-columns: 120px 200px 130px 120px 130px 80px;
+  grid-template-columns: 70px 100px 72px minmax(200px, 1fr) 160px 100px 120px;
   background: var(--color-contenedor-superficie-bajo);
   border-bottom: 1px solid var(--color-variante-contorno);
 }
@@ -190,11 +194,14 @@
 
 .mispedidos-tabla-fila {
   display: grid;
-  grid-template-columns: 120px 200px 130px 120px 130px 80px;
+  grid-template-columns: 70px 100px 72px minmax(200px, 1fr) 160px 100px 120px;
   border-bottom: 1px solid var(--color-contenedor-superficie-bajo);
 }
 
 .mispedidos-tabla-fila:last-child { border-bottom: none; }
+
+.mispedidos-fila-clickeable { cursor: pointer; }
+.mispedidos-fila-clickeable:hover { background: var(--color-contenedor-superficie-bajo); }
 
 .mispedidos-celda {
   padding: 12px 14px;
@@ -204,40 +211,99 @@
   align-items: center;
 }
 
-.mispedidos-numero {
-  font-weight: 600;
-  color: var(--color-sobre-superficie);
+.mispedidos-celda-col {
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 8px;
 }
 
-.mispedidos-ver {
-  color: var(--color-sobre-variante-superficie);
+.mispedidos-thumb {
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 1px solid var(--color-variante-contorno);
+  border-radius: 6px;
+  overflow: hidden;
+  background: var(--color-contenedor-superficie-bajo);
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.mispedidos-thumb-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.mispedidos-thumb-sinimg {
+  font-size: 8px;
+  color: var(--color-sobre-variante-superficie);
+  text-align: center;
+  line-height: 1.2;
+}
+
+.mispedidos-titulo-link {
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-primario);
+  cursor: pointer;
+  text-align: left;
+}
+
+.mispedidos-titulo-link:hover { text-decoration: underline; }
+
+.mispedidos-titulo-nodisponible {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-sobre-variante-superficie);
+}
+
+.mispedidos-titulo-nodisponible em {
+  font-style: normal;
+  font-weight: 400;
+}
+
+.mispedidos-celda-id {
   font-size: 12px;
+  font-weight: 600;
+  color: var(--color-sobre-variante-superficie);
 }
 
-.mispedidos-ver:hover { color: var(--color-sobre-superficie); }
+.mispedidos-item-linea {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
 
-/* ── Estado badges ── */
-.mispedidos-estado {
-  font-size: 11px;
-  padding: 3px 8px;
-  border-radius: 3px;
-  background: var(--color-contenedor-superficie-maximo);
+.mispedidos-cantidad {
+  font-size: 13px;
   color: var(--color-sobre-superficie);
-  white-space: nowrap;
 }
 
-.mispedidos-estado--entregado  { background: #E6F4EA; color: #1E7E34; }
-.mispedidos-estado--rechazado  { background: var(--color-contenedor-error); color: var(--color-sobre-contenedor-error); }
-.mispedidos-estado--en_camino  { background: #EAF2FB; color: #1A6BAA; }
-.mispedidos-estado--pendiente  { background: var(--color-contenedor-superficie-maximo); color: var(--color-sobre-superficie); }
-.mispedidos-estado--aceptado   { background: #FFF8E1; color: #8A6800; }
+.mispedidos-btn-mapa {
+  font-size: 11px;
+  color: var(--color-primario);
+  background: none;
+  border: none;
+  padding: 0;
+  margin-top: 2px;
+  cursor: pointer;
+  text-align: left;
+}
+
+.mispedidos-btn-mapa:hover { text-decoration: underline; }
 
 /* ── Cards mobile (ocultas en desktop) ── */
 .mispedidos-cards { display: none; }
 
-/* ── Bottom nav (oculta en desktop) ── */
-.mispedidos-bottom-nav { display: none; }
 
 /* ═══════════════════════════════════════
    MOBILE  (≤ 768px)
@@ -333,7 +399,7 @@
     padding: 14px;
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: 8px;
   }
 
   .mispedidos-card-fila {
@@ -342,19 +408,10 @@
     justify-content: space-between;
   }
 
-  .mispedidos-card-numero {
-    font-size: 14px;
+  .mispedidos-card-id {
+    font-size: 13px;
     font-weight: 700;
     color: var(--color-sobre-superficie);
-  }
-
-  .mispedidos-card-distribuidor {
-    font-size: 13px;
-    color: var(--color-sobre-variante-superficie);
-  }
-
-  .mispedidos-card-footer {
-    margin-top: 4px;
   }
 
   .mispedidos-card-fecha {
@@ -362,67 +419,42 @@
     color: var(--color-sobre-variante-superficie);
   }
 
-  .mispedidos-card-total {
-    font-size: 14px;
-    font-weight: 600;
+  .mispedidos-card-distribuidor {
+    font-size: 13px;
     color: var(--color-sobre-superficie);
   }
 
-  /* Bottom nav */
-  .mispedidos-bottom-nav {
+  .mispedidos-card-item {
     display: flex;
-    height: 56px;
-    background: var(--color-contenedor-superficie-minimo);
-    border-top: 1px solid var(--color-variante-contorno);
     align-items: center;
-    justify-content: space-around;
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    z-index: 100;
+    gap: 10px;
   }
 
-  .mispedidos-bottom-item {
+  .mispedidos-card-item-info {
     display: flex;
     flex-direction: column;
-    align-items: center;
     gap: 2px;
-    cursor: pointer;
-    min-width: 60px;
+    min-width: 0;
   }
 
-  .mispedidos-bottom-icono {
-    font-size: 18px;
+  .mispedidos-card-footer {
+    margin-top: 4px;
+    padding-top: 8px;
+    border-top: 1px solid var(--color-contenedor-superficie-bajo);
+  }
+
+  .mispedidos-card-total-label {
+    font-size: 12px;
     color: var(--color-sobre-variante-superficie);
-    position: relative;
-  }
-
-  .mispedidos-bottom-item.activo .mispedidos-bottom-icono { color: var(--color-sobre-superficie); }
-
-  .mispedidos-bottom-label {
-    font-size: 10px;
-    color: var(--color-sobre-variante-superficie);
-    font-weight: 500;
-  }
-
-  .mispedidos-bottom-item.activo .mispedidos-bottom-label {
-    color: var(--color-sobre-superficie);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
     font-weight: 700;
   }
 
-  .mispedidos-bottom-badge {
-    position: absolute;
-    top: -4px;
-    right: -6px;
-    background: var(--color-primario);
-    color: var(--color-sobre-primario);
-    font-size: 8px;
-    width: 14px;
-    height: 14px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  .mispedidos-card-total {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--color-sobre-superficie);
   }
+
 }

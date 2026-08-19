@@ -49,6 +49,26 @@ async function pedidosActivos(req, res, next) {
   }
 }
 
+async function detalleComprador(req, res, next) {
+  const pedidoId = Number(req.params.id)
+  try {
+    const pedido = await pedidosServicio.obtenerDetalleComprador(pedidoId, req.usuario.id)
+    res.json(pedido)
+  } catch (error) {
+    next(error)
+  }
+}
+
+async function detalleDistribuidor(req, res, next) {
+  const pedidoId = Number(req.params.id)
+  try {
+    const pedido = await pedidosServicio.obtenerDetalleDistribuidor(pedidoId, req.usuario.id)
+    res.json(pedido)
+  } catch (error) {
+    next(error)
+  }
+}
+
 async function aceptarPedido(req, res, next) {
   const pedidoId = Number(req.params.id)
   try {
@@ -59,4 +79,30 @@ async function aceptarPedido(req, res, next) {
   }
 }
 
-module.exports = { confirmarPedido, historialDistribuidor, historialComprador, pedidosActivos, aceptarPedido }
+async function rechazarPedido(req, res, next) {
+  const pedidoId = Number(req.params.id)
+  const { motivo } = req.body
+
+  if (!motivo || !motivo.trim()) {
+    return res.status(400).json({ error: 'Ingresá un motivo de rechazo antes de confirmar.' })
+  }
+
+  try {
+    const resultado = await pedidosServicio.rechazarPedido(pedidoId, req.usuario.id, motivo.trim())
+    res.json(resultado)
+  } catch (error) {
+    next(error)
+  }
+}
+
+async function avanzarEstado(req, res, next) {
+  const pedidoId = Number(req.params.id)
+  try {
+    const resultado = await pedidosServicio.avanzarEstado(pedidoId, req.usuario.id)
+    res.json(resultado)
+  } catch (error) {
+    next(error)
+  }
+}
+
+module.exports = { confirmarPedido, historialDistribuidor, historialComprador, pedidosActivos, detalleComprador, detalleDistribuidor, aceptarPedido, rechazarPedido, avanzarEstado }

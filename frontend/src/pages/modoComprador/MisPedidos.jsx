@@ -3,16 +3,11 @@ import { useNavigate } from 'react-router-dom'
 import api from '../../lib/axios'
 import { tokenValido, rutaInicio } from '../../lib/auth'
 import { useCarrito } from '../../context/CarritoContext'
+import ModalMapaDireccion from '../../components/ModalMapaDireccion'
+import BottomNavComprador from '../../components/BottomNavComprador'
+import EstadoBadge from '../../components/EstadoBadge'
 import './InicioComprador.css'
 import './MisPedidos.css'
-
-const ETIQUETA_ESTADO = {
-  pendiente: 'Pendiente',
-  aceptado: 'Aceptado',
-  en_camino: 'En camino',
-  entregado: 'Entregado',
-  rechazado: 'Rechazado',
-}
 
 function formatearFecha(isoString) {
   const d = new Date(isoString)
@@ -42,6 +37,7 @@ function MisPedidos() {
   const [pedidos, setPedidos] = useState([])
   const [cargando, setCargando] = useState(true)
   const [error, setError] = useState(null)
+  const [pedidoMapa, setPedidoMapa] = useState(null)
 
   useEffect(() => {
     api.get('/api/pedidos/mis-pedidos')
@@ -116,25 +112,66 @@ function MisPedidos() {
             {/* Tabla desktop */}
             <div className="mispedidos-tabla">
               <div className="mispedidos-tabla-header">
-                <div>N° Pedido</div>
-                <div>Distribuidor</div>
+                <div>Pedido</div>
                 <div>Fecha</div>
+                <div>Imagen</div>
+                <div>Producto</div>
+                <div>Distribuidor</div>
                 <div>Total</div>
                 <div>Estado</div>
-                <div></div>
               </div>
               {pedidos.map(p => (
-                <div key={p.id} className="mispedidos-tabla-fila">
-                  <div className="mispedidos-celda mispedidos-numero">#{p.id}</div>
-                  <div className="mispedidos-celda">{p.nombreDistribuidor}</div>
+                <div key={p.id} className="mispedidos-tabla-fila mispedidos-fila-clickeable" onClick={() => navigate(`/pedido/${p.id}`)}>
+                  <div className="mispedidos-celda mispedidos-celda-id">#{p.id}</div>
                   <div className="mispedidos-celda">{formatearFecha(p.fechaCreacion)}</div>
+                  <div className="mispedidos-celda mispedidos-celda-col">
+                    {p.items.map((item, i) => (
+                      <button
+                        key={i}
+                        type="button"
+                        className="mispedidos-thumb"
+                        onClick={(e) => { e.stopPropagation(); navigate(`/producto/${item.productoId}`) }}
+                        aria-label={`Ver ${item.nombreProducto}`}
+                      >
+                        {item.imagenUrl
+                          ? <img src={`http://localhost:3000${item.imagenUrl}`} alt={item.nombreProducto} className="mispedidos-thumb-img" />
+                          : <span className="mispedidos-thumb-sinimg">Sin imagen</span>
+                        }
+                      </button>
+                    ))}
+                  </div>
+                  <div className="mispedidos-celda mispedidos-celda-col">
+                    {p.items.map((item, i) => (
+                      <div key={i} className="mispedidos-item-linea">
+                        {item.disponible ? (
+                          <button
+                            type="button"
+                            className="mispedidos-titulo-link"
+                            onClick={(e) => { e.stopPropagation(); navigate(`/producto/${item.productoId}`) }}
+                          >
+                            {item.nombreProducto}
+                          </button>
+                        ) : (
+                          <span className="mispedidos-titulo-nodisponible">
+                            {item.nombreProducto} <em>(No disponible)</em>
+                          </span>
+                        )}
+                        <span className="mispedidos-cantidad">{Number(item.cantidad)} u.</span>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="mispedidos-celda mispedidos-celda-col">
+                    <div>{p.nombreDistribuidor}</div>
+                    {p.latitud && p.longitud && (
+                      <button type="button" className="mispedidos-btn-mapa" onClick={(e) => { e.stopPropagation(); setPedidoMapa(p) }}>
+                        📍 Ver mapa
+                      </button>
+                    )}
+                  </div>
                   <div className="mispedidos-celda">${Number(p.total).toLocaleString('es-AR')}</div>
                   <div className="mispedidos-celda">
-                    <span className={`mispedidos-estado mispedidos-estado--${p.estado}`}>
-                      {ETIQUETA_ESTADO[p.estado] ?? p.estado}
-                    </span>
+                    <EstadoBadge estado={p.estado} />
                   </div>
-                  <div className="mispedidos-celda mispedidos-ver">Ver →</div>
                 </div>
               ))}
             </div>
@@ -142,16 +179,57 @@ function MisPedidos() {
             {/* Cards mobile */}
             <div className="mispedidos-cards">
               {pedidos.map(p => (
-                <div key={p.id} className="mispedidos-card">
+                <div key={p.id} className="mispedidos-card mispedidos-fila-clickeable" onClick={() => navigate(`/pedido/${p.id}`)}>
                   <div className="mispedidos-card-fila">
-                    <span className="mispedidos-card-numero">#{p.id}</span>
-                    <span className={`mispedidos-estado mispedidos-estado--${p.estado}`}>
-                      {ETIQUETA_ESTADO[p.estado] ?? p.estado}
-                    </span>
+                    <span className="mispedidos-card-id">Pedido #{p.id}</span>
+                    <EstadoBadge estado={p.estado} />
                   </div>
-                  <div className="mispedidos-card-distribuidor">{p.nombreDistribuidor}</div>
-                  <div className="mispedidos-card-fila mispedidos-card-footer">
+                  <div className="mispedidos-card-fila">
                     <span className="mispedidos-card-fecha">{formatearFecha(p.fechaCreacion)}</span>
+                  </div>
+                  <div className="mispedidos-card-fila">
+                    <span className="mispedidos-card-distribuidor">{p.nombreDistribuidor}</span>
+                    {p.latitud && p.longitud && (
+                      <button type="button" className="mispedidos-btn-mapa" onClick={(e) => { e.stopPropagation(); setPedidoMapa(p) }}>
+                        📍 Ver mapa
+                      </button>
+                    )}
+                  </div>
+                  {p.items.map((item, i) => (
+                    <div key={i} className="mispedidos-card-item">
+                      <button
+                        type="button"
+                        className="mispedidos-thumb"
+                        onClick={(e) => { e.stopPropagation(); navigate(`/producto/${item.productoId}`) }}
+                        aria-label={`Ver ${item.nombreProducto}`}
+                      >
+                        {item.imagenUrl
+                          ? <img src={`http://localhost:3000${item.imagenUrl}`} alt={item.nombreProducto} className="mispedidos-thumb-img" />
+                          : <span className="mispedidos-thumb-sinimg">Sin imagen</span>
+                        }
+                      </button>
+                      <div className="mispedidos-card-item-info">
+                        {item.disponible ? (
+                          <button
+                            type="button"
+                            className="mispedidos-titulo-link"
+                            onClick={(e) => { e.stopPropagation(); navigate(`/producto/${item.productoId}`) }}
+                          >
+                            {item.nombreProducto}
+                          </button>
+                        ) : (
+                          <span className="mispedidos-titulo-nodisponible">
+                            {item.nombreProducto} <em>(No disponible)</em>
+                          </span>
+                        )}
+                        <span className="mispedidos-cantidad">
+                          {Number(item.cantidad)} u.
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                  <div className="mispedidos-card-fila mispedidos-card-footer">
+                    <span className="mispedidos-card-total-label">Total</span>
                     <span className="mispedidos-card-total">${Number(p.total).toLocaleString('es-AR')}</span>
                   </div>
                 </div>
@@ -163,22 +241,16 @@ function MisPedidos() {
       </main>
 
       {/* Bottom nav mobile */}
-      <nav className="mispedidos-bottom-nav">
-        <div className="mispedidos-bottom-item" onClick={() => navigate('/inicioComprador')}>
-          <span className="mispedidos-bottom-icono">◻</span>
-          <span className="mispedidos-bottom-label">Catálogo</span>
-        </div>
-        <div className="mispedidos-bottom-item" onClick={() => navigate('/carrito')}>
-          <span className="mispedidos-bottom-icono">
-            🛒{totalItems > 0 && <span className="mispedidos-bottom-badge">{totalItems}</span>}
-          </span>
-          <span className="mispedidos-bottom-label">Carrito</span>
-        </div>
-        <div className="mispedidos-bottom-item activo">
-          <span className="mispedidos-bottom-icono">◇</span>
-          <span className="mispedidos-bottom-label">Pedidos</span>
-        </div>
-      </nav>
+      <BottomNavComprador />
+
+      {pedidoMapa && (
+        <ModalMapaDireccion
+          soloLectura
+          ubicacionInicial={{ lat: Number(pedidoMapa.latitud), lng: Number(pedidoMapa.longitud) }}
+          direccionInicial={pedidoMapa.direccionEntrega}
+          onCerrar={() => setPedidoMapa(null)}
+        />
+      )}
 
     </div>
   )

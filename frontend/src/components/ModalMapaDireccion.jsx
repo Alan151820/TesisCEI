@@ -45,11 +45,13 @@ function ManejadorClic({ onClic }) {
   return null
 }
 
-function ModalMapaDireccion({ onConfirmar, onCerrar }) {
-  const [marcador, setMarcador] = useState(null)
-  const [centro, setCentro] = useState(MONTEVIDEO)
-  const [zoom, setZoom] = useState(ZOOM_INICIAL)
-  const [direccionTexto, setDireccionTexto] = useState('')
+// soloLectura: modo de solo visualización, usado para mostrar la ubicación
+// exacta de un pedido ya confirmado — sin edición, sin click-to-move.
+function ModalMapaDireccion({ onConfirmar, onCerrar, soloLectura = false, ubicacionInicial = null, direccionInicial = '' }) {
+  const [marcador, setMarcador] = useState(soloLectura && ubicacionInicial ? ubicacionInicial : null)
+  const [centro, setCentro] = useState(soloLectura && ubicacionInicial ? [ubicacionInicial.lat, ubicacionInicial.lng] : MONTEVIDEO)
+  const [zoom, setZoom] = useState(soloLectura && ubicacionInicial ? ZOOM_UBICACION : ZOOM_INICIAL)
+  const [direccionTexto, setDireccionTexto] = useState(soloLectura ? direccionInicial : '')
   const [geocodificando, setGeocodificando] = useState(false)
   const [buscandoUbicacion, setBuscandoUbicacion] = useState(false)
   const [errorUbicacion, setErrorUbicacion] = useState('')
@@ -101,29 +103,33 @@ function ModalMapaDireccion({ onConfirmar, onCerrar }) {
       <div className="mapa-modal" onClick={e => e.stopPropagation()}>
 
         <div className="mapa-header">
-          <div className="mapa-titulo">Seleccioná tu dirección de entrega</div>
+          <div className="mapa-titulo">{soloLectura ? 'Ubicación de entrega' : 'Seleccioná tu dirección de entrega'}</div>
           <button className="mapa-cerrar" onClick={onCerrar}>✕</button>
         </div>
 
-        <div className="mapa-instruccion">
-          Tocá el mapa para colocar el pin en la dirección exacta de entrega, o arrastralo para ajustarlo.
-        </div>
+        {!soloLectura && (
+          <div className="mapa-instruccion">
+            Tocá el mapa para colocar el pin en la dirección exacta de entrega, o arrastralo para ajustarlo.
+          </div>
+        )}
 
-        <div className="mapa-ubicacion-btn-wrap">
-          <button
-            className="mapa-btn-ubicacion"
-            onClick={usarUbicacionActual}
-            disabled={buscandoUbicacion}
-          >
-            {buscandoUbicacion ? 'Obteniendo ubicación...' : '📍 Usar mi ubicación actual'}
-          </button>
-          {errorUbicacion && <div className="mapa-error-ubicacion">{errorUbicacion}</div>}
-        </div>
+        {!soloLectura && (
+          <div className="mapa-ubicacion-btn-wrap">
+            <button
+              className="mapa-btn-ubicacion"
+              onClick={usarUbicacionActual}
+              disabled={buscandoUbicacion}
+            >
+              {buscandoUbicacion ? 'Obteniendo ubicación...' : '📍 Usar mi ubicación actual'}
+            </button>
+            {errorUbicacion && <div className="mapa-error-ubicacion">{errorUbicacion}</div>}
+          </div>
+        )}
 
         <div className="mapa-contenedor">
           <MapContainer
-            center={MONTEVIDEO}
-            zoom={ZOOM_INICIAL}
+            center={centro}
+            zoom={zoom}
             className="mapa-leaflet"
             style={{ height: '100%', width: '100%' }}
           >
@@ -132,12 +138,12 @@ function ModalMapaDireccion({ onConfirmar, onCerrar }) {
               attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
             />
             <ControladorCentro centro={centro} zoom={zoom} />
-            <ManejadorClic onClic={ponerMarcador} />
+            {!soloLectura && <ManejadorClic onClic={ponerMarcador} />}
             {marcador && (
               <Marker
                 position={[marcador.lat, marcador.lng]}
-                draggable
-                eventHandlers={{
+                draggable={!soloLectura}
+                eventHandlers={soloLectura ? {} : {
                   dragend: e => {
                     const pos = e.target.getLatLng()
                     ponerMarcador(pos.lat, pos.lng)
@@ -160,14 +166,20 @@ function ModalMapaDireccion({ onConfirmar, onCerrar }) {
         )}
 
         <div className="mapa-footer">
-          <button className="mapa-btn-cancelar" onClick={onCerrar}>Cancelar</button>
-          <button
-            className="mapa-btn-confirmar"
-            onClick={handleConfirmar}
-            disabled={!marcador || !direccionTexto || geocodificando}
-          >
-            Confirmar ubicación
-          </button>
+          {soloLectura ? (
+            <button className="mapa-btn-confirmar" onClick={onCerrar}>Cerrar</button>
+          ) : (
+            <>
+              <button className="mapa-btn-cancelar" onClick={onCerrar}>Cancelar</button>
+              <button
+                className="mapa-btn-confirmar"
+                onClick={handleConfirmar}
+                disabled={!marcador || !direccionTexto || geocodificando}
+              >
+                Confirmar ubicación
+              </button>
+            </>
+          )}
         </div>
 
       </div>

@@ -1,7 +1,10 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import api from '../../lib/axios'
 import { tokenValido } from '../../lib/auth'
+import ModalMapaDireccion from '../../components/ModalMapaDireccion'
+import EstadoBadge from '../../components/EstadoBadge'
+import './Inicio.css'
 import './MisPedidos.css'
 
 const NAV_ITEMS = [
@@ -14,24 +17,52 @@ const NAV_ITEMS = [
   { label: 'Editar perfil', ruta: '/editarPerfil' },
 ]
 
-const ETIQUETA_ESTADO = {
-  pendiente: 'Pendiente',
-  aceptado: 'Aceptado',
-  en_camino: 'En camino',
-}
-
-function sufijoPorTipo(tipoProducto, metricaVisualizacion) {
-  if (tipoProducto === 'fraccionable') {
-    if (metricaVisualizacion === 'kilogramos') return 'kg'
-    if (metricaVisualizacion === 'litros') return 'L'
-    if (metricaVisualizacion === 'metros') return 'm'
-  }
-  return 'u.'
-}
-
 function formatearFecha(isoString) {
   const d = new Date(isoString)
   return d.toLocaleDateString('es-AR', { day: 'numeric', month: 'short', year: 'numeric' })
+}
+
+function FilaPedido({ pedido: p, onVerUbicacion, navigate }) {
+  return (
+    <div className="pedidos-tabla-fila pedidos-fila-clickeable" onClick={() => navigate(`/pedidos/${p.id}`)}>
+      <div className="pedidos-celda pedidos-numero">#{p.id}</div>
+      <div className="pedidos-celda">{formatearFecha(p.fechaCreacion)}</div>
+      <div className="pedidos-celda">{p.nombreComprador}</div>
+      <div className="pedidos-celda">
+        <div className="pedidos-productos-lista">
+          {p.items.map((item, i) => (
+            <div key={i} className="pedidos-producto-item pedidos-producto-item--imagen">
+              {item.imagenUrl
+                ? <img src={`http://localhost:3000${item.imagenUrl}`} alt={item.nombreProducto} className="pedidos-thumb" />
+                : <span className="pedidos-thumb pedidos-thumb-sinimg">Sin imagen</span>
+              }
+              <span>{item.nombreProducto} ×{Number(item.cantidad)} u.</span>
+            </div>
+          ))}
+        </div>
+      </div>
+      <div className="pedidos-celda">${Number(p.total).toLocaleString('es-AR')}</div>
+      <div className="pedidos-celda">
+        <EstadoBadge estado={p.estado} />
+      </div>
+      <div className="pedidos-celda">
+        <div className="pedidos-acciones" onClick={e => e.stopPropagation()}>
+          {p.latitud && p.longitud && (
+            <button type="button" className="pedidos-accion-btn" onClick={() => onVerUbicacion(p)}>
+              📍 Ver ubicación
+            </button>
+          )}
+          <button
+            type="button"
+            className="pedidos-accion-btn"
+            onClick={() => window.open(`https://wa.me/${p.telefonoComprador.replace(/^\+/, '')}`, '_blank')}
+          >
+            💬 Mensaje
+          </button>
+        </div>
+      </div>
+    </div>
+  )
 }
 
 function MisPedidos() {
@@ -44,8 +75,24 @@ function MisPedidos() {
   const [cargando, setCargando] = useState(true)
   const [error, setError] = useState(null)
   const [menuAbierto, setMenuAbierto] = useState(false)
-  const [erroresAccion, setErroresAccion] = useState({})
-  const [procesando, setProcesando] = useState(new Set())
+  const [menuPerfil, setMenuPerfil] = useState(false)
+  const perfilRef = useRef(null)
+  const [pedidoMapa, setPedidoMapa] = useState(null)
+
+  useEffect(() => {
+    if (!menuPerfil) return
+    const cerrar = (e) => { if (!perfilRef.current?.contains(e.target)) setMenuPerfil(false) }
+    document.addEventListener('mousedown', cerrar)
+    return () => document.removeEventListener('mousedown', cerrar)
+  }, [menuPerfil])
+
+  // RF-031: historial completo de pedidos (todos los estados), aparte del
+  // panel de activos que ya existía.
+  const [vista, setVista] = useState('activos')
+  const [historial, setHistorial] = useState([])
+  const [historialCargado, setHistorialCargado] = useState(false)
+  const [cargandoHistorial, setCargandoHistorial] = useState(false)
+  const [errorHistorial, setErrorHistorial] = useState(null)
 
   useEffect(() => { if (!tokenValido()) navigate('/login') }, [navigate])
 
@@ -56,18 +103,14 @@ function MisPedidos() {
       .finally(() => setCargando(false))
   }, [])
 
-  const handleAceptar = async (pedidoId) => {
-    setProcesando(prev => new Set(prev).add(pedidoId))
-    setErroresAccion(prev => ({ ...prev, [pedidoId]: null }))
-    try {
-      const res = await api.patch(`/api/pedidos/${pedidoId}/aceptar`)
-      setPedidos(prev => prev.map(p => p.id === pedidoId ? { ...p, estado: 'aceptado' } : p))
-      window.open(res.data.deepLink, '_blank')
-    } catch (err) {
-      const mensaje = err.response?.data?.error || 'No fue posible completar la operación. Intente nuevamente más tarde.'
-      setErroresAccion(prev => ({ ...prev, [pedidoId]: mensaje }))
-    } finally {
-      setProcesando(prev => { const s = new Set(prev); s.delete(pedidoId); return s })
+  const irAVista = (nuevaVista) => {
+    setVista(nuevaVista)
+    if (nuevaVista === 'historial' && !historialCargado) {
+      setCargandoHistorial(true)
+      api.get('/api/pedidos/historial')
+        .then(res => { setHistorial(res.data); setHistorialCargado(true) })
+        .catch(err => setErrorHistorial(err.response?.data?.error || 'No fue posible completar la operación. Intente nuevamente más tarde.'))
+        .finally(() => setCargandoHistorial(false))
     }
   }
 
@@ -83,7 +126,7 @@ function MisPedidos() {
 
       {menuAbierto && (
         <div className="panel-drawer-overlay" onClick={() => setMenuAbierto(false)}>
-          <nav className="panel-drawer" onClick={e => e.stopPropagation()}>
+          <nav className="panel-drawer" data-tema="oscuro" onClick={e => e.stopPropagation()}>
             <div className="panel-drawer-top">
               <div className="panel-drawer-marca">MarketDist</div>
               <button className="panel-drawer-cerrar-btn" onClick={() => setMenuAbierto(false)}>✕</button>
@@ -110,7 +153,7 @@ function MisPedidos() {
         </div>
       )}
 
-      <div className="panel-mobile-header">
+      <div className="panel-mobile-header" data-tema="oscuro">
         <span className="panel-mobile-hamburger" onClick={() => setMenuAbierto(true)}>≡</span>
         <div className="panel-mobile-titulo">Pedidos activos</div>
         <div style={{ width: 40 }} />
@@ -119,13 +162,27 @@ function MisPedidos() {
       <header className="panel-master-header">
         <div className="panel-master-header-marca">MarketDist</div>
         <div className="panel-master-header-perfil">
-          <div className="panel-master-header-avatar">{iniciales}</div>
+          <button className="panel-header-salir-btn" onClick={() => navigate('/inicioComprador')}>
+            Salir de distribuidora
+          </button>
+          <div className="comprador-perfil-wrapper" ref={perfilRef}>
+            <button className="comprador-perfil-trigger" onClick={() => setMenuPerfil(v => !v)}>
+              <div className="comprador-avatar">{iniciales}</div>
+              <span className="comprador-nombre">{nombre}</span>
+              <span className="comprador-perfil-flecha">{menuPerfil ? '▴' : '▾'}</span>
+            </button>
+            {menuPerfil && (
+              <div className="comprador-menu-desplegable">
+                <div className="comprador-menu-item" onClick={handleCerrarSesion}>Cerrar sesión</div>
+              </div>
+            )}
+          </div>
         </div>
       </header>
 
       <div className="panel-layout">
 
-        <aside className="panel-sidebar">
+        <aside className="panel-sidebar" data-tema="oscuro">
           <div className="panel-sidebar-marca">
             <div className="panel-sidebar-titulo">MarketDist</div>
             <div className="panel-sidebar-subtitulo">Panel del Distribuidor</div>
@@ -143,12 +200,6 @@ function MisPedidos() {
             ))}
           </nav>
 
-          <div className="panel-sidebar-cambiar-modo">
-            <button className="panel-sidebar-cambiar-btn" onClick={() => navigate('/inicioComprador')}>
-              ← Cambiar a modo comprador
-            </button>
-          </div>
-
           <div className="panel-sidebar-footer">
             <div className="panel-sidebar-usuario">
               <div className="panel-avatar-small">{iniciales}</div>
@@ -163,94 +214,62 @@ function MisPedidos() {
 
         <main className="panel-main">
           <div className="panel-contenido">
+            <div className="panel-contenido-centrado">
 
             <div className="panel-seccion-header">
               <div>
-                <h1 className="panel-h1">Pedidos activos</h1>
-                <p className="panel-subtitulo">Pedidos en estado Pendiente, Aceptado y En camino.</p>
+                <h1 className="panel-h1">{vista === 'activos' ? 'Pedidos activos' : 'Historial de pedidos'}</h1>
+                <p className="panel-subtitulo">
+                  {vista === 'activos'
+                    ? 'Pedidos en estado Pendiente, Aceptado y En camino.'
+                    : 'Todos tus pedidos recibidos, incluyendo los finalizados.'}
+                </p>
               </div>
             </div>
 
-            {cargando && (
+            <div className="pedidos-tabs">
+              <button
+                type="button"
+                className={`pedidos-tab${vista === 'activos' ? ' pedidos-tab--activo' : ''}`}
+                onClick={() => irAVista('activos')}
+              >
+                Activos
+              </button>
+              <button
+                type="button"
+                className={`pedidos-tab${vista === 'historial' ? ' pedidos-tab--activo' : ''}`}
+                onClick={() => irAVista('historial')}
+              >
+                Historial
+              </button>
+            </div>
+
+            {vista === 'activos' && cargando && (
               <div className="panel-tabla-vacio">Cargando pedidos...</div>
             )}
 
-            {!cargando && error && (
+            {vista === 'activos' && !cargando && error && (
               <div className="panel-tabla-vacio pedidos-error">{error}</div>
             )}
 
-            {!cargando && !error && pedidos.length === 0 && (
+            {vista === 'activos' && !cargando && !error && pedidos.length === 0 && (
               <div className="panel-tabla-vacio">No tenés pedidos activos en este momento.</div>
             )}
 
-            {!cargando && !error && pedidos.length > 0 && (
+            {vista === 'activos' && !cargando && !error && pedidos.length > 0 && (
               <div className="panel-tabla-wrapper">
                 <div className="pedidos-tabla-header">
-                  <div>N° Pedido</div>
+                  <div>Pedido</div>
+                  <div>Fecha</div>
                   <div>Comprador</div>
                   <div>Productos</div>
                   <div>Total</div>
                   <div>Estado</div>
-                  <div>Acciones</div>
+                  <div></div>
                 </div>
 
                 {pedidos.map(p => (
-                  <div key={p.id}>
-                  <div className="pedidos-tabla-fila">
-                    <div className="pedidos-celda pedidos-numero">#{p.id}</div>
-                    <div className="pedidos-celda">
-                      <div>
-                        <div>{p.nombreComprador}</div>
-                        <div className="pedidos-telefono">{p.telefonoComprador}</div>
-                      </div>
-                    </div>
-                    <div className="pedidos-celda">
-                      <div className="pedidos-productos-lista">
-                        {p.items.map((item, i) => {
-                          const sufijo = sufijoPorTipo(item.tipoProducto, item.metricaVisualizacion)
-                          return (
-                            <div key={i} className="pedidos-producto-item">
-                              <span>{item.nombreProducto} ×{Number(item.cantidad)} {sufijo}</span>
-                              <span className="pedidos-producto-stock">Stock: {item.stockDisponible} {sufijo}</span>
-                            </div>
-                          )
-                        })}
-                      </div>
-                    </div>
-                    <div className="pedidos-celda">${Number(p.total).toLocaleString('es-AR')}</div>
-                    <div className="pedidos-celda">
-                      <span className={`pedidos-estado pedidos-estado--${p.estado}`}>
-                        {ETIQUETA_ESTADO[p.estado] ?? p.estado}
-                      </span>
-                    </div>
-                    <div className="pedidos-celda">
-                      <div className="pedidos-acciones">
-                        {p.estado === 'pendiente' && (
-                          <>
-                            <button
-                              className="pedidos-accion-btn pedidos-accion-btn--primario"
-                              disabled={procesando.has(p.id)}
-                              onClick={() => handleAceptar(p.id)}
-                            >
-                              {procesando.has(p.id) ? 'Aceptando...' : 'Aceptar'}
-                            </button>
-                            <button className="pedidos-accion-btn pedidos-accion-btn--peligro">Rechazar</button>
-                            <button className="pedidos-accion-btn">Proponer sustituto</button>
-                          </>
-                        )}
-                        {p.estado === 'aceptado' && (
-                          <button className="pedidos-accion-btn pedidos-accion-btn--primario">Marcar En camino</button>
-                        )}
-                        {p.estado === 'en_camino' && (
-                          <button className="pedidos-accion-btn pedidos-accion-btn--primario">Marcar Entregado</button>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                  {erroresAccion[p.id] && (
-                    <div className="pedidos-error-accion">{erroresAccion[p.id]}</div>
-                  )}
-                  </div>
+                  <FilaPedido key={p.id} pedido={p} onVerUbicacion={setPedidoMapa} navigate={navigate} />
                 ))}
 
                 <div className="panel-tabla-contador">
@@ -259,10 +278,54 @@ function MisPedidos() {
               </div>
             )}
 
+            {vista === 'historial' && cargandoHistorial && (
+              <div className="panel-tabla-vacio">Cargando pedidos...</div>
+            )}
+
+            {vista === 'historial' && !cargandoHistorial && errorHistorial && (
+              <div className="panel-tabla-vacio pedidos-error">{errorHistorial}</div>
+            )}
+
+            {vista === 'historial' && !cargandoHistorial && !errorHistorial && historial.length === 0 && (
+              <div className="panel-tabla-vacio">Aún no recibiste pedidos.</div>
+            )}
+
+            {vista === 'historial' && !cargandoHistorial && !errorHistorial && historial.length > 0 && (
+              <div className="panel-tabla-wrapper">
+                <div className="pedidos-tabla-header">
+                  <div>Pedido</div>
+                  <div>Fecha</div>
+                  <div>Comprador</div>
+                  <div>Productos</div>
+                  <div>Total</div>
+                  <div>Estado</div>
+                  <div></div>
+                </div>
+
+                {historial.map(p => (
+                  <FilaPedido key={p.id} pedido={p} onVerUbicacion={setPedidoMapa} navigate={navigate} />
+                ))}
+
+                <div className="panel-tabla-contador">
+                  {historial.length} pedido{historial.length !== 1 ? 's' : ''} en total
+                </div>
+              </div>
+            )}
+
+            </div>
           </div>
         </main>
 
       </div>
+
+      {pedidoMapa && (
+        <ModalMapaDireccion
+          soloLectura
+          ubicacionInicial={{ lat: Number(pedidoMapa.latitud), lng: Number(pedidoMapa.longitud) }}
+          direccionInicial={pedidoMapa.direccionEntrega}
+          onCerrar={() => setPedidoMapa(null)}
+        />
+      )}
     </div>
   )
 }
