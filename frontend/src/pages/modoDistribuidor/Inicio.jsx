@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import api from '../../lib/axios'
+import { tokenValido } from '../../lib/auth'
 import './Inicio.css'
 
 const NAV_ITEMS = [
@@ -13,11 +14,19 @@ const NAV_ITEMS = [
   { label: 'Editar perfil', ruta: '/editarPerfil' },
 ]
 
+function sufijoPorTipo(tipoProducto, metricaVisualizacion) {
+  if (tipoProducto === 'fraccionable') {
+    if (metricaVisualizacion === 'kilogramos') return 'kg'
+    if (metricaVisualizacion === 'litros') return 'L'
+    if (metricaVisualizacion === 'metros') return 'm'
+  }
+  return 'u.'
+}
+
 function Inicio() {
   const navigate = useNavigate()
   const location = useLocation()
   const nombre = localStorage.getItem('nombre') || ''
-  const token = localStorage.getItem('token')
   const iniciales = nombre.split(' ').map(p => p[0]).join('').slice(0, 2).toUpperCase()
 
   const [productos, setProductos] = useState([])
@@ -27,8 +36,9 @@ function Inicio() {
   const [filtroCategoria, setFiltroCategoria] = useState('')
   const [filtroVisibilidad, setFiltroVisibilidad] = useState('')
   const [filtroStock, setFiltroStock] = useState('')
+  const [menuAbierto, setMenuAbierto] = useState(false)
 
-  const headers = { Authorization: `Bearer ${token}` }
+  useEffect(() => { if (!tokenValido()) navigate('/login') }, [navigate])
 
   const cargarProductos = async (categoria = '', visibilidad = '', stock = '') => {
     setCargando(true)
@@ -47,10 +57,6 @@ function Inicio() {
   }
 
   useEffect(() => {
-    if (!token) {
-      navigate('/login', { replace: true })
-      return
-    }
     cargarProductos()
     api.get('/api/productos/categorias')
       .then(res => setCategorias(res.data))
@@ -79,10 +85,13 @@ function Inicio() {
     cargarProductos()
   }
 
-  const cambiarVisibilidad = async (productoId, nuevoEstado) => {
+  const handleCambiarVisibilidad = async (productoId, nuevoEstado) => {
     setErrorVisibilidad(prev => ({ ...prev, [productoId]: null }))
     try {
-      const res = await api.patch(`/api/productos/${productoId}/visibilidad`, { nuevoEstado })
+      const res = await api.patch(
+        `/api/productos/${productoId}/visibilidad`,
+        { nuevoEstado }
+      )
       const productoActualizado = res.data.producto
       setProductos(prev =>
         prev.map(p =>
@@ -98,51 +107,99 @@ function Inicio() {
   const handleCerrarSesion = () => {
     localStorage.removeItem('token')
     localStorage.removeItem('nombre')
-    navigate('/login', { replace: true })
+    window.dispatchEvent(new Event('auth-changed'))
+    navigate('/login')
   }
 
   return (
-    <div className="panel-layout">
+    <div className="panel-root">
 
-      <aside className="panel-sidebar">
-        <div className="panel-sidebar-marca">
-          <div className="panel-sidebar-titulo">MarketDist</div>
-          <div className="panel-sidebar-subtitulo">Panel del Distribuidor</div>
+      {menuAbierto && (
+        <div className="panel-drawer-overlay" onClick={() => setMenuAbierto(false)}>
+          <nav className="panel-drawer" onClick={e => e.stopPropagation()}>
+            <div className="panel-drawer-top">
+              <div className="panel-drawer-marca">MarketDist</div>
+              <button className="panel-drawer-cerrar-btn" onClick={() => setMenuAbierto(false)}>✕</button>
+            </div>
+            {NAV_ITEMS.map(item => (
+              <div
+                key={item.ruta}
+                className={`panel-drawer-item${location.pathname === item.ruta ? ' activo' : ''}`}
+                onClick={() => { navigate(item.ruta); setMenuAbierto(false) }}
+              >
+                {item.label}
+              </div>
+            ))}
+            <div className="panel-drawer-sep" />
+            <button className="panel-drawer-modo" onClick={() => { navigate('/inicioComprador'); setMenuAbierto(false) }}>
+              ← Modo comprador
+            </button>
+            <div className="panel-drawer-footer">
+              <div className="panel-drawer-nombre">{nombre}</div>
+              <div className="panel-drawer-rol">Distribuidor</div>
+              <button className="panel-drawer-logout" onClick={handleCerrarSesion}>Cerrar sesión</button>
+            </div>
+          </nav>
         </div>
+      )}
 
-        <nav className="panel-nav">
-          {NAV_ITEMS.map(item => (
-            <div
-              key={item.ruta}
-              className={`panel-nav-item${location.pathname === item.ruta ? ' activo' : ''}`}
-              onClick={() => navigate(item.ruta)}
-            >
-              {item.label}
-            </div>
-          ))}
-          <button className='panel-nav-item' onClick={() => navigate('/inicioComprador')}>Cambiar a modo comprador</button>
-        </nav>
+      <div className="panel-mobile-header">
+        <span className="panel-mobile-hamburger" onClick={() => setMenuAbierto(true)}>≡</span>
+        <div className="panel-mobile-titulo">Mis productos</div>
+        <button className="panel-mobile-nuevo" onClick={() => navigate('/producto/nuevo')}>+</button>
+      </div>
 
-        <div className="panel-sidebar-footer">
-          <div className="panel-sidebar-usuario">
-            <div className="panel-avatar-small">{iniciales}</div>
-            <div>
-              <div className="panel-sidebar-nombre">{nombre}</div>
-              <div className="panel-sidebar-rol">Distribuidor</div>
-            </div>
+      <header className="panel-master-header">
+        <div className="panel-master-header-marca">MarketDist</div>
+        <div className="panel-master-header-buscador">
+          <span className="panel-master-header-buscador-icono">⌕</span>
+          <input className="panel-master-header-buscador-input" type="text" placeholder="Buscar productos…" />
+        </div>
+        <div className="panel-master-header-perfil">
+          <div className="panel-master-header-avatar">{iniciales}</div>
+        </div>
+      </header>
+
+      <div className="panel-layout">
+
+        <aside className="panel-sidebar">
+          <div className="panel-sidebar-marca">
+            <div className="panel-sidebar-titulo">MarketDist</div>
+            <div className="panel-sidebar-subtitulo">Panel del Distribuidor</div>
           </div>
-          <div className="panel-sidebar-accion" onClick={handleCerrarSesion}>Cerrar sesión</div>
-        </div>
-      </aside>
 
-      <main className="panel-main">
+          <nav className="panel-nav">
+            {NAV_ITEMS.map(item => (
+              <div
+                key={item.ruta}
+                className={`panel-nav-item${location.pathname === item.ruta ? ' activo' : ''}`}
+                onClick={() => navigate(item.ruta)}
+              >
+                {item.label}
+              </div>
+            ))}
+          </nav>
 
-        <header className="panel-topbar">
-          <span className="panel-topbar-titulo">Panel del Distribuidor</span>
-          <div className="panel-avatar">{iniciales}</div>
-        </header>
+          <div className="panel-sidebar-cambiar-modo">
+            <button className="panel-sidebar-cambiar-btn" onClick={() => navigate('/inicioComprador')}>
+              ← Cambiar a modo comprador
+            </button>
+          </div>
 
-        <div className="panel-contenido">
+          <div className="panel-sidebar-footer">
+            <div className="panel-sidebar-usuario">
+              <div className="panel-avatar-small">{iniciales}</div>
+              <div>
+                <div className="panel-sidebar-nombre">{nombre}</div>
+                <div className="panel-sidebar-rol">Distribuidor</div>
+              </div>
+            </div>
+            <div className="panel-sidebar-accion" onClick={handleCerrarSesion}>Cerrar sesión</div>
+          </div>
+        </aside>
+
+        <main className="panel-main">
+          <div className="panel-contenido">
 
           <div className="panel-seccion-header">
             <div>
@@ -216,9 +273,9 @@ function Inicio() {
                   <div className="panel-tabla-celda">{p.nombre}</div>
                   <div className="panel-tabla-celda">{p.categoria}</div>
                   <div className={`panel-tabla-celda${p.stockDisponible === 0 ? ' stock-cero' : ''}`}>
-                    {p.stockDisponible} u.
+                    {p.stockDisponible === 0 ? 'Sin stock disponible.' : `${p.stockDisponible} ${sufijoPorTipo(p.tipoProducto, p.metricaVisualizacion)}`}
                   </div>
-                  <div className="panel-tabla-celda">{p.stockReservado} u.</div>
+                  <div className="panel-tabla-celda">{p.stockReservado} {sufijoPorTipo(p.tipoProducto, p.metricaVisualizacion)}</div>
                   <div className="panel-tabla-celda">
                     <span className={`panel-estado-badge ${p.estadoVisibilidad}`}>
                       {p.estadoVisibilidad === 'publicado' ? 'Publicado' : 'Pausado'}
@@ -226,14 +283,40 @@ function Inicio() {
                   </div>
                   <div className="panel-tabla-celda panel-acciones">
                     {p.estadoVisibilidad === 'publicado' ? (
-                      <span className="panel-accion-link" onClick={() => cambiarVisibilidad(p.id, 'pausado')}>Pausar</span>
+                      <span className="panel-accion-link" onClick={() => handleCambiarVisibilidad(p.id, 'pausado')}>Pausar</span>
                     ) : (
-                      <span className="panel-accion-link" onClick={() => cambiarVisibilidad(p.id, 'publicado')}>Publicar</span>
+                      <span className="panel-accion-link" onClick={() => handleCambiarVisibilidad(p.id, 'publicado')}>Publicar</span>
                     )}
                     {' · '}
                     <span className="panel-accion-link" onClick={() => navigate(`/producto/editar/${p.id}`)}>Editar</span>
                   </div>
                 </div>
+
+                <div className="panel-lista-fila">
+                  <div className="panel-lista-foto">
+                    {p.imagenUrl
+                      ? <img src={`http://localhost:3000${p.imagenUrl}`} alt={p.nombre} className="panel-lista-foto-img" />
+                      : '—'
+                    }
+                  </div>
+                  <div className="panel-lista-info">
+                    <div className="panel-lista-nombre">{p.nombre}</div>
+                    <div className="panel-lista-stock">Stock: {p.stockDisponible} {sufijoPorTipo(p.tipoProducto, p.metricaVisualizacion)}</div>
+                  </div>
+                  <div className="panel-lista-derecha">
+                    <span
+                      className={`panel-estado-badge ${p.estadoVisibilidad} panel-lista-toggle`}
+                      onClick={() => handleCambiarVisibilidad(
+                        p.id,
+                        p.estadoVisibilidad === 'publicado' ? 'pausado' : 'publicado'
+                      )}
+                    >
+                      {p.estadoVisibilidad === 'publicado' ? 'Publicado' : 'Pausado'}
+                    </span>
+                    <span className="panel-lista-editar" onClick={() => navigate(`/producto/editar/${p.id}`)}>Editar</span>
+                  </div>
+                </div>
+
                 {errorVisibilidad[p.id] && (
                   <div className="panel-error-visibilidad">{errorVisibilidad[p.id]}</div>
                 )}
@@ -247,9 +330,10 @@ function Inicio() {
             </div>
           )}
 
-        </div>
-      </main>
+          </div>
+        </main>
 
+      </div>
     </div>
   )
 }

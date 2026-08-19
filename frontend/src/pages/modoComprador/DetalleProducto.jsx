@@ -43,7 +43,12 @@ function DetalleProducto() {
 
   const agregarAlCarrito = () => {
     if (!tarifaSeleccionada) return
-    agregarProducto({ ...producto, tarifaSeleccionada, cantidad })
+    agregarProducto({
+      ...producto,
+      tarifaSeleccionada,
+      precioVolumenId: tarifaSeleccionada.id,
+      cantidad
+    })
   }
 
   if (mensaje) return <p className="detalleproducto-mensaje-pagina">{mensaje}</p>

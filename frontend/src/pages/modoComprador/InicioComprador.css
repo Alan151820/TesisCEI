@@ -346,11 +346,6 @@
 /* Filtros — idéntico al Catálogo */
 .comprador-filtros {
   display: flex;
-  gap: 12px;
-  padding: 16px 40px;
-/* Filtros */
-.comprador-filtros {
-  display: flex;
   gap: 8px;
   padding: 12px 40px;
   background: var(--color-contenedor-superficie-minimo);
