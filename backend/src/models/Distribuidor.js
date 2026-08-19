@@ -1,4 +1,4 @@
-const pool = require('../config/db')
+import pool from '../config/db.js'
 
 class Distribuidor {
   constructor(data) {
@@ -66,4 +66,4 @@ static async obtenerPorUsuarioId(usuarioId) {
 }
 }
 
-module.exports = Distribuidor
+export default Distribuidor

@@ -1,4 +1,4 @@
-const Usuario = require('../models/Usuario')
+import Usuario from '../models/Usuario.js'
 
 const registro = async (req, res) => {
   try {
@@ -70,4 +70,4 @@ const activarModoDistribuidor = async (req, res) => {
   }
 }
 
-module.exports = { registro, verificar, login, recuperarContrasena, verificarRecuperacion, nuevaContrasena, activarModoDistribuidor }
+export { registro, verificar, login, recuperarContrasena, verificarRecuperacion, nuevaContrasena, activarModoDistribuidor }

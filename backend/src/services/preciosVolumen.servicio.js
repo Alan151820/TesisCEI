@@ -1,5 +1,5 @@
-const PrecioVolumen = require('../models/PrecioVolumen')
-const Producto = require('../models/Producto')
+import PrecioVolumen from '../models/PrecioVolumen.js'
+import Producto from '../models/Producto.js'
 
 const validarDatos = PrecioVolumen.validarDatos
 
@@ -72,4 +72,4 @@ async function aplicarDescuentoTotal(productoId, usuarioId, porcentaje) {
   return PrecioVolumen.listarPorProducto(productoId)
 }
 
-module.exports = { validarDatos, listarPrecios, registrarPrecio, editarPrecio, eliminarPrecio, aplicarDescuentoTotal }
+export { validarDatos, listarPrecios, registrarPrecio, editarPrecio, eliminarPrecio, aplicarDescuentoTotal }

@@ -1,7 +1,7 @@
-const pool = require('../config/db')
-const Notificacion = require('./Notificacion')
-const Producto = require('./Producto')
-const PedidoItem = require('./PedidoItem')
+import pool from '../config/db.js'
+import Notificacion from './Notificacion.js'
+import Producto from './Producto.js'
+import PedidoItem from './PedidoItem.js'
 
 const MOTIVOS_RECHAZO_PENDIENTE = [
   'Sin stock del producto solicitado',
@@ -404,4 +404,4 @@ class Pedido {
   }
 }
 
-module.exports = Pedido
+export default Pedido

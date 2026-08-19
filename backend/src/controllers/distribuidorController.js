@@ -1,5 +1,5 @@
-const Distribuidor = require('../models/Distribuidor')
-const Producto = require('../models/Producto')
+import Distribuidor from '../models/Distribuidor.js'
+import Producto from '../models/Producto.js'
 
 const obtenerPerfil = async (req, res) => {
   try {
@@ -135,4 +135,4 @@ const obtenerProductosPublicados = async (req, res) => {
 }
 
 
-module.exports = { obtenerPerfil, configurarPerfil, verificarPerfil, obtenerPerfilPropio, editarPerfil, subirLogo, actualizarDireccionPartida, obtenerProductosPublicados }
+export { obtenerPerfil, configurarPerfil, verificarPerfil, obtenerPerfilPropio, editarPerfil, subirLogo, actualizarDireccionPartida, obtenerProductosPublicados }

@@ -1,4 +1,4 @@
-const notificacionesServicio = require('../services/notificaciones.servicio')
+import * as notificacionesServicio from '../services/notificaciones.servicio.js'
 
 async function listar(req, res, next) {
   try {
@@ -19,4 +19,4 @@ async function marcarLeida(req, res, next) {
   }
 }
 
-module.exports = { listar, marcarLeida }
+export { listar, marcarLeida }

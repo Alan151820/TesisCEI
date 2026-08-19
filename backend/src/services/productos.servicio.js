@@ -1,9 +1,9 @@
-const pool = require('../config/db')
-const { validarDatos: validarDatosPrecio } = require('./preciosVolumen.servicio')
-const Categoria = require('../models/Categoria')
-const Producto = require('../models/Producto')
-const PrecioVolumen = require('../models/PrecioVolumen')
-const Distribuidor = require('../models/Distribuidor')
+import pool from '../config/db.js'
+import { validarDatos as validarDatosPrecio } from './preciosVolumen.servicio.js'
+import Categoria from '../models/Categoria.js'
+import Producto from '../models/Producto.js'
+import PrecioVolumen from '../models/PrecioVolumen.js'
+import Distribuidor from '../models/Distribuidor.js'
 
 const notificarSiCruzaUmbral = Producto.notificarSiCruzaUmbral
 
@@ -165,4 +165,4 @@ async function configurarUmbralMinimo(productoId, usuarioId, valor) {
   return producto.configurarUmbralMinimo(valor)
 }
 
-module.exports = { obtenerCategorias, validarDatosCreacion, crearProducto, listarProductos, cambiarVisibilidad, obtenerProducto, editarProducto, eliminarOdeshabilitar, configurarUmbralMinimo, notificarSiCruzaUmbral }
+export { obtenerCategorias, validarDatosCreacion, crearProducto, listarProductos, cambiarVisibilidad, obtenerProducto, editarProducto, eliminarOdeshabilitar, configurarUmbralMinimo, notificarSiCruzaUmbral }

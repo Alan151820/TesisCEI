@@ -1,4 +1,4 @@
-const pool = require('../config/db')
+import pool from '../config/db.js'
 
 class CodigoVerificacion {
   constructor(data) {
@@ -46,4 +46,4 @@ class CodigoVerificacion {
   }
 }
 
-module.exports = CodigoVerificacion
+export default CodigoVerificacion

@@ -1,9 +1,10 @@
-const express = require('express')
+import express from 'express'
+import { verificarToken } from '../middleware/autenticacion.js'
+import * as notificacionesController from '../controllers/notificacionesController.js'
+
 const router = express.Router()
-const { verificarToken } = require('../middleware/autenticacion')
-const notificacionesController = require('../controllers/notificacionesController')
 
 router.get('/', verificarToken, notificacionesController.listar)
 router.patch('/:id/leer', verificarToken, notificacionesController.marcarLeida)
 
-module.exports = router
+export default router

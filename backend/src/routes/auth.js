@@ -1,7 +1,8 @@
-const express = require('express')
+import express from 'express'
+import { verificarToken } from '../middleware/autenticacion.js'
+import * as authController from '../controllers/authController.js'
+
 const router = express.Router()
-const { verificarToken } = require('../middleware/autenticacion')
-const authController = require('../controllers/authController')
 
 router.post('/registro', authController.registro)
 router.post('/verificar', authController.verificar)
@@ -11,4 +12,4 @@ router.post('/recuperarContrasena', authController.recuperarContrasena)
 router.post('/verificarRecuperacion', authController.verificarRecuperacion)
 router.post('/nuevaContrasena', authController.nuevaContrasena)
 
-module.exports = router
+export default router

@@ -1,4 +1,4 @@
-const Pedido = require('../models/Pedido')
+import Pedido from '../models/Pedido.js'
 
 async function confirmarPedido(compradorId, direccionEntrega, latitud, longitud, items) {
   return Pedido.confirmarDesdeCarrito(compradorId, direccionEntrega, latitud, longitud, items)
@@ -55,4 +55,4 @@ async function avanzarEstado(pedidoId, distribuidorUsuarioId) {
   return pedido.avanzarEstado()
 }
 
-module.exports = { confirmarPedido, obtenerHistorialDistribuidor, obtenerHistorialComprador, obtenerPedidosActivos, obtenerDetalleComprador, obtenerDetalleDistribuidor, aceptarPedido, rechazarPedido, avanzarEstado }
+export { confirmarPedido, obtenerHistorialDistribuidor, obtenerHistorialComprador, obtenerPedidosActivos, obtenerDetalleComprador, obtenerDetalleDistribuidor, aceptarPedido, rechazarPedido, avanzarEstado }

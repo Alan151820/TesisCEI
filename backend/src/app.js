@@ -1,13 +1,17 @@
-require('dotenv').config()
-const express = require('express')
-const cors = require('cors')
-const authRoutes = require('./routes/auth')
-const productosRoutes = require('./routes/productos')
-const preciosVolumenRoutes = require('./routes/preciosVolumen')
-const distribuidorRoutes = require('./routes/distribuidor')
-const catalogoRoutes = require('./routes/catalogo')
-const pedidosRoutes = require('./routes/pedidos')
-const notificacionesRoutes = require('./routes/notificaciones')
+import 'dotenv/config'
+import express from 'express'
+import cors from 'cors'
+import path from 'path'
+import { fileURLToPath } from 'url'
+import authRoutes from './routes/auth.js'
+import productosRoutes from './routes/productos.js'
+import preciosVolumenRoutes from './routes/preciosVolumen.js'
+import distribuidorRoutes from './routes/distribuidor.js'
+import catalogoRoutes from './routes/catalogo.js'
+import pedidosRoutes from './routes/pedidos.js'
+import notificacionesRoutes from './routes/notificaciones.js'
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 const app = express()
 
@@ -15,7 +19,7 @@ const app = express()
 
 app.use(cors())
 app.use(express.json())
-app.use('/uploads', express.static(require('path').join(__dirname, '../public/uploads')))
+app.use('/uploads', express.static(path.join(__dirname, '../public/uploads')))
 
 app.use('/auth', authRoutes)
 app.use('/api/productos', productosRoutes)

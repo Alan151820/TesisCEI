@@ -1,4 +1,4 @@
-const catalogoServicio = require('../services/catalogo.servicio')
+import * as catalogoServicio from '../services/catalogo.servicio.js'
 
 async function listarCatalogo(req, res, next) {
   try {
@@ -29,4 +29,4 @@ async function obtenerDetalle(req, res, next) {
     next(error)
   }
 }
-module.exports = { listarCatalogo, obtenerDetalle}
+export { listarCatalogo, obtenerDetalle }

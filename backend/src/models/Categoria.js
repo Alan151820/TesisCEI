@@ -1,4 +1,4 @@
-const pool = require('../config/db')
+import pool from '../config/db.js'
 
 class Categoria {
   constructor(data) {
@@ -12,4 +12,4 @@ class Categoria {
   }
 }
 
-module.exports = Categoria
+export default Categoria

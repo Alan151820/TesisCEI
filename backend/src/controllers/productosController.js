@@ -1,4 +1,4 @@
-const productosServicio = require('../services/productos.servicio')
+import * as productosServicio from '../services/productos.servicio.js'
 
 async function listarCategorias(req, res, next) {
   try {
@@ -143,4 +143,4 @@ async function configurarUmbral(req, res, next) {
   }
 }
 
-module.exports = { listarCategorias, crearProducto, listarProductos, cambiarVisibilidad, obtenerProducto, editarProducto, eliminarProducto, configurarUmbral }
+export { listarCategorias, crearProducto, listarProductos, cambiarVisibilidad, obtenerProducto, editarProducto, eliminarProducto, configurarUmbral }
