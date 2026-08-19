@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import api from '../../lib/axios'
 import { tokenValido } from '../../lib/auth'
@@ -14,15 +14,6 @@ const NAV_ITEMS = [
   { label: 'Empleados', ruta: '/empleados' },
   { label: 'Editar perfil', ruta: '/editarPerfil' },
 ]
-
-function sufijoPorTipo(tipoProducto, metricaVisualizacion) {
-  if (tipoProducto === 'fraccionable') {
-    if (metricaVisualizacion === 'kilogramos') return 'kg'
-    if (metricaVisualizacion === 'litros') return 'L'
-    if (metricaVisualizacion === 'metros') return 'm'
-  }
-  return 'u.'
-}
 
 function Inicio() {
   const navigate = useNavigate()
@@ -166,22 +157,7 @@ function Inicio() {
           <input className="panel-master-header-buscador-input" type="text" placeholder="Buscar productos…" />
         </div>
         <div className="panel-master-header-perfil">
-          <button className="panel-header-salir-btn" onClick={() => navigate('/inicioComprador')}>
-            Salir de distribuidora
-          </button>
-          <CampanaNotificaciones rutaDestino="/pedidos" />
-          <div className="comprador-perfil-wrapper" ref={perfilRef}>
-            <button className="comprador-perfil-trigger" onClick={() => setMenuPerfil(v => !v)}>
-              <div className="comprador-avatar">{iniciales}</div>
-              <span className="comprador-nombre">{nombre}</span>
-              <span className="comprador-perfil-flecha">{menuPerfil ? '▴' : '▾'}</span>
-            </button>
-            {menuPerfil && (
-              <div className="comprador-menu-desplegable">
-                <div className="comprador-menu-item" onClick={handleCerrarSesion}>Cerrar sesión</div>
-              </div>
-            )}
-          </div>
+          <div className="panel-master-header-avatar">{iniciales}</div>
         </div>
       </header>
 
@@ -292,9 +268,9 @@ function Inicio() {
                   <div className="panel-tabla-celda">{p.nombre}</div>
                   <div className="panel-tabla-celda">{p.categoria}</div>
                   <div className={`panel-tabla-celda${p.stockDisponible === 0 ? ' stock-cero' : ''}`}>
-                    {p.stockDisponible === 0 ? 'Sin stock disponible.' : `${p.stockDisponible} ${sufijoPorTipo(p.tipoProducto, p.metricaVisualizacion)}`}
+                    {p.stockDisponible === 0 ? 'Sin stock disponible.' : `${p.stockDisponible} u.`}
                   </div>
-                  <div className="panel-tabla-celda">{p.stockReservado} {sufijoPorTipo(p.tipoProducto, p.metricaVisualizacion)}</div>
+                  <div className="panel-tabla-celda">{p.stockReservado} u.</div>
                   <div className="panel-tabla-celda">
                     <span className={`panel-estado-badge ${p.estadoVisibilidad}`}>
                       {p.estadoVisibilidad === 'publicado' ? 'Publicado' : 'Pausado'}
@@ -320,7 +296,7 @@ function Inicio() {
                   </div>
                   <div className="panel-lista-info">
                     <div className="panel-lista-nombre">{p.nombre}</div>
-                    <div className="panel-lista-stock">Stock: {p.stockDisponible} {sufijoPorTipo(p.tipoProducto, p.metricaVisualizacion)}</div>
+                    <div className="panel-lista-stock">Stock: {p.stockDisponible} u.</div>
                   </div>
                   <div className="panel-lista-derecha">
                     <span
