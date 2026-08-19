@@ -85,7 +85,7 @@ function InicioComprador() {
     localStorage.removeItem('telefono')
     localStorage.removeItem('modoDistribuidorActivo')
     window.dispatchEvent(new Event('auth-changed'))
-    navigate('/catalogo')
+    navigate('/catalogo', { replace: true })
   }
 
   return (
