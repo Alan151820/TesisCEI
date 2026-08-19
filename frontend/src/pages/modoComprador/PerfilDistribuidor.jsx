@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
+import { useCarrito } from '../../context/CarritoContext'
 import api from '../../lib/axios'
 import CampanaNotificaciones from '../../components/CampanaNotificaciones'
 import BottomNavComprador from '../../components/BottomNavComprador'
@@ -13,6 +14,7 @@ function PerfilDistribuidor() {
   const nombre = localStorage.getItem('nombre') || ''
   const modoDistribuidorActivo = localStorage.getItem('modoDistribuidorActivo') === 'true'
   const iniciales = nombre.split(' ').map(p => p[0]).join('').slice(0, 2).toUpperCase()
+  const { totalItems } = useCarrito()
 
   const [distribuidor, setDistribuidor] = useState(null)
   const [productos, setProductos] = useState([])
@@ -46,7 +48,8 @@ function PerfilDistribuidor() {
     localStorage.removeItem('nombre')
     localStorage.removeItem('telefono')
     localStorage.removeItem('modoDistribuidorActivo')
-navigate('/catalogo', { replace: true })
+    window.dispatchEvent(new Event('auth-changed'))
+    navigate('/catalogo', { replace: true })
   }
 
   if (mensaje) return <p className="perfildist-mensaje-pagina">{mensaje}</p>
@@ -63,7 +66,7 @@ navigate('/catalogo', { replace: true })
       </div>
 
       <header className="perfildist-topbar">
-        <div className="perfildist-marca" onClick={() => navigate('/')}>MarketDist</div>
+        <div className="perfildist-marca" onClick={() => navigate(token ? '/inicioComprador' : '/catalogo')}>MarketPlace</div>
         <div className="perfildist-buscador">
           <span className="perfildist-buscador-icono">⌕</span>
           <span className="perfildist-buscador-texto">Buscar productos…</span>
@@ -71,10 +74,12 @@ navigate('/catalogo', { replace: true })
         <div className="perfildist-topbar-acciones">
           {token ? (
             <>
-              <span className="perfildist-nav-link" onClick={() => navigate(modoDistribuidorActivo ? '/inicio' : '/configurarPerfil')}>
+              <button className="perfildist-btn-carrito" onClick={() => navigate('/carrito')}>
+                🛒{totalItems > 0 && <span className="perfildist-carrito-badge">{totalItems}</span>}
+              </button>
+              <button className="perfildist-btn-distribuidora" onClick={() => navigate(modoDistribuidorActivo ? '/inicio' : '/configurarPerfil')}>
                 Distribuidora
-              </span>
-              <CampanaNotificaciones rutaDestino="/misPedidos" rutaDetalle="/pedido" />
+              </button>
               <div className="perfildist-perfil">
                 <div className="perfildist-avatar">{iniciales}</div>
                 <span className="perfildist-nombre-usuario">{nombre}</span>
@@ -85,6 +90,9 @@ navigate('/catalogo', { replace: true })
             </>
           ) : (
             <>
+              <button className="perfildist-btn-carrito" onClick={() => navigate('/carrito')}>
+                🛒{totalItems > 0 && <span className="perfildist-carrito-badge">{totalItems}</span>}
+              </button>
               <button className="perfildist-btn-login" onClick={() => navigate('/login')}>Iniciar sesión</button>
               <button className="perfildist-btn-registro" onClick={() => navigate('/registro')}>Registrarse</button>
             </>
@@ -134,7 +142,8 @@ navigate('/catalogo', { replace: true })
         ) : (
           <div className="perfildist-grid">
             {productos.map(p => (
-<div key={p.id} className="perfildist-producto-card" onClick={() => navigate(`/producto/${p.id}`, { replace: true })}>                {p.imagenUrl
+              <div key={p.id} className="perfildist-producto-card" onClick={() => navigate(`/producto/${p.id}`, { replace: true })}>
+                {p.imagenUrl
                   ? <img src={`http://localhost:3000${p.imagenUrl}`} alt={p.nombre} className="perfildist-producto-img" />
                   : <div className="perfildist-producto-img-placeholder">[foto]</div>
                 }

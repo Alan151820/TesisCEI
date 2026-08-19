@@ -253,8 +253,23 @@
   margin: 0;
   line-height: 1.4;
 }
-
 /* Header autenticado */
+.perfildist-btn-distribuidora {
+  background: none;
+  border: 1px solid var(--color-contorno);
+  color: var(--color-sobre-variante-superficie);
+  padding: 5px 14px;
+  border-radius: 4px;
+  font-size: 13px;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.perfildist-btn-distribuidora:hover {
+  border-color: var(--color-sobre-superficie);
+  color: var(--color-sobre-superficie);
+}
+
 .perfildist-nav-link {
   font-size: 13px;
   color: var(--color-sobre-variante-superficie);
