@@ -1,8 +1,9 @@
-const express = require('express')
+import express from 'express'
+import * as catalogoController from '../controllers/catalogoController.js'
+
 const router = express.Router()
-const catalogoController = require('../controllers/catalogoController')
 
 router.get('/', catalogoController.listarCatalogo)
 router.get('/:id', catalogoController.obtenerDetalle)
 
-module.exports = router
+export default router

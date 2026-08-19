@@ -5,6 +5,7 @@ import { tokenValido } from '../../lib/auth'
 import CampanaNotificaciones from '../../components/CampanaNotificaciones'
 import ModalMapaDireccion from '../../components/ModalMapaDireccion'
 import EstadoBadge from '../../components/EstadoBadge'
+import ToggleTema from '../../components/ToggleTema'
 import { ETIQUETA_ESTADO } from '../../lib/pedido'
 import './Inicio.css'
 import './MisPedidos.css'
@@ -189,6 +190,7 @@ function DetallePedido() {
             </button>
             {menuPerfil && (
               <div className="comprador-menu-desplegable">
+                <ToggleTema />
                 <div className="comprador-menu-item" onClick={handleCerrarSesion}>Cerrar sesión</div>
               </div>
             )}

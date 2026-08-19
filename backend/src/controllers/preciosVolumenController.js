@@ -1,4 +1,4 @@
-const preciosVolumenServicio = require('../services/preciosVolumen.servicio')
+import * as preciosVolumenServicio from '../services/preciosVolumen.servicio.js'
 
 async function listarPrecios(req, res, next) {
   try {
@@ -81,4 +81,4 @@ async function aplicarDescuentoTotal(req, res, next) {
   }
 }
 
-module.exports = { listarPrecios, registrarPrecio, editarPrecio, eliminarPrecio, aplicarDescuentoTotal }
+export { listarPrecios, registrarPrecio, editarPrecio, eliminarPrecio, aplicarDescuentoTotal }

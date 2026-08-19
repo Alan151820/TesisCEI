@@ -1,5 +1,5 @@
-const pool = require('../config/db')
-const Notificacion = require('../models/Notificacion')
+import pool from '../config/db.js'
+import Notificacion from '../models/Notificacion.js'
 
 // RF-060: el motivo de rechazo no vive en una columna propia — va concatenado
 // dentro del texto libre de "mensaje" (ver mensajeCambioEstado en
@@ -54,4 +54,4 @@ async function marcarComoLeida(id, usuarioId) {
   await Notificacion.marcarComoLeidaPorUsuario(id, usuarioId)
 }
 
-module.exports = { obtenerPorUsuario, marcarComoLeida }
+export { obtenerPorUsuario, marcarComoLeida }

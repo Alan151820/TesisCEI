@@ -1,4 +1,4 @@
-const pool = require('../config/db')
+import pool from '../config/db.js'
 
 class Notificacion {
   constructor(data) {
@@ -32,4 +32,4 @@ class Notificacion {
   }
 }
 
-module.exports = Notificacion
+export default Notificacion

@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom'
 import api from '../../lib/axios'
 import { tokenValido } from '../../lib/auth'
 import CampanaNotificaciones from '../../components/CampanaNotificaciones'
+import ToggleTema from '../../components/ToggleTema'
 import './Inicio.css'
 
 const NAV_ITEMS = [

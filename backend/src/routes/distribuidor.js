@@ -1,8 +1,9 @@
-const express = require('express')
+import express from 'express'
+import upload from '../config/multer.js'
+import { verificarToken } from '../middleware/autenticacion.js'
+import { obtenerPerfil, configurarPerfil, verificarPerfil, obtenerPerfilPropio, editarPerfil, subirLogo, actualizarDireccionPartida, obtenerProductosPublicados } from '../controllers/distribuidorController.js'
+
 const router = express.Router()
-const upload = require('../config/multer')
-const { verificarToken } = require('../middleware/autenticacion')
-const { obtenerPerfil, configurarPerfil, verificarPerfil, obtenerPerfilPropio, editarPerfil, subirLogo, actualizarDireccionPartida, obtenerProductosPublicados } = require('../controllers/distribuidorController')
 
 router.get('/perfilDistribuidor/:id', obtenerPerfil)
 router.post('/configurarPerfil', verificarToken, configurarPerfil)
@@ -15,4 +16,4 @@ router.get('/:id/productos', obtenerProductosPublicados)
 
 
 
-module.exports = router
+export default router

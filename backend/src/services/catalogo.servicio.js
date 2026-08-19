@@ -1,4 +1,4 @@
-const pool = require('../config/db')
+import pool from '../config/db.js'
 
 async function listarCatalogo(nombre = '', categoria = '', distribuidor = '', precioMinimo = null, precioMaximo = null) {
   let condiciones = [`p.estado_visibilidad = 'publicado'`, `p.habilitado = true`]
@@ -101,4 +101,4 @@ async function obtenerDetalle(id) {
   return p
 }
 
-module.exports = { listarCatalogo, obtenerDetalle }
+export { listarCatalogo, obtenerDetalle }

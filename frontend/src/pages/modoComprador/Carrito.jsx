@@ -4,6 +4,7 @@ import { useCarrito } from '../../context/CarritoContext'
 import { rutaInicio } from '../../lib/auth'
 import CampanaNotificaciones from '../../components/CampanaNotificaciones'
 import BottomNavComprador from '../../components/BottomNavComprador'
+import ToggleTema from '../../components/ToggleTema'
 import './InicioComprador.css'
 import './Carrito.css'
 
@@ -70,6 +71,7 @@ function Carrito() {
                   <div className="comprador-menu-desplegable">
                     <div className="comprador-menu-item comprador-menu-item--mobile" onClick={() => { setMenuPerfil(false); navigate('/misPedidos') }}>Mis pedidos</div>
                     <div className="comprador-menu-item comprador-menu-item--mobile" onClick={() => { setMenuPerfil(false); navigate(modoDistribuidorActivo ? '/inicio' : '/configurarPerfil') }}>Distribuidora</div>
+                    <ToggleTema />
                     <div className="comprador-menu-item" onClick={handleCerrarSesion}>Cerrar sesión</div>
                   </div>
                 )}

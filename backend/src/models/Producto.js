@@ -1,6 +1,6 @@
-const pool = require('../config/db')
-const PrecioVolumen = require('./PrecioVolumen')
-const Notificacion = require('./Notificacion')
+import pool from '../config/db.js'
+import PrecioVolumen from './PrecioVolumen.js'
+import Notificacion from './Notificacion.js'
 
 const ESTADOS_VISIBILIDAD_VALIDOS = ['publicado', 'pausado']
 
@@ -327,4 +327,4 @@ class Producto {
   }
 }
 
-module.exports = Producto
+export default Producto

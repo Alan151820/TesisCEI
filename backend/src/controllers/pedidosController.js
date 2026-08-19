@@ -1,4 +1,4 @@
-const pedidosServicio = require('../services/pedidos.servicio')
+import * as pedidosServicio from '../services/pedidos.servicio.js'
 
 async function confirmarPedido(req, res, next) {
   const { direccionEntrega, latitud, longitud, items } = req.body
@@ -105,4 +105,4 @@ async function avanzarEstado(req, res, next) {
   }
 }
 
-module.exports = { confirmarPedido, historialDistribuidor, historialComprador, pedidosActivos, detalleComprador, detalleDistribuidor, aceptarPedido, rechazarPedido, avanzarEstado }
+export { confirmarPedido, historialDistribuidor, historialComprador, pedidosActivos, detalleComprador, detalleDistribuidor, aceptarPedido, rechazarPedido, avanzarEstado }

@@ -1,4 +1,4 @@
-const pool = require('../config/db')
+import pool from '../config/db.js'
 
 class PrecioVolumen {
   constructor(data) {
@@ -127,4 +127,4 @@ class PrecioVolumen {
   }
 }
 
-module.exports = PrecioVolumen
+export default PrecioVolumen

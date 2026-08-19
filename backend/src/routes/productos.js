@@ -1,8 +1,9 @@
-const express = require('express')
+import express from 'express'
+import { verificarToken } from '../middleware/autenticacion.js'
+import upload from '../middleware/upload.js'
+import * as productosController from '../controllers/productosController.js'
+
 const router = express.Router()
-const { verificarToken } = require('../middleware/autenticacion')
-const upload = require('../middleware/upload')
-const productosController = require('../controllers/productosController')
 
 router.get('/categorias', productosController.listarCategorias)
 router.get('/', verificarToken, productosController.listarProductos)
@@ -13,4 +14,4 @@ router.patch('/:id/visibilidad', verificarToken, productosController.cambiarVisi
 router.patch('/:id/umbral', verificarToken, productosController.configurarUmbral)
 router.delete('/:id', verificarToken, productosController.eliminarProducto)
 
-module.exports = router
+export default router
