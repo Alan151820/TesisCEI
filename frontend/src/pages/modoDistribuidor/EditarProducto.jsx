@@ -320,7 +320,7 @@ function EditarProducto() {
 
   return (
     <div className="ficha-fondo">
-      <div className="ficha-mobile-header">
+      <div className="ficha-mobile-header" data-tema="oscuro">
         <span className="ficha-mobile-volver" onClick={() => navigate('/inicio')}>←</span>
         <div className="ficha-mobile-titulo">Editar producto</div>
       </div>

@@ -12,8 +12,8 @@
      Para activar el sistema completo: cambiar chroma y hue.
      Ejemplo de azul: --_fuente-primaria: oklch(50% 0.20 250);
   ============================================================ */
-  --_fuente-primaria:   oklch(50% 0 0);
-  --_fuente-secundaria: oklch(50% 0 0);
+  --_fuente-primaria:   oklch(52.343% 0.15074 44.56);
+  --_fuente-secundaria: oklch(63.558% 0.21734 36.057);
 
   /* Roles de acento primario */
   --color-primario:                     oklch(from var(--_fuente-primaria) 16% c h);
@@ -49,6 +49,24 @@
   --color-sobre-error:              oklch(100% 0 25);
   --color-contenedor-error:         oklch(91% 0.10 25);
   --color-sobre-contenedor-error:   oklch(12% 0.15 25);
+
+  /* Éxito — fijo, independiente del color de marca */
+  --color-exito:                    oklch(40% 0.15 145);
+  --color-sobre-exito:              oklch(100% 0 145);
+  --color-contenedor-exito:         oklch(91% 0.08 145);
+  --color-sobre-contenedor-exito:   oklch(12% 0.12 145);
+
+  /* Info — fijo, independiente del color de marca */
+  --color-info:                    oklch(45% 0.15 230);
+  --color-sobre-info:              oklch(100% 0 230);
+  --color-contenedor-info:         oklch(91% 0.06 230);
+  --color-sobre-contenedor-info:   oklch(12% 0.10 230);
+
+  /* Advertencia — fijo, independiente del color de marca */
+  --color-advertencia:                  oklch(50% 0.15 95);
+  --color-sobre-advertencia:            oklch(12% 0 95);
+  --color-contenedor-advertencia:       oklch(91% 0.10 95);
+  --color-sobre-contenedor-advertencia: oklch(12% 0.12 95);
 }
 
 [data-tema="oscuro"] {
@@ -82,4 +100,19 @@
   --color-sobre-error:              oklch(22% 0.18 25);
   --color-contenedor-error:         oklch(32% 0.20 25);
   --color-sobre-contenedor-error:   oklch(91% 0.10 25);
+
+  --color-exito:                    oklch(80% 0.15 145);
+  --color-sobre-exito:              oklch(20% 0.15 145);
+  --color-contenedor-exito:         oklch(32% 0.15 145);
+  --color-sobre-contenedor-exito:   oklch(91% 0.08 145);
+
+  --color-info:                    oklch(80% 0.15 230);
+  --color-sobre-info:              oklch(20% 0.15 230);
+  --color-contenedor-info:         oklch(32% 0.12 230);
+  --color-sobre-contenedor-info:   oklch(91% 0.06 230);
+
+  --color-advertencia:                  oklch(85% 0.15 95);
+  --color-sobre-advertencia:            oklch(20% 0 95);
+  --color-contenedor-advertencia:       oklch(32% 0.15 95);
+  --color-sobre-contenedor-advertencia: oklch(91% 0.10 95);
 }

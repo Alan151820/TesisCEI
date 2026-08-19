@@ -117,7 +117,7 @@ function Inicio() {
 
       {menuAbierto && (
         <div className="panel-drawer-overlay" onClick={() => setMenuAbierto(false)}>
-          <nav className="panel-drawer" onClick={e => e.stopPropagation()}>
+          <nav className="panel-drawer" data-tema="oscuro" onClick={e => e.stopPropagation()}>
             <div className="panel-drawer-top">
               <div className="panel-drawer-marca">MarketDist</div>
               <button className="panel-drawer-cerrar-btn" onClick={() => setMenuAbierto(false)}>✕</button>
@@ -144,7 +144,7 @@ function Inicio() {
         </div>
       )}
 
-      <div className="panel-mobile-header">
+      <div className="panel-mobile-header" data-tema="oscuro">
         <span className="panel-mobile-hamburger" onClick={() => setMenuAbierto(true)}>≡</span>
         <div className="panel-mobile-titulo">Mis productos</div>
         <button className="panel-mobile-nuevo" onClick={() => navigate('/producto/nuevo')}>+</button>
@@ -163,7 +163,7 @@ function Inicio() {
 
       <div className="panel-layout">
 
-        <aside className="panel-sidebar">
+        <aside className="panel-sidebar" data-tema="oscuro">
           <div className="panel-sidebar-marca">
             <div className="panel-sidebar-titulo">MarketDist</div>
             <div className="panel-sidebar-subtitulo">Panel del Distribuidor</div>

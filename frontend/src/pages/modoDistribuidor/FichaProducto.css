@@ -477,7 +477,7 @@
   .ficha-mobile-header {
     display: flex;
     height: 48px;
-    background: #1A1A1A;
+    background: var(--color-contenedor-superficie-bajo);
     align-items: center;
     padding: 0 16px;
     gap: 12px;
@@ -485,7 +485,7 @@
   }
   .ficha-mobile-volver {
     font-size: 18px;
-    color: #888;
+    color: var(--color-sobre-variante-superficie);
     cursor: pointer;
     min-width: 44px;
     min-height: 44px;
@@ -495,7 +495,7 @@
   .ficha-mobile-titulo {
     font-size: 14px;
     font-weight: 600;
-    color: #EEE;
+    color: var(--color-sobre-superficie);
     flex: 1;
     white-space: nowrap;
     overflow: hidden;
