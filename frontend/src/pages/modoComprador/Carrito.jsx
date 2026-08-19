@@ -1,11 +1,37 @@
+import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useCarrito } from '../../context/CarritoContext'
-import { tokenValido, rutaInicio } from '../../lib/auth'
+import { rutaInicio } from '../../lib/auth'
+import CampanaNotificaciones from '../../components/CampanaNotificaciones'
+import BottomNavComprador from '../../components/BottomNavComprador'
+import './InicioComprador.css'
 import './Carrito.css'
 
 function Carrito() {
   const navigate = useNavigate()
   const { items, modificarCantidad, eliminarProducto, vaciar, totalItems } = useCarrito()
+  const token = localStorage.getItem('token')
+  const nombre = localStorage.getItem('nombre') || ''
+  const modoDistribuidorActivo = localStorage.getItem('modoDistribuidorActivo') === 'true'
+  const iniciales = nombre.split(' ').map(p => p[0]).join('').slice(0, 2).toUpperCase()
+  const [menuPerfil, setMenuPerfil] = useState(false)
+  const perfilRef = useRef(null)
+
+  useEffect(() => {
+    if (!menuPerfil) return
+    const cerrar = (e) => { if (!perfilRef.current?.contains(e.target)) setMenuPerfil(false) }
+    document.addEventListener('mousedown', cerrar)
+    return () => document.removeEventListener('mousedown', cerrar)
+  }, [menuPerfil])
+
+  const handleCerrarSesion = () => {
+    localStorage.removeItem('token')
+    localStorage.removeItem('nombre')
+    localStorage.removeItem('telefono')
+    localStorage.removeItem('modoDistribuidorActivo')
+    window.dispatchEvent(new Event('auth-changed'))
+    navigate('/catalogo')
+  }
 
   const porDistribuidor = items.reduce((acc, item) => {
     const key = item.distribuidorId
@@ -19,16 +45,45 @@ function Carrito() {
   return (
     <div className="carrito-pagina">
 
-      <div className="carrito-mobile-header">
-        <span className="carrito-mobile-volver" onClick={() => navigate(-1)}>←</span>
-        <div className="carrito-mobile-titulo">Mi carrito</div>
-      </div>
-
-      <header className="carrito-topbar">
-        <div className="carrito-topbar-marca" onClick={() => navigate(rutaInicio())}>MarketDist</div>
-        <div className="carrito-topbar-titulo">Mi carrito</div>
-        <div className="carrito-topbar-acciones">
-          <span className="carrito-topbar-link" onClick={() => navigate(rutaInicio())}>← Seguir comprando</span>
+      <header className="comprador-encabezado">
+        <div className="comprador-logo" onClick={() => navigate(rutaInicio())}>MarketDist</div>
+        <div className="comprador-buscador">
+          <span className="comprador-buscador-icono">⌕</span>
+          <input className="comprador-buscador-input" type="text" placeholder="Buscar productos…" />
+        </div>
+        <div className="comprador-acciones">
+          {token ? (
+            <>
+              <span className="comprador-nav-link" onClick={() => navigate('/misPedidos')}>Mis pedidos</span>
+              <span className="comprador-nav-link" onClick={() => navigate(modoDistribuidorActivo ? '/inicio' : '/configurarPerfil')}>Distribuidora</span>
+              <CampanaNotificaciones rutaDestino="/misPedidos" rutaDetalle="/pedido" />
+              <button className="comprador-btn-carrito" onClick={() => navigate('/carrito')}>
+                🛒{totalItems > 0 && <span className="comprador-carrito-badge">{totalItems}</span>}
+              </button>
+              <div className="comprador-perfil-wrapper" ref={perfilRef}>
+                <button className="comprador-perfil-trigger" onClick={() => setMenuPerfil(v => !v)}>
+                  <div className="comprador-avatar">{iniciales}</div>
+                  <span className="comprador-nombre">{nombre}</span>
+                  <span className="comprador-perfil-flecha">{menuPerfil ? '▴' : '▾'}</span>
+                </button>
+                {menuPerfil && (
+                  <div className="comprador-menu-desplegable">
+                    <div className="comprador-menu-item comprador-menu-item--mobile" onClick={() => { setMenuPerfil(false); navigate('/misPedidos') }}>Mis pedidos</div>
+                    <div className="comprador-menu-item comprador-menu-item--mobile" onClick={() => { setMenuPerfil(false); navigate(modoDistribuidorActivo ? '/inicio' : '/configurarPerfil') }}>Distribuidora</div>
+                    <div className="comprador-menu-item" onClick={handleCerrarSesion}>Cerrar sesión</div>
+                  </div>
+                )}
+              </div>
+            </>
+          ) : (
+            <>
+              <button className="comprador-btn-carrito" onClick={() => navigate('/carrito')}>
+                🛒{totalItems > 0 && <span className="comprador-carrito-badge">{totalItems}</span>}
+              </button>
+              <button className="catalogo-btn-login" onClick={() => navigate('/login')}>Iniciar sesión</button>
+              <button className="catalogo-btn-registro" onClick={() => navigate('/registro')}>Registrarse</button>
+            </>
+          )}
         </div>
       </header>
 
@@ -111,16 +166,7 @@ function Carrito() {
 
       </div>
 
-      <nav className="carrito-bottom-nav">
-        <div className="carrito-bottom-item" onClick={() => navigate(rutaInicio())}>
-          <span className="carrito-bottom-icono">◻</span>
-          <span className="carrito-bottom-label">Catálogo</span>
-        </div>
-        <div className="carrito-bottom-item activo">
-          <span className="carrito-bottom-icono">🛒</span>
-          <span className="carrito-bottom-label">Carrito</span>
-        </div>
-      </nav>
+      <BottomNavComprador />
 
     </div>
   )

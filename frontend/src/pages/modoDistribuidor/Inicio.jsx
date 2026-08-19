@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import api from '../../lib/axios'
 import { tokenValido } from '../../lib/auth'
+import CampanaNotificaciones from '../../components/CampanaNotificaciones'
 import './Inicio.css'
 
 const NAV_ITEMS = [
@@ -28,8 +29,17 @@ function Inicio() {
   const [filtroVisibilidad, setFiltroVisibilidad] = useState('')
   const [filtroStock, setFiltroStock] = useState('')
   const [menuAbierto, setMenuAbierto] = useState(false)
+  const [menuPerfil, setMenuPerfil] = useState(false)
+  const perfilRef = useRef(null)
 
   useEffect(() => { if (!tokenValido()) navigate('/login') }, [navigate])
+
+  useEffect(() => {
+    if (!menuPerfil) return
+    const cerrar = (e) => { if (!perfilRef.current?.contains(e.target)) setMenuPerfil(false) }
+    document.addEventListener('mousedown', cerrar)
+    return () => document.removeEventListener('mousedown', cerrar)
+  }, [menuPerfil])
 
   const cargarProductos = async (categoria = '', visibilidad = '', stock = '') => {
     setCargando(true)
@@ -170,12 +180,6 @@ function Inicio() {
               </div>
             ))}
           </nav>
-
-          <div className="panel-sidebar-cambiar-modo">
-            <button className="panel-sidebar-cambiar-btn" onClick={() => navigate('/inicioComprador')}>
-              ← Cambiar a modo comprador
-            </button>
-          </div>
 
           <div className="panel-sidebar-footer">
             <div className="panel-sidebar-usuario">

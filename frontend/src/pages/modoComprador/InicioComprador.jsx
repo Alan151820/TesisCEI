@@ -3,6 +3,9 @@ import { useNavigate } from 'react-router-dom'
 import api from '../../lib/axios'
 import { tokenValido, rutaInicio } from '../../lib/auth'
 import { useCarrito } from '../../context/CarritoContext'
+import CampanaNotificaciones from '../../components/CampanaNotificaciones'
+import BottomNavComprador from '../../components/BottomNavComprador'
+import ToggleTema from '../../components/ToggleTema'
 import { construirTituloProducto } from '../../lib/producto'
 import './InicioComprador.css'
 
@@ -103,6 +106,7 @@ function InicioComprador() {
         <div className="comprador-acciones">
           <span className="comprador-nav-link" onClick={() => navigate('/misPedidos')}>Mis pedidos</span>
           <span className="comprador-nav-link" onClick={() => navigate(modoDistribuidorActivo ? '/inicio' : '/configurarPerfil')}>Distribuidora</span>
+          <CampanaNotificaciones rutaDestino="/misPedidos" rutaDetalle="/pedido" />
           <button className="comprador-btn-carrito" onClick={() => navigate('/carrito')}>
             🛒{totalItems > 0 && <span className="comprador-carrito-badge">{totalItems}</span>}
           </button>
@@ -116,6 +120,7 @@ function InicioComprador() {
               <div className="comprador-menu-desplegable">
                 <div className="comprador-menu-item comprador-menu-item--mobile" onClick={() => { setMenuPerfil(false); navigate('/misPedidos') }}>Mis pedidos</div>
                 <div className="comprador-menu-item comprador-menu-item--mobile" onClick={() => { setMenuPerfil(false); navigate(modoDistribuidorActivo ? '/inicio' : '/configurarPerfil') }}>Distribuidora</div>
+                <ToggleTema />
                 <div className="comprador-menu-item" onClick={handleCerrarSesion}>Cerrar sesión</div>
               </div>
             )}
@@ -203,22 +208,7 @@ function InicioComprador() {
 
       </main>
 
-      <nav className="comprador-bottom-nav">
-        <div className="comprador-bottom-item activo">
-          <span className="comprador-bottom-icono">◻</span>
-          <span className="comprador-bottom-label">Catálogo</span>
-        </div>
-        <div className="comprador-bottom-item" onClick={() => navigate('/carrito')}>
-          <span className="comprador-bottom-icono comprador-bottom-icono--carrito">
-            🛒{totalItems > 0 && <span className="comprador-bottom-badge">{totalItems}</span>}
-          </span>
-          <span className="comprador-bottom-label">Carrito</span>
-        </div>
-        <div className="comprador-bottom-item" onClick={() => navigate('/misPedidos')}>
-          <span className="comprador-bottom-icono">◇</span>
-          <span className="comprador-bottom-label">Pedidos</span>
-        </div>
-      </nav>
+      <BottomNavComprador />
 
     </div>
   )

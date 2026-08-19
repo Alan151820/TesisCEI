@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import api from '../../lib/axios'
 import { tokenValido, rutaInicio } from '../../lib/auth'
 import { useCarrito } from '../../context/CarritoContext'
+import CampanaNotificaciones from '../../components/CampanaNotificaciones'
 import ModalMapaDireccion from '../../components/ModalMapaDireccion'
 import BottomNavComprador from '../../components/BottomNavComprador'
 import EstadoBadge from '../../components/EstadoBadge'
@@ -67,6 +68,7 @@ function MisPedidos() {
         <div className="comprador-acciones">
           <span className="comprador-nav-link" onClick={() => navigate('/misPedidos')}>Mis pedidos</span>
           <span className="comprador-nav-link" onClick={() => navigate(modoDistribuidorActivo ? '/inicio' : '/configurarPerfil')}>Distribuidora</span>
+          <CampanaNotificaciones rutaDestino="/misPedidos" rutaDetalle="/pedido" />
           <button className="comprador-btn-carrito" onClick={() => navigate('/carrito')}>
             🛒{totalItems > 0 && <span className="comprador-carrito-badge">{totalItems}</span>}
           </button>

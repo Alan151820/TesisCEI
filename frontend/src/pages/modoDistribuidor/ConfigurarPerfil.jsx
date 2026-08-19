@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import api from '../../lib/axios'
-import { tokenValido } from '../../lib/auth'
+import { tokenValido, rutaInicio } from '../../lib/auth'
 import './ConfigurarPerfil.css'
 
 function ConfigurarPerfil() {
@@ -11,17 +11,15 @@ function ConfigurarPerfil() {
   const [mensaje, setMensaje] = useState('')
   const navigate = useNavigate()
   useEffect(() => { if (!tokenValido()) navigate('/login') }, [navigate])
-  const telefono = localStorage.getItem('telefono')
 
   const handleConfigurar = async () => {
   try {
     const res = await api.post('/distribuidor/configurarPerfil', {
-      telefono,
       nombreComercial,
       descripcionNegocio,
       zonaEntrega
     })
-    await api.post('/auth/activarModoDistribuidor', { telefono })
+    await api.post('/auth/activarModoDistribuidor')
     localStorage.setItem('distribuidorId', res.data.distribuidorId)
     localStorage.setItem('modoDistribuidorActivo', 'true')
     navigate('/inicio')
@@ -70,7 +68,10 @@ function ConfigurarPerfil() {
           <span className="configperfil-ayuda">Indicá las zonas geográficas donde realizás entregas.</span>
         </div>
 
-        <button className="configperfil-btn-guardar" onClick={handleConfigurar}>Guardar y acceder al panel</button>
+        <div className="configperfil-acciones">
+          <button className="configperfil-btn-cancelar" onClick={() => navigate(rutaInicio())}>Cancelar</button>
+          <button className="configperfil-btn-guardar" onClick={handleConfigurar}>Guardar y acceder al panel</button>
+        </div>
 
         <p className="configperfil-mensaje">{mensaje}</p>
 

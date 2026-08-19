@@ -1,5 +1,7 @@
 .perfildist-fondo {
   min-height: 100vh;
+  display: flex;
+  flex-direction: column;
   background: var(--color-variante-superficie);
   font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
 }
@@ -176,6 +178,7 @@
 
 /* Catálogo */
 .perfildist-catalogo {
+  flex: 1;
   padding: 28px 40px;
 }
 
@@ -359,6 +362,10 @@
     flex-shrink: 0;
   }
   .perfildist-mobile-volver {
+    background: none;
+    border: none;
+    padding: 0;
+    font-family: inherit;
     font-size: 18px;
     color: var(--color-sobre-variante-superficie);
     cursor: pointer;

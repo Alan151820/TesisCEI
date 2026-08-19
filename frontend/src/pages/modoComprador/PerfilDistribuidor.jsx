@@ -2,6 +2,9 @@ import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useCarrito } from '../../context/CarritoContext'
 import api from '../../lib/axios'
+import CampanaNotificaciones from '../../components/CampanaNotificaciones'
+import BottomNavComprador from '../../components/BottomNavComprador'
+import { construirTituloProducto } from '../../lib/producto'
 import './PerfilDistribuidor.css'
 
 function PerfilDistribuidor() {
@@ -56,6 +59,11 @@ function PerfilDistribuidor() {
 
   return (
     <div className="perfildist-fondo">
+
+      <div className="perfildist-mobile-header">
+        <button type="button" className="perfildist-mobile-volver" onClick={() => window.history.back()}>←</button>
+        <div className="perfildist-mobile-titulo">Perfil del distribuidor</div>
+      </div>
 
       <header className="perfildist-topbar">
         <div className="perfildist-marca" onClick={() => navigate(token ? '/inicioComprador' : '/catalogo')}>MarketPlace</div>
@@ -141,7 +149,7 @@ function PerfilDistribuidor() {
                 }
                 <div className="perfildist-producto-info">
                   <div className="perfildist-producto-categoria">{p.categoria}</div>
-                  <h3 className="perfildist-producto-nombre">{p.nombre}</h3>
+                  <h3 className="perfildist-producto-nombre">{construirTituloProducto(p)}</h3>
                   <p className="perfildist-producto-descripcion">{p.descripcion}</p>
                 </div>
               </div>
@@ -149,6 +157,8 @@ function PerfilDistribuidor() {
           </div>
         )}
       </div>
+
+      {token && <BottomNavComprador />}
 
     </div>
   )

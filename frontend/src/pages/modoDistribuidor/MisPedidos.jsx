@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import api from '../../lib/axios'
 import { tokenValido } from '../../lib/auth'
+import CampanaNotificaciones from '../../components/CampanaNotificaciones'
 import ModalMapaDireccion from '../../components/ModalMapaDireccion'
 import EstadoBadge from '../../components/EstadoBadge'
 import './Inicio.css'
@@ -165,6 +166,7 @@ function MisPedidos() {
           <button className="panel-header-salir-btn" onClick={() => navigate('/inicioComprador')}>
             Salir de distribuidora
           </button>
+          <CampanaNotificaciones rutaDestino="/pedidos" />
           <div className="comprador-perfil-wrapper" ref={perfilRef}>
             <button className="comprador-perfil-trigger" onClick={() => setMenuPerfil(v => !v)}>
               <div className="comprador-avatar">{iniciales}</div>

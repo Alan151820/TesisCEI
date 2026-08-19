@@ -143,7 +143,7 @@ function ConfirmacionPedido() {
     return (
       <div className="confirmar-pagina">
         <div className="confirmar-mobile-header">
-          <span className="confirmar-mobile-volver" onClick={() => navigate(-1)}>←</span>
+          <button type="button" className="confirmar-mobile-volver" onClick={() => navigate(-1)}>←</button>
           <div className="confirmar-mobile-titulo">Confirmar pedido</div>
         </div>
         <header className="confirmar-topbar">
@@ -168,14 +168,14 @@ function ConfirmacionPedido() {
       )}
 
       <div className="confirmar-mobile-header">
-        <span className="confirmar-mobile-volver" onClick={() => navigate('/carrito')}>←</span>
+        <button type="button" className="confirmar-mobile-volver" onClick={() => navigate('/carrito')}>←</button>
         <div className="confirmar-mobile-titulo">Confirmar pedido</div>
       </div>
 
       <header className="confirmar-topbar">
         <div className="confirmar-topbar-marca" onClick={() => navigate(rutaInicio())}>MarketDist</div>
         <div className="confirmar-topbar-titulo">Confirmar pedido</div>
-        <span className="confirmar-topbar-link" onClick={() => navigate('/carrito')}>← Volver al carrito</span>
+        <button type="button" className="confirmar-topbar-link" onClick={() => navigate('/carrito')}>← Volver al carrito</button>
       </header>
 
       <div className="confirmar-contenido">
