@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import api from '../../lib/axios'
 import { tokenValido } from '../../lib/auth'
@@ -28,9 +28,6 @@ function Inicio() {
   const [filtroVisibilidad, setFiltroVisibilidad] = useState('')
   const [filtroStock, setFiltroStock] = useState('')
   const [menuAbierto, setMenuAbierto] = useState(false)
-  const [notificaciones, setNotificaciones] = useState([])
-  const [notifAbierta, setNotifAbierta] = useState(false)
-  const notifRef = useRef(null)
 
   useEffect(() => { if (!tokenValido()) navigate('/login') }, [navigate])
 
@@ -55,35 +52,7 @@ function Inicio() {
     api.get('/api/productos/categorias')
       .then(res => setCategorias(res.data))
       .catch(() => {})
-    api.get('/api/notificaciones')
-      .then(res => setNotificaciones(res.data))
-      .catch(() => {})
   }, [])
-
-  useEffect(() => {
-    if (!notifAbierta) return
-    const handler = (e) => {
-      if (notifRef.current && !notifRef.current.contains(e.target)) {
-        setNotifAbierta(false)
-      }
-    }
-    document.addEventListener('mousedown', handler)
-    return () => document.removeEventListener('mousedown', handler)
-  }, [notifAbierta])
-
-  const marcarLeida = async (id) => {
-    try {
-      await api.patch(`/api/notificaciones/${id}/leer`)
-      setNotificaciones(prev => prev.map(n => n.id === id ? { ...n, leida: true } : n))
-    } catch {}
-  }
-
-  const noLeidas = notificaciones.filter(n => !n.leida).length
-
-  const formatFecha = (iso) => {
-    const d = new Date(iso)
-    return d.toLocaleDateString('es-UY', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })
-  }
 
   const filtrarPorCategoria = (e) => {
     setFiltroCategoria(e.target.value)
@@ -178,32 +147,6 @@ function Inicio() {
           <input className="panel-master-header-buscador-input" type="text" placeholder="Buscar productos…" />
         </div>
         <div className="panel-master-header-perfil">
-          <div className="panel-notif" ref={notifRef}>
-            <button className="panel-notif-btn" onClick={() => setNotifAbierta(v => !v)}>
-              🔔
-              {noLeidas > 0 && <span className="panel-notif-badge">{noLeidas}</span>}
-            </button>
-            {notifAbierta && (
-              <div className="panel-notif-dropdown">
-                {notificaciones.length === 0
-                  ? <div className="panel-notif-vacio">No tenés notificaciones.</div>
-                  : notificaciones.map(n => (
-                    <div
-                      key={n.id}
-                      className={`panel-notif-item${!n.leida ? ' no-leida' : ''}`}
-                      onClick={() => marcarLeida(n.id)}
-                    >
-                      {!n.leida && <span className="panel-notif-punto" />}
-                      <div className="panel-notif-cuerpo">
-                        <div className="panel-notif-mensaje">{n.mensaje}</div>
-                        <div className="panel-notif-fecha">{formatFecha(n.fechaCreacion)}</div>
-                      </div>
-                    </div>
-                  ))
-                }
-              </div>
-            )}
-          </div>
           <div className="panel-master-header-avatar">{iniciales}</div>
         </div>
       </header>

@@ -346,8 +346,8 @@
 /* Filtros — idéntico al Catálogo */
 .comprador-filtros {
   display: flex;
-  gap: 12px;
-  padding: 16px 40px;
+  gap: 8px;
+  padding: 12px 40px;
   background: var(--color-contenedor-superficie-minimo);
   border-bottom: 1px solid var(--color-variante-contorno);
   flex-wrap: wrap;
@@ -365,6 +365,7 @@
   font-family: inherit;
   color: var(--color-sobre-superficie);
   outline: none;
+  width: 160px;
 }
 
 .comprador-filtros select {
