@@ -117,6 +117,48 @@ class PrecioVolumen {
     return { tipoResultado: 'ELIMINADO', mensaje: 'El precio por volumen fue eliminado correctamente.' }
   }
 
+  // RF-040: rentabilidad de este precio por volumen. Solo disponible si
+  // precioCosto está registrado (no es null) — si no lo está, se devuelve
+  // tienePrecioCostoRegistrado: false y las diferencias en null, para que la
+  // capa de presentación muestre el indicador "—" en lugar de calcular.
+  calcularRentabilidad() {
+    const precioVenta = Number(this.precioVenta)
+    const tienePrecioCostoRegistrado = this.precioCosto !== null && this.precioCosto !== undefined
+    const precioCosto = tienePrecioCostoRegistrado ? Number(this.precioCosto) : null
+
+    return {
+      precioVolumenId: this.id,
+      productoId: this.productoId,
+      cantidadMinima: this.cantidadMinima,
+      precioVenta: this.precioVenta,
+      precioCosto: this.precioCosto,
+      tienePrecioCostoRegistrado,
+      diferenciaPesos: tienePrecioCostoRegistrado ? precioVenta - precioCosto : null,
+      diferenciaPorcentaje: tienePrecioCostoRegistrado && precioCosto > 0
+        ? ((precioVenta - precioCosto) / precioCosto) * 100
+        : null,
+    }
+  }
+
+  // RF-040: rentabilidad de cada precio por volumen de los productos
+  // habilitados del distribuidor (mismo filtro que Producto.listarPorDistribuidor).
+  static async listarConRentabilidadPorDistribuidor(usuarioDistribuidorId) {
+    const res = await pool.query(
+      `SELECT pv.id, pv.producto_id, pv.cantidad_minima, pv.precio_venta, pv.precio_costo,
+              pr.nombre AS producto_nombre
+       FROM precio_volumen pv
+       JOIN producto pr ON pr.id = pv.producto_id
+       JOIN distribuidor d ON d.id = pr.distribuidor_id
+       WHERE d.usuario_id = $1 AND pr.habilitado = true
+       ORDER BY pr.nombre ASC, pv.cantidad_minima ASC`,
+      [usuarioDistribuidorId]
+    )
+    return res.rows.map(r => ({
+      ...new PrecioVolumen(r).calcularRentabilidad(),
+      productoNombre: r.producto_nombre,
+    }))
+  }
+
   static async aplicarDescuentoTotal(productoId, porcentaje) {
     const factor = 1 - porcentaje / 100
     await pool.query(

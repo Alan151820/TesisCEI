@@ -1,0 +1,210 @@
+/* Sub-navegación entre Rendimiento y Rentabilidad, dentro del módulo Reportes */
+.reportes-subnav {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid var(--color-variante-contorno);
+}
+
+.reportes-subnav-item {
+  padding: 10px 4px;
+  margin-right: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-sobre-variante-superficie);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+}
+
+.reportes-subnav-item:hover {
+  color: var(--color-sobre-superficie);
+}
+
+.reportes-subnav-item.activo {
+  color: var(--color-sobre-superficie);
+  border-bottom-color: var(--color-primario);
+}
+
+/* Selector de período (Día / Semana / Mes) — RF-041 */
+.reportes-periodo-tabs {
+  display: flex;
+  height: 34px;
+  border: 1px solid var(--color-contorno);
+  border-radius: 4px;
+  overflow: hidden;
+  background: var(--color-contenedor-superficie-minimo);
+  flex-shrink: 0;
+}
+
+.reportes-periodo-tab {
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+  color: var(--color-sobre-variante-superficie);
+  cursor: pointer;
+}
+
+.reportes-periodo-tab.activo {
+  background: var(--color-primario);
+  color: var(--color-sobre-primario);
+}
+
+/* Mensajes de estado (cargando / error / vacío) */
+.reportes-vacio {
+  padding: 40px 24px;
+  font-size: 13px;
+  color: var(--color-sobre-variante-superficie);
+  text-align: center;
+  background: var(--color-contenedor-superficie-minimo);
+  border: 1px solid var(--color-variante-contorno);
+  border-radius: 6px;
+}
+
+/* KPIs */
+.reportes-kpis {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.reportes-kpi-card {
+  flex: 1;
+  min-width: 180px;
+  background: var(--color-contenedor-superficie-minimo);
+  border: 1px solid var(--color-variante-contorno);
+  border-radius: 6px;
+  padding: 16px 20px;
+}
+
+.reportes-kpi-label {
+  font-size: 11px;
+  color: var(--color-sobre-variante-superficie);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 6px;
+}
+
+.reportes-kpi-valor {
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--color-sobre-superficie);
+}
+
+/* Tablas de ranking (más / menos vendidos) */
+.reportes-tablas {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.reportes-tabla-card {
+  flex: 1;
+  min-width: 280px;
+  background: var(--color-contenedor-superficie-minimo);
+  border: 1px solid var(--color-variante-contorno);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.reportes-tabla-titulo {
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--color-variante-contorno);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-sobre-superficie);
+}
+
+.reportes-tabla-header,
+.reportes-tabla-fila {
+  display: grid;
+  grid-template-columns: 1fr 100px;
+}
+
+.reportes-tabla-header {
+  background: var(--color-contenedor-superficie-bajo);
+  border-bottom: 1px solid var(--color-variante-contorno);
+}
+
+.reportes-tabla-header > div {
+  padding: 10px 14px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--color-sobre-variante-superficie);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.reportes-tabla-fila {
+  border-bottom: 1px solid var(--color-contenedor-superficie-bajo);
+}
+
+.reportes-tabla-fila:last-child {
+  border-bottom: none;
+}
+
+.reportes-tabla-fila > div {
+  padding: 12px 14px;
+  font-size: 13px;
+  color: var(--color-sobre-superficie);
+  display: flex;
+  align-items: center;
+}
+
+/* Tabla de rentabilidad — RF-040 */
+.reportes-rentabilidad-wrapper {
+  background: var(--color-contenedor-superficie-minimo);
+  border: 1px solid var(--color-variante-contorno);
+  border-radius: 6px;
+  overflow-x: auto;
+}
+
+.reportes-rentabilidad-header,
+.reportes-rentabilidad-fila {
+  display: grid;
+  grid-template-columns: 200px 100px 130px 130px 120px 120px;
+  min-width: 700px;
+}
+
+.reportes-rentabilidad-header {
+  background: var(--color-contenedor-superficie-bajo);
+  border-bottom: 1px solid var(--color-variante-contorno);
+}
+
+.reportes-rentabilidad-header > div {
+  padding: 10px 14px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--color-sobre-variante-superficie);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.reportes-rentabilidad-fila {
+  border-bottom: 1px solid var(--color-contenedor-superficie-bajo);
+}
+
+.reportes-rentabilidad-fila:last-child {
+  border-bottom: none;
+}
+
+.reportes-rentabilidad-fila > div {
+  padding: 12px 14px;
+  font-size: 13px;
+  color: var(--color-sobre-superficie);
+  display: flex;
+  align-items: center;
+}
+
+.reportes-sin-costo {
+  color: var(--color-sobre-variante-superficie) !important;
+  font-size: 12px !important;
+}
+
+@media (max-width: 768px) {
+  .reportes-tablas {
+    flex-direction: column;
+  }
+}

@@ -192,6 +192,33 @@ class Producto {
     return res.rows
   }
 
+  // RF-039: ranking de productos por unidades vendidas (pedido_item.cantidad),
+  // de pedidos entregados del distribuidor dentro de [fechaInicio, fechaFin),
+  // ordenado de más a menos vendido. El servicio toma la cabeza para "más
+  // vendidos" y la cola para "menos vendidos" de este mismo resultado, en vez
+  // de pedir la lista dos veces con el ORDER BY invertido.
+  static async listarVendidosPorDistribuidor(usuarioDistribuidorId, fechaInicio, fechaFin) {
+    const res = await pool.query(
+      `SELECT pr.id, pr.nombre, SUM(pi.cantidad) AS unidades_vendidas
+       FROM pedido_item pi
+       JOIN pedido p ON p.id = pi.pedido_id
+       JOIN producto pr ON pr.id = pi.producto_id
+       JOIN distribuidor d ON d.id = p.distribuidor_id
+       WHERE d.usuario_id = $1
+         AND p.estado = 'entregado'
+         AND p.fecha_entregado >= $2
+         AND p.fecha_entregado < $3
+       GROUP BY pr.id, pr.nombre
+       ORDER BY unidades_vendidas DESC`,
+      [usuarioDistribuidorId, fechaInicio, fechaFin]
+    )
+    return res.rows.map(r => ({
+      id: r.id,
+      nombre: r.nombre,
+      unidadesVendidas: Number(r.unidades_vendidas),
+    }))
+  }
+
   static async obtenerPrecioVolumenAplicable(productoId, cantidad, cliente = pool) {
     const res = await cliente.query(
       `SELECT * FROM precio_volumen

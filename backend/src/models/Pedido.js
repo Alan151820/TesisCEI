@@ -237,6 +237,31 @@ class Pedido {
     return res.rows[0]
   }
 
+  // RF-039: total facturado y cantidad de pedidos entregados, del distribuidor,
+  // dentro de [fechaInicio, fechaFin). Se filtra por fecha_entregado (no
+  // fecha_creacion) porque un pedido creado en un período y entregado en otro
+  // debe contar en el período de su entrega (ver nota de la columna en el MER).
+  static async calcularTotalesEntregados(usuarioDistribuidorId, fechaInicio, fechaFin) {
+    const res = await pool.query(
+      `SELECT
+         COALESCE(SUM(pi.cantidad * pi.precio_venta_congelado), 0) AS total_facturado,
+         COUNT(DISTINCT p.id) AS cantidad_pedidos_entregados
+       FROM pedido p
+       JOIN distribuidor d ON d.id = p.distribuidor_id
+       LEFT JOIN pedido_item pi ON pi.pedido_id = p.id
+       WHERE d.usuario_id = $1
+         AND p.estado = 'entregado'
+         AND p.fecha_entregado >= $2
+         AND p.fecha_entregado < $3`,
+      [usuarioDistribuidorId, fechaInicio, fechaFin]
+    )
+    const fila = res.rows[0]
+    return {
+      totalFacturado: Number(fila.total_facturado),
+      cantidadPedidosEntregados: Number(fila.cantidad_pedidos_entregados),
+    }
+  }
+
   static async obtenerPropioDistribuidor(pedidoId, distribuidorUsuarioId, cliente = pool) {
     const res = await cliente.query(
       `SELECT p.*, u.telefono AS telefono_comprador, u.nombre_completo AS nombre_comprador,
