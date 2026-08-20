@@ -22,6 +22,8 @@ import Catalogo from './pages/Catalogo'
 import DetalleProducto from './pages/modoComprador/DetalleProducto'
 import DetallePedido from './pages/modoComprador/DetallePedido'
 import DetallePedidoDistribuidor from './pages/modoDistribuidor/DetallePedido'
+import Reportes from './pages/modoDistribuidor/Reportes'
+import Rentabilidad from './pages/modoDistribuidor/Rentabilidad'
 
 
 function App() {
@@ -36,6 +38,8 @@ function App() {
           <Route path='/verificarRecuperacion' element={<VerificarRecuperacion />} />
           <Route path='/nuevaContrasena' element={<NuevaContrasena />} />
           <Route path='/inicio' element={<Inicio />} />
+          <Route path='/reportes' element={<Reportes />} />
+          <Route path='/reportes/rentabilidad' element={<Rentabilidad />} />
           <Route path='/producto/nuevo' element={<FichaProducto />} />
           <Route path='/producto/editar/:id' element={<EditarProducto />} />
           <Route path='/inicioComprador' element={<InicioComprador />} />

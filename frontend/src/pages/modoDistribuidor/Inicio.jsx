@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import api from '../../lib/axios'
 import { tokenValido } from '../../lib/auth'
@@ -158,7 +158,23 @@ function Inicio() {
           <input className="panel-master-header-buscador-input" type="text" placeholder="Buscar productos…" />
         </div>
         <div className="panel-master-header-perfil">
-          <div className="panel-master-header-avatar">{iniciales}</div>
+          <button className="panel-header-salir-btn" onClick={() => navigate('/inicioComprador')}>
+            Salir de distribuidora
+          </button>
+          <CampanaNotificaciones rutaDestino="/pedidos" />
+          <div className="comprador-perfil-wrapper" ref={perfilRef}>
+            <button className="comprador-perfil-trigger" onClick={() => setMenuPerfil(v => !v)}>
+              <div className="comprador-avatar">{iniciales}</div>
+              <span className="comprador-nombre">{nombre}</span>
+              <span className="comprador-perfil-flecha">{menuPerfil ? '▴' : '▾'}</span>
+            </button>
+            {menuPerfil && (
+              <div className="comprador-menu-desplegable">
+                <ToggleTema />
+                <div className="comprador-menu-item" onClick={handleCerrarSesion}>Cerrar sesión</div>
+              </div>
+            )}
+          </div>
         </div>
       </header>
 

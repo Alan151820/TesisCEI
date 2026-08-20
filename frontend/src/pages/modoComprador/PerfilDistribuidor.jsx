@@ -80,6 +80,7 @@ function PerfilDistribuidor() {
               <button className="perfildist-btn-distribuidora" onClick={() => navigate(modoDistribuidorActivo ? '/inicio' : '/configurarPerfil')}>
                 Distribuidora
               </button>
+              <CampanaNotificaciones rutaDestino="/misPedidos" rutaDetalle="/pedido" />
               <div className="perfildist-perfil">
                 <div className="perfildist-avatar">{iniciales}</div>
                 <span className="perfildist-nombre-usuario">{nombre}</span>

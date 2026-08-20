@@ -74,7 +74,7 @@ function DetalleProducto() {
       <header className={token ? 'detalleproducto-header-autenticado' : 'detalleproducto-header'}>
         <div className="detalleproducto-header-marca" onClick={() => navigate('/')}>MarketDist</div>
         <div className="detalleproducto-header-buscador">
-          <span className="detalleproducto-header-buscador-icono">🔍</span>
+          <span className="detalleproducto-header-buscador-icono">⌕</span>
           <span className="detalleproducto-header-buscador-texto">Buscar productos…</span>
         </div>
         <div className={token ? 'detalleproducto-acciones-auth' : 'detalleproducto-header-acciones'}>

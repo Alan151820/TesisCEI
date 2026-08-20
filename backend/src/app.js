@@ -10,6 +10,7 @@ import distribuidorRoutes from './routes/distribuidor.js'
 import catalogoRoutes from './routes/catalogo.js'
 import pedidosRoutes from './routes/pedidos.js'
 import notificacionesRoutes from './routes/notificaciones.js'
+import reportesRoutes from './routes/reportes.js'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
@@ -28,6 +29,7 @@ app.use('/distribuidor', distribuidorRoutes)
 app.use('/api/catalogo', catalogoRoutes)
 app.use('/api/pedidos', pedidosRoutes)
 app.use('/api/notificaciones', notificacionesRoutes)
+app.use('/api/reportes', reportesRoutes)
 
 app.use((err, req, res, next) => {
   console.error(err)
