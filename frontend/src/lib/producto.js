@@ -10,3 +10,12 @@ export function construirTituloProducto({ nombre, marca, magnitudValor, magnitud
   if (!nombre) return resto
   return resto ? `${nombre} - ${resto}` : nombre
 }
+
+// Tramo de precio por volumen aplicable a una cantidad real — mismo
+// criterio que usa el backend (Producto.obtenerPrecioVolumenAplicable): el
+// tramo con la cantidad_minima más alta que no supere la cantidad.
+export function resolverTramoPrecio(tarifas, cantidadReal) {
+  const candidatos = (tarifas || []).filter(t => Number(t.cantidadMinima) <= cantidadReal)
+  if (candidatos.length === 0) return null
+  return candidatos.reduce((mejor, actual) => Number(actual.cantidadMinima) > Number(mejor.cantidadMinima) ? actual : mejor)
+}

@@ -26,6 +26,75 @@ function componer(campos) {
   return partes.join(', ')
 }
 
+function paramsNominatim({ calle, numero, ciudad, departamento }) {
+  const params = new URLSearchParams({
+    format: 'json',
+    street: `${calle.trim()} ${numero.trim()}`,
+    country: 'Uruguay',
+    'accept-language': 'es',
+    addressdetails: '1',
+    limit: '1',
+  })
+  if (ciudad.trim()) params.set('city', ciudad.trim())
+  if (departamento) params.set('state', departamento)
+  return params
+}
+
+// RF-008: el mapa es el método principal; esto solo se usa para geocodificar
+// la dirección estructurada cuando el comprador usa el formulario de
+// respaldo, para que ese pedido también quede con coordenadas.
+// Búsqueda estructurada de Nominatim: cada campo del formulario (calle,
+// ciudad, departamento) va en su propio parámetro, en vez de concatenar
+// todo en una sola cadena de texto libre — Nominatim compara cada uno
+// contra su nivel real en la base de OSM (calle, ciudad, departamento),
+// más preciso que dejarle adivinar cómo separar una cadena compuesta.
+// Sigue siendo una sola consulta al confirmar el pedido, nunca
+// autocompletado mientras se escribe (la política de uso gratuito de
+// Nominatim lo prohíbe expresamente).
+//
+// Si no hay resultado CON el departamento indicado, se reintenta la
+// búsqueda sin esa restricción, solo para poder avisarle al comprador
+// cuál parece ser el departamento correcto (usando address.state de la
+// respuesta) — nunca para geocodificar "a ciegas" en un departamento
+// distinto al que eligió. Es una validación posible gracias a que
+// Nominatim exige que el departamento indicado coincida con la calle:
+// si no coincide, la búsqueda estructurada devuelve vacío en vez de
+// ignorar el dato (verificado contra la API real antes de escribir esto).
+async function geocodificarDireccion(campos) {
+  try {
+    const res = await fetch(`https://nominatim.openstreetmap.org/search?${paramsNominatim(campos)}`, { headers: { 'User-Agent': 'TesisCEI-Marketplace/1.0' } })
+    if (res.ok) {
+      const data = await res.json()
+      if (data.length) return { lat: Number(data[0].lat), lng: Number(data[0].lon) }
+    }
+  } catch {
+    return null
+  }
+
+  if (!campos.departamento) return null
+
+  // Espera antes del segundo intento para no disparar dos consultas casi
+  // juntas contra un servicio público con límite de 1 request/segundo —
+  // sin esto, un departamento mal elegido podía frenarse en silencio en
+  // vez de mostrar el aviso, si el segundo intento llegaba a violar ese
+  // límite.
+  await new Promise(r => setTimeout(r, 1100))
+
+  try {
+    const paramsSinDepto = paramsNominatim({ ...campos, departamento: '' })
+    const res = await fetch(`https://nominatim.openstreetmap.org/search?${paramsSinDepto}`, { headers: { 'User-Agent': 'TesisCEI-Marketplace/1.0' } })
+    if (!res.ok) return null
+    const data = await res.json()
+    const detectado = data[0]?.address?.state
+    if (detectado && detectado !== campos.departamento) {
+      return { departamentoSugerido: detectado }
+    }
+    return null
+  } catch {
+    return null
+  }
+}
+
 function ConfirmacionPedido() {
   const navigate = useNavigate()
   const { items, vaciar, totalItems } = useCarrito()
@@ -34,11 +103,12 @@ function ConfirmacionPedido() {
     if (!tokenValido()) navigate('/login')
   }, [navigate])
 
-  // Dirección vía mapa
+  // Dirección vía mapa (método principal)
   const [dirMapa, setDirMapa] = useState(null)
   const [mapaAbierto, setMapaAbierto] = useState(false)
 
-  // Dirección manual
+  // Dirección manual: solo como respaldo cuando el mapa no se puede usar
+  const [mostrarManual, setMostrarManual] = useState(false)
   const [departamento, setDepartamento] = useState('')
   const [ciudad, setCiudad] = useState('')
   const [calle, setCalle] = useState('')
@@ -61,6 +131,19 @@ function ConfirmacionPedido() {
 
   const camposManualCompletos = departamento && ciudad.trim() && calle.trim() && numero.trim()
 
+  // En Montevideo, departamento y ciudad son casi siempre el mismo valor
+  // (a diferencia de los otros 18 departamentos, donde "Ciudad/Localidad"
+  // sigue siendo necesario para distinguir, por ejemplo, Pando de Las
+  // Piedras dentro de Canelones) — precargarlo ahorra escribirlo dos
+  // veces, sin sacar el campo. Nunca pisa un valor que el comprador ya
+  // haya escrito.
+  const handleDepartamentoChange = (valor) => {
+    setDepartamento(valor)
+    if (valor === 'Montevideo' && !ciudad.trim()) {
+      setCiudad('Montevideo')
+    }
+  }
+
   const getDireccionFinal = () => {
     if (dirMapa) return dirMapa.direccion
     if (camposManualCompletos) return componer({ calle, numero, esquina, apto, ciudad, departamento })
@@ -70,6 +153,7 @@ function ConfirmacionPedido() {
   const handleUbicacionConfirmada = ({ lat, lng, direccion }) => {
     setDirMapa({ lat, lng, direccion })
     setMapaAbierto(false)
+    setMostrarManual(false)
     setError('')
   }
 
@@ -83,10 +167,24 @@ function ConfirmacionPedido() {
 
     setEnviando(true)
     try {
+      let latitud = dirMapa?.lat ?? null
+      let longitud = dirMapa?.lng ?? null
+      if (!dirMapa) {
+        const geocodificada = await geocodificarDireccion({ calle, numero, ciudad, departamento })
+        if (geocodificada?.departamentoSugerido) {
+          setError(`La calle ingresada parece estar en ${geocodificada.departamentoSugerido}, no en ${departamento}. Verificá el departamento seleccionado antes de confirmar.`)
+          setEnviando(false)
+          return
+        }
+        if (geocodificada) {
+          latitud = geocodificada.lat
+          longitud = geocodificada.lng
+        }
+      }
       const payload = {
         direccionEntrega: direccionFinal,
-        latitud: dirMapa?.lat ?? null,
-        longitud: dirMapa?.lng ?? null,
+        latitud,
+        longitud,
         items: items.map(i => ({
           productoId: i.id,
           distribuidorId: i.distribuidorId,
@@ -243,20 +341,20 @@ function ConfirmacionPedido() {
                 >
                   {dirMapa ? '✏️ Cambiar ubicación en mapa' : '📍 Abrir mapa para seleccionar'}
                 </button>
-              </div>
 
-              {/* Separador */}
-              <div className="confirmar-dir-separador">
-                <span>o ingresá la dirección manualmente</span>
-              </div>
-
-              {/* Opción manual */}
-              <div className={`confirmar-dir-seccion${dirMapa ? ' confirmar-dir-seccion--desactivada' : ''}`}>
-                {dirMapa && (
-                  <div className="confirmar-dir-seccion-nota">
-                    Quitá la selección del mapa para usar esta opción.
+                {!dirMapa && !mostrarManual && (
+                  <div className="confirmar-dir-fallback-link" onClick={() => setMostrarManual(true)}>
+                    ¿No podés usar el mapa? Completá la dirección manualmente
                   </div>
                 )}
+              </div>
+
+              {/* Opción manual: solo como respaldo, cuando el mapa no se puede usar */}
+              {!dirMapa && mostrarManual && (
+              <div className="confirmar-dir-seccion">
+                <div className="confirmar-dir-fallback-link" onClick={() => setMostrarManual(false)}>
+                  ← Usar el mapa en su lugar
+                </div>
 
                 <div className="confirmar-dir-campos">
 
@@ -269,8 +367,7 @@ function ConfirmacionPedido() {
                       <select
                         className="confirmar-input confirmar-select"
                         value={departamento}
-                        onChange={e => setDepartamento(e.target.value)}
-                        disabled={Boolean(dirMapa)}
+                        onChange={e => handleDepartamentoChange(e.target.value)}
                       >
                         <option value="">Seleccioná un departamento</option>
                         {DEPARTAMENTOS.map(d => (
@@ -288,7 +385,6 @@ function ConfirmacionPedido() {
                         placeholder="Ej: Montevideo"
                         value={ciudad}
                         onChange={e => setCiudad(e.target.value)}
-                        disabled={Boolean(dirMapa)}
                       />
                     </div>
                   </div>
@@ -305,7 +401,6 @@ function ConfirmacionPedido() {
                         placeholder="Ej: Av. 18 de Julio"
                         value={calle}
                         onChange={e => setCalle(e.target.value)}
-                        disabled={Boolean(dirMapa)}
                       />
                     </div>
                     <div className="confirmar-dir-campo confirmar-dir-campo--angosto">
@@ -318,7 +413,6 @@ function ConfirmacionPedido() {
                         placeholder="Ej: 1234"
                         value={numero}
                         onChange={e => setNumero(e.target.value)}
-                        disabled={Boolean(dirMapa)}
                       />
                     </div>
                   </div>
@@ -333,7 +427,6 @@ function ConfirmacionPedido() {
                         placeholder="Ej: Ejido"
                         value={esquina}
                         onChange={e => setEsquina(e.target.value)}
-                        disabled={Boolean(dirMapa)}
                       />
                     </div>
                     <div className="confirmar-dir-campo">
@@ -344,7 +437,6 @@ function ConfirmacionPedido() {
                         placeholder="Ej: Apto 3B"
                         value={apto}
                         onChange={e => setApto(e.target.value)}
-                        disabled={Boolean(dirMapa)}
                       />
                     </div>
                   </div>
@@ -355,6 +447,7 @@ function ConfirmacionPedido() {
                   * Campos obligatorios para la opción manual.
                 </div>
               </div>
+              )}
 
               {error && <div className="confirmar-error">{error}</div>}
             </div>
@@ -381,9 +474,9 @@ function ConfirmacionPedido() {
               >
                 {enviando ? 'Confirmando...' : 'Confirmar pedido'}
               </button>
-              <div className="confirmar-btn-volver" onClick={() => navigate('/carrito')}>
+              <button type="button" className="confirmar-btn-volver" onClick={() => navigate('/carrito')}>
                 ← Volver al carrito
-              </div>
+              </button>
             </div>
           </div>
 

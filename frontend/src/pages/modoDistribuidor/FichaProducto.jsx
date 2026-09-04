@@ -234,7 +234,7 @@ function FichaProducto() {
   return (
     <div className="ficha-fondo">
       <div className="ficha-mobile-header" data-tema="oscuro">
-        <span className="ficha-mobile-volver" onClick={() => navigate('/inicio')}>←</span>
+        <button type="button" className="ficha-mobile-volver" onClick={() => navigate('/inicio')}>←</button>
         <div className="ficha-mobile-titulo">Nuevo producto</div>
       </div>
       <div className="ficha-contenedor">

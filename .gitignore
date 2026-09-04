@@ -5,6 +5,7 @@
 docs/
 CLAUDE.md
 .claude/
+curso/
 
 # Dependencias
 node_modules/
@@ -19,6 +20,10 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
+
+# Uploads (contenido generado en runtime, no código fuente)
+backend/public/uploads/*
+!backend/public/uploads/.gitkeep
 
 # Editor
 .vscode/*

@@ -1,21 +1,11 @@
-import { useState, useEffect, useRef } from 'react'
-import { useNavigate, useLocation } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import api from '../../lib/axios'
 import { tokenValido } from '../../lib/auth'
-import CampanaNotificaciones from '../../components/CampanaNotificaciones'
-import ToggleTema from '../../components/ToggleTema'
+import CampoUbicacionMapa from '../../components/CampoUbicacionMapa'
+import PanelDistribuidor from '../../components/PanelDistribuidor'
 import './Inicio.css'
 import './EditarPerfil.css'
-
-const NAV_ITEMS = [
-  { label: 'Pedidos', ruta: '/pedidos' },
-  { label: 'Productos', ruta: '/inicio' },
-  { label: 'Proveedores', ruta: '/proveedores' },
-  { label: 'Reparto', ruta: '/reparto' },
-  { label: 'Reportes', ruta: '/reportes' },
-  { label: 'Empleados', ruta: '/empleados' },
-  { label: 'Editar perfil', ruta: '/editarPerfil' },
-]
 
 function EditarPerfil() {
   const [nombreComercial, setNombreComercial] = useState('')
@@ -24,26 +14,15 @@ function EditarPerfil() {
   const [logo, setLogo] = useState(null)
   const [logoPreview, setLogoPreview] = useState(null)
   const [mensaje, setMensaje] = useState('')
+  const [guardando, setGuardando] = useState(false)
   const navigate = useNavigate()
-  const location = useLocation()
   useEffect(() => { if (!tokenValido()) navigate('/login') }, [navigate])
-  const nombre = localStorage.getItem('nombre') || ''
-  const iniciales = nombre.split(' ').map(p => p[0]).join('').slice(0, 2).toUpperCase()
-  const [menuPerfil, setMenuPerfil] = useState(false)
-  const perfilRef = useRef(null)
 
-  useEffect(() => {
-    if (!menuPerfil) return
-    const cerrar = (e) => { if (!perfilRef.current?.contains(e.target)) setMenuPerfil(false) }
-    document.addEventListener('mousedown', cerrar)
-    return () => document.removeEventListener('mousedown', cerrar)
-  }, [menuPerfil])
-
-  // RF-046: dirección de partida del depósito, acción separada de RF-053.
+  // RF-042: dirección de partida del depósito. Se guarda junto con el resto
+  // del perfil (RF-049) en una única acción de "Guardar cambios".
   const [direccionPartida, setDireccionPartida] = useState('')
-  const [mensajeDireccion, setMensajeDireccion] = useState('')
-  const [errorDireccion, setErrorDireccion] = useState('')
-  const [guardandoDireccion, setGuardandoDireccion] = useState(false)
+  const [latitudPartida, setLatitudPartida] = useState(null)
+  const [longitudPartida, setLongitudPartida] = useState(null)
 
   useEffect(() => {
     const cargarPerfil = async () => {
@@ -53,6 +32,8 @@ function EditarPerfil() {
         setDescripcionNegocio(res.data.descripcionNegocio)
         setZonaEntrega(res.data.zonaEntrega)
         setDireccionPartida(res.data.direccionPartida || '')
+        setLatitudPartida(res.data.latitud ?? null)
+        setLongitudPartida(res.data.longitud ?? null)
         if (res.data.logoUrl) setLogoPreview(`http://localhost:3000${res.data.logoUrl}`)
       } catch (error) {
         setMensaje('No fue posible cargar el perfil.')
@@ -67,7 +48,9 @@ function EditarPerfil() {
     setLogoPreview(URL.createObjectURL(archivo))
   }
 
-  const handleEditar = async () => {
+  const handleGuardar = async () => {
+    setMensaje('')
+    setGuardando(true)
     try {
       await api.put('/distribuidor/editarPerfil', {
         nombreComercial,
@@ -81,99 +64,24 @@ function EditarPerfil() {
         await api.post('/distribuidor/subirLogo', formData)
       }
 
+      if (direccionPartida) {
+        await api.put('/distribuidor/direccionPartida', {
+          direccionPartida,
+          latitud: latitudPartida,
+          longitud: longitudPartida,
+        })
+      }
+
       setMensaje('Perfil actualizado correctamente.')
     } catch (error) {
       setMensaje(error.response?.data?.mensaje || 'No fue posible completar la operación. Intente nuevamente más tarde.')
-    }
-  }
-
-  const handleGuardarDireccion = async () => {
-    setErrorDireccion('')
-    setMensajeDireccion('')
-    setGuardandoDireccion(true)
-    try {
-      await api.put('/distribuidor/direccionPartida', { direccionPartida })
-      setMensajeDireccion('Dirección de partida registrada correctamente.')
-    } catch (error) {
-      setErrorDireccion(error.response?.data?.mensaje || 'No fue posible completar la operación. Intente nuevamente más tarde.')
     } finally {
-      setGuardandoDireccion(false)
+      setGuardando(false)
     }
-  }
-
-  const handleCerrarSesion = () => {
-    localStorage.removeItem('token')
-    localStorage.removeItem('nombre')
-    localStorage.removeItem('telefono')
-    localStorage.removeItem('modoDistribuidorActivo')
-    navigate('/login')
   }
 
   return (
-    <div className="panel-root">
-
-      <header className="panel-master-header">
-        <div className="panel-master-header-marca">MarketDist</div>
-        <div className="panel-master-header-buscador">
-          <span className="panel-master-header-buscador-icono">⌕</span>
-          <input className="panel-master-header-buscador-input" type="text" placeholder="Buscar productos…" />
-        </div>
-        <div className="panel-master-header-perfil">
-          <button className="panel-header-salir-btn" onClick={() => navigate('/inicioComprador')}>
-            Salir de distribuidora
-          </button>
-          <CampanaNotificaciones rutaDestino="/pedidos" />
-          <div className="comprador-perfil-wrapper" ref={perfilRef}>
-            <button className="comprador-perfil-trigger" onClick={() => setMenuPerfil(v => !v)}>
-              <div className="comprador-avatar">{iniciales}</div>
-              <span className="comprador-nombre">{nombre}</span>
-              <span className="comprador-perfil-flecha">{menuPerfil ? '▴' : '▾'}</span>
-            </button>
-            {menuPerfil && (
-              <div className="comprador-menu-desplegable">
-                <ToggleTema />
-                <div className="comprador-menu-item" onClick={handleCerrarSesion}>Cerrar sesión</div>
-              </div>
-            )}
-          </div>
-        </div>
-      </header>
-
-      <div className="panel-layout">
-
-        <aside className="panel-sidebar" data-tema="oscuro">
-          <div className="panel-sidebar-marca">
-            <div className="panel-sidebar-titulo">MarketDist</div>
-            <div className="panel-sidebar-subtitulo">Panel del Distribuidor</div>
-          </div>
-
-          <nav className="panel-nav">
-            {NAV_ITEMS.map(item => (
-              <div
-                key={item.ruta}
-                className={`panel-nav-item${location.pathname === item.ruta ? ' activo' : ''}`}
-                onClick={() => navigate(item.ruta)}
-              >
-                {item.label}
-              </div>
-            ))}
-          </nav>
-
-          <div className="panel-sidebar-footer">
-            <div className="panel-sidebar-usuario">
-              <div className="panel-avatar-small">{iniciales}</div>
-              <div>
-                <div className="panel-sidebar-nombre">{nombre}</div>
-                <div className="panel-sidebar-rol">Distribuidor</div>
-              </div>
-            </div>
-            <div className="panel-sidebar-accion" onClick={handleCerrarSesion}>Cerrar sesión</div>
-          </div>
-        </aside>
-
-        <main className="panel-main">
-        <div className="panel-contenido">
-
+    <PanelDistribuidor tituloMobile="Editar perfil">
           <div className="panel-seccion-header">
             <div>
               <h1 className="panel-h1">Editar perfil</h1>
@@ -229,8 +137,20 @@ function EditarPerfil() {
               />
             </div>
 
+            <CampoUbicacionMapa
+              etiqueta="Dirección de partida"
+              direccion={direccionPartida}
+              onSeleccionar={({ lat, lng, direccion }) => {
+                setDireccionPartida(direccion)
+                setLatitudPartida(lat)
+                setLongitudPartida(lng)
+              }}
+            />
+
             <div className="editarperfil-acciones">
-              <button className="editarperfil-btn-guardar" onClick={handleEditar}>Guardar cambios</button>
+              <button className="editarperfil-btn-guardar" onClick={handleGuardar} disabled={guardando}>
+                {guardando ? 'Guardando…' : 'Guardar cambios'}
+              </button>
               <button className="editarperfil-btn-cancelar" onClick={() => navigate('/inicio')}>Volver al panel</button>
             </div>
 
@@ -238,35 +158,7 @@ function EditarPerfil() {
 
           </div>
 
-          <div className="editarperfil-card">
-            <h2 className="panel-h1" style={{ fontSize: '18px', marginBottom: '4px' }}>Dirección de partida del depósito</h2>
-            <p className="panel-subtitulo" style={{ marginBottom: '16px' }}>Se usa como referencia para la planificación de reparto.</p>
-
-            <div className="editarperfil-campo">
-              <label className="editarperfil-label">Dirección de partida</label>
-              <input
-                className="editarperfil-input"
-                placeholder='Ej: Camino Carrasco 4521, Montevideo'
-                value={direccionPartida}
-                onChange={e => setDireccionPartida(e.target.value)}
-              />
-            </div>
-
-            <div className="editarperfil-acciones">
-              <button className="editarperfil-btn-guardar" onClick={handleGuardarDireccion} disabled={guardandoDireccion}>
-                {guardandoDireccion ? 'Guardando…' : 'Guardar dirección'}
-              </button>
-            </div>
-
-            {errorDireccion && <p className="editarperfil-mensaje" style={{ color: 'var(--color-error)' }}>{errorDireccion}</p>}
-            {mensajeDireccion && <p className="editarperfil-mensaje">{mensajeDireccion}</p>}
-          </div>
-
-        </div>
-        </main>
-
-      </div>
-    </div>
+    </PanelDistribuidor>
   )
 }
 

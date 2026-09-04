@@ -1,7 +1,7 @@
 import pool from '../config/db.js'
 import Notificacion from '../models/Notificacion.js'
 
-// RF-060: el motivo de rechazo no vive en una columna propia — va concatenado
+// RF-024: el motivo de rechazo no vive en una columna propia — va concatenado
 // dentro del texto libre de "mensaje" (ver mensajeCambioEstado en
 // pedidos.servicio.js). Se extrae acá para exponerlo como campo estructurado
 // sin necesitar una columna nueva.

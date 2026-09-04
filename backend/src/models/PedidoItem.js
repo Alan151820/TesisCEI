@@ -10,11 +10,6 @@ class PedidoItem {
     this.precioVentaCongelado = data.precio_venta_congelado
   }
 
-  congelarPrecio(precioVolumen) {
-    this.precioVolumenId = precioVolumen.id
-    this.precioVentaCongelado = precioVolumen.precioVenta
-  }
-
   static async crear(pedidoId, productoId, precioVolumenId, cantidad, precioVentaCongelado, cliente = pool) {
     const res = await cliente.query(
       `INSERT INTO pedido_item (pedido_id, producto_id, precio_volumen_id, cantidad, precio_venta_congelado)

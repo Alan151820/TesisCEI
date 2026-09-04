@@ -25,15 +25,21 @@ const obtenerPerfil = async (req, res) => {
   res.status(500).json({ mensaje: 'No fue posible completar la operación. Intente nuevamente más tarde.' })
   }
 }
+// RF-048 (ampliación): direccionPartida/latitud/longitud son opcionales acá
+// también, igual que ya lo eran en RF-042 desde Editar perfil — el alta
+// inicial no exige la ubicación del depósito para completarse.
 const configurarPerfil = async (req, res) => {
   try {
-    const { nombreComercial, descripcionNegocio, zonaEntrega } = req.body
+    const { nombreComercial, descripcionNegocio, zonaEntrega, direccionPartida, latitud, longitud } = req.body
 
     if (!nombreComercial) {
       return res.status(400).json({ mensaje: 'El nombre comercial es obligatorio para continuar.' })
     }
 
-    const distribuidor = await Distribuidor.configurarPerfilInicial(req.usuario.id, nombreComercial, descripcionNegocio, zonaEntrega)
+    const distribuidor = await Distribuidor.configurarPerfilInicial(
+      req.usuario.id, nombreComercial, descripcionNegocio, zonaEntrega,
+      direccionPartida || null, latitud ?? null, longitud ?? null
+    )
 
     res.json({ mensaje: 'Perfil configurado correctamente.', distribuidorId: distribuidor.id })
   } catch (error) {
@@ -63,6 +69,8 @@ const obtenerPerfilPropio = async (req, res) => {
       descripcionNegocio: distribuidor.descripcionNegocio,
       zonaEntrega: distribuidor.zonaEntrega,
       direccionPartida: distribuidor.direccionPartida,
+      latitud: distribuidor.latitud,
+      longitud: distribuidor.longitud,
       logoUrl: distribuidor.logoUrl,
     })
   } catch (error) {
@@ -101,12 +109,14 @@ const subirLogo = async (req, res) => {
   }
 }
 
-// RF-046: dirección de partida del depósito, usada como referencia para la
-// planificación de reparto. Es una acción propia, separada de RF-053 (editar
-// perfil general).
+// RF-042: dirección de partida del depósito, usada como referencia para la
+// planificación de reparto. Endpoint propio (distinto de RF-049), pero el
+// frontend lo dispara junto con el guardado del resto del perfil desde un
+// único botón "Guardar cambios" en EditarPerfil.jsx.
 const actualizarDireccionPartida = async (req, res) => {
   try {
     const direccionPartida = (req.body.direccionPartida || '').trim()
+    const { latitud, longitud } = req.body
     if (!direccionPartida) {
       return res.status(400).json({ mensaje: 'Ingresá la dirección de partida antes de guardar.' })
     }
@@ -115,9 +125,9 @@ const actualizarDireccionPartida = async (req, res) => {
     if (!distribuidor) {
       return res.status(404).json({ mensaje: 'No tenés un perfil de distribuidor configurado.' })
     }
-    await distribuidor.actualizarDireccionPartida(direccionPartida)
+    await distribuidor.actualizarDireccionPartida(direccionPartida, latitud, longitud)
 
-    res.json({ mensaje: 'Dirección de partida registrada correctamente.', direccionPartida })
+    res.json({ mensaje: 'Dirección de partida registrada correctamente.', direccionPartida, latitud, longitud })
   } catch (error) {
     res.status(500).json({ mensaje: 'No fue posible completar la operación. Intente nuevamente más tarde.' })
   }

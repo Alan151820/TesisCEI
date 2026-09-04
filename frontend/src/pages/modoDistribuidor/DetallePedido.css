@@ -5,6 +5,13 @@
   grid-template-columns: 1fr 100px 120px 120px 110px;
 }
 
+/* RF-025: panel de vista previa de la propuesta de sustitución, sin
+   cantidad ni precio — el comprador todavía no los definió (RF-026). */
+.detallepedido-tabla-header--sust,
+.detallepedido-tabla-fila--sust {
+  grid-template-columns: 1fr 1fr 110px;
+}
+
 .detallepedido-stock-cero {
   color: var(--color-error);
   font-weight: 600;
@@ -26,7 +33,17 @@
   padding: 16px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
+}
+
+.detallepedido-acciones-botones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.detallepedido-acciones-botones .pedidos-accion-btn {
+  width: auto;
 }
 
 .detallepedido-acciones-titulo {
@@ -51,4 +68,13 @@
   }
 
   .detallepedido-celda:nth-child(5)::before { content: 'Stock disponible: '; color: var(--color-sobre-variante-superficie); }
+
+  .detallepedido-tabla-header--sust { display: none; }
+
+  .detallepedido-tabla-fila--sust {
+    grid-template-columns: 1fr;
+  }
+
+  .detallepedido-tabla-fila--sust .detallepedido-celda:nth-child(2)::before { content: 'Sustituto propuesto: '; color: var(--color-sobre-variante-superficie); }
+  .detallepedido-tabla-fila--sust .detallepedido-celda:nth-child(3)::before { content: 'Stock disponible: '; color: var(--color-sobre-variante-superficie); }
 }

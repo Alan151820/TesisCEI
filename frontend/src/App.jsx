@@ -18,10 +18,14 @@ import ConfigurarPerfil from './pages/modoDistribuidor/ConfigurarPerfil'
 import EditarPerfil from './pages/modoDistribuidor/EditarPerfil'
 import EditarProducto from './pages/modoDistribuidor/EditarProducto'
 import MisPedidos from './pages/modoDistribuidor/MisPedidos'
+import Reparto from './pages/modoDistribuidor/Reparto'
+import CrearReparto from './pages/modoDistribuidor/CrearReparto'
+import DetalleReparto from './pages/modoDistribuidor/DetalleReparto'
 import Catalogo from './pages/Catalogo'
 import DetalleProducto from './pages/modoComprador/DetalleProducto'
 import DetallePedido from './pages/modoComprador/DetallePedido'
 import DetallePedidoDistribuidor from './pages/modoDistribuidor/DetallePedido'
+import ProponerSustituto from './pages/modoDistribuidor/ProponerSustituto'
 import Reportes from './pages/modoDistribuidor/Reportes'
 import Rentabilidad from './pages/modoDistribuidor/Rentabilidad'
 
@@ -38,8 +42,6 @@ function App() {
           <Route path='/verificarRecuperacion' element={<VerificarRecuperacion />} />
           <Route path='/nuevaContrasena' element={<NuevaContrasena />} />
           <Route path='/inicio' element={<Inicio />} />
-          <Route path='/reportes' element={<Reportes />} />
-          <Route path='/reportes/rentabilidad' element={<Rentabilidad />} />
           <Route path='/producto/nuevo' element={<FichaProducto />} />
           <Route path='/producto/editar/:id' element={<EditarProducto />} />
           <Route path='/inicioComprador' element={<InicioComprador />} />
@@ -49,7 +51,13 @@ function App() {
           <Route path='/configurarPerfil' element={<ConfigurarPerfil />} />
           <Route path='/editarPerfil' element={<EditarPerfil />} />
           <Route path='/pedidos' element={<MisPedidos />} />
+          <Route path='/reparto' element={<Reparto />} />
+          <Route path='/reparto/nuevo' element={<CrearReparto />} />
+          <Route path='/reparto/:id' element={<DetalleReparto />} />
           <Route path='/pedidos/:id' element={<DetallePedidoDistribuidor />} />
+          <Route path='/pedidos/:id/sustituir' element={<ProponerSustituto />} />
+          <Route path='/reportes' element={<Reportes />} />
+          <Route path='/reportes/rentabilidad' element={<Rentabilidad />} />
           <Route path='/misPedidos' element={<MisPedidosComprador />} />
           <Route path='/pedido/:id' element={<DetallePedido />} />
           <Route path='/catalogo' element={<Catalogo />} />

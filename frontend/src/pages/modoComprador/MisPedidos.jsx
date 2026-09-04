@@ -4,7 +4,6 @@ import api from '../../lib/axios'
 import { tokenValido, rutaInicio } from '../../lib/auth'
 import { useCarrito } from '../../context/CarritoContext'
 import CampanaNotificaciones from '../../components/CampanaNotificaciones'
-import ModalMapaDireccion from '../../components/ModalMapaDireccion'
 import BottomNavComprador from '../../components/BottomNavComprador'
 import EstadoBadge from '../../components/EstadoBadge'
 import ToggleTema from '../../components/ToggleTema'
@@ -39,7 +38,6 @@ function MisPedidos() {
   const [pedidos, setPedidos] = useState([])
   const [cargando, setCargando] = useState(true)
   const [error, setError] = useState(null)
-  const [pedidoMapa, setPedidoMapa] = useState(null)
 
   useEffect(() => {
     api.get('/api/pedidos/mis-pedidos')
@@ -166,11 +164,6 @@ function MisPedidos() {
                   </div>
                   <div className="mispedidos-celda mispedidos-celda-col">
                     <div>{p.nombreDistribuidor}</div>
-                    {p.latitud && p.longitud && (
-                      <button type="button" className="mispedidos-btn-mapa" onClick={(e) => { e.stopPropagation(); setPedidoMapa(p) }}>
-                        📍 Ver mapa
-                      </button>
-                    )}
                   </div>
                   <div className="mispedidos-celda">${Number(p.total).toLocaleString('es-AR')}</div>
                   <div className="mispedidos-celda">
@@ -193,11 +186,6 @@ function MisPedidos() {
                   </div>
                   <div className="mispedidos-card-fila">
                     <span className="mispedidos-card-distribuidor">{p.nombreDistribuidor}</span>
-                    {p.latitud && p.longitud && (
-                      <button type="button" className="mispedidos-btn-mapa" onClick={(e) => { e.stopPropagation(); setPedidoMapa(p) }}>
-                        📍 Ver mapa
-                      </button>
-                    )}
                   </div>
                   {p.items.map((item, i) => (
                     <div key={i} className="mispedidos-card-item">
@@ -246,15 +234,6 @@ function MisPedidos() {
 
       {/* Bottom nav mobile */}
       <BottomNavComprador />
-
-      {pedidoMapa && (
-        <ModalMapaDireccion
-          soloLectura
-          ubicacionInicial={{ lat: Number(pedidoMapa.latitud), lng: Number(pedidoMapa.longitud) }}
-          direccionInicial={pedidoMapa.direccionEntrega}
-          onCerrar={() => setPedidoMapa(null)}
-        />
-      )}
 
     </div>
   )

@@ -167,6 +167,51 @@ class PrecioVolumen {
       [factor, productoId]
     )
   }
+
+  // Descuento total del catálogo (panel "Mis productos"): aplica el mismo
+  // descuento a TODOS los tramos de TODOS los productos del distribuidor
+  // que coincidan con los filtros de la lista (categoría/visibilidad/stock
+  // — mismo criterio que Producto.listarPorDistribuidor), en una sola
+  // consulta. Reemplaza al descuento por producto individual que existía
+  // antes en la ficha de edición (confirmado con el usuario). Devuelve la
+  // cantidad de productos distintos afectados, para el mensaje de éxito.
+  static async aplicarDescuentoMasivo(usuarioId, filtros, porcentaje) {
+    const { categoria, visibilidad, stock } = filtros
+    const factor = 1 - porcentaje / 100
+    const params = [factor, usuarioId]
+    let contador = 3
+    let condiciones = ['d.usuario_id = $2', 'p.habilitado = true']
+
+    if (categoria) {
+      condiciones.push(`c.nombre = $${contador}`)
+      params.push(categoria)
+      contador++
+    }
+    if (visibilidad) {
+      condiciones.push(`p.estado_visibilidad = $${contador}`)
+      params.push(visibilidad)
+      contador++
+    }
+    if (stock === 'con_stock') {
+      condiciones.push('(p.stock_total - p.stock_reservado) > 0')
+    } else if (stock === 'sin_stock') {
+      condiciones.push('(p.stock_total - p.stock_reservado) = 0')
+    }
+
+    const where = condiciones.join(' AND ')
+
+    const res = await pool.query(
+      `UPDATE precio_volumen pv
+       SET precio_venta = ROUND((pv.precio_venta * $1)::numeric, 2)
+       FROM producto p
+       JOIN distribuidor d ON d.id = p.distribuidor_id
+       JOIN categoria c ON c.id = p.categoria_id
+       WHERE pv.producto_id = p.id AND ${where}
+       RETURNING pv.producto_id`,
+      params
+    )
+    return new Set(res.rows.map(r => r.producto_id)).size
+  }
 }
 
 export default PrecioVolumen

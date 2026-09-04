@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import api from '../../lib/axios'
 import { tokenValido, rutaInicio } from '../../lib/auth'
+import CampoUbicacionMapa from '../../components/CampoUbicacionMapa'
 import './ConfigurarPerfil.css'
 
 function ConfigurarPerfil() {
@@ -12,12 +13,22 @@ function ConfigurarPerfil() {
   const navigate = useNavigate()
   useEffect(() => { if (!tokenValido()) navigate('/login') }, [navigate])
 
+  // RF-048 (ampliación): la ubicación del depósito ya se puede elegir en
+  // el mapa desde este mismo alta inicial, no solo después desde Editar
+  // perfil (RF-042) — sigue siendo opcional, igual que ahí.
+  const [direccionPartida, setDireccionPartida] = useState('')
+  const [latitudPartida, setLatitudPartida] = useState(null)
+  const [longitudPartida, setLongitudPartida] = useState(null)
+
   const handleConfigurar = async () => {
   try {
     const res = await api.post('/distribuidor/configurarPerfil', {
       nombreComercial,
       descripcionNegocio,
-      zonaEntrega
+      zonaEntrega,
+      direccionPartida: direccionPartida || null,
+      latitud: latitudPartida,
+      longitud: longitudPartida,
     })
     await api.post('/auth/activarModoDistribuidor')
     localStorage.setItem('distribuidorId', res.data.distribuidorId)
@@ -67,6 +78,16 @@ function ConfigurarPerfil() {
           />
           <span className="configperfil-ayuda">Indicá las zonas geográficas donde realizás entregas.</span>
         </div>
+
+        <CampoUbicacionMapa
+          etiqueta="Ubicación del depósito"
+          direccion={direccionPartida}
+          onSeleccionar={({ lat, lng, direccion }) => {
+            setDireccionPartida(direccion)
+            setLatitudPartida(lat)
+            setLongitudPartida(lng)
+          }}
+        />
 
         <div className="configperfil-acciones">
           <button className="configperfil-btn-cancelar" onClick={() => navigate(rutaInicio())}>Cancelar</button>

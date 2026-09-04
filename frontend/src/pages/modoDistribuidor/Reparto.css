@@ -1,0 +1,697 @@
+.reparto-tabla-header {
+  display: grid;
+  grid-template-columns: 44px 120px 180px 1fr 200px;
+  background: var(--color-contenedor-superficie-bajo);
+  border-bottom: 1px solid var(--color-variante-contorno);
+}
+
+.reparto-tabla-header > div {
+  padding: 10px 14px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--color-sobre-variante-superficie);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.reparto-tabla-fila {
+  display: grid;
+  grid-template-columns: 44px 120px 180px 1fr 200px;
+  border-bottom: 1px solid var(--color-contenedor-superficie-bajo);
+  background: var(--color-contenedor-superficie-minimo);
+}
+
+.reparto-tabla-fila:last-of-type {
+  border-bottom: none;
+}
+
+.reparto-celda {
+  padding: 12px 14px;
+  font-size: 13px;
+  color: var(--color-sobre-superficie);
+  display: flex;
+  align-items: center;
+}
+
+.reparto-celda input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--color-primario);
+  cursor: pointer;
+}
+
+.reparto-pie {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px;
+}
+
+.reparto-panel-header {
+  display: grid;
+  grid-template-columns: 80px 120px 120px 1fr 100px;
+  background: var(--color-contenedor-superficie-bajo);
+  border-bottom: 1px solid var(--color-variante-contorno);
+}
+
+.reparto-panel-header > div {
+  padding: 10px 14px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--color-sobre-variante-superficie);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.reparto-panel-fila {
+  display: grid;
+  grid-template-columns: 80px 120px 120px 1fr 100px;
+  border-bottom: 1px solid var(--color-contenedor-superficie-bajo);
+  background: var(--color-contenedor-superficie-minimo);
+}
+
+.reparto-panel-fila:last-of-type {
+  border-bottom: none;
+}
+
+.reparto-panel-fila--clickeable {
+  cursor: pointer;
+}
+
+.reparto-panel-fila--clickeable:hover {
+  background: var(--color-contenedor-superficie-bajo);
+}
+
+.reparto-progreso {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+}
+
+.reparto-progreso-barra {
+  flex: 1;
+  max-width: 160px;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--color-contenedor-superficie-bajo);
+  overflow: hidden;
+}
+
+.reparto-progreso-relleno {
+  height: 100%;
+  background: var(--color-primario);
+  border-radius: 3px;
+}
+
+.reparto-progreso-texto {
+  font-size: 12px;
+  color: var(--color-sobre-variante-superficie);
+  white-space: nowrap;
+}
+
+/* RF-045: distancia y tiempo aproximado del recorrido completo, debajo
+   de la barra de progreso y su texto "N / N paradas resueltas". */
+.reparto-progreso-resumen {
+  margin-top: 4px;
+}
+
+.reparto-btn-volver {
+  height: 36px;
+  border-radius: 4px;
+  padding: 0 16px;
+  font-size: 13px;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  background: var(--color-contenedor-superficie-minimo);
+  color: var(--color-sobre-superficie);
+  border: 1px solid var(--color-contorno);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.reparto-btn-volver:hover {
+  background: var(--color-contenedor-superficie-bajo);
+}
+
+.reparto-btn-volver--negro {
+  background: var(--color-sobre-superficie);
+  color: var(--color-superficie);
+  border-color: var(--color-sobre-superficie);
+}
+
+.reparto-btn-volver--negro:hover {
+  background: var(--color-sobre-superficie);
+  opacity: 0.85;
+}
+
+.reparto-btn-cruz {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: none;
+  background: var(--color-contenedor-superficie-minimo);
+  color: var(--color-sobre-variante-superficie);
+  font-size: 12px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.reparto-btn-cruz:hover:not(:disabled) {
+  background: var(--color-contenedor-error);
+  color: var(--color-sobre-contenedor-error);
+}
+
+.reparto-btn-cruz:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.reparto-btn-quitar {
+  margin-left: 10px;
+}
+
+/* ── Vista de progreso: mapa + lista de paradas (RF-045) ── */
+.reparto-detalle-header-acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.reparto-progreso-mapa-wrapper {
+  margin-bottom: 16px;
+}
+
+.reparto-progreso-mapa {
+  height: 360px;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid var(--color-variante-contorno);
+}
+
+.reparto-paradas-header {
+  display: grid;
+  grid-template-columns: 36px 80px 130px 1fr 90px 320px;
+  background: var(--color-contenedor-superficie-bajo);
+  border-bottom: 1px solid var(--color-variante-contorno);
+}
+
+.reparto-paradas-header > div {
+  padding: 10px 14px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--color-sobre-variante-superficie);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.reparto-paradas-fila {
+  display: grid;
+  grid-template-columns: 36px 80px 130px 1fr 90px 320px;
+  border-bottom: 1px solid var(--color-contenedor-superficie-bajo);
+  background: var(--color-contenedor-superficie-minimo);
+}
+
+.reparto-paradas-fila:last-of-type {
+  border-bottom: none;
+}
+
+.reparto-celda-acciones {
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* La cruz siempre al final de la fila, separada del resto de los
+   botones (no pegada a "Cambiar estado"), tanto si la fila entra en
+   una sola línea como si algunos botones ya bajaron a la siguiente. */
+.reparto-celda-acciones .reparto-btn-cruz {
+  margin-left: auto;
+}
+
+.reparto-btn-celda-chica {
+  font-size: 11px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  border: 1px solid var(--color-contorno);
+  background: var(--color-contenedor-superficie-bajo);
+  color: var(--color-sobre-superficie);
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.reparto-btn-celda-chica:hover {
+  background: var(--color-contenedor-superficie);
+}
+
+/* ── Marcar parada (RF-046): botón "Cambiar estado" con menú ──
+   El menú se abre en el flujo normal (no position:absolute) para no
+   depender de que ningún ancestro tenga overflow:visible — la tabla de
+   paradas ya usa overflow-x:auto para el scroll horizontal en mobile,
+   que recortaría un menú flotante. */
+.reparto-estado-menu-wrapper {
+  /* display:contents saca el wrapper (y el menú) de la caja: el botón y
+     cada opción quedan como hijos flex directos de .reparto-celda-acciones
+     (que ya es flex-wrap), así se acomodan solos sin depender de que un
+     flex anidado calcule bien su propio ancho. */
+  display: contents;
+}
+
+.reparto-btn-cambiar-estado {
+  font-size: 11px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  border: 1px solid var(--color-contorno);
+  background: var(--color-contenedor-superficie-bajo);
+  color: var(--color-sobre-superficie);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.reparto-btn-cambiar-estado:hover:not(:disabled) {
+  background: var(--color-contenedor-superficie);
+}
+
+.reparto-btn-cambiar-estado:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.reparto-estado-menu {
+  display: contents;
+}
+
+.reparto-estado-menu-item {
+  border: 1px solid var(--color-contorno);
+  background: var(--color-contenedor-superficie-bajo);
+  border-radius: 4px;
+  text-align: left;
+  padding: 4px 8px;
+  font-size: 11px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.reparto-estado-menu-item--entregado { border-color: var(--color-exito); color: var(--color-exito); }
+.reparto-estado-menu-item--entregado:hover { background: var(--color-contenedor-exito); color: var(--color-sobre-contenedor-exito); }
+.reparto-estado-menu-item--omitido { border-color: var(--color-advertencia); color: var(--color-advertencia); }
+.reparto-estado-menu-item--omitido:hover { background: var(--color-contenedor-advertencia); color: var(--color-sobre-contenedor-advertencia); }
+.reparto-estado-menu-item--rechazado { border-color: var(--color-error); color: var(--color-error); }
+.reparto-estado-menu-item--rechazado:hover { background: var(--color-contenedor-error); color: var(--color-sobre-contenedor-error); }
+
+/* ── Orden de carga (RF-068, versión sin IA) ── */
+.reparto-carga-separador {
+  border: none;
+  border-top: 1px solid var(--color-variante-contorno);
+  margin: 0;
+}
+
+.reparto-carga-parada {
+  padding: 16px 14px;
+}
+
+.reparto-carga-parada-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.reparto-carga-parada-orden {
+  flex-shrink: 0;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--color-primario);
+  color: var(--color-sobre-primario);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.reparto-carga-parada-comprador {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--color-sobre-superficie);
+}
+
+.reparto-carga-productos {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.reparto-carga-producto-fila {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  background: var(--color-contenedor-superficie-bajo);
+  border-radius: 6px;
+}
+
+.reparto-carga-producto-imagen {
+  flex-shrink: 0;
+  width: 56px;
+  height: 56px;
+  border: 1px solid var(--color-variante-contorno);
+  border-radius: 8px;
+  object-fit: cover;
+  background: var(--color-contenedor-superficie-minimo);
+}
+
+.reparto-carga-producto-imagen--vacia {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  color: var(--color-sobre-variante-superficie);
+  text-align: center;
+  line-height: 1.2;
+}
+
+.reparto-carga-producto-nombre {
+  flex: 1;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--color-sobre-superficie);
+}
+
+.reparto-carga-cantidad {
+  flex-shrink: 0;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--color-sobre-primario);
+  background: var(--color-primario);
+  padding: 3px 10px;
+  border-radius: 12px;
+}
+
+/* ── Crear reparto: lista + mapa (RF-043) ── */
+.reparto-crear-layout {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+.reparto-crear-lista {
+  flex: 1;
+  min-width: 0;
+}
+
+.reparto-crear-mapa-wrapper {
+  width: 420px;
+  flex-shrink: 0;
+  position: sticky;
+  top: 20px;
+}
+
+.reparto-crear-mapa {
+  height: 480px;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid var(--color-variante-contorno);
+}
+
+.reparto-mapa-icono span {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 2px solid var(--color-contenedor-superficie-minimo);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+}
+
+.reparto-mapa-tooltip {
+  font-size: 11px !important;
+  max-width: 170px;
+  line-height: 1.4;
+}
+
+@media (max-width: 900px) {
+  .reparto-crear-layout {
+    flex-direction: column;
+  }
+
+  .reparto-crear-mapa-wrapper {
+    width: 100%;
+    position: static;
+  }
+
+  .reparto-crear-mapa {
+    height: 320px;
+  }
+}
+
+/* ── Modal "Agregar pedido" (RF-064) ── */
+.reparto-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.reparto-modal {
+  background: var(--color-contenedor-superficie-minimo);
+  border: 1px solid var(--color-variante-contorno);
+  border-radius: 12px;
+  width: 100%;
+  max-width: 560px;
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+.reparto-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px 12px;
+  border-bottom: 1px solid var(--color-variante-contorno);
+  flex-shrink: 0;
+}
+
+.reparto-modal-titulo {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--color-sobre-superficie);
+}
+
+.reparto-modal-cerrar {
+  background: none;
+  border: none;
+  font-size: 16px;
+  color: var(--color-sobre-variante-superficie);
+  cursor: pointer;
+  padding: 4px;
+  line-height: 1;
+  min-width: 32px;
+  min-height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+}
+
+.reparto-modal-cerrar:hover {
+  background: var(--color-contenedor-superficie);
+}
+
+.reparto-modal-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px 20px;
+}
+
+.reparto-modal-fila {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--color-contenedor-superficie-bajo);
+  cursor: pointer;
+}
+
+.reparto-modal-fila:last-of-type {
+  border-bottom: none;
+}
+
+.reparto-modal-fila input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  margin-top: 2px;
+  accent-color: var(--color-primario);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.reparto-modal-fila-info {
+  flex: 1;
+}
+
+.reparto-modal-fila-titulo {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-sobre-superficie);
+}
+
+.reparto-modal-fila-detalle {
+  font-size: 12px;
+  color: var(--color-sobre-variante-superficie);
+  margin-top: 2px;
+}
+
+.reparto-modal-textarea {
+  width: 100%;
+  border: 1px solid var(--color-contorno);
+  border-radius: 6px;
+  background: var(--color-contenedor-superficie-minimo);
+  padding: 10px 12px;
+  font-size: 13px;
+  font-family: inherit;
+  color: var(--color-sobre-superficie);
+  resize: vertical;
+  box-sizing: border-box;
+}
+
+.reparto-modal-textarea::placeholder {
+  color: var(--color-sobre-variante-superficie);
+}
+
+.reparto-modal-footer {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  padding: 12px 20px;
+  border-top: 1px solid var(--color-variante-contorno);
+  flex-shrink: 0;
+}
+
+@media (max-width: 640px) {
+  .reparto-modal-overlay {
+    padding: 0;
+    align-items: flex-end;
+  }
+
+  .reparto-modal {
+    border-radius: 16px 16px 0 0;
+    max-height: 92vh;
+    max-width: 100%;
+  }
+}
+
+/* DetalleReparto usa el mismo master page que el resto del panel (ver
+   PanelDistribuidor), pero su información esencial — progreso, resumen de
+   ruta, "Iniciar reparto", "Volver" — vive en su propio
+   `.panel-seccion-header` (`.reparto-detalle-header`), no en el header
+   mobile compacto genérico (que solo tiene lugar para un título). La regla
+   general de Inicio.css lo oculta a partir de la misma medida en que el
+   sidebar colapsa al drawer (1024px), así que acá se vuelve a mostrar y se
+   apila — se mantiene visible en tablet Y mobile, ninguna acción se pierde
+   en ningún tamaño angosto. */
+@media (max-width: 1024px) {
+  .panel-seccion-header.reparto-detalle-header,
+  .panel-seccion-header.reparto-detalle-subheader {
+    display: flex;
+    padding: 0 14px;
+  }
+
+  .panel-seccion-header.reparto-detalle-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  .reparto-detalle-header-acciones {
+    justify-content: flex-start;
+  }
+
+  .reparto-detalle-header-acciones button {
+    flex: 1 1 auto;
+  }
+
+  .panel-seccion-header.reparto-detalle-subheader {
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .reparto-detalle-mapa-wrapper {
+    padding: 0 14px;
+    box-sizing: border-box;
+  }
+}
+
+/* Igual que en Inicio.css: las tablas (grid, columnas fijas) siguen siendo
+   la tabla completa de escritorio en tablet — con scroll horizontal propio
+   si hace falta —, y solo se convierten en filas apiladas en mobile, donde
+   una tabla de columnas fijas ya no entra sin ese scroll permanente. */
+@media (max-width: 767px) {
+  .reparto-tabla-header,
+  .reparto-panel-header,
+  .reparto-paradas-header {
+    display: none;
+  }
+
+  .reparto-tabla-fila,
+  .reparto-panel-fila,
+  .reparto-paradas-fila {
+    display: flex;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 4px 10px;
+    padding: 12px 14px;
+  }
+
+  .reparto-celda {
+    padding: 0;
+  }
+
+  .reparto-pie {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .reparto-progreso-mapa {
+    height: 280px;
+  }
+
+  /* Acciones de cada parada: propia línea, de ancho completo, con
+     botones más grandes para que sean fáciles de tocar en mobile. La
+     cruz mantiene el margin-left:auto, así que igual queda a la
+     derecha dentro de esa línea. */
+  .reparto-celda-acciones {
+    flex-basis: 100%;
+    margin-top: 6px;
+  }
+
+  .reparto-btn-celda-chica,
+  .reparto-btn-cambiar-estado,
+  .reparto-estado-menu-item {
+    font-size: 13px;
+    padding: 8px 14px;
+  }
+
+  .reparto-btn-cruz {
+    width: 36px;
+    height: 36px;
+    font-size: 14px;
+  }
+}

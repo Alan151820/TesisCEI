@@ -31,6 +31,8 @@ CREATE TABLE codigo_verificacion (
 
 -- RF-014: Carga de producto nuevo
 -- RF-012: Modo distribuidor
+-- RF-042: dirección de partida del depósito (latitud/longitud)
+-- RF-049: logo del distribuidor
 
 CREATE TABLE distribuidor (
   id SERIAL PRIMARY KEY,
@@ -40,13 +42,17 @@ CREATE TABLE distribuidor (
   zona_entrega VARCHAR,
   direccion_partida VARCHAR,
   perfil_configurado BOOLEAN NOT NULL DEFAULT FALSE,
-  fecha_creacion TIMESTAMP NOT NULL DEFAULT NOW()
+  fecha_creacion TIMESTAMP NOT NULL DEFAULT NOW(),
+  logo_url VARCHAR,
+  latitud DECIMAL,
+  longitud DECIMAL
 );
 
-CREATE TYPE producto_tipo AS ENUM ('empaquetado', 'fraccionable');
 CREATE TYPE producto_estado AS ENUM ('publicado', 'pausado');
-CREATE TYPE producto_unidad_base AS ENUM ('gramo', 'mililitro', 'centimetro');
-CREATE TYPE producto_metrica_visualizacion AS ENUM ('kilogramos', 'litros', 'metros');
+-- RF-014: modelo "todo por unidad" — reemplaza al modelo anterior
+-- (empaquetado/fraccionable, con unidad_base_interna/incremento_venta/
+-- metrica_visualizacion), que ya no está vigente.
+CREATE TYPE producto_magnitud_unidad AS ENUM ('kg', 'g', 'ml', 'l', 'cm', 'm');
 
 CREATE TABLE categoria (
   id SERIAL PRIMARY KEY,
@@ -71,25 +77,22 @@ CREATE TABLE producto (
   nombre VARCHAR NOT NULL,
   descripcion TEXT,
   imagen_url VARCHAR,
-  tipo_producto producto_tipo NOT NULL,
   estado_visibilidad producto_estado NOT NULL DEFAULT 'pausado',
-  descripcion_unidad_venta VARCHAR,
-  cantidad_minima_compra DECIMAL NOT NULL,
-  unidad_base_interna producto_unidad_base,
-  incremento_venta DECIMAL,
-  metrica_visualizacion producto_metrica_visualizacion,
   stock_total INTEGER NOT NULL DEFAULT 0,
   stock_reservado INTEGER NOT NULL DEFAULT 0,
   umbral_minimo_stock INTEGER,
   habilitado BOOLEAN NOT NULL DEFAULT TRUE,
-  fecha_creacion TIMESTAMP NOT NULL DEFAULT NOW()
+  fecha_creacion TIMESTAMP NOT NULL DEFAULT NOW(),
+  marca VARCHAR,
+  magnitud_valor DECIMAL,
+  magnitud_unidad producto_magnitud_unidad
 );
 
 -- RF-015: Registro de precio por volumen
 CREATE TABLE precio_volumen (
   id SERIAL PRIMARY KEY,
   producto_id INTEGER NOT NULL REFERENCES producto(id),
-  cantidad_minima DECIMAL NOT NULL,
+  cantidad_minima INTEGER NOT NULL,
   precio_venta DECIMAL NOT NULL,
   precio_costo DECIMAL,
   CONSTRAINT precio_venta_positivo CHECK (precio_venta > 0),
@@ -98,7 +101,8 @@ CREATE TABLE precio_volumen (
 );
 
 -- RF-008: Confirmación de pedido
-CREATE TYPE pedido_estado AS ENUM ('pendiente', 'aceptado', 'en_camino', 'entregado', 'rechazado');
+-- RF-069: 'cancelado' — cancelación de pedido por el comprador
+CREATE TYPE pedido_estado AS ENUM ('pendiente', 'aceptado', 'en_camino', 'entregado', 'rechazado', 'cancelado');
 
 CREATE TABLE pedido (
   id SERIAL PRIMARY KEY,
@@ -122,8 +126,58 @@ CREATE TABLE pedido_item (
   precio_venta_congelado DECIMAL NOT NULL
 );
 
+-- RF-025/RF-026: propuesta de sustitución de producto
+CREATE TYPE propuesta_sustitucion_estado AS ENUM ('pendiente', 'aceptada', 'rechazada');
+
+CREATE TABLE propuesta_sustitucion (
+  id SERIAL PRIMARY KEY,
+  pedido_item_id INTEGER NOT NULL REFERENCES pedido_item(id),
+  producto_sustituto_id INTEGER NOT NULL REFERENCES producto(id),
+  estado propuesta_sustitucion_estado NOT NULL DEFAULT 'pendiente',
+  fecha_creacion TIMESTAMP NOT NULL DEFAULT NOW(),
+  -- cantidad/precio_volumen_id/precio_venta_congelado quedan NULL hasta que
+  -- el comprador acepta la propuesta y elige la cantidad (RF-026) — recién
+  -- ahí se congela el precio, igual que pedido_item.precio_venta_congelado.
+  cantidad DECIMAL,
+  precio_volumen_id INTEGER REFERENCES precio_volumen(id),
+  precio_venta_congelado DECIMAL
+);
+
+-- RF-043 a RF-067: planificación y gestión de repartos
+CREATE TYPE plan_reparto_estado AS ENUM ('sin_empezar', 'en_curso', 'finalizado');
+
+CREATE TABLE plan_reparto (
+  id SERIAL PRIMARY KEY,
+  distribuidor_id INTEGER NOT NULL REFERENCES distribuidor(id),
+  estado plan_reparto_estado NOT NULL DEFAULT 'sin_empezar',
+  fecha_creacion TIMESTAMP NOT NULL DEFAULT NOW(),
+  -- RF-071: último punto reportado por el celular del distribuidor
+  -- mientras el reparto está "en_curso". No se guarda historial, solo el
+  -- último punto conocido.
+  ultima_latitud DECIMAL,
+  ultima_longitud DECIMAL,
+  ultima_ubicacion_fecha TIMESTAMP
+);
+
+CREATE TYPE parada_reparto_estado AS ENUM ('pendiente', 'entregado', 'omitido', 'rechazado');
+
+CREATE TABLE parada_reparto (
+  id SERIAL PRIMARY KEY,
+  plan_reparto_id INTEGER NOT NULL REFERENCES plan_reparto(id),
+  pedido_id INTEGER NOT NULL REFERENCES pedido(id),
+  orden INTEGER NOT NULL,
+  estado_parada parada_reparto_estado NOT NULL DEFAULT 'pendiente',
+  motivo VARCHAR
+);
+
+-- Un mismo pedido no puede tener más de una parada activa (estado distinto
+-- de 'omitido') a la vez: evita que quede en dos planes de reparto en curso
+-- al mismo tiempo.
+CREATE UNIQUE INDEX parada_reparto_pedido_id_activo_key ON parada_reparto (pedido_id) WHERE (estado_parada <> 'omitido');
+
 -- RF-024: Notificación de pedido entrante al distribuidor
-CREATE TYPE notificacion_tipo AS ENUM ('cambio_estado_pedido', 'pedido_entrante', 'stock_bajo');
+-- RF-025/RF-026: 'propuesta_sustitucion' / 'sustitucion_respondida'
+CREATE TYPE notificacion_tipo AS ENUM ('cambio_estado_pedido', 'pedido_entrante', 'stock_bajo', 'propuesta_sustitucion', 'sustitucion_respondida');
 
 CREATE TABLE notificacion (
   id SERIAL PRIMARY KEY,
@@ -134,4 +188,3 @@ CREATE TABLE notificacion (
   leida BOOLEAN NOT NULL DEFAULT FALSE,
   fecha_creacion TIMESTAMP NOT NULL DEFAULT NOW()
 );
-

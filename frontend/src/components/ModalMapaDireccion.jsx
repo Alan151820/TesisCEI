@@ -47,7 +47,15 @@ function ManejadorClic({ onClic }) {
 
 // soloLectura: modo de solo visualización, usado para mostrar la ubicación
 // exacta de un pedido ya confirmado — sin edición, sin click-to-move.
-function ModalMapaDireccion({ onConfirmar, onCerrar, soloLectura = false, ubicacionInicial = null, direccionInicial = '' }) {
+function ModalMapaDireccion({
+  onConfirmar,
+  onCerrar,
+  soloLectura = false,
+  ubicacionInicial = null,
+  direccionInicial = '',
+  titulo = 'Seleccioná tu dirección de entrega',
+  instruccion = 'Tocá el mapa para colocar el pin en la dirección exacta de entrega, o arrastralo para ajustarlo.',
+}) {
   const [marcador, setMarcador] = useState(soloLectura && ubicacionInicial ? ubicacionInicial : null)
   const [centro, setCentro] = useState(soloLectura && ubicacionInicial ? [ubicacionInicial.lat, ubicacionInicial.lng] : MONTEVIDEO)
   const [zoom, setZoom] = useState(soloLectura && ubicacionInicial ? ZOOM_UBICACION : ZOOM_INICIAL)
@@ -103,13 +111,13 @@ function ModalMapaDireccion({ onConfirmar, onCerrar, soloLectura = false, ubicac
       <div className="mapa-modal" onClick={e => e.stopPropagation()}>
 
         <div className="mapa-header">
-          <div className="mapa-titulo">{soloLectura ? 'Ubicación de entrega' : 'Seleccioná tu dirección de entrega'}</div>
+          <div className="mapa-titulo">{soloLectura ? 'Ubicación de entrega' : titulo}</div>
           <button className="mapa-cerrar" onClick={onCerrar}>✕</button>
         </div>
 
         {!soloLectura && (
           <div className="mapa-instruccion">
-            Tocá el mapa para colocar el pin en la dirección exacta de entrega, o arrastralo para ajustarlo.
+            {instruccion}
           </div>
         )}
 

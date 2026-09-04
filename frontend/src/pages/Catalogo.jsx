@@ -10,15 +10,6 @@ function Catalogo() {
   const token = localStorage.getItem('token')
   const { agregarProducto, totalItems } = useCarrito()
 
-  const [productos, setProductos] = useState([])
-  const [cargando, setCargando] = useState(true)
-  const [categorias, setCategorias] = useState([])
-  const [busqueda, setBusqueda] = useState('')
-  const [filtroCategoria, setFiltroCategoria] = useState('')
-  const [filtroDistribuidor, setFiltroDistribuidor] = useState('')
-  const [filtroPrecioMin, setFiltroPrecioMin] = useState('')
-  const [filtroPrecioMax, setFiltroPrecioMax] = useState('')
-
   useEffect(() => {
     cargarProductos()
     api.get('/api/productos/categorias')
@@ -147,7 +138,7 @@ function Catalogo() {
                     </div>
                     <button
                       className="catalogo-tarjeta-agregar"
-                      onClick={e => { e.stopPropagation(); agregarProducto(p) }}
+                      onClick={() => agregarProducto(p)}
                     >
                       + Agregar
                     </button>

@@ -1,4 +1,4 @@
-import Usuario from '../models/Usuario.js'
+import Usuario from '../models/usuario.js'
 
 const registro = async (req, res) => {
   try {

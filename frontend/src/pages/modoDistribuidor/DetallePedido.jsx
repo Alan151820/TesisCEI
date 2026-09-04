@@ -1,25 +1,14 @@
-import { useState, useEffect, useRef } from 'react'
-import { useNavigate, useParams, useLocation } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import { useNavigate, useParams } from 'react-router-dom'
 import api from '../../lib/axios'
 import { tokenValido } from '../../lib/auth'
-import CampanaNotificaciones from '../../components/CampanaNotificaciones'
 import ModalMapaDireccion from '../../components/ModalMapaDireccion'
 import EstadoBadge from '../../components/EstadoBadge'
-import ToggleTema from '../../components/ToggleTema'
+import PanelDistribuidor from '../../components/PanelDistribuidor'
 import { ETIQUETA_ESTADO } from '../../lib/pedido'
 import './Inicio.css'
 import './MisPedidos.css'
 import './DetallePedido.css'
-
-const NAV_ITEMS = [
-  { label: 'Pedidos', ruta: '/pedidos' },
-  { label: 'Productos', ruta: '/inicio' },
-  { label: 'Proveedores', ruta: '/proveedores' },
-  { label: 'Reparto', ruta: '/reparto' },
-  { label: 'Reportes', ruta: '/reportes' },
-  { label: 'Empleados', ruta: '/empleados' },
-  { label: 'Editar perfil', ruta: '/editarPerfil' },
-]
 
 const MOTIVOS_RECHAZO_PENDIENTE = [
   'Sin stock del producto solicitado',
@@ -36,14 +25,7 @@ function formatearFecha(isoString) {
 
 function DetallePedido() {
   const navigate = useNavigate()
-  const location = useLocation()
   const { id } = useParams()
-  const nombre = localStorage.getItem('nombre') || ''
-  const iniciales = nombre.split(' ').map(p => p[0]).join('').slice(0, 2).toUpperCase()
-
-  const [menuAbierto, setMenuAbierto] = useState(false)
-  const [menuPerfil, setMenuPerfil] = useState(false)
-  const perfilRef = useRef(null)
 
   const [pedido, setPedido] = useState(null)
   const [cargando, setCargando] = useState(true)
@@ -59,25 +41,11 @@ function DetallePedido() {
   useEffect(() => { if (!tokenValido()) navigate('/login') }, [navigate])
 
   useEffect(() => {
-    if (!menuPerfil) return
-    const cerrar = (e) => { if (!perfilRef.current?.contains(e.target)) setMenuPerfil(false) }
-    document.addEventListener('mousedown', cerrar)
-    return () => document.removeEventListener('mousedown', cerrar)
-  }, [menuPerfil])
-
-  useEffect(() => {
     api.get(`/api/pedidos/${id}/detalle`)
       .then(res => setPedido(res.data))
       .catch(err => setError(err.response?.data?.error || 'No fue posible completar la operación. Intente nuevamente más tarde.'))
       .finally(() => setCargando(false))
   }, [id])
-
-  const handleCerrarSesion = () => {
-    localStorage.removeItem('token')
-    localStorage.removeItem('nombre')
-    window.dispatchEvent(new Event('auth-changed'))
-    navigate('/login')
-  }
 
   const handleAceptar = async () => {
     setProcesando(true)
@@ -138,106 +106,16 @@ function DetallePedido() {
   }
 
   return (
-    <div className="panel-root">
-
-      {menuAbierto && (
-        <div className="panel-drawer-overlay" onClick={() => setMenuAbierto(false)}>
-          <nav className="panel-drawer" data-tema="oscuro" onClick={e => e.stopPropagation()}>
-            <div className="panel-drawer-top">
-              <div className="panel-drawer-marca">MarketDist</div>
-              <button className="panel-drawer-cerrar-btn" onClick={() => setMenuAbierto(false)}>✕</button>
-            </div>
-            {NAV_ITEMS.map(item => (
-              <div
-                key={item.ruta}
-                className={`panel-drawer-item${location.pathname === item.ruta ? ' activo' : ''}`}
-                onClick={() => { navigate(item.ruta); setMenuAbierto(false) }}
-              >
-                {item.label}
-              </div>
-            ))}
-            <div className="panel-drawer-sep" />
-            <button className="panel-drawer-modo" onClick={() => { navigate('/inicioComprador'); setMenuAbierto(false) }}>
-              ← Modo comprador
-            </button>
-            <div className="panel-drawer-footer">
-              <div className="panel-drawer-nombre">{nombre}</div>
-              <div className="panel-drawer-rol">Distribuidor</div>
-              <button className="panel-drawer-logout" onClick={handleCerrarSesion}>Cerrar sesión</button>
-            </div>
-          </nav>
-        </div>
-      )}
-
-      <div className="panel-mobile-header" data-tema="oscuro">
-        <span className="panel-mobile-hamburger" onClick={() => setMenuAbierto(true)}>≡</span>
-        <div className="panel-mobile-titulo">Pedido #{id}</div>
-        <div style={{ width: 40 }} />
-      </div>
-
-      <header className="panel-master-header">
-        <div className="panel-master-header-marca">MarketDist</div>
-        <div className="panel-master-header-perfil">
-          <button className="panel-header-salir-btn" onClick={() => navigate('/inicioComprador')}>
-            Salir de distribuidora
-          </button>
-          <CampanaNotificaciones rutaDestino="/pedidos" />
-          <div className="comprador-perfil-wrapper" ref={perfilRef}>
-            <button className="comprador-perfil-trigger" onClick={() => setMenuPerfil(v => !v)}>
-              <div className="comprador-avatar">{iniciales}</div>
-              <span className="comprador-nombre">{nombre}</span>
-              <span className="comprador-perfil-flecha">{menuPerfil ? '▴' : '▾'}</span>
-            </button>
-            {menuPerfil && (
-              <div className="comprador-menu-desplegable">
-                <ToggleTema />
-                <div className="comprador-menu-item" onClick={handleCerrarSesion}>Cerrar sesión</div>
-              </div>
-            )}
-          </div>
-        </div>
-      </header>
-
-      <div className="panel-layout">
-
-        <aside className="panel-sidebar" data-tema="oscuro">
-          <div className="panel-sidebar-marca">
-            <div className="panel-sidebar-titulo">MarketDist</div>
-            <div className="panel-sidebar-subtitulo">Panel del Distribuidor</div>
-          </div>
-
-          <nav className="panel-nav">
-            {NAV_ITEMS.map(item => (
-              <div
-                key={item.ruta}
-                className={`panel-nav-item${item.ruta === '/pedidos' ? ' activo' : ''}`}
-                onClick={() => navigate(item.ruta)}
-              >
-                {item.label}
-              </div>
-            ))}
-          </nav>
-
-          <div className="panel-sidebar-footer">
-            <div className="panel-sidebar-usuario">
-              <div className="panel-avatar-small">{iniciales}</div>
-              <div>
-                <div className="panel-sidebar-nombre">{nombre}</div>
-                <div className="panel-sidebar-rol">Distribuidor</div>
-              </div>
-            </div>
-            <div className="panel-sidebar-accion" onClick={handleCerrarSesion}>Cerrar sesión</div>
-          </div>
-        </aside>
-
-        <main className="panel-main">
-          <div className="panel-contenido">
+    <PanelDistribuidor tituloMobile={`Pedido #${id}`} activo="/pedidos">
             <div className="panel-contenido-centrado">
 
             <div className="detallepedido-migas">
-              <span className="detallepedido-miga-link" onClick={() => navigate('/pedidos')}>Pedidos activos</span>
-              <span className="detallepedido-miga-separador">›</span>
-              <span className="detallepedido-miga-actual">Pedido #{id}</span>
+              <div className="detallepedido-migas-ruta">
+                <span className="detallepedido-miga-link" onClick={() => navigate('/pedidos')}>Pedidos activos</span>
+                <span className="detallepedido-miga-separador">›</span>
+                <span className="detallepedido-miga-actual">Pedido #{id}</span>
+              </div>
+              <button type="button" className="detallepedido-btn-volver" onClick={() => navigate('/pedidos')}>Volver</button>
             </div>
 
             {cargando && <div className="detallepedido-vacio">Cargando pedido...</div>}
@@ -295,7 +173,7 @@ function DetallePedido() {
                   {pedido.latitud && pedido.longitud && (
                     <div className="detallepedido-pie-tarjeta">
                       <button type="button" className="panel-header-salir-btn" onClick={() => setModalMapa(true)}>
-                        📍 Ver ubicación
+                        Ver ubicación
                       </button>
                     </div>
                   )}
@@ -305,7 +183,7 @@ function DetallePedido() {
                   <div className="detallepedido-acciones-titulo">Acciones — {ETIQUETA_ESTADO[pedido.estado] ?? pedido.estado}</div>
 
                   {pedido.estado === 'pendiente' && (
-                    <>
+                    <div className="detallepedido-acciones-botones">
                       <button
                         className="pedidos-accion-btn pedidos-accion-btn--primario"
                         disabled={procesando}
@@ -319,21 +197,31 @@ function DetallePedido() {
                       >
                         Rechazar pedido
                       </button>
-                    </>
+                      {pedido.items.some(item => !item.propuestaSustitucion) && (
+                        <button
+                          className="pedidos-accion-btn"
+                          onClick={() => navigate(`/pedidos/${id}/sustituir`)}
+                        >
+                          Proponer sustituto
+                        </button>
+                      )}
+                    </div>
                   )}
 
                   {pedido.estado === 'aceptado' && (
-                    <button
-                      className="pedidos-accion-btn pedidos-accion-btn--primario"
-                      disabled={procesando}
-                      onClick={handleAvanzar}
-                    >
-                      {procesando ? 'Procesando...' : 'Marcar En camino'}
-                    </button>
+                    <div className="detallepedido-acciones-botones">
+                      <button
+                        className="pedidos-accion-btn pedidos-accion-btn--primario"
+                        disabled={procesando}
+                        onClick={handleAvanzar}
+                      >
+                        {procesando ? 'Procesando...' : 'Marcar En camino'}
+                      </button>
+                    </div>
                   )}
 
                   {pedido.estado === 'en_camino' && (
-                    <>
+                    <div className="detallepedido-acciones-botones">
                       <button
                         className="pedidos-accion-btn pedidos-accion-btn--primario"
                         disabled={procesando}
@@ -347,22 +235,61 @@ function DetallePedido() {
                       >
                         Rechazar pedido
                       </button>
-                    </>
+                    </div>
                   )}
 
-                  {(pedido.estado === 'entregado' || pedido.estado === 'rechazado') && (
+                  {(pedido.estado === 'entregado' || pedido.estado === 'rechazado' || pedido.estado === 'cancelado') && (
                     <div className="detallepedido-sin-acciones">Este pedido no tiene acciones disponibles.</div>
                   )}
 
                   {errorAccion && <div className="pedidos-error-accion">{errorAccion}</div>}
                 </div>
+
+                {pedido.items
+                  .filter(item => item.propuestaSustitucion)
+                  .map(itemConPropuesta => {
+                    const sustituto = itemConPropuesta.propuestaSustitucion.productoSustituto
+                    return (
+                      <div key={itemConPropuesta.propuestaSustitucion.id} className="detallepedido-tarjeta">
+                        <div className="detallepedido-encabezado-tarjeta">
+                          <div>
+                            <div className="detallepedido-numero">Sustitución pedido #{pedido.id}</div>
+                            <div className="detallepedido-subtitulo">Pendiente de que el comprador elija la cantidad y confirme.</div>
+                          </div>
+                          <EstadoBadge estado="pendiente" className="detallepedido-estado" />
+                        </div>
+
+                        <div className="detallepedido-tabla">
+                          <div className="detallepedido-tabla-header detallepedido-tabla-header--sust">
+                            <div>Producto original</div>
+                            <div>Sustituto propuesto</div>
+                            <div>Stock disp.</div>
+                          </div>
+                          <div className="detallepedido-tabla-fila detallepedido-tabla-fila--sust">
+                            <div className="detallepedido-celda detallepedido-celda-producto">
+                              {itemConPropuesta.imagenUrl
+                                ? <img src={`http://localhost:3000${itemConPropuesta.imagenUrl}`} alt={itemConPropuesta.nombreProducto} className="detallepedido-thumb" />
+                                : <span className="detallepedido-thumb detallepedido-thumb-sinimg">Sin imagen</span>
+                              }
+                              {itemConPropuesta.nombreProducto}
+                            </div>
+                            <div className="detallepedido-celda detallepedido-celda-producto">
+                              {sustituto.imagenUrl
+                                ? <img src={`http://localhost:3000${sustituto.imagenUrl}`} alt={sustituto.nombre} className="detallepedido-thumb" />
+                                : <span className="detallepedido-thumb detallepedido-thumb-sinimg">Sin imagen</span>
+                              }
+                              {sustituto.nombre}
+                            </div>
+                            <div className={`detallepedido-celda${Number(sustituto.stockDisponible) === 0 ? ' detallepedido-stock-cero' : ''}`}>{sustituto.stockDisponible} u.</div>
+                          </div>
+                        </div>
+                      </div>
+                    )
+                  })}
               </>
             )}
 
             </div>
-          </div>
-        </main>
-      </div>
 
       {modalMapa && pedido && (
         <ModalMapaDireccion
@@ -429,7 +356,7 @@ function DetallePedido() {
           </div>
         </div>
       )}
-    </div>
+    </PanelDistribuidor>
   )
 }
 

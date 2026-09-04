@@ -146,13 +146,6 @@ class Usuario {
     return true
   }
 
-  cambiarModoActivo() {
-    return true
-  }
-
-  cerrarSesion() {
-    return true
-  }
 }
 
 export default Usuario

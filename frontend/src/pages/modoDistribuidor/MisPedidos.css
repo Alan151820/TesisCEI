@@ -1,26 +1,3 @@
-.pedidos-tabs {
-  display: flex;
-  gap: 4px;
-  margin-bottom: 16px;
-  border-bottom: 1px solid var(--color-variante-contorno);
-}
-
-.pedidos-tab {
-  background: none;
-  border: none;
-  padding: 8px 16px;
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--color-sobre-variante-superficie);
-  cursor: pointer;
-  border-bottom: 2px solid transparent;
-}
-
-.pedidos-tab--activo {
-  color: var(--color-primario);
-  border-bottom-color: var(--color-primario);
-}
-
 .pedidos-tabla-header {
   display: grid;
   grid-template-columns: 80px 100px 150px 1fr 100px 110px 180px;
@@ -70,6 +47,46 @@
 .pedidos-numero {
   font-weight: 600;
   align-items: center;
+}
+
+/* Alineación de columnas — el valor y su encabezado siempre alineados
+   igual entre sí, sin importar cuánto se achique la columna. */
+.pedidos-celda--derecha {
+  justify-content: flex-end;
+  text-align: right;
+}
+
+.pedidos-celda--centro {
+  justify-content: center;
+  text-align: center;
+}
+
+/* Filtros del panel de pedidos */
+.pedidos-filtros {
+  flex-wrap: wrap;
+  row-gap: 8px;
+}
+
+.pedidos-filtro-texto {
+  width: 180px;
+  cursor: text;
+}
+
+.pedidos-filtro-numero {
+  width: 100px;
+  cursor: text;
+}
+
+.pedidos-filtro-rango {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.pedidos-filtro-rango-sep {
+  color: var(--color-sobre-variante-superficie);
+  font-size: 12px;
 }
 
 .pedidos-telefono {
@@ -272,7 +289,12 @@
   text-align: center;
 }
 
-@media (max-width: 768px) {
+/* Igual criterio que Inicio.css/Reparto.css: la tabla (grid, columnas
+   fijas) se mantiene completa en tablet — con el scroll horizontal propio
+   de `.panel-tabla-wrapper` como red de seguridad —, y recién se apila en
+   tarjetas a partir de mobile, donde una tabla de columnas fijas ya no
+   entra sin ese scroll permanente. */
+@media (max-width: 767px) {
   .pedidos-tabla-header {
     display: none;
   }

@@ -375,16 +375,19 @@
   opacity: 0.9;
 }
 
-/* Filtros */
+/* Filtros — en flex-wrap (no scroll horizontal): con una cantidad
+   variable de chips (categorías del catálogo, rangos de fecha/monto,
+   etc.) el ancho total no se puede prever, así que la fila simplemente
+   se parte en varias líneas cuando no entra. Un contenedor con overflow-x
+   oculto los "esconde" del lado derecho sin ninguna pista visual de que
+   hay más — welcome a que un filtro quede inalcanzable sin querer. */
 .panel-filtros {
   display: flex;
+  flex-wrap: wrap;
+  align-items: center;
   gap: 10px;
   margin-bottom: 18px;
-  flex-wrap: nowrap;
-  overflow-x: auto;
-  scrollbar-width: none;
 }
-.panel-filtros::-webkit-scrollbar { display: none; }
 
 .panel-filtro-chip {
   height: 34px;
@@ -410,6 +413,122 @@
   color: var(--color-sobre-variante-superficie);
   background: var(--color-contenedor-superficie-minimo);
   cursor: pointer;
+}
+
+/* Descuento total del catálogo — botón al extremo derecho de los filtros */
+.panel-btn-descuento {
+  height: 34px;
+  border: 1px solid var(--color-contorno);
+  border-radius: 4px;
+  padding: 0 14px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-sobre-superficie);
+  background: var(--color-contenedor-superficie-minimo);
+  cursor: pointer;
+  flex-shrink: 0;
+  margin-left: auto;
+  font-family: inherit;
+}
+.panel-btn-descuento.activo {
+  background: var(--color-primario);
+  color: var(--color-sobre-primario);
+  border-color: var(--color-primario);
+}
+
+.panel-descuento-card {
+  background: var(--color-contenedor-superficie-minimo);
+  border: 1px solid var(--color-variante-contorno);
+  border-radius: 6px;
+  padding: 16px;
+  margin-bottom: 18px;
+}
+
+.panel-descuento-fila {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.panel-descuento-input {
+  width: 90px;
+  height: 36px;
+  border: 1px solid var(--color-contorno);
+  border-radius: 4px;
+  padding: 0 10px;
+  font-size: 13px;
+  font-family: inherit;
+  background: var(--color-contenedor-superficie-bajo);
+  color: var(--color-sobre-superficie);
+  box-sizing: border-box;
+}
+
+.panel-descuento-ayuda {
+  font-size: 12px;
+  color: var(--color-sobre-variante-superficie);
+}
+
+.panel-descuento-error {
+  font-size: 12px;
+  color: var(--color-error);
+  background: var(--color-contenedor-error);
+  border-radius: 4px;
+  padding: 8px 10px;
+  margin-top: 10px;
+}
+
+.panel-descuento-ok {
+  font-size: 12px;
+  color: var(--color-sobre-contenedor-exito);
+  background: var(--color-contenedor-exito);
+  border-radius: 4px;
+  padding: 8px 10px;
+  margin-top: 10px;
+}
+
+.panel-descuento-preview {
+  margin-top: 14px;
+  border-top: 1px solid var(--color-variante-contorno);
+  padding-top: 10px;
+}
+
+.panel-descuento-preview-aviso {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-sobre-contenedor-advertencia);
+  background: var(--color-contenedor-advertencia);
+  border-radius: 4px;
+  padding: 8px 10px;
+  margin-bottom: 10px;
+}
+
+.panel-descuento-preview-header,
+.panel-descuento-preview-fila {
+  display: grid;
+  grid-template-columns: 1fr 140px 160px;
+  gap: 10px;
+}
+
+.panel-descuento-preview-header {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--color-sobre-variante-superficie);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 4px 0;
+}
+
+.panel-descuento-preview-fila {
+  font-size: 13px;
+  color: var(--color-sobre-superficie);
+  padding: 6px 0;
+  border-top: 1px solid var(--color-contenedor-superficie-bajo);
+}
+
+.panel-descuento-preview-nuevo {
+  color: var(--color-primario);
+  font-weight: 600;
 }
 
 /* Tabla */
@@ -541,12 +660,17 @@
   border-top: 1px solid var(--color-variante-contorno);
 }
 
-/* Drawer — oculto siempre (solo existe via React conditional) */
+/* Drawer — oculto siempre (solo existe via React conditional). z-index alto
+   a propósito: páginas como DetalleReparto/CrearReparto tienen un mapa de
+   Leaflet en el contenido, y los panes de Leaflet (hasta 700) más sus
+   controles (zoom, etc., 1000) usan z-index propios — si el drawer no les
+   gana a todos, el mapa se pinta encima del cajón de navegación en vez de
+   quedar debajo. */
 .panel-drawer-overlay {
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.5);
-  z-index: 200;
+  z-index: 2000;
 }
 
 .panel-drawer {
@@ -676,8 +800,16 @@
 .panel-mobile-header { display: none; }
 .panel-lista-fila { display: none; }
 
-@media (max-width: 768px) {
-  /* Header: ocultar blanco, mostrar oscuro */
+/* ── Tablet (≤1024px): el sidebar fijo de 220px + el header con buscador
+   ya no entran cómodos junto al contenido, así que la navegación pasa al
+   mismo drawer/hamburguesa que mobile — un patrón estándar de dashboard
+   (colapsar el sidebar en un cajón a partir de cierto ancho) que no le
+   quita ninguna función, solo la vuelve "a pedido" en vez de fija. El
+   CONTENIDO todavía no cambia acá: sigue siendo la tabla completa de
+   escritorio, con scroll horizontal propio (`.panel-tabla-wrapper`) como
+   red de seguridad en el extremo angosto — nada se oculta ni se resume
+   todavía, es exactamente lo mismo que ve un usuario de escritorio. */
+@media (max-width: 1024px) {
   .panel-master-header { display: none; }
   .panel-mobile-header {
     display: flex;
@@ -704,12 +836,13 @@
     justify-content: center;
   }
 
-  /* Layout */
   .panel-sidebar { display: none; }
   .panel-contenido { padding: 0 0 20px; overflow-x: hidden; }
   .panel-seccion-header { display: none; }
 
-  /* Fix 3: filtros siempre visibles — sticky dentro del scroll */
+  /* Filtros siempre visibles — sticky dentro del scroll. Siguen en
+     flex-wrap (heredado de la regla base): si no entran en una línea,
+     pasan a la siguiente, nunca se recortan ni se esconden. */
   .panel-filtros {
     position: sticky;
     top: 0;
@@ -719,8 +852,28 @@
     margin-bottom: 0;
     border-bottom: 1px solid var(--color-variante-contorno);
   }
-  .panel-filtro-chip { height: 30px; font-size: 11px; white-space: nowrap; flex-shrink: 0; }
-  .panel-filtro-limpiar { height: 30px; font-size: 11px; white-space: nowrap; flex-shrink: 0; }
+  .panel-filtro-chip { height: 30px; font-size: 11px; }
+  .panel-filtro-limpiar { height: 30px; font-size: 11px; }
+  .panel-btn-descuento { height: 30px; font-size: 11px; margin-left: 0; }
+
+  .panel-descuento-card { margin: 0 14px 14px; }
+}
+
+/* ── Mobile (≤767px): acá sí cambia el contenido — la tabla de columnas
+   fijas deja de tener sentido en una pantalla angosta (obligaría a un
+   scroll horizontal permanente para ver cualquier fila completa), así
+   que se reemplaza por la lista de tarjetas apiladas. Ninguna acción se
+   pierde: cada tarjeta (`.panel-lista-fila`) tiene los mismos datos y
+   los mismos botones que su fila de tabla equivalente. */
+@media (max-width: 767px) {
+  .panel-descuento-preview-header { display: none; }
+  .panel-descuento-preview-fila {
+    grid-template-columns: 1fr;
+    gap: 2px;
+    padding: 8px 0;
+  }
+  .panel-descuento-preview-fila > div:nth-child(2)::before { content: 'Precio actual: '; color: var(--color-sobre-variante-superficie); }
+  .panel-descuento-preview-fila > div:nth-child(3)::before { content: 'Con descuento: '; color: var(--color-sobre-variante-superficie); }
 
   /* Tabla oculta; lista visible */
   .panel-tabla-header { display: none; }

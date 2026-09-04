@@ -1,26 +1,12 @@
-import { useState, useEffect, useRef } from 'react'
-import { useNavigate, useLocation } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import api from '../../lib/axios'
 import { tokenValido } from '../../lib/auth'
-import CampanaNotificaciones from '../../components/CampanaNotificaciones'
-import ToggleTema from '../../components/ToggleTema'
+import PanelDistribuidor from '../../components/PanelDistribuidor'
 import './Inicio.css'
-
-const NAV_ITEMS = [
-  { label: 'Pedidos', ruta: '/pedidos' },
-  { label: 'Productos', ruta: '/inicio' },
-  { label: 'Proveedores', ruta: '/proveedores' },
-  { label: 'Reparto', ruta: '/reparto' },
-  { label: 'Reportes', ruta: '/reportes' },
-  { label: 'Empleados', ruta: '/empleados' },
-  { label: 'Editar perfil', ruta: '/editarPerfil' },
-]
 
 function Inicio() {
   const navigate = useNavigate()
-  const location = useLocation()
-  const nombre = localStorage.getItem('nombre') || ''
-  const iniciales = nombre.split(' ').map(p => p[0]).join('').slice(0, 2).toUpperCase()
 
   const [productos, setProductos] = useState([])
   const [cargando, setCargando] = useState(true)
@@ -29,18 +15,16 @@ function Inicio() {
   const [filtroCategoria, setFiltroCategoria] = useState('')
   const [filtroVisibilidad, setFiltroVisibilidad] = useState('')
   const [filtroStock, setFiltroStock] = useState('')
-  const [menuAbierto, setMenuAbierto] = useState(false)
-  const [menuPerfil, setMenuPerfil] = useState(false)
-  const perfilRef = useRef(null)
+
+  // --- Descuento total del catálogo (reemplaza al descuento por producto
+  // individual que vivía en la ficha de edición) ---
+  const [descuentoAbierto, setDescuentoAbierto] = useState(false)
+  const [descuentoPct, setDescuentoPct] = useState('')
+  const [aplicandoDescuento, setAplicandoDescuento] = useState(false)
+  const [errorDescuento, setErrorDescuento] = useState('')
+  const [mensajeDescuento, setMensajeDescuento] = useState('')
 
   useEffect(() => { if (!tokenValido()) navigate('/login') }, [navigate])
-
-  useEffect(() => {
-    if (!menuPerfil) return
-    const cerrar = (e) => { if (!perfilRef.current?.contains(e.target)) setMenuPerfil(false) }
-    document.addEventListener('mousedown', cerrar)
-    return () => document.removeEventListener('mousedown', cerrar)
-  }, [menuPerfil])
 
   const cargarProductos = async (categoria = '', visibilidad = '', stock = '') => {
     setCargando(true)
@@ -106,113 +90,55 @@ function Inicio() {
     }
   }
 
-  const handleCerrarSesion = () => {
-    localStorage.removeItem('token')
-    localStorage.removeItem('nombre')
-    window.dispatchEvent(new Event('auth-changed'))
-    navigate('/login')
+  const toggleDescuento = () => {
+    setDescuentoAbierto(v => !v)
+    setDescuentoPct('')
+    setErrorDescuento('')
+    setMensajeDescuento('')
   }
 
+  // El descuento se aplica a los mismos productos que se ven en pantalla
+  // (respeta categoría/visibilidad/stock filtrados) — mismo criterio de
+  // filtrado que usa la lista, resuelto en el backend en una sola consulta.
+  const handleAplicarDescuento = async () => {
+    setErrorDescuento('')
+    setMensajeDescuento('')
+    const porcentaje = Number(descuentoPct)
+    if (!descuentoPct || !porcentaje || porcentaje <= 0) {
+      setErrorDescuento('Ingresá un porcentaje de descuento mayor a cero.')
+      return
+    }
+    if (porcentaje >= 100) {
+      setErrorDescuento('El descuento total debe ser menor a 100%.')
+      return
+    }
+    setAplicandoDescuento(true)
+    try {
+      const res = await api.post('/api/productos/descuento-total', {
+        porcentaje,
+        categoria: filtroCategoria,
+        visibilidad: filtroVisibilidad,
+        stock: filtroStock,
+      })
+      setMensajeDescuento(res.data.mensaje)
+      setDescuentoPct('')
+      await cargarProductos(filtroCategoria, filtroVisibilidad, filtroStock)
+    } catch (err) {
+      setErrorDescuento(err.response?.data?.error || 'No fue posible completar la operación. Intente nuevamente más tarde.')
+    } finally {
+      setAplicandoDescuento(false)
+    }
+  }
+
+  const factorPreview = descuentoPct && Number(descuentoPct) > 0 && Number(descuentoPct) < 100
+    ? 1 - Number(descuentoPct) / 100
+    : null
+
   return (
-    <div className="panel-root">
-
-      {menuAbierto && (
-        <div className="panel-drawer-overlay" onClick={() => setMenuAbierto(false)}>
-          <nav className="panel-drawer" data-tema="oscuro" onClick={e => e.stopPropagation()}>
-            <div className="panel-drawer-top">
-              <div className="panel-drawer-marca">MarketDist</div>
-              <button className="panel-drawer-cerrar-btn" onClick={() => setMenuAbierto(false)}>✕</button>
-            </div>
-            {NAV_ITEMS.map(item => (
-              <div
-                key={item.ruta}
-                className={`panel-drawer-item${location.pathname === item.ruta ? ' activo' : ''}`}
-                onClick={() => { navigate(item.ruta); setMenuAbierto(false) }}
-              >
-                {item.label}
-              </div>
-            ))}
-            <div className="panel-drawer-sep" />
-            <button className="panel-drawer-modo" onClick={() => { navigate('/inicioComprador'); setMenuAbierto(false) }}>
-              ← Modo comprador
-            </button>
-            <div className="panel-drawer-footer">
-              <div className="panel-drawer-nombre">{nombre}</div>
-              <div className="panel-drawer-rol">Distribuidor</div>
-              <button className="panel-drawer-logout" onClick={handleCerrarSesion}>Cerrar sesión</button>
-            </div>
-          </nav>
-        </div>
-      )}
-
-      <div className="panel-mobile-header" data-tema="oscuro">
-        <span className="panel-mobile-hamburger" onClick={() => setMenuAbierto(true)}>≡</span>
-        <div className="panel-mobile-titulo">Mis productos</div>
-        <button className="panel-mobile-nuevo" onClick={() => navigate('/producto/nuevo')}>+</button>
-      </div>
-
-      <header className="panel-master-header">
-        <div className="panel-master-header-marca">MarketDist</div>
-        <div className="panel-master-header-buscador">
-          <span className="panel-master-header-buscador-icono">⌕</span>
-          <input className="panel-master-header-buscador-input" type="text" placeholder="Buscar productos…" />
-        </div>
-        <div className="panel-master-header-perfil">
-          <button className="panel-header-salir-btn" onClick={() => navigate('/inicioComprador')}>
-            Salir de distribuidora
-          </button>
-          <CampanaNotificaciones rutaDestino="/pedidos" />
-          <div className="comprador-perfil-wrapper" ref={perfilRef}>
-            <button className="comprador-perfil-trigger" onClick={() => setMenuPerfil(v => !v)}>
-              <div className="comprador-avatar">{iniciales}</div>
-              <span className="comprador-nombre">{nombre}</span>
-              <span className="comprador-perfil-flecha">{menuPerfil ? '▴' : '▾'}</span>
-            </button>
-            {menuPerfil && (
-              <div className="comprador-menu-desplegable">
-                <ToggleTema />
-                <div className="comprador-menu-item" onClick={handleCerrarSesion}>Cerrar sesión</div>
-              </div>
-            )}
-          </div>
-        </div>
-      </header>
-
-      <div className="panel-layout">
-
-        <aside className="panel-sidebar" data-tema="oscuro">
-          <div className="panel-sidebar-marca">
-            <div className="panel-sidebar-titulo">MarketDist</div>
-            <div className="panel-sidebar-subtitulo">Panel del Distribuidor</div>
-          </div>
-
-          <nav className="panel-nav">
-            {NAV_ITEMS.map(item => (
-              <div
-                key={item.ruta}
-                className={`panel-nav-item${location.pathname === item.ruta ? ' activo' : ''}`}
-                onClick={() => navigate(item.ruta)}
-              >
-                {item.label}
-              </div>
-            ))}
-          </nav>
-
-          <div className="panel-sidebar-footer">
-            <div className="panel-sidebar-usuario">
-              <div className="panel-avatar-small">{iniciales}</div>
-              <div>
-                <div className="panel-sidebar-nombre">{nombre}</div>
-                <div className="panel-sidebar-rol">Distribuidor</div>
-              </div>
-            </div>
-            <div className="panel-sidebar-accion" onClick={handleCerrarSesion}>Cerrar sesión</div>
-          </div>
-        </aside>
-
-        <main className="panel-main">
-          <div className="panel-contenido">
-
+    <PanelDistribuidor
+      tituloMobile="Mis productos"
+      accionMobile={<button className="panel-mobile-nuevo" onClick={() => navigate('/producto/nuevo')}>+</button>}
+    >
           <div className="panel-seccion-header">
             <div>
               <h1 className="panel-h1">Mis productos</h1>
@@ -244,7 +170,61 @@ function Inicio() {
             </select>
 
             <div className="panel-filtro-limpiar" onClick={limpiarFiltros}>Limpiar filtros</div>
+
+            <button
+              className={`panel-btn-descuento${descuentoAbierto ? ' activo' : ''}`}
+              onClick={toggleDescuento}
+            >
+              Aplicar descuento total
+            </button>
           </div>
+
+          {descuentoAbierto && (
+            <div className="panel-descuento-card">
+              <div className="panel-descuento-fila">
+                <input
+                  type="number"
+                  className="panel-descuento-input"
+                  min="1"
+                  max="99"
+                  placeholder="Ej: 10"
+                  value={descuentoPct}
+                  onChange={e => setDescuentoPct(e.target.value)}
+                />
+                <span className="panel-descuento-ayuda">
+                  % sobre {productos.length} producto{productos.length !== 1 ? 's' : ''} {filtroCategoria || filtroVisibilidad || filtroStock ? 'filtrado' + (productos.length !== 1 ? 's' : '') : 'del catálogo'}
+                </span>
+                <button className="panel-btn-nuevo" onClick={handleAplicarDescuento} disabled={aplicandoDescuento}>
+                  {aplicandoDescuento ? 'Aplicando…' : 'Aplicar'}
+                </button>
+              </div>
+
+              {errorDescuento && <div className="panel-descuento-error">{errorDescuento}</div>}
+              {mensajeDescuento && <div className="panel-descuento-ok">✓ {mensajeDescuento} Los precios ya quedaron guardados.</div>}
+
+              {factorPreview && productos.length > 0 && (
+                <div className="panel-descuento-preview">
+                  <div className="panel-descuento-preview-aviso">
+                    Vista previa — todavía no se guardó nada. Apretá "Aplicar" para confirmar estos precios.
+                  </div>
+                  <div className="panel-descuento-preview-header">
+                    <div>Producto</div>
+                    <div>Precio actual</div>
+                    <div>Precio si aplicás ahora</div>
+                  </div>
+                  {productos.map(p => (
+                    <div key={p.id} className="panel-descuento-preview-fila">
+                      <div>{p.nombre}</div>
+                      <div>{p.precioMinimo != null ? `$${Number(p.precioMinimo).toLocaleString('es-AR')}` : '—'}</div>
+                      <div className="panel-descuento-preview-nuevo">
+                        {p.precioMinimo != null ? `$${(Number(p.precioMinimo) * factorPreview).toLocaleString('es-AR', { maximumFractionDigits: 2 })}` : '—'}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
 
           <div className="panel-tabla-wrapper">
             <div className="panel-tabla-header">
@@ -341,12 +321,7 @@ function Inicio() {
               Mostrando {productos.length} producto{productos.length !== 1 ? 's' : ''}
             </div>
           )}
-
-          </div>
-        </main>
-
-      </div>
-    </div>
+    </PanelDistribuidor>
   )
 }
 

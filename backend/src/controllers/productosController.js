@@ -77,6 +77,22 @@ async function listarProductos(req, res, next) {
   }
 }
 
+async function aplicarDescuentoTotal(req, res, next) {
+  const { porcentaje, categoria, visibilidad, stock } = req.body
+  const filtros = { categoria: categoria || null, visibilidad: visibilidad || null, stock: stock || null }
+  try {
+    const resultado = await productosServicio.aplicarDescuentoTotal(
+      req.usuario.id,
+      filtros,
+      porcentaje !== undefined && porcentaje !== '' ? Number(porcentaje) : 0
+    )
+    res.status(200).json({ mensaje: `Descuento aplicado a ${resultado.productosAfectados} producto${resultado.productosAfectados !== 1 ? 's' : ''}.`, ...resultado })
+  } catch (error) {
+    if (error.status) return res.status(error.status).json({ error: error.mensaje })
+    next(error)
+  }
+}
+
 async function cambiarVisibilidad(req, res, next) {
   const productoId = Number(req.params.id)
   const { nuevoEstado } = req.body
@@ -143,4 +159,4 @@ async function configurarUmbral(req, res, next) {
   }
 }
 
-export { listarCategorias, crearProducto, listarProductos, cambiarVisibilidad, obtenerProducto, editarProducto, eliminarProducto, configurarUmbral }
+export { listarCategorias, crearProducto, listarProductos, aplicarDescuentoTotal, cambiarVisibilidad, obtenerProducto, editarProducto, eliminarProducto, configurarUmbral }

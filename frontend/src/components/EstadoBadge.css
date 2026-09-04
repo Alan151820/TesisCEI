@@ -9,6 +9,13 @@
 
 .estado-badge--entregado  { background: var(--color-contenedor-exito); color: var(--color-sobre-contenedor-exito); }
 .estado-badge--rechazado  { background: var(--color-contenedor-error); color: var(--color-sobre-contenedor-error); }
+.estado-badge--omitido    { background: var(--color-contenedor-advertencia); color: var(--color-sobre-contenedor-advertencia); }
 .estado-badge--en_camino  { background: var(--color-contenedor-info); color: var(--color-sobre-contenedor-info); }
 .estado-badge--pendiente  { background: var(--color-contenedor-superficie-maximo); color: var(--color-sobre-superficie); }
 .estado-badge--aceptado   { background: var(--color-contenedor-advertencia); color: var(--color-sobre-contenedor-advertencia); }
+.estado-badge--sin_empezar { background: var(--color-contenedor-superficie-maximo); color: var(--color-sobre-superficie); }
+.estado-badge--en_curso    { background: var(--color-contenedor-info); color: var(--color-sobre-contenedor-info); }
+.estado-badge--finalizado  { background: var(--color-contenedor-exito); color: var(--color-sobre-contenedor-exito); }
+.estado-badge--sin_empezar { background: var(--color-contenedor-superficie-maximo); color: var(--color-sobre-superficie); }
+.estado-badge--en_curso    { background: var(--color-contenedor-info); color: var(--color-sobre-contenedor-info); }
+.estado-badge--finalizado  { background: var(--color-contenedor-exito); color: var(--color-sobre-contenedor-exito); }

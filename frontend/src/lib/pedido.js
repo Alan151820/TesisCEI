@@ -4,4 +4,9 @@ export const ETIQUETA_ESTADO = {
   en_camino: 'En camino',
   entregado: 'Entregado',
   rechazado: 'Rechazado',
+  cancelado: 'Cancelado',
+  omitido: 'Omitido',
+  sin_empezar: 'Sin empezar',
+  en_curso: 'En curso',
+  finalizado: 'Finalizado',
 }

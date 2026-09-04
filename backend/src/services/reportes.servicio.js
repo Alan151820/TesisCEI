@@ -2,7 +2,6 @@ import Pedido from '../models/Pedido.js'
 import Producto from '../models/Producto.js'
 import PrecioVolumen from '../models/PrecioVolumen.js'
 
-
 const LIMITE_RANKING_PRODUCTOS = 5
 
 function calcularRangoPeriodo(periodo) {
@@ -30,7 +29,8 @@ function calcularRangoPeriodo(periodo) {
   return { inicio, fin }
 }
 
-
+// RF-039/RF-041: KPIs de rendimiento (total facturado, pedidos entregados) y
+// ranking de productos más/menos vendidos, del período elegido.
 async function generarReporteRendimiento(usuarioDistribuidorId, periodo) {
   const { inicio, fin } = calcularRangoPeriodo(periodo)
 
@@ -48,6 +48,7 @@ async function generarReporteRendimiento(usuarioDistribuidorId, periodo) {
   }
 }
 
+// RF-040: rentabilidad por tramo de precio por volumen.
 async function calcularRentabilidadPorPrecioVolumen(usuarioDistribuidorId) {
   return PrecioVolumen.listarConRentabilidadPorDistribuidor(usuarioDistribuidorId)
 }

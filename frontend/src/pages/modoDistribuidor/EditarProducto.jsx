@@ -47,10 +47,6 @@ function EditarProducto() {
   const [errorPrecio, setErrorPrecio] = useState('')
   const [cargandoPrecio, setCargandoPrecio] = useState(false)
 
-  const [descuentoTotal, setDescuentoTotal] = useState('')
-  const [cargandoDescuento, setCargandoDescuento] = useState(false)
-  const [errorDescuento, setErrorDescuento] = useState('')
-
   // --- Nombre comercial propio, para la previsualización de la tarjeta ---
   const [nombreDistribuidor, setNombreDistribuidor] = useState('')
 
@@ -64,7 +60,20 @@ function EditarProducto() {
       .then(([catRes, prodRes, preciosRes, perfilRes]) => {
         setCategorias(catRes.data)
         const p = prodRes.data
-        setNombre(p.nombre)
+        // El "Pack" (incluyeCantidad/cantidadNombre) no se guarda como campo
+        // aparte — se arma dentro de p.nombre al crear el producto (ver
+        // nombreEfectivo). Al editar hay que reconstruirlo desde el nombre
+        // guardado, si no, la casilla siempre carga destildada y volver a
+        // tildarla duplica el sufijo (ej. "Empanadas x12" pasa a
+        // "Empanadas x12 x12").
+        const matchPack = p.nombre.match(/^(.*)\sx(\d+)$/i)
+        if (matchPack) {
+          setNombre(matchPack[1].trim())
+          setIncluyeCantidad(true)
+          setCantidadNombre(matchPack[2])
+        } else {
+          setNombre(p.nombre)
+        }
         setMarca(p.marca || '')
         setDescripcion(p.descripcion || '')
         setImagenUrlActual(p.imagenUrl)
@@ -245,23 +254,6 @@ function EditarProducto() {
     }
   }
 
-  const handleAplicarDescuento = async () => {
-    setErrorDescuento('')
-    setCargandoDescuento(true)
-    try {
-      const res = await api.post(
-        `/api/productos/${id}/precios/descuento-total`,
-        { porcentaje: Number(descuentoTotal) || 0 }
-      )
-      setPrecios(res.data.precios)
-      setDescuentoTotal('')
-    } catch (err) {
-      setErrorDescuento(err.response?.data?.error || 'No fue posible completar la operación. Intente nuevamente más tarde.')
-    } finally {
-      setCargandoDescuento(false)
-    }
-  }
-
   const handleGuardarUmbral = async () => {
     setErrorUmbral('')
     setUmbralGuardado(false)
@@ -321,7 +313,7 @@ function EditarProducto() {
   return (
     <div className="ficha-fondo">
       <div className="ficha-mobile-header" data-tema="oscuro">
-        <span className="ficha-mobile-volver" onClick={() => navigate('/inicio')}>←</span>
+        <button type="button" className="ficha-mobile-volver" onClick={() => navigate('/inicio')}>←</button>
         <div className="ficha-mobile-titulo">Editar producto</div>
       </div>
       <div className="ficha-contenedor">
@@ -597,28 +589,6 @@ function EditarProducto() {
               <div className="ficha-precios-nota">
                 Para publicar el producto necesitás al menos un precio por volumen.
               </div>
-            </div>
-
-            {/* Descuento total */}
-            <div className="ficha-card">
-              <div className="ficha-card-titulo">Descuento total</div>
-              <div className="ficha-descuento-fila">
-                <input
-                  type="number"
-                  className="ficha-input ficha-input-angosto"
-                  min="0"
-                  max="99"
-                  placeholder="0"
-                  value={descuentoTotal}
-                  onChange={e => setDescuentoTotal(e.target.value)}
-                />
-                <span className="ficha-ayuda-inline">% sobre todos los precios</span>
-                <button className="ficha-btn-guardar" onClick={handleAplicarDescuento} disabled={cargandoDescuento}>
-                  {cargandoDescuento ? 'Aplicando…' : 'Aplicar'}
-                </button>
-              </div>
-              {errorDescuento && <div className="ficha-error">{errorDescuento}</div>}
-              <span className="ficha-ayuda">Al aplicar, baja ese porcentaje en todos los precios por volumen de una vez.</span>
             </div>
 
           </div>

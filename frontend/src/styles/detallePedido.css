@@ -1,8 +1,34 @@
 .detallepedido-migas {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 8px;
   margin-bottom: 20px;
+}
+
+.detallepedido-migas-ruta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.detallepedido-btn-volver {
+  height: 32px;
+  border-radius: 4px;
+  padding: 0 14px;
+  font-size: 13px;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  background: var(--color-contenedor-superficie-minimo);
+  color: var(--color-sobre-superficie);
+  border: 1px solid var(--color-contorno);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.detallepedido-btn-volver:hover {
+  background: var(--color-contenedor-superficie-bajo);
 }
 
 .detallepedido-miga-link {
@@ -143,6 +169,27 @@
 }
 
 .detallepedido-producto-link:hover { text-decoration: underline; }
+
+/* Nombre de producto dentro de la tabla del pedido: botón real (borde y
+   fondo), no un link de texto — el producto no es una navegación
+   secundaria, es la fila principal de la tabla. */
+.detallepedido-producto-boton {
+  background: var(--color-contenedor-superficie-bajo);
+  border: 1px solid var(--color-contorno);
+  border-radius: 4px;
+  padding: 6px 10px;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-sobre-superficie);
+  cursor: pointer;
+  text-align: left;
+}
+
+.detallepedido-producto-boton:hover {
+  background: var(--color-contenedor-superficie);
+  border-color: var(--color-primario);
+}
 
 .detallepedido-producto-nodisponible {
   font-size: 13px;
