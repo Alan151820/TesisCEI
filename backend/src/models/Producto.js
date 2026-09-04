@@ -184,11 +184,11 @@ class Producto {
     return res.rows
   }
 
-  // RF-035: ranking de productos por unidades vendidas (pedido_item.cantidad),
+  // RF-039: ranking de productos por unidades vendidas (pedido_item.cantidad),
   // de pedidos entregados del distribuidor dentro de [fechaInicio, fechaFin),
   // ordenado de más a menos vendido. El servicio toma la cabeza para "más
-  // vendidos" y la cola para "menos vendidos" de este mismo resultado, en
-  // vez de pedir la lista dos veces con el ORDER BY invertido.
+  // vendidos" y la cola para "menos vendidos" de este mismo resultado, en vez
+  // de pedir la lista dos veces con el ORDER BY invertido.
   static async listarVendidosPorDistribuidor(usuarioDistribuidorId, fechaInicio, fechaFin) {
     const res = await pool.query(
       `SELECT pr.id, pr.nombre, SUM(pi.cantidad) AS unidades_vendidas

@@ -87,7 +87,10 @@ async function obtenerDetalle(id) {
   const p = resultProducto.rows[0]
 
   const resultTarifas = await pool.query(
-    `SELECT cantidad_minima AS "cantidadMinima", precio_venta AS "precioVenta"
+    `SELECT
+       id,
+       cantidad_minima AS "cantidadMinima",
+       precio_venta AS "precioVenta"
      FROM precio_volumen
      WHERE producto_id = $1
      ORDER BY cantidad_minima ASC`,

@@ -29,7 +29,7 @@ function calcularRangoPeriodo(periodo) {
   return { inicio, fin }
 }
 
-// RF-035/RF-037: KPIs de rendimiento (total facturado, pedidos entregados) y
+// RF-039/RF-041: KPIs de rendimiento (total facturado, pedidos entregados) y
 // ranking de productos más/menos vendidos, del período elegido.
 async function generarReporteRendimiento(usuarioDistribuidorId, periodo) {
   const { inicio, fin } = calcularRangoPeriodo(periodo)
@@ -48,7 +48,7 @@ async function generarReporteRendimiento(usuarioDistribuidorId, periodo) {
   }
 }
 
-// RF-036: rentabilidad por tramo de precio por volumen.
+// RF-040: rentabilidad por tramo de precio por volumen.
 async function calcularRentabilidadPorPrecioVolumen(usuarioDistribuidorId) {
   return PrecioVolumen.listarConRentabilidadPorDistribuidor(usuarioDistribuidorId)
 }

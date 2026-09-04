@@ -117,10 +117,10 @@ class PrecioVolumen {
     return { tipoResultado: 'ELIMINADO', mensaje: 'El precio por volumen fue eliminado correctamente.' }
   }
 
-  // RF-036: rentabilidad de este precio por volumen. Solo disponible si
+  // RF-040: rentabilidad de este precio por volumen. Solo disponible si
   // precioCosto está registrado (no es null) — si no lo está, se devuelve
-  // tienePrecioCostoRegistrado: false y las diferencias en null, para que
-  // la capa de presentación muestre el indicador "—" en vez de calcular.
+  // tienePrecioCostoRegistrado: false y las diferencias en null, para que la
+  // capa de presentación muestre el indicador "—" en lugar de calcular.
   calcularRentabilidad() {
     const precioVenta = Number(this.precioVenta)
     const tienePrecioCostoRegistrado = this.precioCosto !== null && this.precioCosto !== undefined
@@ -140,9 +140,8 @@ class PrecioVolumen {
     }
   }
 
-  // RF-036: rentabilidad de cada precio por volumen de los productos
-  // habilitados del distribuidor (mismo filtro que
-  // Producto.listarPorDistribuidor).
+  // RF-040: rentabilidad de cada precio por volumen de los productos
+  // habilitados del distribuidor (mismo filtro que Producto.listarPorDistribuidor).
   static async listarConRentabilidadPorDistribuidor(usuarioDistribuidorId) {
     const res = await pool.query(
       `SELECT pv.id, pv.producto_id, pv.cantidad_minima, pv.precio_venta, pv.precio_costo,
@@ -158,6 +157,15 @@ class PrecioVolumen {
       ...new PrecioVolumen(r).calcularRentabilidad(),
       productoNombre: r.producto_nombre,
     }))
+  }
+
+  static async aplicarDescuentoTotal(productoId, porcentaje) {
+    const factor = 1 - porcentaje / 100
+    await pool.query(
+      `UPDATE precio_volumen SET precio_venta = ROUND((precio_venta * $1)::numeric, 2)
+       WHERE producto_id = $2`,
+      [factor, productoId]
+    )
   }
 
   // Descuento total del catálogo (panel "Mis productos"): aplica el mismo

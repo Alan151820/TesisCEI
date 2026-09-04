@@ -1,6 +1,6 @@
 import * as reportesServicio from '../services/reportes.servicio.js'
 
-// RF-037: períodos válidos. 'mes' es el default si no llega ninguno.
+// RF-041: períodos válidos. 'mes' es el default si no llega ninguno.
 const PERIODOS_VALIDOS = ['dia', 'semana', 'mes']
 
 async function obtenerRendimiento(req, res, next) {
