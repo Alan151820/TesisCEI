@@ -47,12 +47,24 @@ async function generarReporteRendimiento(usuarioDistribuidorId, periodo) {
 
   const ranking = await Producto.listarVendidosPorDistribuidor(usuarioDistribuidorId, inicio, fin)
 
+  // RF-035: "más vendidos" y "menos vendidos" son listas distintas. Sin
+  // este filtro, con pocos productos vendidos (<= 2 * LIMITE) los mismos
+  // productos aparecían en ambas listas (uno como "el que más vendés" y
+  // "el que menos vendés" a la vez). "Menos vendidos" excluye lo que ya
+  // está en "más vendidos": queda vacía si hay <= LIMITE productos.
+  const productosMasVendidos = ranking.slice(0, LIMITE_RANKING_PRODUCTOS)
+  const idsMasVendidos = new Set(productosMasVendidos.map(p => p.id))
+  const productosMenosVendidos = [...ranking]
+    .reverse()
+    .filter(p => !idsMasVendidos.has(p.id))
+    .slice(0, LIMITE_RANKING_PRODUCTOS)
+
   return {
     periodo,
     totalFacturado,
     cantidadPedidosEntregados,
-    productosMasVendidos: ranking.slice(0, LIMITE_RANKING_PRODUCTOS),
-    productosMenosVendidos: [...ranking].reverse().slice(0, LIMITE_RANKING_PRODUCTOS),
+    productosMasVendidos,
+    productosMenosVendidos,
   }
 }
 

@@ -103,16 +103,24 @@ function Reportes() {
               </div>
               <div className="reportes-tabla-card">
                 <div className="reportes-tabla-titulo">Productos menos vendidos</div>
-                <div className="reportes-tabla-header">
-                  <div>Producto</div>
-                  <div>Unidades</div>
-                </div>
-                {reporte.productosMenosVendidos.map(p => (
-                  <div className="reportes-tabla-fila" key={p.id}>
-                    <div>{p.nombre}</div>
-                    <div>{p.unidadesVendidas}</div>
+                {reporte.productosMenosVendidos.length === 0 ? (
+                  <div className="reportes-tabla-nota">
+                    Todos los productos vendidos en el período ya figuran en más vendidos.
                   </div>
-                ))}
+                ) : (
+                  <>
+                    <div className="reportes-tabla-header">
+                      <div>Producto</div>
+                      <div>Unidades</div>
+                    </div>
+                    {reporte.productosMenosVendidos.map(p => (
+                      <div className="reportes-tabla-fila" key={p.id}>
+                        <div>{p.nombre}</div>
+                        <div>{p.unidadesVendidas}</div>
+                      </div>
+                    ))}
+                  </>
+                )}
               </div>
             </div>
           )}

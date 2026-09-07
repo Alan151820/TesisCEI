@@ -153,6 +153,14 @@
   color: var(--color-sobre-superficie);
 }
 
+/* RF-035: "menos vendidos" queda vacía cuando todos los productos vendidos
+   ya están en "más vendidos" (<= LIMITE productos en el período). */
+.reportes-tabla-nota {
+  padding: 18px;
+  font-size: 13px;
+  color: var(--color-sobre-variante-superficie);
+}
+
 .reportes-tabla-header,
 .reportes-tabla-fila {
   display: grid;
