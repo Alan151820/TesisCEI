@@ -1,3 +1,4 @@
+import pool from '../config/db.js'
 import Pedido from '../models/Pedido.js'
 import Producto from '../models/Producto.js'
 import PrecioVolumen from '../models/PrecioVolumen.js'
@@ -5,29 +6,24 @@ import Distribuidor from '../models/Distribuidor.js'
 
 const LIMITE_RANKING_PRODUCTOS = 5
 
-function calcularRangoPeriodo(periodo) {
-  const ahora = new Date()
-  const inicioDia = new Date(ahora.getFullYear(), ahora.getMonth(), ahora.getDate())
-
-  if (periodo === 'dia') {
-    const fin = new Date(inicioDia)
-    fin.setDate(fin.getDate() + 1)
-    return { inicio: inicioDia, fin }
-  }
-
-  if (periodo === 'semana') {
-    const diaSemana = inicioDia.getDay() // 0 = domingo … 6 = sábado
-    const diasDesdeElLunes = diaSemana === 0 ? 6 : diaSemana - 1
-    const inicio = new Date(inicioDia)
-    inicio.setDate(inicio.getDate() - diasDesdeElLunes)
-    const fin = new Date(inicio)
-    fin.setDate(fin.getDate() + 7)
-    return { inicio, fin }
-  }
-
-  const inicio = new Date(inicioDia.getFullYear(), inicioDia.getMonth(), 1)
-  const fin = new Date(inicioDia.getFullYear(), inicioDia.getMonth() + 1, 1)
-  return { inicio, fin }
+// RF-037: "día / semana / mes actual" es en hora de Uruguay. El rango se
+// calcula en Postgres con `now() AT TIME ZONE 'America/Montevideo'` para
+// que NO dependa de la zona horaria del proceso Node (antes usaba
+// `new Date()` local: si el server no está en esa zona, los cortes se
+// corren horas). `fecha_entregado` es TIMESTAMP sin zona y guarda el
+// wall-clock de Uruguay (se escribe con NOW() en la sesión de la base,
+// configurada en America/Montevideo), así que se compara contra strings
+// naive del mismo criterio. `date_trunc('week', ...)` arranca el lunes
+// (ISO), igual que la lógica anterior.
+async function calcularRangoPeriodo(periodo) {
+  const unidad = periodo === 'dia' ? 'day' : periodo === 'semana' ? 'week' : 'month'
+  const paso = periodo === 'dia' ? '1 day' : periodo === 'semana' ? '1 week' : '1 month'
+  const { rows } = await pool.query(
+    `SELECT to_char(date_trunc($1, now() AT TIME ZONE 'America/Montevideo'), 'YYYY-MM-DD HH24:MI:SS') AS inicio,
+            to_char(date_trunc($1, now() AT TIME ZONE 'America/Montevideo') + $2::interval, 'YYYY-MM-DD HH24:MI:SS') AS fin`,
+    [unidad, paso]
+  )
+  return { inicio: rows[0].inicio, fin: rows[0].fin }
 }
 
 // RF-035/RF-037: KPIs de rendimiento (total facturado, pedidos entregados) y
@@ -40,7 +36,7 @@ async function generarReporteRendimiento(usuarioDistribuidorId, periodo) {
     throw Object.assign(new Error('No tenés un perfil de distribuidor configurado.'), { status: 404 })
   }
 
-  const { inicio, fin } = calcularRangoPeriodo(periodo)
+  const { inicio, fin } = await calcularRangoPeriodo(periodo)
 
   const { totalFacturado, cantidadPedidosEntregados } =
     await Pedido.calcularTotalesEntregados(usuarioDistribuidorId, inicio, fin)
