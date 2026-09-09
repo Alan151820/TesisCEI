@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { formatearTelefonoUy } from '../../lib/telefono'
 import { useNavigate } from 'react-router-dom'
 import api from '../../lib/axios'
 import './Login.css'
@@ -9,16 +10,8 @@ function Login() {
   const [mensaje, setMensaje] = useState('')
   const navigate = useNavigate()
 
-  const formatearTelefono = (valor) => {
-    let numeros = valor.replace(/\D/g, '')
-    if (numeros.startsWith('0')) {
-      numeros = numeros.substring(1)
-    }
-    return '+598' + numeros
-  }
-
   const handleLogin = async () => {
-    const telefono = formatearTelefono(telefonoInput)
+    const telefono = formatearTelefonoUy(telefonoInput)
     try {
       const res = await api.post('/auth/login', {
         telefono,
@@ -27,7 +20,7 @@ function Login() {
       localStorage.setItem('token', res.data.token)
       localStorage.setItem('nombre', res.data.nombre)
       localStorage.setItem('modoDistribuidorActivo', String(res.data.modoDistribuidorActivo))
-      localStorage.setItem('telefono', formatearTelefono(telefonoInput))
+      localStorage.setItem('telefono', formatearTelefonoUy(telefonoInput))
       window.dispatchEvent(new Event('auth-changed'))
       navigate('/inicioComprador')
     } catch (error) {

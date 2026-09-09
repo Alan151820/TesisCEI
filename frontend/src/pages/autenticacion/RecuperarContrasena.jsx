@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { formatearTelefonoUy } from '../../lib/telefono'
 import { useNavigate } from 'react-router-dom'
 import api from '../../lib/axios'
 import './RecuperarContrasena.css'
@@ -8,16 +9,8 @@ function RecuperarContrasena() {
   const [mensaje, setMensaje] = useState('')
   const navigate = useNavigate()
 
-  const formatearTelefono = (valor) => {
-    let numeros = valor.replace(/\D/g, '')
-    if (numeros.startsWith('0')) {
-      numeros = numeros.substring(1)
-    }
-    return '+598' + numeros
-  }
-
   const handleRecuperar = async () => {
-    const telefono = formatearTelefono(telefonoInput)
+    const telefono = formatearTelefonoUy(telefonoInput)
     try {
       const res = await api.post('/auth/recuperarContrasena', { telefono })
       setMensaje(res.data.mensaje)

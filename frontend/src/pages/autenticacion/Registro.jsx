@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { formatearTelefonoUy } from '../../lib/telefono'
 import { useNavigate } from 'react-router-dom'
 import api from '../../lib/axios'
 import './Registro.css'
@@ -11,14 +12,6 @@ function Registro() {
   const [mensaje, setMensaje] = useState('')
   const navigate = useNavigate()
 
-  const formatearTelefono = (valor) => {
-    let numeros = valor.replace(/\D/g, '')
-    if (numeros.startsWith('0')) {
-      numeros = numeros.substring(1)
-    }
-    return '+598' + numeros
-  }
-
   const handleRegistro = async () => {
     // RNF-010 (Ley 18.331): feedback rápido en el cliente — el servidor
     // vuelve a exigirlo igual, esto es solo para no hacer el viaje al
@@ -27,7 +20,7 @@ function Registro() {
       setMensaje('Debés aceptar el tratamiento de datos personales para continuar.')
       return
     }
-    const telefono = formatearTelefono(telefonoInput)
+    const telefono = formatearTelefonoUy(telefonoInput)
     try {
       const res = await api.post('/auth/registro', {
         nombre,
