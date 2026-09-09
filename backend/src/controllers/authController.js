@@ -1,5 +1,14 @@
 import Usuario from '../models/usuario.js'
 
+// RF-009: celular uruguayo en formato E.164 (+598 9X XXX XXX). El front lo
+// arma así (formatearTelefono) pero sin validar la longitud, y el modelo
+// lo guardaba tal cual — un teléfono con formato inválido quedaba en la
+// base y el SMS nunca podía llegar.
+const RE_TELEFONO_UY = /^\+5989\d{7}$/
+// RF-009 / CU-09: mínimo 8 caracteres (mismo criterio que el hint del
+// formulario). El modelo solo hacía el hash, sin chequear longitud.
+const LARGO_MIN_CONTRASENA = 8
+
 // RNF-010 (Ley 18.331): validación de forma antes de tocar el servicio —
 // la garantía real es la constraint CHECK de la tabla usuario, esto es
 // solo para devolver un mensaje rápido sin llegar a golpear la base.
@@ -8,6 +17,12 @@ const registro = async (req, res) => {
     const { nombre, telefono, contrasena, consentimientoDatosOtorgado } = req.body
     if (!consentimientoDatosOtorgado) {
       return res.status(400).json({ mensaje: 'Debés aceptar el tratamiento de datos personales para continuar.' })
+    }
+    if (!RE_TELEFONO_UY.test(telefono || '')) {
+      return res.status(400).json({ mensaje: 'Ingresá un número de celular uruguayo válido.' })
+    }
+    if (!contrasena || contrasena.length < LARGO_MIN_CONTRASENA) {
+      return res.status(400).json({ mensaje: 'La contraseña debe tener al menos 8 caracteres.' })
     }
     const codigo = await Usuario.registrarCuenta(nombre, telefono, contrasena, consentimientoDatosOtorgado)
     res.json({ mensaje: 'Código enviado por SMS. Ingresalo para activar tu cuenta.', codigo_dev: codigo })
@@ -59,6 +74,9 @@ const verificarRecuperacion = async (req, res) => {
 const nuevaContrasena = async (req, res) => {
   try {
     const { telefono, contrasena } = req.body
+    if (!contrasena || contrasena.length < LARGO_MIN_CONTRASENA) {
+      return res.status(400).json({ mensaje: 'La contraseña debe tener al menos 8 caracteres.' })
+    }
     await Usuario.restablecerContrasena(telefono, contrasena)
     res.json({ mensaje: 'Contraseña actualizada correctamente. Ya podés iniciar sesión.' })
   } catch (error) {
