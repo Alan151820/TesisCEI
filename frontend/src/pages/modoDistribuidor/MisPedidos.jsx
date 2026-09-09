@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { mensajeDeError } from '../../lib/errores'
 import { useNavigate } from 'react-router-dom'
 import api from '../../lib/axios'
 import ModalMapaDireccion from '../../components/ModalMapaDireccion'
@@ -103,7 +104,7 @@ function MisPedidos() {
   useEffect(() => {
     api.get('/api/pedidos/historial')
       .then(res => setPedidos(res.data))
-      .catch(err => setError(err.response?.data?.error || 'No fue posible completar la operación. Intente nuevamente más tarde.'))
+      .catch(err => setError(mensajeDeError(err)))
       .finally(() => setCargando(false))
   }, [])
 

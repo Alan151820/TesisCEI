@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { mensajeDeError } from '../../lib/errores'
 import { useNavigate, useParams } from 'react-router-dom'
 import api from '../../lib/axios'
 import ModalMapaDireccion from '../../components/ModalMapaDireccion'
@@ -41,7 +42,7 @@ function DetallePedido() {
   useEffect(() => {
     api.get(`/api/pedidos/${id}/detalle`)
       .then(res => setPedido(res.data))
-      .catch(err => setError(err.response?.data?.error || 'No fue posible completar la operación. Intente nuevamente más tarde.'))
+      .catch(err => setError(mensajeDeError(err)))
       .finally(() => setCargando(false))
   }, [id])
 
@@ -60,7 +61,7 @@ function DetallePedido() {
       if (ventanaWhatsapp) ventanaWhatsapp.location.href = res.data.deepLink
     } catch (err) {
       if (ventanaWhatsapp) ventanaWhatsapp.close()
-      setErrorAccion(err.response?.data?.error || 'No fue posible completar la operación. Intente nuevamente más tarde.')
+      setErrorAccion(mensajeDeError(err))
     } finally {
       setProcesando(false)
     }
@@ -73,7 +74,7 @@ function DetallePedido() {
       const res = await api.patch(`/api/pedidos/${id}/avanzar`)
       setPedido(prev => ({ ...prev, estado: res.data.estado }))
     } catch (err) {
-      setErrorAccion(err.response?.data?.error || 'No fue posible completar la operación. Intente nuevamente más tarde.')
+      setErrorAccion(mensajeDeError(err))
     } finally {
       setProcesando(false)
     }
@@ -104,7 +105,7 @@ function DetallePedido() {
       setPedido(prev => ({ ...prev, estado: 'rechazado', motivoRechazo: motivo }))
       cerrarModalRechazo()
     } catch (err) {
-      setErrorRechazo(err.response?.data?.error || 'No fue posible completar la operación. Intente nuevamente más tarde.')
+      setErrorRechazo(mensajeDeError(err))
     } finally {
       setRechazando(false)
     }

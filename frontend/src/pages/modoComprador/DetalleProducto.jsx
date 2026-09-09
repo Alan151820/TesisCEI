@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { mensajeDeError } from '../../lib/errores'
 import { useParams, useNavigate } from 'react-router-dom'
 import api from '../../lib/axios'
 import { useCarrito } from '../../context/CarritoContext'
@@ -27,7 +28,7 @@ function DetalleProducto() {
         setCantidad(1)
       })
       .catch(err => {
-        setMensaje(err.response?.data?.mensaje || 'No fue posible completar la operación. Intente nuevamente más tarde.')
+        setMensaje(mensajeDeError(err))
       })
   }, [id])
 

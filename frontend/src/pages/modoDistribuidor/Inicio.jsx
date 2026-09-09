@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { mensajeDeError } from '../../lib/errores'
 import { useNavigate } from 'react-router-dom'
 import api from '../../lib/axios'
 import PanelDistribuidor from '../../components/PanelDistribuidor'
@@ -82,7 +83,7 @@ function Inicio() {
         )
       )
     } catch (err) {
-      const mensaje = err.response?.data?.error || 'No fue posible completar la operación. Intente nuevamente más tarde.'
+      const mensaje = mensajeDeError(err)
       setErrorVisibilidad(prev => ({ ...prev, [productoId]: mensaje }))
     }
   }
@@ -121,7 +122,7 @@ function Inicio() {
       setDescuentoPct('')
       await cargarProductos(filtroCategoria, filtroVisibilidad, filtroStock)
     } catch (err) {
-      setErrorDescuento(err.response?.data?.error || 'No fue posible completar la operación. Intente nuevamente más tarde.')
+      setErrorDescuento(mensajeDeError(err))
     } finally {
       setAplicandoDescuento(false)
     }

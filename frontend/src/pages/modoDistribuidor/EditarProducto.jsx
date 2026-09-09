@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { mensajeDeError } from '../../lib/errores'
 import { useNavigate, useParams } from 'react-router-dom'
 import api from '../../lib/axios'
 import TarjetaProductoPreview from '../../components/TarjetaProductoPreview'
@@ -145,7 +146,7 @@ function EditarProducto() {
       await api.put(`/api/productos/${id}`, formData)
       setGuardado(true)
     } catch (err) {
-      setErrorProducto(err.response?.data?.error || 'No fue posible completar la operación. Intente nuevamente más tarde.')
+      setErrorProducto(mensajeDeError(err))
     } finally {
       setCargandoProducto(false)
     }
@@ -169,7 +170,7 @@ function EditarProducto() {
       setDescuentoPct('')
       setMostrarFormPrecio(false)
     } catch (err) {
-      setErrorPrecio(err.response?.data?.error || 'No fue posible completar la operación. Intente nuevamente más tarde.')
+      setErrorPrecio(mensajeDeError(err))
     } finally {
       setCargandoPrecio(false)
     }
@@ -190,7 +191,7 @@ function EditarProducto() {
       setPrecioVenta('')
       setDescuentoPct('')
     } catch (err) {
-      setErrorPrecio(err.response?.data?.error || 'No fue posible completar la operación. Intente nuevamente más tarde.')
+      setErrorPrecio(mensajeDeError(err))
     } finally {
       setCargandoPrecio(false)
     }
@@ -248,7 +249,7 @@ function EditarProducto() {
       }
       setPrecios(prev => prev.filter(p => p.id !== precioId))
     } catch (err) {
-      setErrorPrecio(err.response?.data?.error || 'No fue posible eliminar el precio.')
+      setErrorPrecio(mensajeDeError(err, 'No fue posible eliminar el precio.'))
     }
   }
 
@@ -260,7 +261,7 @@ function EditarProducto() {
       await api.patch(`/api/productos/${id}/umbral`, { valor: Number(umbralMinimoStock) })
       setUmbralGuardado(true)
     } catch (err) {
-      setErrorUmbral(err.response?.data?.error || 'No fue posible completar la operación. Intente nuevamente más tarde.')
+      setErrorUmbral(mensajeDeError(err))
     } finally {
       setCargandoUmbral(false)
     }

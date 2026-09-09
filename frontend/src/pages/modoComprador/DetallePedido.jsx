@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
+import { mensajeDeError } from '../../lib/errores'
 import { useNavigate, useParams } from 'react-router-dom'
 import api from '../../lib/axios'
 import { rutaInicio, cerrarSesion } from '../../lib/auth'
@@ -42,7 +43,7 @@ function DetallePedido() {
   useEffect(() => {
     api.get(`/api/pedidos/${id}`)
       .then(res => setPedido(res.data))
-      .catch(err => setError(err.response?.data?.error || 'No fue posible completar la operación. Intente nuevamente más tarde.'))
+      .catch(err => setError(mensajeDeError(err)))
       .finally(() => setCargando(false))
   }, [id])
 
@@ -59,7 +60,7 @@ function DetallePedido() {
       const res = await api.get(`/api/pedidos/${id}`)
       setPedido(res.data)
     } catch (err) {
-      setErrorCancelar(err.response?.data?.error || 'No fue posible completar la operación. Intente nuevamente más tarde.')
+      setErrorCancelar(mensajeDeError(err))
     } finally {
       setCancelando(false)
     }

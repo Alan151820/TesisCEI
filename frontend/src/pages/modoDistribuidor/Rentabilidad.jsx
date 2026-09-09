@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { mensajeDeError } from '../../lib/errores'
 import { useNavigate } from 'react-router-dom'
 import api from '../../lib/axios'
 import PanelDistribuidor from '../../components/PanelDistribuidor'
@@ -19,7 +20,7 @@ function Rentabilidad() {
     api.get('/api/reportes/rentabilidad')
       .then(res => setLista(res.data))
       .catch(err => {
-        setMensaje(err.response?.data?.error || 'No fue posible completar la operación. Intente nuevamente más tarde.')
+        setMensaje(mensajeDeError(err))
       })
       .finally(() => setCargando(false))
   }, [])

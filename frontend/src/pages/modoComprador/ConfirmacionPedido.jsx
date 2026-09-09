@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { mensajeDeError } from '../../lib/errores'
 import { useNavigate } from 'react-router-dom'
 import api from '../../lib/axios'
 import { rutaInicio } from '../../lib/auth'
@@ -198,7 +199,7 @@ function ConfirmacionPedido() {
       vaciar()
       setPedidosConfirmados(res.data.pedidos)
     } catch (err) {
-      setError(err.response?.data?.error || 'No fue posible completar la operación. Intente nuevamente más tarde.')
+      setError(mensajeDeError(err))
     } finally {
       setEnviando(false)
     }

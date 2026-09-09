@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
+import { mensajeDeError } from '../../lib/errores'
 import { useNavigate } from 'react-router-dom'
 import api from '../../lib/axios'
 import { rutaInicio, cerrarSesion } from '../../lib/auth'
@@ -38,7 +39,7 @@ function MisPedidos() {
   useEffect(() => {
     api.get('/api/pedidos/mis-pedidos')
       .then(res => setPedidos(res.data))
-      .catch(err => setError(err.response?.data?.error || 'No fue posible completar la operación. Intente nuevamente más tarde.'))
+      .catch(err => setError(mensajeDeError(err)))
       .finally(() => setCargando(false))
   }, [])
 

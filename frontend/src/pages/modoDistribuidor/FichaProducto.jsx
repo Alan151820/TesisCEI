@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { mensajeDeError } from '../../lib/errores'
 import { useNavigate } from 'react-router-dom'
 import api from '../../lib/axios'
 import TarjetaProductoPreview from '../../components/TarjetaProductoPreview'
@@ -202,7 +203,7 @@ function FichaProducto() {
       await api.post('/api/productos', formData)
       navigate('/inicio')
     } catch (err) {
-      setErrorProducto(err.response?.data?.error || 'No fue posible completar la operación. Intente nuevamente más tarde.')
+      setErrorProducto(mensajeDeError(err))
     } finally {
       setCargandoProducto(false)
     }

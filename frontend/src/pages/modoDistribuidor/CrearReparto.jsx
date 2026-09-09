@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from 'react'
+import { mensajeDeError } from '../../lib/errores'
 import { useNavigate } from 'react-router-dom'
 import { MapContainer, TileLayer, Marker, Tooltip, useMap } from 'react-leaflet'
 import L from 'leaflet'
@@ -78,7 +79,7 @@ function CrearReparto() {
   useEffect(() => {
     api.get('/api/pedidos/disponibles-reparto')
       .then(res => setPedidos(res.data))
-      .catch(err => setError(err.response?.data?.error || 'No fue posible completar la operación. Intente nuevamente más tarde.'))
+      .catch(err => setError(mensajeDeError(err)))
       .finally(() => setCargando(false))
   }, [])
 
@@ -100,7 +101,7 @@ function CrearReparto() {
       const res = await api.post('/api/reparto/generar', { pedidoIds: [...seleccionados] })
       navigate(`/reparto/${res.data.plan.id}`)
     } catch (err) {
-      setErrorGenerar(err.response?.data?.error || 'No fue posible completar la operación. Intente nuevamente más tarde.')
+      setErrorGenerar(mensajeDeError(err))
       setGenerando(false)
     }
   }

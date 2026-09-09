@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { mensajeDeError } from '../../lib/errores'
 import { useNavigate } from 'react-router-dom'
 import api from '../../lib/axios'
 import { rutaInicio } from '../../lib/auth'
@@ -34,7 +35,7 @@ function ConfigurarPerfil() {
     localStorage.setItem('modoDistribuidorActivo', 'true')
     navigate('/inicio')
   } catch (error) {
-    setMensaje(error.response?.data?.error || 'No fue posible completar la operación. Intente nuevamente más tarde.')
+    setMensaje(mensajeDeError(error))
   }
 }
 

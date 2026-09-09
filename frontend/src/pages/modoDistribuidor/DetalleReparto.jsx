@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useMemo, useRef } from 'react'
+import { mensajeDeError } from '../../lib/errores'
 import { useNavigate, useParams } from 'react-router-dom'
 import { MapContainer, TileLayer, Marker, Tooltip, Polyline, useMap } from 'react-leaflet'
 import L from 'leaflet'
@@ -131,7 +132,7 @@ function DetalleReparto() {
     setError(null)
     api.get(`/api/reparto/${id}`)
       .then(res => setDetalle(res.data))
-      .catch(err => setError(err.response?.data?.error || 'No fue posible completar la operación. Intente nuevamente más tarde.'))
+      .catch(err => setError(mensajeDeError(err)))
       .finally(() => setCargando(false))
   }, [id])
 
@@ -150,7 +151,7 @@ function DetalleReparto() {
     try {
       await guardarPedidos(pedidosIncluidosIds.filter(pid => pid !== pedidoId))
     } catch (err) {
-      setErrorEditar(err.response?.data?.error || 'No fue posible completar la operación. Intente nuevamente más tarde.')
+      setErrorEditar(mensajeDeError(err))
     } finally {
       setQuitandoId(null)
     }
@@ -163,7 +164,7 @@ function DetalleReparto() {
     setCargandoDisponibles(true)
     api.get('/api/pedidos/disponibles-reparto', { params: { planId: id } })
       .then(res => setDisponibles(res.data.filter(p => !pedidosIncluidosIds.includes(p.id))))
-      .catch(err => setErrorModal(err.response?.data?.error || 'No fue posible completar la operación. Intente nuevamente más tarde.'))
+      .catch(err => setErrorModal(mensajeDeError(err)))
       .finally(() => setCargandoDisponibles(false))
   }
 
@@ -184,7 +185,7 @@ function DetalleReparto() {
       await guardarPedidos([...pedidosIncluidosIds, ...seleccionModal])
       setModalAbierto(false)
     } catch (err) {
-      setErrorModal(err.response?.data?.error || 'No fue posible completar la operación. Intente nuevamente más tarde.')
+      setErrorModal(mensajeDeError(err))
     } finally {
       setAgregando(false)
     }
@@ -198,7 +199,7 @@ function DetalleReparto() {
       await api.post(`/api/reparto/${id}/iniciar`)
       cargarDetalle()
     } catch (err) {
-      setErrorIniciar(err.response?.data?.error || 'No fue posible completar la operación. Intente nuevamente más tarde.')
+      setErrorIniciar(mensajeDeError(err))
     } finally {
       setIniciando(false)
     }
@@ -218,7 +219,7 @@ function DetalleReparto() {
       await marcarParada(parada.id, 'entregado')
       cargarDetalle()
     } catch (err) {
-      setErrorMarcar(err.response?.data?.error || 'No fue posible completar la operación. Intente nuevamente más tarde.')
+      setErrorMarcar(mensajeDeError(err))
     } finally {
       setMarcandoId(null)
     }
@@ -244,7 +245,7 @@ function DetalleReparto() {
       setParadaMotivo(null)
       cargarDetalle()
     } catch (err) {
-      setErrorMotivo(err.response?.data?.error || 'No fue posible completar la operación. Intente nuevamente más tarde.')
+      setErrorMotivo(mensajeDeError(err))
     } finally {
       setConfirmandoMotivo(false)
     }

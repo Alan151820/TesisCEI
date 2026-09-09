@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { mensajeDeError } from '../../lib/errores'
 import { useNavigate } from 'react-router-dom'
 import api from '../../lib/axios'
 import CampoUbicacionMapa from '../../components/CampoUbicacionMapa'
@@ -72,7 +73,7 @@ function EditarPerfil() {
 
       setMensaje('Perfil actualizado correctamente.')
     } catch (error) {
-      setMensaje(error.response?.data?.error || 'No fue posible completar la operación. Intente nuevamente más tarde.')
+      setMensaje(mensajeDeError(error))
     } finally {
       setGuardando(false)
     }

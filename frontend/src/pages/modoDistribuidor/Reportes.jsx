@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { mensajeDeError } from '../../lib/errores'
 import { useNavigate } from 'react-router-dom'
 import api from '../../lib/axios'
 import PanelDistribuidor from '../../components/PanelDistribuidor'
@@ -29,7 +30,7 @@ function Reportes() {
     api.get('/api/reportes/rendimiento', { params: { periodo } })
       .then(res => setReporte(res.data))
       .catch(err => {
-        setMensaje(err.response?.data?.error || 'No fue posible completar la operación. Intente nuevamente más tarde.')
+        setMensaje(mensajeDeError(err))
       })
       .finally(() => setCargando(false))
   }, [periodo])

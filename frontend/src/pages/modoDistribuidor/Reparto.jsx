@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { mensajeDeError } from '../../lib/errores'
 import { useNavigate, useLocation } from 'react-router-dom'
 import api from '../../lib/axios'
 import EstadoBadge from '../../components/EstadoBadge'
@@ -40,7 +41,7 @@ function Reparto() {
     setCargando(true)
     api.get('/api/reparto/planes')
       .then(res => setPlanes(res.data))
-      .catch(err => setError(err.response?.data?.error || 'No fue posible completar la operación. Intente nuevamente más tarde.'))
+      .catch(err => setError(mensajeDeError(err)))
       .finally(() => setCargando(false))
   }
 
@@ -68,7 +69,7 @@ function Reparto() {
         setMensajeEliminado(res.data.mensaje)
         cargarPlanes()
       })
-      .catch(err => setErrorEliminar(err.response?.data?.error || 'No fue posible completar la operación. Intente nuevamente más tarde.'))
+      .catch(err => setErrorEliminar(mensajeDeError(err)))
       .finally(() => setEliminandoId(null))
   }
 
@@ -85,7 +86,7 @@ function Reparto() {
       setPlanCerrar(null)
       cargarPlanes()
     } catch (err) {
-      setErrorCerrar(err.response?.data?.error || 'No fue posible completar la operación. Intente nuevamente más tarde.')
+      setErrorCerrar(mensajeDeError(err))
     } finally {
       setCerrandoEnBloque(false)
     }
