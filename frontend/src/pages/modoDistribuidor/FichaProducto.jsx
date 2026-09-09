@@ -3,7 +3,9 @@ import { mensajeDeError } from '../../lib/errores'
 import { useNavigate } from 'react-router-dom'
 import api from '../../lib/axios'
 import TarjetaProductoPreview from '../../components/TarjetaProductoPreview'
+import FormularioTramoPrecio from '../../components/FormularioTramoPrecio'
 import { convertirAWebP } from '../../lib/imagenProducto'
+import { totalDesdeDescuento, descuentoDesdeTotal, precioUnitario } from '../../lib/tramoPrecio'
 import './FichaProducto.css'
 
 function FichaProducto() {
@@ -102,13 +104,9 @@ function FichaProducto() {
     const cant = Number(value)
     if (!precioBase || !cant) return
     if (descuentoPct !== '') {
-      const pct = Number(descuentoPct)
-      const total = Number(precioBase) * (1 - pct / 100) * cant
-      setPrecioVenta(total.toFixed(2))
+      setPrecioVenta(totalDesdeDescuento(precioBase, cant, descuentoPct))
     } else if (precioVenta !== '') {
-      const precioPorUnidad = Number(precioVenta) / cant
-      const pct = Number(precioBase) > 0 ? Math.round((1 - precioPorUnidad / Number(precioBase)) * 100) : 0
-      setDescuentoPct(String(pct))
+      setDescuentoPct(String(descuentoDesdeTotal(precioBase, cant, precioVenta)))
     }
   }
 
@@ -116,23 +114,17 @@ function FichaProducto() {
     setDescuentoPct(value)
     const cant = Number(cantidadMinima)
     if (value === '' || !precioBase || !cant) return
-    const pct = Number(value)
-    const precioPorUnidad = Number(precioBase) * (1 - pct / 100)
-    setPrecioVenta((precioPorUnidad * cant).toFixed(2))
+    setPrecioVenta(totalDesdeDescuento(precioBase, cant, value))
   }
 
   const handleChangePrecioVenta = (value) => {
     setPrecioVenta(value)
     const cant = Number(cantidadMinima)
     if (value === '' || !precioBase || !cant) return
-    const precioPorUnidad = Number(value) / cant
-    const pct = Number(precioBase) > 0 ? Math.round((1 - precioPorUnidad / Number(precioBase)) * 100) : 0
-    setDescuentoPct(String(pct))
+    setDescuentoPct(String(descuentoDesdeTotal(precioBase, cant, value)))
   }
 
-  const precioPorUnidadCalc = (cantidadMinima && precioVenta && Number(cantidadMinima) > 0)
-    ? Number(precioVenta) / Number(cantidadMinima)
-    : null
+  const precioPorUnidadCalc = precioUnitario(precioVenta, cantidadMinima)
 
   // RF-015: se aplica al guardar (nunca en vivo mientras se escribe), y
   // transforma los precios ya cargados en la pantalla — igual que antes,
@@ -424,67 +416,19 @@ function FichaProducto() {
 
               {/* Formulario inline para agregar precio */}
               {mostrarFormPrecio && (
-                <div className="ficha-form-precio">
-                  <div className="ficha-fila-tres">
-                    <div className="ficha-campo">
-                      <label className="ficha-label">Cantidad (desde) <span className="ficha-requerido">*</span></label>
-                      <input
-                        type="number"
-                        className="ficha-input"
-                        min="1"
-                        step="1"
-                        placeholder="Ej: 10"
-                        value={cantidadMinima}
-                        onChange={e => handleChangeCantidadMinima(e.target.value)}
-                      />
-                      <span className="ficha-ayuda">Aplica a partir de esa cantidad de unidades.</span>
-                    </div>
-                    <div className="ficha-campo">
-                      <label className="ficha-label">Descuento %</label>
-                      <input
-                        type="number"
-                        className="ficha-input"
-                        min="0"
-                        max="99"
-                        step="1"
-                        placeholder="Ej: 12"
-                        value={descuentoPct}
-                        onChange={e => handleChangeDescuentoPct(e.target.value)}
-                      />
-                      <span className="ficha-ayuda">Sobre el precio base.</span>
-                    </div>
-                    <div className="ficha-campo">
-                      <label className="ficha-label">Precio total <span className="ficha-requerido">*</span></label>
-                      <input
-                        type="number"
-                        className="ficha-input"
-                        min="0.01"
-                        step="0.01"
-                        placeholder="Ej: 8100.00"
-                        value={precioVenta}
-                        onChange={e => handleChangePrecioVenta(e.target.value)}
-                      />
-                    </div>
-                  </div>
-                  <div className="ficha-campo">
-                    <label className="ficha-label">Precio por unidad</label>
-                    <input
-                      type="text"
-                      className="ficha-input ficha-input-solo-lectura ficha-input-angosto"
-                      readOnly
-                      value={precioPorUnidadCalc != null ? `$${precioPorUnidadCalc.toFixed(2)}` : '—'}
-                    />
-                  </div>
-                  {errorPrecio && <div className="ficha-error">{errorPrecio}</div>}
-                  <div className="ficha-form-precio-acciones">
-                    <button className="ficha-btn-guardar" onClick={handleAgregarPrecio}>
-                      Agregar tramo
-                    </button>
-                    <button className="ficha-btn-cancelar" onClick={() => { setMostrarFormPrecio(false); setErrorPrecio(''); setDescuentoPct('') }}>
-                      Cancelar
-                    </button>
-                  </div>
-                </div>
+                <FormularioTramoPrecio
+                  cantidadMinima={cantidadMinima}
+                  descuentoPct={descuentoPct}
+                  precioVenta={precioVenta}
+                  precioPorUnidadCalc={precioPorUnidadCalc}
+                  onCantidad={handleChangeCantidadMinima}
+                  onDescuento={handleChangeDescuentoPct}
+                  onPrecio={handleChangePrecioVenta}
+                  onGuardar={handleAgregarPrecio}
+                  onCancelar={() => { setMostrarFormPrecio(false); setErrorPrecio(''); setDescuentoPct('') }}
+                  textoGuardar="Agregar tramo"
+                  error={errorPrecio}
+                />
               )}
 
               <div className="ficha-precios-nota">
