@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import CampanaNotificaciones from './CampanaNotificaciones'
 import ToggleTema from './ToggleTema'
+import { cerrarSesion } from '../lib/auth'
 import '../pages/modoDistribuidor/Inicio.css'
 
 const NAV_ITEMS = [
@@ -15,11 +16,7 @@ const NAV_ITEMS = [
 ]
 
 function cerrarSesionDistribuidor(navigate) {
-  localStorage.removeItem('token')
-  localStorage.removeItem('nombre')
-  localStorage.removeItem('telefono')
-  localStorage.removeItem('modoDistribuidorActivo')
-  window.dispatchEvent(new Event('auth-changed'))
+  cerrarSesion()
   navigate('/login')
 }
 

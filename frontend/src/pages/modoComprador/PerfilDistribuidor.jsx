@@ -4,6 +4,7 @@ import api from '../../lib/axios'
 import CampanaNotificaciones from '../../components/CampanaNotificaciones'
 import BottomNavComprador from '../../components/BottomNavComprador'
 import { construirTituloProducto } from '../../lib/producto'
+import { cerrarSesion } from '../../lib/auth'
 import './PerfilDistribuidor.css'
 
 function PerfilDistribuidor() {
@@ -41,12 +42,9 @@ function PerfilDistribuidor() {
     obtenerProductos()
   }, [id])
 
-  const cerrarSesion = () => {
-    localStorage.removeItem('token')
-    localStorage.removeItem('nombre')
-    localStorage.removeItem('telefono')
-    localStorage.removeItem('modoDistribuidorActivo')
-navigate('/catalogo', { replace: true })
+  const handleCerrarSesion = () => {
+    cerrarSesion()
+    navigate('/catalogo', { replace: true })
   }
 
   if (mensaje) return <p className="perfildist-mensaje-pagina">{mensaje}</p>
@@ -79,7 +77,7 @@ navigate('/catalogo', { replace: true })
                 <div className="perfildist-avatar">{iniciales}</div>
                 <span className="perfildist-nombre-usuario">{nombre}</span>
               </div>
-              <button className="perfildist-btn-cerrar-sesion" onClick={cerrarSesion}>
+              <button className="perfildist-btn-cerrar-sesion" onClick={handleCerrarSesion}>
                 Cerrar sesión
               </button>
             </>

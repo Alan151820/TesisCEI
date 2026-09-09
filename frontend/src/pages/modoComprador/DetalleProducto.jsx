@@ -5,6 +5,7 @@ import { useCarrito } from '../../context/CarritoContext'
 import CampanaNotificaciones from '../../components/CampanaNotificaciones'
 import BottomNavComprador from '../../components/BottomNavComprador'
 import { construirTituloProducto } from '../../lib/producto'
+import { cerrarSesion } from '../../lib/auth'
 import './DetalleProducto.css'
 
 function DetalleProducto() {
@@ -30,16 +31,8 @@ function DetalleProducto() {
       })
   }, [id])
 
-  const cerrarSesion = () => {
-    localStorage.removeItem('token')
-    localStorage.removeItem('nombre')
-    localStorage.removeItem('telefono')
-    localStorage.removeItem('modoDistribuidorActivo')
-    // RF-047: la sesión se invalida de inmediato. Sin este evento, el carrito
-    // (CarritoContext), la campana y el header quedarían con el estado de la
-    // sesión anterior hasta re-montarse — igual que el resto de las salidas
-    // de sesión del frontend.
-    window.dispatchEvent(new Event('auth-changed'))
+  const handleCerrarSesion = () => {
+    cerrarSesion()
     navigate('/catalogo', { replace: true })
   }
 
@@ -96,7 +89,7 @@ function DetalleProducto() {
                 <div className="detalleproducto-avatar">{iniciales}</div>
                 <span className="detalleproducto-nombre-usuario">{nombre}</span>
               </div>
-              <button className="detalleproducto-btn-cerrar-sesion" onClick={cerrarSesion}>
+              <button className="detalleproducto-btn-cerrar-sesion" onClick={handleCerrarSesion}>
                 Cerrar sesión
               </button>
             </>

@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import api from '../../lib/axios'
-import { rutaInicio } from '../../lib/auth'
+import { rutaInicio, cerrarSesion } from '../../lib/auth'
 import { useCarrito } from '../../context/CarritoContext'
 import CampanaNotificaciones from '../../components/CampanaNotificaciones'
 import BottomNavComprador from '../../components/BottomNavComprador'
@@ -66,11 +66,7 @@ function DetallePedido() {
   }
 
   const handleCerrarSesion = () => {
-    localStorage.removeItem('token')
-    localStorage.removeItem('nombre')
-    localStorage.removeItem('telefono')
-    localStorage.removeItem('modoDistribuidorActivo')
-    window.dispatchEvent(new Event('auth-changed'))
+    cerrarSesion()
     navigate('/catalogo')
   }
 

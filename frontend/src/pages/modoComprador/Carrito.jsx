@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useCarrito } from '../../context/CarritoContext'
-import { rutaInicio } from '../../lib/auth'
+import { rutaInicio, cerrarSesion } from '../../lib/auth'
 import CampanaNotificaciones from '../../components/CampanaNotificaciones'
 import BottomNavComprador from '../../components/BottomNavComprador'
 import ToggleTema from '../../components/ToggleTema'
@@ -26,11 +26,7 @@ function Carrito() {
   }, [menuPerfil])
 
   const handleCerrarSesion = () => {
-    localStorage.removeItem('token')
-    localStorage.removeItem('nombre')
-    localStorage.removeItem('telefono')
-    localStorage.removeItem('modoDistribuidorActivo')
-    window.dispatchEvent(new Event('auth-changed'))
+    cerrarSesion()
     navigate('/catalogo')
   }
 

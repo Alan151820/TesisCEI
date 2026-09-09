@@ -23,4 +23,16 @@ export function rutaInicio() {
   return tokenValido() ? '/inicioComprador' : '/catalogo'
 }
 
+// RF-047: borra las claves de sesión y avisa al resto de la app (el
+// carrito, la campana y el header escuchan 'auth-changed') para que se
+// refresquen sin recargar. No navega: de eso se encarga cada lugar que la
+// llama, según a dónde corresponda mandar al usuario.
+export function cerrarSesion() {
+  localStorage.removeItem('token')
+  localStorage.removeItem('nombre')
+  localStorage.removeItem('telefono')
+  localStorage.removeItem('modoDistribuidorActivo')
+  window.dispatchEvent(new Event('auth-changed'))
+}
+
 export { decodificarToken }

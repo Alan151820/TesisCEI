@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { cerrarSesion } from './auth'
 
 const api = axios.create({
   baseURL: 'http://localhost:3000',
@@ -14,11 +15,7 @@ api.interceptors.response.use(
   res => res,
   err => {
     if (err.response?.status === 401) {
-      localStorage.removeItem('token')
-      localStorage.removeItem('nombre')
-      localStorage.removeItem('telefono')
-      localStorage.removeItem('modoDistribuidorActivo')
-      window.dispatchEvent(new Event('auth-changed'))
+      cerrarSesion()
       window.location.href = '/login'
     }
     return Promise.reject(err)
