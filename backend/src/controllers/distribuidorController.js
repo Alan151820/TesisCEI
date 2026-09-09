@@ -3,7 +3,12 @@ import Producto from '../models/Producto.js'
 
 const obtenerPerfil = async (req, res) => {
   try {
-    const { id } = req.params
+    // RF-004: un id no entero se trata igual que un perfil inexistente. Sin
+    // esta guarda, llega al WHERE id = $1 (columna integer) y devuelve 500.
+    const id = Number(req.params.id)
+    if (!Number.isInteger(id) || id < 1) {
+      return res.status(404).json({ mensaje: 'El perfil del distribuidor no está disponible.' })
+    }
     const distribuidor = await Distribuidor.obtenerPorId(id)
 
     if (!distribuidor) {
@@ -135,7 +140,12 @@ const actualizarDireccionPartida = async (req, res) => {
 
 const obtenerProductosPublicados = async (req, res) => {
   try {
-    const { id } = req.params
+    // Un id no entero equivale a un distribuidor inexistente: sin productos
+    // (mismo resultado que un id numérico que no existe), no un 500.
+    const id = Number(req.params.id)
+    if (!Number.isInteger(id) || id < 1) {
+      return res.json([])
+    }
     const productos = await Producto.listarPublicadosPorDistribuidor(id)
     res.json(productos)
   } catch (error) {

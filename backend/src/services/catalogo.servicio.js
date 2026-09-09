@@ -1,5 +1,13 @@
 import pool from '../config/db.js'
 
+// RF-002/RF-003: el texto de búsqueda va dentro de un patrón ILIKE
+// (`%texto%`). Sin escapar, un `%` o `_` del usuario funcionan como
+// comodines LIKE (buscar "%" devolvía todo el catálogo). Se escapan con
+// `\` (el carácter de escape por defecto de LIKE en Postgres).
+function escaparLike(texto) {
+  return texto.replace(/[\\%_]/g, m => `\\${m}`)
+}
+
 async function listarCatalogo(nombre = '', categoria = '', distribuidor = '', precioMinimo = null, precioMaximo = null) {
   let condiciones = [`p.estado_visibilidad = 'publicado'`, `p.habilitado = true`]
   let having = []
@@ -7,7 +15,7 @@ async function listarCatalogo(nombre = '', categoria = '', distribuidor = '', pr
   let contador = 1
 
   if (nombre) {
-    params.push(`%${nombre}%`)
+    params.push(`%${escaparLike(nombre)}%`)
     condiciones.push(`p.nombre ILIKE $${contador++}`)
   }
 
@@ -17,7 +25,7 @@ async function listarCatalogo(nombre = '', categoria = '', distribuidor = '', pr
   }
 
   if (distribuidor) {
-    params.push(`%${distribuidor}%`)
+    params.push(`%${escaparLike(distribuidor)}%`)
     condiciones.push(`d.nombre_comercial ILIKE $${contador++}`)
   }
 
