@@ -38,7 +38,9 @@ class Distribuidor {
 }
 
 async editarPerfil(nombreComercial, descripcionNegocio, zonaEntrega) {
-  if (!nombreComercial) throw new Error('El nombre comercial no puede quedar vacío.')
+  // RF-049: "El nombre comercial no puede quedar vacío." Es una validación
+  // de entrada (400), no un fallo del servidor.
+  if (!nombreComercial) throw Object.assign(new Error('El nombre comercial no puede quedar vacío.'), { status: 400 })
 
   await pool.query(
     'UPDATE distribuidor SET nombre_comercial = $1, descripcion_negocio = $2, zona_entrega = $3 WHERE id = $4',

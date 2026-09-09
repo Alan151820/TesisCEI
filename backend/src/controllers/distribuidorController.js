@@ -48,6 +48,13 @@ const configurarPerfil = async (req, res) => {
 
     res.json({ mensaje: 'Perfil configurado correctamente.', distribuidorId: distribuidor.id })
   } catch (error) {
+    // La garantía real de "un perfil por usuario" es la constraint UNIQUE
+    // (usuario_id) de la base (código 23505). Este endpoint es el primer
+    // acceso al modo distribuidor; si el perfil ya existe, es un request
+    // fuera de flujo, no un error del servidor.
+    if (error.code === '23505') {
+      return res.status(409).json({ mensaje: 'Ya tenés un perfil de distribuidor configurado.' })
+    }
     res.status(500).json({ mensaje: 'No fue posible completar la operación. Intente nuevamente más tarde.' })
   }
  }
@@ -94,7 +101,9 @@ const editarPerfil = async (req, res) => {
 
     res.json({ mensaje: 'Perfil actualizado correctamente.' })
   } catch (error) {
-    res.status(500).json({ mensaje: error.message || 'No fue posible completar la operación. Intente nuevamente más tarde.' })
+    const status = error.status || 500
+    const mensaje = status < 500 ? error.message : 'No fue posible completar la operación. Intente nuevamente más tarde.'
+    res.status(status).json({ mensaje })
   }
 }
 const subirLogo = async (req, res) => {
@@ -102,6 +111,12 @@ const subirLogo = async (req, res) => {
     const distribuidor = await Distribuidor.obtenerPorUsuarioId(req.usuario.id)
     if (!distribuidor) {
       return res.status(404).json({ mensaje: 'No tenés un perfil de distribuidor configurado.' })
+    }
+
+    // Sin este chequeo, un request sin archivo hacía `req.file.filename`
+    // sobre `undefined` y devolvía un 500 en vez de una validación clara.
+    if (!req.file) {
+      return res.status(400).json({ mensaje: 'Adjuntá una imagen para el logo.' })
     }
 
     const logoUrl = `/uploads/${req.file.filename}`
