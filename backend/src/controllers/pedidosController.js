@@ -1,5 +1,14 @@
 import * as pedidosServicio from '../services/pedidos.servicio.js'
 
+// Un `:id` de ruta no entero (`/api/pedidos/abc`, `/api/pedidos/1.5`) no
+// puede corresponder a ningún pedido: `Number(...)` da NaN o un decimal
+// que, sin este corte, llegaba al `WHERE p.id = $1` (columna integer) y
+// Postgres respondía con un error crudo (500) en vez de un 404. Mismo
+// criterio que catalogo / distribuidor / reparto.
+function idInvalido(valor) {
+  return !Number.isInteger(valor) || valor < 1
+}
+
 async function confirmarPedido(req, res, next) {
   const { direccionEntrega, latitud, longitud, items } = req.body
   const compradorId = req.usuario.id
@@ -70,6 +79,9 @@ async function pedidosDisponiblesReparto(req, res, next) {
 
 async function detalleComprador(req, res, next) {
   const pedidoId = Number(req.params.id)
+  if (idInvalido(pedidoId)) {
+    return res.status(404).json({ error: 'Pedido no encontrado.' })
+  }
   try {
     const pedido = await pedidosServicio.obtenerDetalleComprador(pedidoId, req.usuario.id)
     res.json(pedido)
@@ -80,6 +92,9 @@ async function detalleComprador(req, res, next) {
 
 async function detalleDistribuidor(req, res, next) {
   const pedidoId = Number(req.params.id)
+  if (idInvalido(pedidoId)) {
+    return res.status(404).json({ error: 'Pedido no encontrado.' })
+  }
   try {
     const pedido = await pedidosServicio.obtenerDetalleDistribuidor(pedidoId, req.usuario.id)
     res.json(pedido)
@@ -90,6 +105,9 @@ async function detalleDistribuidor(req, res, next) {
 
 async function aceptarPedido(req, res, next) {
   const pedidoId = Number(req.params.id)
+  if (idInvalido(pedidoId)) {
+    return res.status(404).json({ error: 'Pedido no encontrado.' })
+  }
   try {
     const resultado = await pedidosServicio.aceptarPedido(pedidoId, req.usuario.id)
     res.json(resultado)
@@ -101,6 +119,10 @@ async function aceptarPedido(req, res, next) {
 async function rechazarPedido(req, res, next) {
   const pedidoId = Number(req.params.id)
   const { motivo } = req.body
+
+  if (idInvalido(pedidoId)) {
+    return res.status(404).json({ error: 'Pedido no encontrado.' })
+  }
 
   if (!motivo || !motivo.trim()) {
     return res.status(400).json({ error: 'Ingresá un motivo de rechazo antes de confirmar.' })
@@ -116,6 +138,9 @@ async function rechazarPedido(req, res, next) {
 
 async function avanzarEstado(req, res, next) {
   const pedidoId = Number(req.params.id)
+  if (idInvalido(pedidoId)) {
+    return res.status(404).json({ error: 'Pedido no encontrado.' })
+  }
   try {
     const resultado = await pedidosServicio.avanzarEstado(pedidoId, req.usuario.id)
     res.json(resultado)
@@ -127,6 +152,9 @@ async function avanzarEstado(req, res, next) {
 // RF-069
 async function cancelarPedido(req, res, next) {
   const pedidoId = Number(req.params.id)
+  if (idInvalido(pedidoId)) {
+    return res.status(404).json({ error: 'Pedido no encontrado.' })
+  }
   try {
     const resultado = await pedidosServicio.cancelarPedido(pedidoId, req.usuario.id)
     res.json(resultado)
