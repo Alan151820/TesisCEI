@@ -1,13 +1,13 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import { mensajeDeError } from '../../lib/errores'
 import { useNavigate } from 'react-router-dom'
 import api from '../../lib/axios'
-import { rutaInicio, cerrarSesion } from '../../lib/auth'
+import { rutaInicio } from '../../lib/auth'
 import { useCarrito } from '../../context/CarritoContext'
 import CampanaNotificaciones from '../../components/CampanaNotificaciones'
 import BottomNavComprador from '../../components/BottomNavComprador'
 import EstadoBadge from '../../components/EstadoBadge'
-import ToggleTema from '../../components/ToggleTema'
+import MenuPerfilComprador from '../../components/MenuPerfilComprador'
 import './InicioComprador.css'
 import './MisPedidos.css'
 
@@ -18,19 +18,8 @@ function formatearFecha(isoString) {
 
 function MisPedidos() {
   const navigate = useNavigate()
-  const nombre = localStorage.getItem('nombre') || ''
-  const iniciales = nombre.split(' ').map(p => p[0]).join('').slice(0, 2).toUpperCase()
   const modoDistribuidorActivo = localStorage.getItem('modoDistribuidorActivo') === 'true'
   const { totalItems } = useCarrito()
-  const [menuPerfil, setMenuPerfil] = useState(false)
-  const perfilRef = useRef(null)
-
-  useEffect(() => {
-    if (!menuPerfil) return
-    const cerrar = (e) => { if (!perfilRef.current?.contains(e.target)) setMenuPerfil(false) }
-    document.addEventListener('mousedown', cerrar)
-    return () => document.removeEventListener('mousedown', cerrar)
-  }, [menuPerfil])
 
   const [pedidos, setPedidos] = useState([])
   const [cargando, setCargando] = useState(true)
@@ -43,10 +32,6 @@ function MisPedidos() {
       .finally(() => setCargando(false))
   }, [])
 
-  const handleCerrarSesion = () => {
-    cerrarSesion()
-    navigate('/catalogo')
-  }
 
   return (
     <div className="mispedidos-pagina">
@@ -64,21 +49,7 @@ function MisPedidos() {
           <button className="comprador-btn-carrito" onClick={() => navigate('/carrito')}>
             🛒{totalItems > 0 && <span className="comprador-carrito-badge">{totalItems}</span>}
           </button>
-          <div className="comprador-perfil-wrapper" ref={perfilRef}>
-            <button className="comprador-perfil-trigger" onClick={() => setMenuPerfil(v => !v)}>
-              <div className="comprador-avatar">{iniciales}</div>
-              <span className="comprador-nombre">{nombre}</span>
-              <span className="comprador-perfil-flecha">{menuPerfil ? '▴' : '▾'}</span>
-            </button>
-            {menuPerfil && (
-              <div className="comprador-menu-desplegable">
-                <div className="comprador-menu-item comprador-menu-item--mobile" onClick={() => { setMenuPerfil(false); navigate('/misPedidos') }}>Mis pedidos</div>
-                <div className="comprador-menu-item comprador-menu-item--mobile" onClick={() => { setMenuPerfil(false); navigate(modoDistribuidorActivo ? '/inicio' : '/configurarPerfil') }}>Distribuidora</div>
-                <ToggleTema />
-                <div className="comprador-menu-item" onClick={handleCerrarSesion}>Cerrar sesión</div>
-              </div>
-            )}
-          </div>
+          <MenuPerfilComprador />
         </div>
       </header>
 
