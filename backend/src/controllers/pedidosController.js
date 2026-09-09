@@ -20,6 +20,16 @@ async function confirmarPedido(req, res, next) {
     return res.status(400).json({ error: 'El carrito debe contener al menos un producto.' })
   }
 
+  // RF-005/RF-007: la cantidad de cada ítem es un entero >= 1. El stepper
+  // del front lo garantiza, pero un request armado a mano pasaba valores
+  // fraccionarios que rompían la consulta de precio aplicable con un 500.
+  for (const item of items) {
+    const cantidad = Number(item?.cantidad)
+    if (!Number.isInteger(cantidad) || cantidad < 1) {
+      return res.status(400).json({ error: 'La cantidad de cada producto debe ser un número entero mayor o igual a 1.' })
+    }
+  }
+
   try {
     const pedidos = await pedidosServicio.confirmarPedido(compradorId, direccionEntrega.trim(), latitud, longitud, items)
     res.status(201).json({ pedidos })

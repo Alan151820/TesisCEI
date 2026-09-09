@@ -383,8 +383,10 @@ class Pedido {
       throw Object.assign(new Error('Solo se pueden rechazar pedidos en estado Pendiente o En camino.'), { status: 409 })
     }
 
+    // El motivo vacío ya lo corta el controller ("Ingresá un motivo..."); acá
+    // el motivo vino pero no es uno de la lista cerrada para "Pendiente".
     if (this.estado === 'pendiente' && !MOTIVOS_RECHAZO_PENDIENTE.includes(motivo)) {
-      throw Object.assign(new Error('Ingresá un motivo de rechazo antes de confirmar.'), { status: 400 })
+      throw Object.assign(new Error('Seleccioná un motivo de rechazo de la lista.'), { status: 400 })
     }
 
     const cliente = await pool.connect()
