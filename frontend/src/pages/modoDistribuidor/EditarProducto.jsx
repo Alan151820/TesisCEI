@@ -3,6 +3,7 @@ import { mensajeDeError } from '../../lib/errores'
 import { useNavigate, useParams } from 'react-router-dom'
 import api from '../../lib/axios'
 import TarjetaProductoPreview from '../../components/TarjetaProductoPreview'
+import { convertirAWebP } from '../../lib/imagenProducto'
 import './FichaProducto.css'
 
 const API = 'http://localhost:3000'
@@ -89,32 +90,6 @@ function EditarProducto() {
       .catch(() => setErrorCarga('No se pudo cargar el producto.'))
       .finally(() => setCargandoInicial(false))
   }, [id])
-
-  const convertirAWebP = (archivo) =>
-    new Promise((resolve) => {
-      const img = new Image()
-      const url = URL.createObjectURL(archivo)
-      img.onload = () => {
-        const MAX = 900
-        let ancho = img.width
-        let alto = img.height
-        if (ancho > MAX) {
-          alto = Math.round((alto * MAX) / ancho)
-          ancho = MAX
-        }
-        const canvas = document.createElement('canvas')
-        canvas.width = ancho
-        canvas.height = alto
-        canvas.getContext('2d').drawImage(img, 0, 0, ancho, alto)
-        URL.revokeObjectURL(url)
-        canvas.toBlob(
-          (blob) => resolve(new File([blob], 'imagen.webp', { type: 'image/webp' })),
-          'image/webp',
-          0.85
-        )
-      }
-      img.src = url
-    })
 
   const handleImagenChange = async (e) => {
     const archivo = e.target.files[0]
