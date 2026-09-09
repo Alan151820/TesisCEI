@@ -31,10 +31,7 @@ async function calcularRangoPeriodo(periodo) {
 // RNF-005: sin perfil de distribuidor no hay reportes que calcular — antes
 // devolvía todo en cero a cualquier usuario autenticado.
 async function generarReporteRendimiento(usuarioDistribuidorId, periodo) {
-  const distribuidor = await Distribuidor.obtenerPorUsuarioId(usuarioDistribuidorId)
-  if (!distribuidor) {
-    throw Object.assign(new Error('No tenés un perfil de distribuidor configurado.'), { status: 404 })
-  }
+  await Distribuidor.requerirPorUsuarioId(usuarioDistribuidorId)
 
   const { inicio, fin } = await calcularRangoPeriodo(periodo)
 
@@ -66,10 +63,7 @@ async function generarReporteRendimiento(usuarioDistribuidorId, periodo) {
 
 // RF-036: rentabilidad por tramo de precio por volumen.
 async function calcularRentabilidadPorPrecioVolumen(usuarioDistribuidorId) {
-  const distribuidor = await Distribuidor.obtenerPorUsuarioId(usuarioDistribuidorId)
-  if (!distribuidor) {
-    throw Object.assign(new Error('No tenés un perfil de distribuidor configurado.'), { status: 404 })
-  }
+  await Distribuidor.requerirPorUsuarioId(usuarioDistribuidorId)
   return PrecioVolumen.listarConRentabilidadPorDistribuidor(usuarioDistribuidorId)
 }
 

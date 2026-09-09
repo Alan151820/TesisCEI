@@ -9,10 +9,7 @@ async function confirmarPedido(compradorId, direccionEntrega, latitud, longitud,
 // — antes devolvía [] a cualquier usuario autenticado, mismo criterio que
 // ya usa reparto.servicio.js en todos sus métodos.
 async function obtenerHistorialDistribuidor(usuarioId) {
-  const distribuidor = await Distribuidor.obtenerPorUsuarioId(usuarioId)
-  if (!distribuidor) {
-    throw Object.assign(new Error('No tenés un perfil de distribuidor configurado.'), { status: 404 })
-  }
+  await Distribuidor.requerirPorUsuarioId(usuarioId)
   return Pedido.listarHistorialDistribuidor(usuarioId)
 }
 

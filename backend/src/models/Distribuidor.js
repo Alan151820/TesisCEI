@@ -75,6 +75,18 @@ static async obtenerPorUsuarioId(usuarioId) {
   if (resultado.rows.length === 0) return null
   return new Distribuidor(resultado.rows[0])
 }
+
+// Igual que obtenerPorUsuarioId, pero lanza 404 en vez de devolver null
+// cuando el usuario no tiene perfil de distribuidor (RNF-005). Los
+// servicios de reparto, reportes y pedidos repetían este chequeo de tres
+// líneas al inicio de cada método.
+static async requerirPorUsuarioId(usuarioId) {
+  const distribuidor = await Distribuidor.obtenerPorUsuarioId(usuarioId)
+  if (!distribuidor) {
+    throw Object.assign(new Error('No tenés un perfil de distribuidor configurado.'), { status: 404 })
+  }
+  return distribuidor
+}
 }
 
 export default Distribuidor
