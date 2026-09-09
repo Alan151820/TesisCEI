@@ -34,7 +34,7 @@ function ConfigurarPerfil() {
     localStorage.setItem('modoDistribuidorActivo', 'true')
     navigate('/inicio')
   } catch (error) {
-    setMensaje(error.response?.data?.mensaje || 'No fue posible completar la operación. Intente nuevamente más tarde.')
+    setMensaje(error.response?.data?.error || 'No fue posible completar la operación. Intente nuevamente más tarde.')
   }
 }
 

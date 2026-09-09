@@ -25,7 +25,7 @@ function PerfilDistribuidor() {
         const res = await api.get(`/distribuidor/perfilDistribuidor/${id}`)
         setDistribuidor(res.data)
       } catch (error) {
-        setMensaje(error.response?.data?.mensaje || 'No fue posible completar la operación. Intente nuevamente más tarde.')
+        setMensaje(error.response?.data?.error || 'No fue posible completar la operación. Intente nuevamente más tarde.')
       }
     }
 

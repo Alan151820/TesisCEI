@@ -20,31 +20,19 @@ class PrecioVolumen {
 
   static validarDatos(precioVenta, precioCosto, cantidadMinima) {
     if (!precioVenta || precioVenta <= 0) {
-      const e = new Error()
-      e.status = 400
-      e.mensaje = 'El precio de venta debe ser mayor a cero.'
-      throw e
+      throw Object.assign(new Error('El precio de venta debe ser mayor a cero.'), { status: 400 })
     }
     if (precioCosto !== null && precioCosto !== undefined && precioCosto < 0) {
-      const e = new Error()
-      e.status = 400
-      e.mensaje = 'El precio de costo no puede ser negativo.'
-      throw e
+      throw Object.assign(new Error('El precio de costo no puede ser negativo.'), { status: 400 })
     }
     // RF-015: "la cantidad mínima se expresa siempre en unidades enteras".
     // La columna es INTEGER: un valor fraccionario rompía la consulta con
     // un error crudo de SQL (500) en vez de este 400.
     if (!Number.isInteger(cantidadMinima)) {
-      const e = new Error()
-      e.status = 400
-      e.mensaje = 'La cantidad mínima debe ser un número entero.'
-      throw e
+      throw Object.assign(new Error('La cantidad mínima debe ser un número entero.'), { status: 400 })
     }
     if (!cantidadMinima || cantidadMinima <= 0) {
-      const e = new Error()
-      e.status = 400
-      e.mensaje = 'La cantidad mínima debe ser mayor a cero.'
-      throw e
+      throw Object.assign(new Error('La cantidad mínima debe ser mayor a cero.'), { status: 400 })
     }
   }
 
@@ -79,10 +67,7 @@ class PrecioVolumen {
       // base (código 23505), no una verificación previa en JS que dejaría
       // una ventana de carrera entre el SELECT y el INSERT.
       if (error.code === '23505') {
-        const e = new Error()
-        e.status = 400
-        e.mensaje = 'Ya existe un precio con esa cantidad mínima.'
-        throw e
+        throw Object.assign(new Error('Ya existe un precio con esa cantidad mínima.'), { status: 400 })
       }
       throw error
     }
@@ -108,18 +93,12 @@ class PrecioVolumen {
       // tramo a una cantidad_minima que ya usa otro precio del producto
       // (por ejemplo, a 1, chocando con el precio base).
       if (error.code === '23505') {
-        const e = new Error()
-        e.status = 400
-        e.mensaje = 'Ya existe un precio con esa cantidad mínima.'
-        throw e
+        throw Object.assign(new Error('Ya existe un precio con esa cantidad mínima.'), { status: 400 })
       }
       throw error
     }
     if (res.rows.length === 0) {
-      const e = new Error()
-      e.status = 404
-      e.mensaje = 'Precio no encontrado.'
-      throw e
+      throw Object.assign(new Error('Precio no encontrado.'), { status: 404 })
     }
     const actualizado = new PrecioVolumen(res.rows[0])
     Object.assign(this, actualizado)
@@ -133,10 +112,7 @@ class PrecioVolumen {
 
   async eliminar() {
     if (Number(this.cantidadMinima) === 1) {
-      const e = new Error()
-      e.status = 422
-      e.mensaje = 'No se puede eliminar el precio de la presentación.'
-      throw e
+      throw Object.assign(new Error('No se puede eliminar el precio de la presentación.'), { status: 422 })
     }
 
     if (await this.tienePedidosRegistrados()) {

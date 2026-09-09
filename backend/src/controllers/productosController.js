@@ -56,9 +56,6 @@ async function crearProducto(req, res, next) {
     })
     res.status(201).json({ mensaje: 'Producto creado correctamente.', producto, precios })
   } catch (error) {
-    if (error.status) {
-      return res.status(error.status).json({ error: error.mensaje })
-    }
     next(error)
   }
 }
@@ -88,7 +85,6 @@ async function aplicarDescuentoTotal(req, res, next) {
     )
     res.status(200).json({ mensaje: `Descuento aplicado a ${resultado.productosAfectados} producto${resultado.productosAfectados !== 1 ? 's' : ''}.`, ...resultado })
   } catch (error) {
-    if (error.status) return res.status(error.status).json({ error: error.mensaje })
     next(error)
   }
 }
@@ -100,7 +96,6 @@ async function cambiarVisibilidad(req, res, next) {
     const producto = await productosServicio.cambiarVisibilidad(productoId, req.usuario.id, nuevoEstado)
     res.status(200).json({ mensaje: `Producto ${nuevoEstado} correctamente.`, producto })
   } catch (error) {
-    if (error.status) return res.status(error.status).json({ error: error.mensaje })
     next(error)
   }
 }
@@ -111,7 +106,6 @@ async function obtenerProducto(req, res, next) {
     const producto = await productosServicio.obtenerProducto(productoId, req.usuario.id)
     res.status(200).json(producto)
   } catch (error) {
-    if (error.status) return res.status(error.status).json({ error: error.mensaje })
     next(error)
   }
 }
@@ -128,7 +122,6 @@ async function editarProducto(req, res, next) {
     const producto = await productosServicio.editarProducto(productoId, req.usuario.id, datos)
     res.status(200).json({ mensaje: 'Producto actualizado correctamente.', producto })
   } catch (error) {
-    if (error.status) return res.status(error.status).json({ error: error.mensaje })
     next(error)
   }
 }
@@ -139,7 +132,6 @@ async function eliminarProducto(req, res, next) {
     const resultado = await productosServicio.eliminarOdeshabilitar(productoId, req.usuario.id)
     res.status(200).json(resultado)
   } catch (error) {
-    if (error.status) return res.status(error.status).json({ error: error.mensaje })
     next(error)
   }
 }
@@ -157,7 +149,6 @@ async function configurarUmbral(req, res, next) {
     const producto = await productosServicio.configurarUmbralMinimo(productoId, req.usuario.id, valor)
     res.status(200).json({ mensaje: 'Umbral configurado correctamente.', producto })
   } catch (error) {
-    if (error.status) return res.status(error.status).json({ error: error.mensaje })
     next(error)
   }
 }

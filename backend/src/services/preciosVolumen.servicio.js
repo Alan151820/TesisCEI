@@ -6,10 +6,7 @@ const validarDatos = PrecioVolumen.validarDatos
 async function verificarProductoDelDistribuidor(productoId, usuarioId) {
   const producto = await Producto.obtenerPropio(productoId, usuarioId)
   if (!producto) {
-    const e = new Error()
-    e.status = 404
-    e.mensaje = 'Producto no encontrado.'
-    throw e
+    throw Object.assign(new Error('Producto no encontrado.'), { status: 404 })
   }
 }
 
@@ -32,10 +29,7 @@ async function editarPrecio(productoId, precioId, usuarioId, datos) {
 
   const precio = await PrecioVolumen.obtenerPorId(precioId, productoId)
   if (!precio) {
-    const e = new Error()
-    e.status = 404
-    e.mensaje = 'Precio no encontrado.'
-    throw e
+    throw Object.assign(new Error('Precio no encontrado.'), { status: 404 })
   }
   await precio.editar(cantidadMinima, precioVenta, precioCosto)
   return precio
@@ -46,10 +40,7 @@ async function eliminarPrecio(productoId, precioId, usuarioId) {
 
   const precio = await PrecioVolumen.obtenerPorId(precioId, productoId)
   if (!precio) {
-    const e = new Error()
-    e.status = 404
-    e.mensaje = 'Precio no encontrado.'
-    throw e
+    throw Object.assign(new Error('Precio no encontrado.'), { status: 404 })
   }
 
   return precio.eliminar()

@@ -8,7 +8,6 @@ async function listarPrecios(req, res, next) {
     )
     res.status(200).json(precios)
   } catch (error) {
-    if (error.status) return res.status(error.status).json({ error: error.mensaje })
     next(error)
   }
 }
@@ -27,7 +26,6 @@ async function registrarPrecio(req, res, next) {
     )
     res.status(201).json({ mensaje: 'Precio registrado correctamente.', precio })
   } catch (error) {
-    if (error.status) return res.status(error.status).json({ error: error.mensaje })
     next(error)
   }
 }
@@ -47,7 +45,6 @@ async function editarPrecio(req, res, next) {
     )
     res.status(200).json({ mensaje: 'Precio actualizado correctamente.', precio })
   } catch (error) {
-    if (error.status) return res.status(error.status).json({ error: error.mensaje })
     next(error)
   }
 }
@@ -61,7 +58,6 @@ async function eliminarPrecio(req, res, next) {
     )
     res.status(200).json(resultado)
   } catch (error) {
-    if (error.status) return res.status(error.status).json({ error: error.mensaje })
     next(error)
   }
 }
