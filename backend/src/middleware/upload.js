@@ -20,7 +20,9 @@ const upload = multer({
     if (permitidos.includes(file.mimetype)) {
       cb(null, true)
     } else {
-      cb(new Error('Solo se permiten imágenes (JPG, PNG, WebP).'))
+      // status: 400 para que el handler de errores lo devuelva como
+      // "solicitud inválida" con este mensaje, no como un 500 genérico.
+      cb(Object.assign(new Error('Solo se permiten imágenes (JPG, PNG, WebP).'), { status: 400 }))
     }
   },
 })

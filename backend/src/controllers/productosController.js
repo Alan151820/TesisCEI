@@ -147,8 +147,11 @@ async function eliminarProducto(req, res, next) {
 async function configurarUmbral(req, res, next) {
   const productoId = Number(req.params.id)
   const valor = Number(req.body.valor)
-  if (isNaN(valor)) {
-    return res.status(400).json({ error: 'El umbral mínimo no puede ser negativo.' })
+  // El umbral es stock en unidades (columna INTEGER): rechazar acá lo no
+  // numérico, lo fraccionario y lo negativo con un mensaje correcto — antes
+  // lo no numérico decía "no puede ser negativo" y lo fraccionario daba 500.
+  if (!Number.isInteger(valor) || valor < 0) {
+    return res.status(400).json({ error: 'El umbral mínimo debe ser un número entero mayor o igual a cero.' })
   }
   try {
     const producto = await productosServicio.configurarUmbralMinimo(productoId, req.usuario.id, valor)

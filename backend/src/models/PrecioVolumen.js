@@ -31,6 +31,15 @@ class PrecioVolumen {
       e.mensaje = 'El precio de costo no puede ser negativo.'
       throw e
     }
+    // RF-015: "la cantidad mínima se expresa siempre en unidades enteras".
+    // La columna es INTEGER: un valor fraccionario rompía la consulta con
+    // un error crudo de SQL (500) en vez de este 400.
+    if (!Number.isInteger(cantidadMinima)) {
+      const e = new Error()
+      e.status = 400
+      e.mensaje = 'La cantidad mínima debe ser un número entero.'
+      throw e
+    }
     if (!cantidadMinima || cantidadMinima <= 0) {
       const e = new Error()
       e.status = 400
