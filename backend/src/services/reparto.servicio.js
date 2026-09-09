@@ -89,6 +89,9 @@ async function iniciarReparto(usuarioId, planId) {
   }
 
   const plan = await PlanReparto.iniciar(planId, distribuidor.id, distribuidor.nombreComercial)
+  if (plan === 'sin_paradas') {
+    throw Object.assign(new Error('El reparto no tiene paradas para iniciar. Agregá pedidos al plan.'), { status: 409 })
+  }
   if (!plan) {
     throw Object.assign(new Error('El reparto no existe o ya no está en estado "Sin empezar".'), { status: 404 })
   }

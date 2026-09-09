@@ -336,6 +336,20 @@ class PlanReparto {
         [planId]
       )
 
+      // RF-066 [E3]: un reparto sin paradas no se puede iniciar. Sin este
+      // corte, un plan que quedó en 0 paradas (editado a vacío, o con todos
+      // sus pedidos cancelados) pasaba igual a "en_curso" y quedaba zombie:
+      // no se puede eliminar (RF-065 solo borra "sin_empezar"), ni marcar,
+      // ni cerrar en bloque.
+      const resParadas = await cliente.query(
+        `SELECT COUNT(*)::int AS cantidad FROM parada_reparto WHERE plan_reparto_id = $1`,
+        [planId]
+      )
+      if (resParadas.rows[0].cantidad === 0) {
+        await cliente.query('ROLLBACK')
+        return 'sin_paradas'
+      }
+
       const resPedidos = await cliente.query(
         `UPDATE pedido SET estado = 'en_camino'
          WHERE estado = 'aceptado'
