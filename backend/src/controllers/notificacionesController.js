@@ -10,9 +10,16 @@ async function listar(req, res, next) {
 }
 
 async function marcarLeida(req, res, next) {
-  const { id } = req.params
+  const id = Number(req.params.id)
+  // Un id no entero (`/api/notificaciones/abc/leer`) se convertía en NaN y
+  // rompía el `WHERE id = $1` (columna integer) con un 500. El endpoint es
+  // idempotente y no tiene 404: un id entero inexistente ya devuelve
+  // `{ ok: true }` sin marcar nada, así que un id inválido hace lo mismo.
+  if (!Number.isInteger(id) || id < 1) {
+    return res.json({ ok: true })
+  }
   try {
-    await notificacionesServicio.marcarComoLeida(Number(id), req.usuario.id)
+    await notificacionesServicio.marcarComoLeida(id, req.usuario.id)
     res.json({ ok: true })
   } catch (error) {
     next(error)
