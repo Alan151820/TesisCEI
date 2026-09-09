@@ -1,4 +1,5 @@
 import * as catalogoServicio from '../services/catalogo.servicio.js'
+import { esIdValido } from '../middleware/validaciones.js'
 
 async function listarCatalogo(req, res, next) {
   try {
@@ -31,7 +32,7 @@ async function obtenerDetalle(req, res, next) {
     // ("Este producto no está disponible."). Sin esta guarda, un id no
     // numérico llega al WHERE p.id = $1 (columna integer) y devuelve 500.
     const id = Number(req.params.id)
-    if (!Number.isInteger(id) || id < 1) {
+    if (!esIdValido(id)) {
       return res.status(404).json({ mensaje: 'Este producto no está disponible.' })
     }
 

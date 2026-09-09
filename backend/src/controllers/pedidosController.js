@@ -1,13 +1,6 @@
 import * as pedidosServicio from '../services/pedidos.servicio.js'
+import { esIdValido } from '../middleware/validaciones.js'
 
-// Un `:id` de ruta no entero (`/api/pedidos/abc`, `/api/pedidos/1.5`) no
-// puede corresponder a ningún pedido: `Number(...)` da NaN o un decimal
-// que, sin este corte, llegaba al `WHERE p.id = $1` (columna integer) y
-// Postgres respondía con un error crudo (500) en vez de un 404. Mismo
-// criterio que catalogo / distribuidor / reparto.
-function idInvalido(valor) {
-  return !Number.isInteger(valor) || valor < 1
-}
 
 async function confirmarPedido(req, res, next) {
   const { direccionEntrega, latitud, longitud, items } = req.body
@@ -79,7 +72,7 @@ async function pedidosDisponiblesReparto(req, res, next) {
 
 async function detalleComprador(req, res, next) {
   const pedidoId = Number(req.params.id)
-  if (idInvalido(pedidoId)) {
+  if (!esIdValido(pedidoId)) {
     return res.status(404).json({ error: 'Pedido no encontrado.' })
   }
   try {
@@ -92,7 +85,7 @@ async function detalleComprador(req, res, next) {
 
 async function detalleDistribuidor(req, res, next) {
   const pedidoId = Number(req.params.id)
-  if (idInvalido(pedidoId)) {
+  if (!esIdValido(pedidoId)) {
     return res.status(404).json({ error: 'Pedido no encontrado.' })
   }
   try {
@@ -105,7 +98,7 @@ async function detalleDistribuidor(req, res, next) {
 
 async function aceptarPedido(req, res, next) {
   const pedidoId = Number(req.params.id)
-  if (idInvalido(pedidoId)) {
+  if (!esIdValido(pedidoId)) {
     return res.status(404).json({ error: 'Pedido no encontrado.' })
   }
   try {
@@ -120,7 +113,7 @@ async function rechazarPedido(req, res, next) {
   const pedidoId = Number(req.params.id)
   const { motivo } = req.body
 
-  if (idInvalido(pedidoId)) {
+  if (!esIdValido(pedidoId)) {
     return res.status(404).json({ error: 'Pedido no encontrado.' })
   }
 
@@ -138,7 +131,7 @@ async function rechazarPedido(req, res, next) {
 
 async function avanzarEstado(req, res, next) {
   const pedidoId = Number(req.params.id)
-  if (idInvalido(pedidoId)) {
+  if (!esIdValido(pedidoId)) {
     return res.status(404).json({ error: 'Pedido no encontrado.' })
   }
   try {
@@ -152,7 +145,7 @@ async function avanzarEstado(req, res, next) {
 // RF-069
 async function cancelarPedido(req, res, next) {
   const pedidoId = Number(req.params.id)
-  if (idInvalido(pedidoId)) {
+  if (!esIdValido(pedidoId)) {
     return res.status(404).json({ error: 'Pedido no encontrado.' })
   }
   try {

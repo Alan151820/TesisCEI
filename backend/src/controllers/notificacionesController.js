@@ -1,4 +1,5 @@
 import * as notificacionesServicio from '../services/notificaciones.servicio.js'
+import { esIdValido } from '../middleware/validaciones.js'
 
 async function listar(req, res, next) {
   try {
@@ -15,7 +16,7 @@ async function marcarLeida(req, res, next) {
   // rompía el `WHERE id = $1` (columna integer) con un 500. El endpoint es
   // idempotente y no tiene 404: un id entero inexistente ya devuelve
   // `{ ok: true }` sin marcar nada, así que un id inválido hace lo mismo.
-  if (!Number.isInteger(id) || id < 1) {
+  if (!esIdValido(id)) {
     return res.json({ ok: true })
   }
   try {
