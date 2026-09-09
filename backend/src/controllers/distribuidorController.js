@@ -126,6 +126,14 @@ const actualizarDireccionPartida = async (req, res) => {
       return res.status(400).json({ mensaje: 'Ingresá la dirección de partida antes de guardar.' })
     }
 
+    // RF-042: la dirección de partida se registra siempre junto con su
+    // ubicación en el mapa. Sin este chequeo, un valor no numérico llegaba
+    // al UPDATE sobre la columna `numeric` y Postgres respondía con un
+    // error crudo (500). Mismo criterio que RF-008 en confirmarPedido.
+    if (latitud == null || longitud == null || !Number.isFinite(Number(latitud)) || !Number.isFinite(Number(longitud))) {
+      return res.status(400).json({ mensaje: 'Marcá la ubicación del depósito en el mapa antes de guardar.' })
+    }
+
     const distribuidor = await Distribuidor.obtenerPorUsuarioId(req.usuario.id)
     if (!distribuidor) {
       return res.status(404).json({ mensaje: 'No tenés un perfil de distribuidor configurado.' })

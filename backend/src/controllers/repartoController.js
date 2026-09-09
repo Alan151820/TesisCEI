@@ -1,5 +1,13 @@
 import * as repartoServicio from '../services/reparto.servicio.js'
 
+// Un id de ruta no numérico (`/api/reparto/abc`) no puede corresponder a
+// ningún plan ni parada: `Number('abc')` es NaN y, sin este corte, llegaba
+// al `WHERE id = $1` (columna integer) y Postgres respondía con un error
+// crudo (500) en vez de un 404. Mismo criterio que catalogo/distribuidor.
+function idInvalido(valor) {
+  return !Number.isInteger(valor) || valor < 1
+}
+
 async function generarPlan(req, res, next) {
   const { pedidoIds } = req.body
 
@@ -26,6 +34,9 @@ async function listarPlanes(req, res, next) {
 
 async function obtenerDetalle(req, res, next) {
   const planId = Number(req.params.id)
+  if (idInvalido(planId)) {
+    return res.status(404).json({ error: 'El reparto no existe.' })
+  }
   try {
     const detalle = await repartoServicio.obtenerDetalle(req.usuario.id, planId)
     res.json(detalle)
@@ -37,6 +48,10 @@ async function obtenerDetalle(req, res, next) {
 async function editarPedidos(req, res, next) {
   const planId = Number(req.params.id)
   const { pedidoIds } = req.body
+
+  if (idInvalido(planId)) {
+    return res.status(404).json({ error: 'El reparto no existe o ya está finalizado.' })
+  }
 
   if (!Array.isArray(pedidoIds)) {
     return res.status(400).json({ error: 'Formato de pedidos inválido.' })
@@ -52,6 +67,9 @@ async function editarPedidos(req, res, next) {
 
 async function eliminar(req, res, next) {
   const planId = Number(req.params.id)
+  if (idInvalido(planId)) {
+    return res.status(404).json({ error: 'El reparto no existe.' })
+  }
   try {
     const resultado = await repartoServicio.eliminarReparto(req.usuario.id, planId)
     res.json(resultado)
@@ -62,6 +80,9 @@ async function eliminar(req, res, next) {
 
 async function iniciar(req, res, next) {
   const planId = Number(req.params.id)
+  if (idInvalido(planId)) {
+    return res.status(404).json({ error: 'El reparto no existe o ya no está en estado "Sin empezar".' })
+  }
   try {
     const plan = await repartoServicio.iniciarReparto(req.usuario.id, planId)
     res.json(plan)
@@ -73,6 +94,9 @@ async function iniciar(req, res, next) {
 async function cerrarEnBloque(req, res, next) {
   const planId = Number(req.params.id)
   const { motivo } = req.body
+  if (idInvalido(planId)) {
+    return res.status(404).json({ error: 'El reparto no existe, no está en curso o no tiene paradas pendientes.' })
+  }
   try {
     const plan = await repartoServicio.cerrarEnBloque(req.usuario.id, planId, motivo)
     res.json(plan)
@@ -85,6 +109,13 @@ async function marcarParada(req, res, next) {
   const planId = Number(req.params.id)
   const paradaId = Number(req.params.paradaId)
   const { accion, motivo } = req.body
+
+  if (idInvalido(planId)) {
+    return res.status(404).json({ error: 'El reparto no existe o no está en curso.' })
+  }
+  if (idInvalido(paradaId)) {
+    return res.status(404).json({ error: 'La parada no existe o ya fue marcada.' })
+  }
 
   if (!['entregado', 'omitido', 'rechazado'].includes(accion)) {
     return res.status(400).json({ error: 'Acción inválida.' })
@@ -102,6 +133,10 @@ async function marcarParada(req, res, next) {
 async function actualizarUbicacion(req, res, next) {
   const planId = Number(req.params.id)
   const { latitud, longitud } = req.body
+
+  if (idInvalido(planId)) {
+    return res.status(404).json({ error: 'El reparto no existe o no está en curso.' })
+  }
 
   if (typeof latitud !== 'number' || typeof longitud !== 'number') {
     return res.status(400).json({ error: 'Ubicación inválida.' })
