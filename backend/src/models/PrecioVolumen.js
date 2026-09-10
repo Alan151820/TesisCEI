@@ -25,9 +25,6 @@ class PrecioVolumen {
     if (precioCosto !== null && precioCosto !== undefined && precioCosto < 0) {
       throw Object.assign(new Error('El precio de costo no puede ser negativo.'), { status: 400 })
     }
-    // RF-015: "la cantidad mínima se expresa siempre en unidades enteras".
-    // La columna es INTEGER: un valor fraccionario rompía la consulta con
-    // un error crudo de SQL (500) en vez de este 400.
     if (!Number.isInteger(cantidadMinima)) {
       throw Object.assign(new Error('La cantidad mínima debe ser un número entero.'), { status: 400 })
     }
@@ -62,10 +59,6 @@ class PrecioVolumen {
       )
       return new PrecioVolumen(res.rows[0])
     } catch (error) {
-      // RF-015: "Ya existe un precio con esa cantidad mínima." — la garantía
-      // real es la constraint UNIQUE (producto_id, cantidad_minima) de la
-      // base (código 23505), no una verificación previa en JS que dejaría
-      // una ventana de carrera entre el SELECT y el INSERT.
       if (error.code === '23505') {
         throw Object.assign(new Error('Ya existe un precio con esa cantidad mínima.'), { status: 400 })
       }
@@ -89,9 +82,6 @@ class PrecioVolumen {
         [cantidadMinima, precioVenta, precioCosto ?? null, this.id, this.productoId]
       )
     } catch (error) {
-      // RF-015: mismo criterio que crear() — incluye el caso de mover este
-      // tramo a una cantidad_minima que ya usa otro precio del producto
-      // (por ejemplo, a 1, chocando con el precio base).
       if (error.code === '23505') {
         throw Object.assign(new Error('Ya existe un precio con esa cantidad mínima.'), { status: 400 })
       }
@@ -130,10 +120,6 @@ class PrecioVolumen {
     return { tipoResultado: 'ELIMINADO', mensaje: 'El precio por volumen fue eliminado correctamente.' }
   }
 
-  // RF-036: rentabilidad de este precio por volumen. Solo disponible si
-  // precioCosto está registrado (no es null) — si no lo está, se devuelve
-  // tienePrecioCostoRegistrado: false y las diferencias en null, para que
-  // la capa de presentación muestre el indicador "—" en vez de calcular.
   calcularRentabilidad() {
     const precioVenta = Number(this.precioVenta)
     const tienePrecioCostoRegistrado = this.precioCosto !== null && this.precioCosto !== undefined
@@ -153,9 +139,6 @@ class PrecioVolumen {
     }
   }
 
-  // RF-036: rentabilidad de cada precio por volumen de los productos
-  // habilitados del distribuidor (mismo filtro que
-  // Producto.listarPorDistribuidor).
   static async listarConRentabilidadPorDistribuidor(usuarioDistribuidorId) {
     const res = await pool.query(
       `SELECT pv.id, pv.producto_id, pv.cantidad_minima, pv.precio_venta, pv.precio_costo,
@@ -173,13 +156,6 @@ class PrecioVolumen {
     }))
   }
 
-  // Descuento total del catálogo (panel "Mis productos"): aplica el mismo
-  // descuento a TODOS los tramos de TODOS los productos del distribuidor
-  // que coincidan con los filtros de la lista (categoría/visibilidad/stock
-  // — mismo criterio que Producto.listarPorDistribuidor), en una sola
-  // consulta. Reemplaza al descuento por producto individual que existía
-  // antes en la ficha de edición (confirmado con el usuario). Devuelve la
-  // cantidad de productos distintos afectados, para el mensaje de éxito.
   static async aplicarDescuentoMasivo(usuarioId, filtros, porcentaje) {
     const { categoria, visibilidad, stock } = filtros
     const factor = 1 - porcentaje / 100

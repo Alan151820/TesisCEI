@@ -11,7 +11,6 @@ import './FichaProducto.css'
 function FichaProducto() {
   const navigate = useNavigate()
 
-  // --- Estado del producto ---
   const [categorias, setCategorias] = useState([])
   const [nombre, setNombre] = useState('')
   const [incluyeCantidad, setIncluyeCantidad] = useState(false)
@@ -29,8 +28,6 @@ function FichaProducto() {
   const [errorProducto, setErrorProducto] = useState('')
   const [cargandoProducto, setCargandoProducto] = useState(false)
 
-  // --- Precios por volumen: tramos adicionales, solo en memoria hasta
-  // guardar el producto. Se crean todos juntos en el mismo POST. ---
   const [tramosAdicionales, setTramosAdicionales] = useState([])
   const [mostrarFormPrecio, setMostrarFormPrecio] = useState(false)
   const [cantidadMinima, setCantidadMinima] = useState('')
@@ -38,12 +35,9 @@ function FichaProducto() {
   const [descuentoPct, setDescuentoPct] = useState('')
   const [errorPrecio, setErrorPrecio] = useState('')
 
-  // --- Descuento total: se aplica localmente sobre el precio base y los
-  // tramos adicionales todavía no guardados. ---
   const [descuentoTotal, setDescuentoTotal] = useState('')
   const [errorDescuento, setErrorDescuento] = useState('')
 
-  // --- Nombre comercial propio, para la previsualización de la tarjeta ---
   const [nombreDistribuidor, setNombreDistribuidor] = useState('')
 
   useEffect(() => {
@@ -63,9 +57,6 @@ function FichaProducto() {
     setImagenPreview(URL.createObjectURL(convertido))
   }
 
-  // El tramo se carga como precio total para la cantidad mínima (más fácil
-  // de pensar para packs/bultos); internamente se guarda como precio por
-  // unidad, que es lo que el resto del sistema espera (RF-015).
   const handleAgregarPrecio = () => {
     setErrorPrecio('')
     const cant = Number(cantidadMinima)
@@ -96,9 +87,6 @@ function FichaProducto() {
     setTramosAdicionales(prev => prev.filter(t => t.idLocal !== idLocal))
   }
 
-  // --- Vínculo bidireccional entre % de descuento y precio total del tramo,
-  // ambos relativos al precio base (cantidad 1). Cambiar cualquiera de los
-  // tres (cantidad, %, total) recalcula el que falte. ---
   const handleChangeCantidadMinima = (value) => {
     setCantidadMinima(value)
     const cant = Number(value)
@@ -126,10 +114,6 @@ function FichaProducto() {
 
   const precioPorUnidadCalc = precioUnitario(precioVenta, cantidadMinima)
 
-  // RF-015: se aplica al guardar (nunca en vivo mientras se escribe), y
-  // transforma los precios ya cargados en la pantalla — igual que antes,
-  // solo que ahora esos precios todavía viven en el navegador, no en el
-  // servidor.
   const handleAplicarDescuento = () => {
     setErrorDescuento('')
     const porcentaje = Number(descuentoTotal)
@@ -176,8 +160,6 @@ function FichaProducto() {
     }
   }
 
-  // Vista previa unificada: precio base (fila fija, cantidad 1) + tramos
-  // adicionales cargados hasta ahora, ordenados por cantidad mínima.
   const preciosPreview = [
     ...(precioBase ? [{ idLocal: 'base', cantidadMinima: 1, precioVenta: Number(precioBase), precioCosto: null, esBase: true }] : []),
     ...tramosAdicionales,
@@ -185,13 +167,10 @@ function FichaProducto() {
 
   const precioBaseRef = precioBase ? Number(precioBase) : null
 
-  // La cantidad (ej. "x6") es solo una ayuda para armar el nombre — no se
-  // guarda como campo aparte, se agrega directamente al texto del nombre.
   const nombreEfectivo = incluyeCantidad && cantidadNombre
     ? `${nombre.trim()} x${cantidadNombre}`
     : nombre
 
-  // --- Datos para la previsualización de la tarjeta del catálogo ---
   const categoriaNombre = categorias.find(c => String(c.id) === String(categoriaId))?.nombre
   const precioMinimoPreview = preciosPreview.length > 0
     ? Math.min(...preciosPreview.map(p => Number(p.precioVenta)))
@@ -368,7 +347,6 @@ function FichaProducto() {
               </div>
             </div>
 
-            {/* Sección precios por volumen */}
             <div className="ficha-card">
               <div className="ficha-precios-header">
                 <div className="ficha-card-titulo">Precios por volumen</div>
@@ -379,7 +357,6 @@ function FichaProducto() {
                 )}
               </div>
 
-              {/* Tabla de precios (vista previa, todavía no guardada) */}
               {preciosPreview.length > 0 && (
                 <div className="ficha-precios-tabla">
                   <div className="ficha-precios-thead">
@@ -414,7 +391,6 @@ function FichaProducto() {
                 </div>
               )}
 
-              {/* Formulario inline para agregar precio */}
               {mostrarFormPrecio && (
                 <FormularioTramoPrecio
                   cantidadMinima={cantidadMinima}
@@ -436,7 +412,6 @@ function FichaProducto() {
               </div>
             </div>
 
-            {/* Descuento total */}
             <div className="ficha-card">
               <div className="ficha-card-titulo">Descuento total</div>
               <div className="ficha-descuento-fila">

@@ -1,22 +1,11 @@
 import pool from '../config/db.js'
 import Notificacion from '../models/Notificacion.js'
 
-// RF-024: el motivo de rechazo no vive en una columna propia — va concatenado
-// dentro del texto libre de "mensaje" (ver mensajeCambioEstado en
-// pedidos.servicio.js). Se extrae acá para exponerlo como campo estructurado
-// sin necesitar una columna nueva.
 function extraerMotivoRechazo(mensaje) {
   const match = mensaje.match(/fue rechazado\. Motivo: (.+)$/)
   return match ? match[1] : null
 }
 
-// Para notificaciones ligadas a un pedido (pedido_entrante del lado del
-// distribuidor, cambio_estado_pedido del lado del comprador — ver
-// pedidos.servicio.js), se enriquece con datos del primer producto (imagen,
-// nombre, cantidad) y el total — para que la campana muestre una tarjeta
-// completa en vez de solo el texto libre de "mensaje". El texto de "mensaje"
-// ya trae compuesto a quién/qué distribuidora corresponde, así que no hace
-// falta un JOIN aparte para eso.
 async function obtenerPorUsuario(usuarioId) {
   const res = await pool.query(
     `SELECT

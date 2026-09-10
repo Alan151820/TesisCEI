@@ -42,8 +42,6 @@ async function crearProducto(usuarioId, datos) {
   }
 }
 
-// RNF-005: sin perfil de distribuidor, no hay catálogo propio que listar —
-// antes devolvía [] silenciosamente a cualquier usuario autenticado.
 async function listarProductos(usuarioId, filtros = {}) {
   const distribuidor = await Distribuidor.obtenerPorUsuarioId(usuarioId)
   if (!distribuidor) {
@@ -52,10 +50,6 @@ async function listarProductos(usuarioId, filtros = {}) {
   return Producto.listarPorDistribuidor(usuarioId, filtros)
 }
 
-// Descuento total del catálogo, aplicado desde el panel "Mis productos" a
-// todos los productos que coincidan con los filtros vigentes en la lista
-// (reemplaza al descuento por producto individual que vivía en la ficha de
-// edición, confirmado con el usuario).
 async function aplicarDescuentoTotal(usuarioId, filtros, porcentaje) {
   if (!porcentaje || porcentaje <= 0) {
     throw Object.assign(new Error('Ingresá un porcentaje de descuento mayor a cero.'), { status: 400 })

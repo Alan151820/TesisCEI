@@ -17,8 +17,6 @@ function EditarPerfil() {
   const [guardando, setGuardando] = useState(false)
   const navigate = useNavigate()
 
-  // RF-042: dirección de partida del depósito. Se guarda junto con el resto
-  // del perfil (RF-049) en una única acción de "Guardar cambios".
   const [direccionPartida, setDireccionPartida] = useState('')
   const [latitudPartida, setLatitudPartida] = useState(null)
   const [longitudPartida, setLongitudPartida] = useState(null)

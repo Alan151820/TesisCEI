@@ -24,11 +24,6 @@ class Distribuidor {
   return null
 }
 
-  // RF-048 (ampliación): la ubicación del depósito ya se puede elegir en
-  // el mapa desde el alta inicial, no solo después desde Editar perfil
-  // (RF-042) — sigue siendo opcional acá también: si no se eligió
-  // ubicación, se guarda igual el resto del perfil con estos tres campos
-  // en null.
   static async configurarPerfilInicial(usuarioId, nombreComercial, descripcionNegocio, zonaEntrega, direccionPartida = null, latitud = null, longitud = null) {
   const resultado = await pool.query(
     'INSERT INTO distribuidor (usuario_id, nombre_comercial, descripcion_negocio, zona_entrega, direccion_partida, latitud, longitud, perfil_configurado) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *',
@@ -38,8 +33,6 @@ class Distribuidor {
 }
 
 async editarPerfil(nombreComercial, descripcionNegocio, zonaEntrega) {
-  // RF-049: "El nombre comercial no puede quedar vacío." Es una validación
-  // de entrada (400), no un fallo del servidor.
   if (!nombreComercial) throw Object.assign(new Error('El nombre comercial no puede quedar vacío.'), { status: 400 })
 
   await pool.query(
@@ -76,10 +69,6 @@ static async obtenerPorUsuarioId(usuarioId) {
   return new Distribuidor(resultado.rows[0])
 }
 
-// Igual que obtenerPorUsuarioId, pero lanza 404 en vez de devolver null
-// cuando el usuario no tiene perfil de distribuidor (RNF-005). Los
-// servicios de reparto, reportes y pedidos repetían este chequeo de tres
-// líneas al inicio de cada método.
 static async requerirPorUsuarioId(usuarioId) {
   const distribuidor = await Distribuidor.obtenerPorUsuarioId(usuarioId)
   if (!distribuidor) {

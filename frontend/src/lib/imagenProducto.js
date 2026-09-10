@@ -1,8 +1,3 @@
-// Redimensiona una imagen elegida por el usuario a un máximo de 900 px de
-// ancho y la re-codifica a WebP con calidad 0.85, en el navegador, antes
-// de subirla. Así la foto de producto que llega al backend pesa poco sin
-// pedirle al distribuidor que la optimice a mano. Se usa igual en el alta
-// (FichaProducto) y en la edición (EditarProducto).
 export function convertirAWebP(archivo) {
   return new Promise((resolve) => {
     const img = new Image()

@@ -6,15 +6,6 @@ import Distribuidor from '../models/Distribuidor.js'
 
 const LIMITE_RANKING_PRODUCTOS = 5
 
-// RF-037: "día / semana / mes actual" es en hora de Uruguay. El rango se
-// calcula en Postgres con `now() AT TIME ZONE 'America/Montevideo'` para
-// que NO dependa de la zona horaria del proceso Node (antes usaba
-// `new Date()` local: si el server no está en esa zona, los cortes se
-// corren horas). `fecha_entregado` es TIMESTAMP sin zona y guarda el
-// wall-clock de Uruguay (se escribe con NOW() en la sesión de la base,
-// configurada en America/Montevideo), así que se compara contra strings
-// naive del mismo criterio. `date_trunc('week', ...)` arranca el lunes
-// (ISO), igual que la lógica anterior.
 async function calcularRangoPeriodo(periodo) {
   const unidad = periodo === 'dia' ? 'day' : periodo === 'semana' ? 'week' : 'month'
   const paso = periodo === 'dia' ? '1 day' : periodo === 'semana' ? '1 week' : '1 month'
@@ -26,10 +17,6 @@ async function calcularRangoPeriodo(periodo) {
   return { inicio: rows[0].inicio, fin: rows[0].fin }
 }
 
-// RF-035/RF-037: KPIs de rendimiento (total facturado, pedidos entregados) y
-// ranking de productos más/menos vendidos, del período elegido.
-// RNF-005: sin perfil de distribuidor no hay reportes que calcular — antes
-// devolvía todo en cero a cualquier usuario autenticado.
 async function generarReporteRendimiento(usuarioDistribuidorId, periodo) {
   await Distribuidor.requerirPorUsuarioId(usuarioDistribuidorId)
 
@@ -40,11 +27,6 @@ async function generarReporteRendimiento(usuarioDistribuidorId, periodo) {
 
   const ranking = await Producto.listarVendidosPorDistribuidor(usuarioDistribuidorId, inicio, fin)
 
-  // RF-035: "más vendidos" y "menos vendidos" son listas distintas. Sin
-  // este filtro, con pocos productos vendidos (<= 2 * LIMITE) los mismos
-  // productos aparecían en ambas listas (uno como "el que más vendés" y
-  // "el que menos vendés" a la vez). "Menos vendidos" excluye lo que ya
-  // está en "más vendidos": queda vacía si hay <= LIMITE productos.
   const productosMasVendidos = ranking.slice(0, LIMITE_RANKING_PRODUCTOS)
   const idsMasVendidos = new Set(productosMasVendidos.map(p => p.id))
   const productosMenosVendidos = [...ranking]
@@ -61,7 +43,6 @@ async function generarReporteRendimiento(usuarioDistribuidorId, periodo) {
   }
 }
 
-// RF-036: rentabilidad por tramo de precio por volumen.
 async function calcularRentabilidadPorPrecioVolumen(usuarioDistribuidorId) {
   await Distribuidor.requerirPorUsuarioId(usuarioDistribuidorId)
   return PrecioVolumen.listarConRentabilidadPorDistribuidor(usuarioDistribuidorId)

@@ -4,7 +4,6 @@ import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 import './ModalMapaDireccion.css'
 
-// Fix de íconos de marcador en Vite (leaflet usa require() internamente)
 import markerIconPng from 'leaflet/dist/images/marker-icon.png'
 import markerIcon2xPng from 'leaflet/dist/images/marker-icon-2x.png'
 import markerShadowPng from 'leaflet/dist/images/marker-shadow.png'
@@ -28,7 +27,6 @@ async function fetchDireccion(lat, lng) {
   return data.display_name ?? `${lat.toFixed(5)}, ${lng.toFixed(5)}`
 }
 
-// Componente interno: vuela al centro cuando cambia (necesario porque MapContainer no re-renderiza)
 function ControladorCentro({ centro, zoom }) {
   const map = useMap()
   const primero = useRef(true)
@@ -39,14 +37,11 @@ function ControladorCentro({ centro, zoom }) {
   return null
 }
 
-// Componente interno: captura clicks en el mapa
 function ManejadorClic({ onClic }) {
   useMapEvents({ click: e => onClic(e.latlng.lat, e.latlng.lng) })
   return null
 }
 
-// soloLectura: modo de solo visualización, usado para mostrar la ubicación
-// exacta de un pedido ya confirmado — sin edición, sin click-to-move.
 function ModalMapaDireccion({
   onConfirmar,
   onCerrar,

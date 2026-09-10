@@ -53,7 +53,6 @@ function MisPedidos() {
         </div>
       </header>
 
-      {/* Contenido */}
       <main className="mispedidos-main">
 
         <div className="mispedidos-encabezado">
@@ -75,7 +74,6 @@ function MisPedidos() {
 
         {!cargando && !error && pedidos.length > 0 && (
           <>
-            {/* Tabla desktop */}
             <div className="mispedidos-tabla">
               <div className="mispedidos-tabla-header">
                 <div>Pedido</div>
@@ -137,7 +135,6 @@ function MisPedidos() {
               ))}
             </div>
 
-            {/* Cards mobile */}
             <div className="mispedidos-cards">
               {pedidos.map(p => (
                 <div key={p.id} className="mispedidos-card mispedidos-fila-clickeable" onClick={() => navigate(`/pedido/${p.id}`)}>
@@ -196,7 +193,6 @@ function MisPedidos() {
 
       </main>
 
-      {/* Bottom nav mobile */}
       <BottomNavComprador />
 
     </div>

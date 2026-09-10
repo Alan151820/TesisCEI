@@ -116,7 +116,6 @@ async function marcarParada(usuarioId, planId, paradaId, accion, motivo) {
   return { mensaje: 'La parada quedó marcada correctamente.' }
 }
 
-// RF-071
 async function actualizarUbicacion(usuarioId, planId, latitud, longitud) {
   const distribuidor = await Distribuidor.requerirPorUsuarioId(usuarioId)
 

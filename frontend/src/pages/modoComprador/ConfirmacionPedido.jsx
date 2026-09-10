@@ -41,26 +41,6 @@ function paramsNominatim({ calle, numero, ciudad, departamento }) {
   return params
 }
 
-// RF-008: el mapa es el método principal; esto solo se usa para geocodificar
-// la dirección estructurada cuando el comprador usa el formulario de
-// respaldo, para que ese pedido también quede con coordenadas.
-// Búsqueda estructurada de Nominatim: cada campo del formulario (calle,
-// ciudad, departamento) va en su propio parámetro, en vez de concatenar
-// todo en una sola cadena de texto libre — Nominatim compara cada uno
-// contra su nivel real en la base de OSM (calle, ciudad, departamento),
-// más preciso que dejarle adivinar cómo separar una cadena compuesta.
-// Sigue siendo una sola consulta al confirmar el pedido, nunca
-// autocompletado mientras se escribe (la política de uso gratuito de
-// Nominatim lo prohíbe expresamente).
-//
-// Si no hay resultado CON el departamento indicado, se reintenta la
-// búsqueda sin esa restricción, solo para poder avisarle al comprador
-// cuál parece ser el departamento correcto (usando address.state de la
-// respuesta) — nunca para geocodificar "a ciegas" en un departamento
-// distinto al que eligió. Es una validación posible gracias a que
-// Nominatim exige que el departamento indicado coincida con la calle:
-// si no coincide, la búsqueda estructurada devuelve vacío en vez de
-// ignorar el dato (verificado contra la API real antes de escribir esto).
 async function geocodificarDireccion(campos) {
   try {
     const res = await fetch(`https://nominatim.openstreetmap.org/search?${paramsNominatim(campos)}`, { headers: { 'User-Agent': 'TesisCEI-Marketplace/1.0' } })
@@ -74,11 +54,6 @@ async function geocodificarDireccion(campos) {
 
   if (!campos.departamento) return null
 
-  // Espera antes del segundo intento para no disparar dos consultas casi
-  // juntas contra un servicio público con límite de 1 request/segundo —
-  // sin esto, un departamento mal elegido podía frenarse en silencio en
-  // vez de mostrar el aviso, si el segundo intento llegaba a violar ese
-  // límite.
   await new Promise(r => setTimeout(r, 1100))
 
   try {
@@ -100,11 +75,9 @@ function ConfirmacionPedido() {
   const navigate = useNavigate()
   const { items, vaciar, totalItems } = useCarrito()
 
-  // Dirección vía mapa (método principal)
   const [dirMapa, setDirMapa] = useState(null)
   const [mapaAbierto, setMapaAbierto] = useState(false)
 
-  // Dirección manual: solo como respaldo cuando el mapa no se puede usar
   const [mostrarManual, setMostrarManual] = useState(false)
   const [departamento, setDepartamento] = useState('')
   const [ciudad, setCiudad] = useState('')
@@ -128,12 +101,6 @@ function ConfirmacionPedido() {
 
   const camposManualCompletos = departamento && ciudad.trim() && calle.trim() && numero.trim()
 
-  // En Montevideo, departamento y ciudad son casi siempre el mismo valor
-  // (a diferencia de los otros 18 departamentos, donde "Ciudad/Localidad"
-  // sigue siendo necesario para distinguir, por ejemplo, Pando de Las
-  // Piedras dentro de Canelones) — precargarlo ahorra escribirlo dos
-  // veces, sin sacar el campo. Nunca pisa un valor que el comprador ya
-  // haya escrito.
   const handleDepartamentoChange = (valor) => {
     setDepartamento(valor)
     if (valor === 'Montevideo' && !ciudad.trim()) {
@@ -173,10 +140,6 @@ function ConfirmacionPedido() {
           setEnviando(false)
           return
         }
-        // RF-008: todo pedido confirmado tiene que quedar con coordenadas. Si
-        // la geocodificación de respaldo no las pudo obtener (sin resultado o
-        // falla de red), no se confirma el pedido — se le ofrece al comprador
-        // corregir la dirección o usar el mapa.
         if (!geocodificada || !Number.isFinite(geocodificada.lat) || !Number.isFinite(geocodificada.lng)) {
           setError('No pudimos ubicar la dirección ingresada. Revisá los datos o seleccioná el punto en el mapa.')
           setEnviando(false)
@@ -289,7 +252,6 @@ function ConfirmacionPedido() {
 
           <div className="confirmar-izquierda">
 
-            {/* Resumen */}
             <div className="confirmar-card">
               <div className="confirmar-card-titulo">Resumen del pedido</div>
               {Object.entries(porDistribuidor).map(([distId, grupo]) => {
@@ -316,11 +278,9 @@ function ConfirmacionPedido() {
               </div>
             </div>
 
-            {/* Dirección */}
             <div className="confirmar-card">
               <div className="confirmar-card-titulo">Dirección de entrega</div>
 
-              {/* Opción mapa */}
               <div className="confirmar-dir-seccion">
                 <div className="confirmar-dir-seccion-titulo">Seleccionar en el mapa</div>
                 <div className="confirmar-dir-seccion-desc">
@@ -353,7 +313,6 @@ function ConfirmacionPedido() {
                 )}
               </div>
 
-              {/* Opción manual: solo como respaldo, cuando el mapa no se puede usar */}
               {!dirMapa && mostrarManual && (
               <div className="confirmar-dir-seccion">
                 <div className="confirmar-dir-fallback-link" onClick={() => setMostrarManual(false)}>
@@ -362,7 +321,6 @@ function ConfirmacionPedido() {
 
                 <div className="confirmar-dir-campos">
 
-                  {/* Fila 1: Departamento + Ciudad */}
                   <div className="confirmar-dir-fila">
                     <div className="confirmar-dir-campo">
                       <label className="confirmar-label">
@@ -393,7 +351,6 @@ function ConfirmacionPedido() {
                     </div>
                   </div>
 
-                  {/* Fila 2: Calle + Número */}
                   <div className="confirmar-dir-fila">
                     <div className="confirmar-dir-campo confirmar-dir-campo--amplio">
                       <label className="confirmar-label">
@@ -421,7 +378,6 @@ function ConfirmacionPedido() {
                     </div>
                   </div>
 
-                  {/* Fila 3: Esquina + Apto */}
                   <div className="confirmar-dir-fila">
                     <div className="confirmar-dir-campo">
                       <label className="confirmar-label">Esquina / Entre calles</label>
@@ -458,7 +414,6 @@ function ConfirmacionPedido() {
 
           </div>
 
-          {/* Panel derecho */}
           <div className="confirmar-derecha">
             <div className="confirmar-card confirmar-card-accion">
               <div className="confirmar-card-titulo">Tu pedido generará</div>
@@ -487,7 +442,6 @@ function ConfirmacionPedido() {
         </div>
       </div>
 
-      {/* Footer mobile */}
       <div className="confirmar-mobile-footer">
         <div className="confirmar-mobile-footer-info">
           Se crearán {Object.keys(porDistribuidor).length} sub-pedido

@@ -3,10 +3,6 @@ import { useNavigate } from 'react-router-dom'
 import { cerrarSesion } from '../lib/auth'
 import ToggleTema from './ToggleTema'
 
-// Menú de perfil del header del comprador: avatar + nombre + desplegable
-// (Mis pedidos / Distribuidora en mobile, tema, cerrar sesión). Se cierra
-// al hacer clic afuera. Estaba repetido igual en InicioComprador, Carrito,
-// MisPedidos y DetallePedido, cada uno con su propio estado y su efecto.
 function MenuPerfilComprador() {
   const navigate = useNavigate()
   const [abierto, setAbierto] = useState(false)

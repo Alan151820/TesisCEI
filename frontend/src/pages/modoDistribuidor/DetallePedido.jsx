@@ -47,10 +47,6 @@ function DetallePedido() {
   }, [id])
 
   const handleAceptar = async () => {
-    // RF-023: al aceptar hay que abrir WhatsApp con el mensaje pre-redactado.
-    // La ventana se abre AHORA, dentro del gesto del click — un window.open
-    // después del await se bloquea porque ya no hay activación del usuario.
-    // Si el navegador igual bloquea el popup, queda el enlace visible abajo.
     const ventanaWhatsapp = window.open('', '_blank')
     setProcesando(true)
     setErrorAccion(null)

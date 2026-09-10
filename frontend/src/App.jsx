@@ -36,7 +36,6 @@ function App() {
     <TemaProvider>
       <CarritoProvider>
         <Routes>
-          {/* Públicas */}
           <Route path='/registro' element={<Registro />} />
           <Route path='/verificar' element={<Verificar />} />
           <Route path='/login' element={<Login />} />
@@ -50,7 +49,6 @@ function App() {
           <Route path='/' element={<Catalogo />} />
           <Route path='/producto/:id' element={<DetalleProducto />} />
 
-          {/* Protegidas: cualquier usuario con sesión activa */}
           <Route element={<RutaProtegida />}>
             <Route path='/inicioComprador' element={<InicioComprador />} />
             <Route path='/confirmar-pedido' element={<ConfirmacionPedido />} />
@@ -59,7 +57,6 @@ function App() {
             <Route path='/pedido/:id' element={<DetallePedido />} />
           </Route>
 
-          {/* Protegidas: requieren modo distribuidor activo */}
           <Route element={<RutaDistribuidor />}>
             <Route path='/inicio' element={<Inicio />} />
             <Route path='/producto/nuevo' element={<FichaProducto />} />

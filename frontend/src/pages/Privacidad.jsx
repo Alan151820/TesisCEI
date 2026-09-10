@@ -1,9 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 import './Privacidad.css'
 
-// RNF-010 (Ley 18.331): informa el propósito del tratamiento de datos y el
-// mecanismo para solicitar acceso, rectificación o eliminación de datos
-// personales. Página pública, sin requerir sesión.
 function Privacidad() {
   const navigate = useNavigate()
 

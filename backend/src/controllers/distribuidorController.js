@@ -4,8 +4,6 @@ import { esIdValido } from '../middleware/validaciones.js'
 
 const obtenerPerfil = async (req, res, next) => {
   try {
-    // RF-004: un id no entero se trata igual que un perfil inexistente. Sin
-    // esta guarda, llega al WHERE id = $1 (columna integer) y devuelve 500.
     const id = Number(req.params.id)
     if (!esIdValido(id)) {
       return res.status(404).json({ error: 'El perfil del distribuidor no está disponible.' })
@@ -30,9 +28,6 @@ const obtenerPerfil = async (req, res, next) => {
     next(error)
   }
 }
-// RF-048 (ampliación): direccionPartida/latitud/longitud son opcionales acá
-// también, igual que ya lo eran en RF-042 desde Editar perfil — el alta
-// inicial no exige la ubicación del depósito para completarse.
 const configurarPerfil = async (req, res, next) => {
   try {
     const { nombreComercial, descripcionNegocio, zonaEntrega, direccionPartida, latitud, longitud } = req.body
@@ -48,10 +43,6 @@ const configurarPerfil = async (req, res, next) => {
 
     res.json({ mensaje: 'Perfil configurado correctamente.', distribuidorId: distribuidor.id })
   } catch (error) {
-    // La garantía real de "un perfil por usuario" es la constraint UNIQUE
-    // (usuario_id) de la base (código 23505). Este endpoint es el primer
-    // acceso al modo distribuidor; si el perfil ya existe, es un request
-    // fuera de flujo, no un error del servidor.
     if (error.code === '23505') {
       return res.status(409).json({ error: 'Ya tenés un perfil de distribuidor configurado.' })
     }
@@ -111,8 +102,6 @@ const subirLogo = async (req, res, next) => {
       return res.status(404).json({ error: 'No tenés un perfil de distribuidor configurado.' })
     }
 
-    // Sin este chequeo, un request sin archivo hacía `req.file.filename`
-    // sobre `undefined` y devolvía un 500 en vez de una validación clara.
     if (!req.file) {
       return res.status(400).json({ error: 'Adjuntá una imagen para el logo.' })
     }
@@ -126,10 +115,6 @@ const subirLogo = async (req, res, next) => {
   }
 }
 
-// RF-042: dirección de partida del depósito, usada como referencia para la
-// planificación de reparto. Endpoint propio (distinto de RF-049), pero el
-// frontend lo dispara junto con el guardado del resto del perfil desde un
-// único botón "Guardar cambios" en EditarPerfil.jsx.
 const actualizarDireccionPartida = async (req, res, next) => {
   try {
     const direccionPartida = (req.body.direccionPartida || '').trim()
@@ -138,10 +123,6 @@ const actualizarDireccionPartida = async (req, res, next) => {
       return res.status(400).json({ error: 'Ingresá la dirección de partida antes de guardar.' })
     }
 
-    // RF-042: la dirección de partida se registra siempre junto con su
-    // ubicación en el mapa. Sin este chequeo, un valor no numérico llegaba
-    // al UPDATE sobre la columna `numeric` y Postgres respondía con un
-    // error crudo (500). Mismo criterio que RF-008 en confirmarPedido.
     if (latitud == null || longitud == null || !Number.isFinite(Number(latitud)) || !Number.isFinite(Number(longitud))) {
       return res.status(400).json({ error: 'Marcá la ubicación del depósito en el mapa antes de guardar.' })
     }
@@ -160,8 +141,6 @@ const actualizarDireccionPartida = async (req, res, next) => {
 
 const obtenerProductosPublicados = async (req, res, next) => {
   try {
-    // Un id no entero equivale a un distribuidor inexistente: sin productos
-    // (mismo resultado que un id numérico que no existe), no un 500.
     const id = Number(req.params.id)
     if (!esIdValido(id)) {
       return res.json([])

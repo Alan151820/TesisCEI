@@ -20,18 +20,6 @@ function cerrarSesionDistribuidor(navigate) {
   navigate('/login')
 }
 
-// Master page del panel del distribuidor: drawer + header mobile, header +
-// sidebar de escritorio. La usan todas las pantallas del panel (Productos,
-// Pedidos, Reparto, Editar perfil, etc.) para no duplicar esta estructura
-// pantalla por pantalla — antes cada una la copiaba a mano, y varias
-// terminaron divergiendo (algunas sin drawer/header mobile, DetalleReparto
-// directamente sin sidebar ni header). Con un único componente, agregar el
-// panel a una pantalla nueva es usarlo, no volver a copiar ~80 líneas.
-//
-// `activo`: ruta a resaltar en la navegación. Por defecto usa la ruta
-// actual; se puede forzar (por ejemplo en pantallas hijas de una sección,
-// como "/pedidos/:id", que deben resaltar "Pedidos" aunque la ruta exacta
-// no esté en NAV_ITEMS).
 function PanelDistribuidor({ tituloMobile, accionMobile, activo, children }) {
   const navigate = useNavigate()
   const location = useLocation()
@@ -87,9 +75,6 @@ function PanelDistribuidor({ tituloMobile, accionMobile, activo, children }) {
       <div className="panel-mobile-header" data-tema="oscuro">
         <span className="panel-mobile-hamburger" onClick={() => setMenuAbierto(true)}>≡</span>
         <div className="panel-mobile-titulo">{tituloMobile}</div>
-        {/* El header de escritorio (.panel-master-header, con la campana) se
-            oculta a ≤1024px; sin esto las notificaciones no tienen acceso
-            en mobile/tablet. */}
         <CampanaNotificaciones rutaDestino="/pedidos" rutaDetalle="/pedidos" />
         {accionMobile || <div style={{ width: 40 }} />}
       </div>

@@ -1,9 +1,5 @@
 import pool from '../config/db.js'
 
-// RF-002/RF-003: el texto de búsqueda va dentro de un patrón ILIKE
-// (`%texto%`). Sin escapar, un `%` o `_` del usuario funcionan como
-// comodines LIKE (buscar "%" devolvía todo el catálogo). Se escapan con
-// `\` (el carácter de escape por defecto de LIKE en Postgres).
 function escaparLike(texto) {
   return texto.replace(/[\\%_]/g, m => `\\${m}`)
 }

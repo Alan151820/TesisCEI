@@ -50,8 +50,6 @@ async function editarPedidos(req, res, next) {
     return res.status(400).json({ error: 'Formato de pedidos inválido.' })
   }
 
-  // RF-064 [E3]: mismo mínimo que al generar el plan (RF-044). Sin esto se
-  // podía editar un plan hasta dejarlo con 1 o 0 paradas.
   if (pedidoIds.length < 2) {
     return res.status(400).json({ error: 'Seleccioná al menos dos pedidos para el plan de reparto.' })
   }
@@ -128,7 +126,6 @@ async function marcarParada(req, res, next) {
   }
 }
 
-// RF-071
 async function actualizarUbicacion(req, res, next) {
   const planId = Number(req.params.id)
   const { latitud, longitud } = req.body

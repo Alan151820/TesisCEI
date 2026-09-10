@@ -13,9 +13,6 @@ function Registro() {
   const navigate = useNavigate()
 
   const handleRegistro = async () => {
-    // RNF-010 (Ley 18.331): feedback rápido en el cliente — el servidor
-    // vuelve a exigirlo igual, esto es solo para no hacer el viaje al
-    // servidor si ya se sabe que va a fallar.
     if (!consentimientoAceptado) {
       setMensaje('Debés aceptar el tratamiento de datos personales para continuar.')
       return

@@ -62,16 +62,11 @@ function FilaPedido({ pedido: p, onVerUbicacion, navigate }) {
 function MisPedidos() {
   const navigate = useNavigate()
 
-  // RF-029/RF-051: un único panel con todos los pedidos, en cualquier
-  // estado — ya no hay pestañas separadas "Activos"/"Historial". El orden
-  // (Pendiente, Aceptado, el resto) lo arma el backend.
   const [pedidos, setPedidos] = useState([])
   const [cargando, setCargando] = useState(true)
   const [error, setError] = useState(null)
   const [pedidoMapa, setPedidoMapa] = useState(null)
 
-  // Filtros: se aplican en el navegador sobre el panel único ya cargado —
-  // no hay paginación de por medio, no vale la pena ir y volver al server.
   const [filtroCliente, setFiltroCliente] = useState('')
   const [filtroEstado, setFiltroEstado] = useState('')
   const [filtroFechaDesde, setFiltroFechaDesde] = useState('')

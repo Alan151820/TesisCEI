@@ -36,8 +36,6 @@ app.use('/api/reportes', reportesRoutes)
 
 app.use((err, req, res, next) => {
   console.error(err)
-  // Errores de multer (tamaño de archivo, campo inesperado, etc.): son
-  // culpa del request, no del servidor -> 400 con un mensaje entendible.
   if (err instanceof multer.MulterError) {
     const mensaje = err.code === 'LIMIT_FILE_SIZE'
       ? 'La imagen supera el tamaño máximo permitido (5 MB).'

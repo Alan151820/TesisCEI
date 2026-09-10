@@ -36,10 +36,6 @@ function DetallePedido() {
       .finally(() => setCargando(false))
   }, [id])
 
-  // RF-069: el comprador cancela su propio pedido mientras esté Pendiente o
-  // Aceptado. Sin motivo (es su propia decisión) pero con confirmación
-  // previa por ser irreversible, igual que las acciones equivalentes del
-  // lado distribuidor (ver DetalleReparto.jsx).
   const handleCancelar = async () => {
     if (!window.confirm('¿Cancelar este pedido? Esta acción no se puede deshacer.')) return
     setErrorCancelar('')

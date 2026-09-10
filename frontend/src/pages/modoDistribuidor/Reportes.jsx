@@ -5,7 +5,6 @@ import api from '../../lib/axios'
 import PanelDistribuidor from '../../components/PanelDistribuidor'
 import './Reportes.css'
 
-// RF-041: períodos disponibles. 'mes' es el default.
 const PERIODOS = [
   { valor: 'dia', label: 'Día' },
   { valor: 'semana', label: 'Semana' },
@@ -44,10 +43,6 @@ function Reportes() {
         <span className="reportes-subnav-item" onClick={() => navigate('/reportes/rentabilidad')}>Rentabilidad</span>
       </div>
 
-      {/* El selector de período va FUERA de .panel-seccion-header: ese
-          contenedor se oculta con display:none a ≤1024px (Inicio.css) y se
-          llevaba consigo los tabs Día/Semana/Mes, dejando al distribuidor
-          fijo en el período por defecto en mobile/tablet (RF-041). */}
       <div className="reportes-encabezado">
         <div className="panel-seccion-header panel-seccion-header--sub">
           <div>

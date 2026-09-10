@@ -1,10 +1,6 @@
 import { construirTituloProducto } from '../lib/producto'
 import './TarjetaProductoPreview.css'
 
-// Espejo visual de la tarjeta del catálogo público (Catalogo.jsx). Se usa en
-// FichaProducto.jsx y EditarProducto.jsx para previsualizar en vivo cómo se
-// va a ver el producto mientras se edita, antes de guardar. No es interactiva
-// (no navega, no agrega al carrito) — es solo una vista previa.
 function TarjetaProductoPreview({ nombre, marca, magnitudValor, magnitudUnidad, categoriaNombre, descripcion, imagenSrc, nombreDistribuidor, precioMinimo, precioBase }) {
   const tieneNombre = nombre && nombre.trim() !== ''
   const tienePrecio = Number(precioMinimo) > 0

@@ -13,9 +13,6 @@ function ConfigurarPerfil() {
   const [mensaje, setMensaje] = useState('')
   const navigate = useNavigate()
 
-  // RF-048 (ampliación): la ubicación del depósito ya se puede elegir en
-  // el mapa desde este mismo alta inicial, no solo después desde Editar
-  // perfil (RF-042) — sigue siendo opcional, igual que ahí.
   const [direccionPartida, setDireccionPartida] = useState('')
   const [latitudPartida, setLatitudPartida] = useState(null)
   const [longitudPartida, setLongitudPartida] = useState(null)

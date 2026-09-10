@@ -10,10 +10,6 @@ async function confirmarPedido(req, res, next) {
     return res.status(400).json({ error: 'Debés ingresar una dirección de entrega para continuar.' })
   }
 
-  // RF-008: todo pedido confirmado queda con coordenadas registradas (por el
-  // mapa o por geocodificación de la dirección de respaldo). Si la
-  // confirmación llega sin coordenadas válidas, no se procesa — mismo
-  // criterio que el chequeo de dirección de arriba (RF-008 [E2]).
   if (latitud == null || longitud == null || !Number.isFinite(Number(latitud)) || !Number.isFinite(Number(longitud))) {
     return res.status(400).json({ error: 'El pedido debe incluir la ubicación de la dirección de entrega.' })
   }
@@ -22,9 +18,6 @@ async function confirmarPedido(req, res, next) {
     return res.status(400).json({ error: 'El carrito debe contener al menos un producto.' })
   }
 
-  // RF-005/RF-007: la cantidad de cada ítem es un entero >= 1. El stepper
-  // del front lo garantiza, pero un request armado a mano pasaba valores
-  // fraccionarios que rompían la consulta de precio aplicable con un 500.
   for (const item of items) {
     const cantidad = Number(item?.cantidad)
     if (!Number.isInteger(cantidad) || cantidad < 1) {
@@ -142,7 +135,6 @@ async function avanzarEstado(req, res, next) {
   }
 }
 
-// RF-069
 async function cancelarPedido(req, res, next) {
   const pedidoId = Number(req.params.id)
   if (!esIdValido(pedidoId)) {

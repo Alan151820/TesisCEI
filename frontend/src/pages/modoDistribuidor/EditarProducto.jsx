@@ -49,7 +49,6 @@ function EditarProducto() {
   const [errorPrecio, setErrorPrecio] = useState('')
   const [cargandoPrecio, setCargandoPrecio] = useState(false)
 
-  // --- Nombre comercial propio, para la previsualización de la tarjeta ---
   const [nombreDistribuidor, setNombreDistribuidor] = useState('')
 
   useEffect(() => {
@@ -62,12 +61,6 @@ function EditarProducto() {
       .then(([catRes, prodRes, preciosRes, perfilRes]) => {
         setCategorias(catRes.data)
         const p = prodRes.data
-        // El "Pack" (incluyeCantidad/cantidadNombre) no se guarda como campo
-        // aparte — se arma dentro de p.nombre al crear el producto (ver
-        // nombreEfectivo). Al editar hay que reconstruirlo desde el nombre
-        // guardado, si no, la casilla siempre carga destildada y volver a
-        // tildarla duplica el sufijo (ej. "Empanadas x12" pasa a
-        // "Empanadas x12 x12").
         const matchPack = p.nombre.match(/^(.*)\sx(\d+)$/i)
         if (matchPack) {
           setNombre(matchPack[1].trim())
@@ -129,9 +122,6 @@ function EditarProducto() {
     }
   }
 
-  // El tramo se carga como precio total para la cantidad mínima (más fácil
-  // de pensar para packs/bultos); al servidor se envía el precio por unidad,
-  // que es lo que el resto del sistema espera (RF-015).
   const handleAgregarPrecio = async () => {
     setErrorPrecio('')
     setCargandoPrecio(true)
@@ -174,9 +164,6 @@ function EditarProducto() {
     }
   }
 
-  // --- Vínculo bidireccional entre % de descuento y precio total del tramo,
-  // ambos relativos al precio base (cantidad 1). Cambiar cualquiera de los
-  // tres (cantidad, %, total) recalcula el que falte. ---
   const handleChangeCantidadMinima = (value) => {
     setCantidadMinima(value)
     const cant = Number(value)
@@ -208,8 +195,6 @@ function EditarProducto() {
     try {
       const res = await api.delete(`/api/productos/${id}/precios/${precioId}`)
       if (res.data.tipoResultado === 'PRODUCTO_DESHABILITADO') {
-        // El precio tenía pedidos asociados: no se borró, se deshabilitó
-        // el producto entero para no romper el historial de esos pedidos.
         alert(res.data.mensaje)
         navigate('/inicio')
         return
@@ -257,13 +242,10 @@ function EditarProducto() {
     return base ? Number(base.precioVenta) : null
   })()
 
-  // La cantidad (ej. "x6") es solo una ayuda para armar el nombre — no se
-  // guarda como campo aparte, se agrega directamente al texto del nombre.
   const nombreEfectivo = incluyeCantidad && cantidadNombre
     ? `${nombre.trim()} x${cantidadNombre}`
     : nombre
 
-  // --- Datos para la previsualización de la tarjeta del catálogo ---
   const categoriaNombre = categorias.find(c => String(c.id) === String(categoriaId))?.nombre
   const precioMinimoPreview = precios.length > 0
     ? Math.min(...precios.map(p => Number(p.precioVenta)))
@@ -438,7 +420,6 @@ function EditarProducto() {
               </div>
             </div>
 
-            {/* Precios por volumen */}
             <div className="ficha-card">
               <div className="ficha-precios-header">
                 <div className="ficha-card-titulo">Precios por volumen</div>

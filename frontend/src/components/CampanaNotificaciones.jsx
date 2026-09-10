@@ -3,9 +3,6 @@ import { useNavigate } from 'react-router-dom'
 import api from '../lib/axios'
 import './CampanaNotificaciones.css'
 
-// Campana de notificaciones reutilizable (comprador y distribuidor).
-// rutaDestino: a dónde navegar al tocar una notificación que refiere a un pedido, si no hay rutaDetalle.
-// rutaDetalle: prefijo de la vista de detalle de ese pedido (ej. '/pedido'); si se recibe, se navega a `${rutaDetalle}/${pedidoId}`.
 function CampanaNotificaciones({ rutaDestino = '/misPedidos', rutaDetalle }) {
   const navigate = useNavigate()
   const [notificaciones, setNotificaciones] = useState([])

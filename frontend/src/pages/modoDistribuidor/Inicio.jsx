@@ -16,8 +16,6 @@ function Inicio() {
   const [filtroVisibilidad, setFiltroVisibilidad] = useState('')
   const [filtroStock, setFiltroStock] = useState('')
 
-  // --- Descuento total del catálogo (reemplaza al descuento por producto
-  // individual que vivía en la ficha de edición) ---
   const [descuentoAbierto, setDescuentoAbierto] = useState(false)
   const [descuentoPct, setDescuentoPct] = useState('')
   const [aplicandoDescuento, setAplicandoDescuento] = useState(false)
@@ -95,9 +93,6 @@ function Inicio() {
     setMensajeDescuento('')
   }
 
-  // El descuento se aplica a los mismos productos que se ven en pantalla
-  // (respeta categoría/visibilidad/stock filtrados) — mismo criterio de
-  // filtrado que usa la lista, resuelto en el backend en una sola consulta.
   const handleAplicarDescuento = async () => {
     setErrorDescuento('')
     setMensajeDescuento('')

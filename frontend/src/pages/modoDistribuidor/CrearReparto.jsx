@@ -12,10 +12,6 @@ import './Reparto.css'
 
 const MONTEVIDEO = [-34.9011, -56.1645]
 
-// Íconos como círculos de color (CSS var, no PNG): evita el workaround de
-// rutas de imagen de Leaflet en Vite (ver ModalMapaDireccion) y permite que
-// el color siga el sistema de color del proyecto (guía 07), tema
-// claro/oscuro incluido.
 function crearIcono(colorVar, tamano) {
   return L.divIcon({
     className: 'reparto-mapa-icono',
@@ -29,8 +25,6 @@ const ICONO_DEPOSITO = crearIcono('--color-secundario', 18)
 const ICONO_SELECCIONADO = crearIcono('--color-primario', 16)
 const ICONO_DISPONIBLE = crearIcono('--color-sobre-variante-superficie', 10)
 
-// Encuadra el mapa para mostrar todos los puntos disponibles (no cambia con
-// la selección, así el click en un punto no reacomoda la vista).
 function AjustarVista({ puntos }) {
   const map = useMap()
   useEffect(() => {
@@ -44,11 +38,6 @@ function AjustarVista({ puntos }) {
   return null
 }
 
-// RF-043: selección de pedidos con mapa interactivo bidireccional — tildar
-// en la lista agrega/resalta el punto en el mapa, y tocar un punto en el
-// mapa agrega o quita ese pedido de la selección. RF-044 (creación del
-// reparto en sí) sigue con su comportamiento previo: no reordena por
-// distancia acá ni ingresa automáticamente al reparto creado todavía.
 function CrearReparto() {
   const navigate = useNavigate()
 
@@ -92,8 +81,6 @@ function CrearReparto() {
     })
   }
 
-  // RF-044: al crear el reparto, ingresa automáticamente a su vista de
-  // progreso — ya no se queda en esta pantalla mostrando un mensaje.
   const handleGenerarPlan = async () => {
     setErrorGenerar('')
     setGenerando(true)
@@ -121,11 +108,6 @@ function CrearReparto() {
 
   return (
     <PanelDistribuidor tituloMobile="Crear reparto" activo="/reparto">
-          {/* .reparto-crear-header: mismo criterio que .reparto-detalle-header
-              (ver Reparto.css) — el "Volver al panel" vive en este
-              .panel-seccion-header, que Inicio.css oculta a ≤1024px; el
-              modificador lo vuelve a mostrar, apilado, para que no
-              desaparezca en tablet/mobile. */}
           <div className="panel-seccion-header reparto-crear-header">
             <div>
               <h1 className="panel-h1">Crear reparto</h1>

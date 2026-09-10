@@ -13,10 +13,6 @@ function formatearFecha(isoString) {
   return d.toLocaleDateString('es-AR', { day: 'numeric', month: 'short', year: 'numeric' })
 }
 
-// RF-063: panel único de repartos — punto de entrada a toda la gestión de
-// reparto. Lista todos los repartos del distribuidor en cualquier estado,
-// deja entrar a cualquiera (RF-045, todavía no construido) y crear uno
-// nuevo (RF-043, en /reparto/nuevo).
 function Reparto() {
   const navigate = useNavigate()
   const location = useLocation()
@@ -29,9 +25,6 @@ function Reparto() {
   const [errorEliminar, setErrorEliminar] = useState('')
   const [mensajeEliminado, setMensajeEliminado] = useState(location.state?.mensaje || '')
 
-  // RF-067: cerrar en bloque las paradas restantes de un reparto "En
-  // curso" — es lo que dispara la cruz del panel para un reparto en
-  // progreso, en vez de RF-065 (que solo aplica a "Sin empezar").
   const [planCerrar, setPlanCerrar] = useState(null)
   const [motivoCerrar, setMotivoCerrar] = useState('')
   const [cerrandoEnBloque, setCerrandoEnBloque] = useState(false)
@@ -47,9 +40,6 @@ function Reparto() {
 
   useEffect(() => { cargarPlanes() }, [])
 
-  // RF-065: elimina un reparto "Sin empezar". Para uno "En curso" la cruz
-  // no borra el registro — abre el modal de cierre en bloque (RF-067),
-  // porque un reparto en progreso no se elimina, se cierra.
   const handleQuitarReparto = (e, plan) => {
     e.stopPropagation()
     if (plan.estado === 'en_curso') {
@@ -97,10 +87,6 @@ function Reparto() {
       tituloMobile="Reparto"
       accionMobile={<button className="panel-mobile-nuevo" title="Crear reparto" onClick={() => navigate('/reparto/nuevo')}>+</button>}
     >
-          {/* El header de escritorio (.panel-seccion-header, con "+ Crear
-              reparto") se oculta a ≤1024px; sin accionMobile no habría forma
-              de crear un reparto en mobile/tablet. El modificador --sub
-              conserva la bajada en mobile (sin el h1 ni el botón). */}
           <div className="panel-seccion-header panel-seccion-header--sub">
             <div>
               <h1 className="panel-h1">Panel de repartos</h1>

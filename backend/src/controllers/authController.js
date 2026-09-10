@@ -1,17 +1,8 @@
 import Usuario from '../models/usuario.js'
 
-// RF-009: celular uruguayo en formato E.164 (+598 9X XXX XXX). El front lo
-// arma así (formatearTelefono) pero sin validar la longitud, y el modelo
-// lo guardaba tal cual — un teléfono con formato inválido quedaba en la
-// base y el SMS nunca podía llegar.
 const RE_TELEFONO_UY = /^\+5989\d{7}$/
-// RF-009 / CU-09: mínimo 8 caracteres (mismo criterio que el hint del
-// formulario). El modelo solo hacía el hash, sin chequear longitud.
 const LARGO_MIN_CONTRASENA = 8
 
-// RNF-010 (Ley 18.331): validación de forma antes de tocar el servicio —
-// la garantía real es la constraint CHECK de la tabla usuario, esto es
-// solo para devolver un mensaje rápido sin llegar a golpear la base.
 const registro = async (req, res) => {
   try {
     const { nombre, telefono, contrasena, consentimientoDatosOtorgado } = req.body

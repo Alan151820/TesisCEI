@@ -1,8 +1,3 @@
-// Formulario inline de un tramo de precio por volumen (RF-015): cantidad
-// mínima, % de descuento y precio total, con el precio por unidad
-// calculado. Los tres campos están vinculados (ver lib/tramoPrecio). Se
-// usa en el alta de producto (FichaProducto) y, dos veces, en la edición
-// (EditarProducto: agregar tramo nuevo y editar uno existente).
 function FormularioTramoPrecio({
   cantidadMinima,
   descuentoPct,
