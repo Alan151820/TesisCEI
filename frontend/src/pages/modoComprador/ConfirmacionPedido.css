@@ -3,7 +3,7 @@
   display: flex;
   flex-direction: column;
   font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
-  background: var(--color-superficie-tenue);
+  background: var(--color-superficie);
 }
 
 /* ── Mobile header ── */
@@ -13,8 +13,8 @@
   align-items: center;
   padding: 0 16px;
   gap: 12px;
-  background: var(--color-contenedor-superficie-minimo);
-  border-bottom: 1px solid var(--color-variante-contorno);
+  background: var(--color-fondo);
+  border-bottom: 1px solid var(--color-borde);
   flex-shrink: 0;
 }
 .confirmar-mobile-volver {
@@ -24,7 +24,7 @@
   font-family: inherit;
   font-size: 20px;
   cursor: pointer;
-  color: var(--color-sobre-superficie);
+  color: var(--color-texto);
   min-width: 44px;
   min-height: 44px;
   display: flex;
@@ -33,15 +33,15 @@
 .confirmar-mobile-titulo {
   font-size: 15px;
   font-weight: 600;
-  color: var(--color-sobre-superficie);
+  color: var(--color-texto);
 }
 
 /* ── Desktop topbar ── */
 .confirmar-topbar {
   height: 56px;
   flex-shrink: 0;
-  background: var(--color-contenedor-superficie-minimo);
-  border-bottom: 1px solid var(--color-variante-contorno);
+  background: var(--color-fondo);
+  border-bottom: 1px solid var(--color-borde);
   display: flex;
   align-items: center;
   padding: 0 40px;
@@ -50,14 +50,14 @@
 .confirmar-topbar-marca {
   font-size: 17px;
   font-weight: 700;
-  color: var(--color-sobre-superficie);
+  color: var(--color-texto);
   cursor: pointer;
   flex-shrink: 0;
 }
 .confirmar-topbar-titulo {
   font-size: 15px;
   font-weight: 600;
-  color: var(--color-sobre-superficie);
+  color: var(--color-texto);
   flex: 1;
 }
 .confirmar-topbar-link {
@@ -82,7 +82,7 @@
 }
 .confirmar-descripcion {
   font-size: 13px;
-  color: var(--color-sobre-variante-superficie);
+  color: var(--color-texto-suave);
   margin-bottom: 20px;
 }
 
@@ -105,15 +105,15 @@
 
 /* ── Card base ── */
 .confirmar-card {
-  background: var(--color-contenedor-superficie-minimo);
-  border: 1px solid var(--color-variante-contorno);
+  background: var(--color-fondo);
+  border: 1px solid var(--color-borde);
   border-radius: 8px;
   padding: 20px 24px;
 }
 .confirmar-card-titulo {
   font-size: 15px;
   font-weight: 700;
-  color: var(--color-sobre-superficie);
+  color: var(--color-texto);
   margin-bottom: 14px;
 }
 
@@ -124,22 +124,22 @@
 .confirmar-resumen-dist {
   font-size: 13px;
   font-weight: 600;
-  color: var(--color-sobre-variante-superficie);
+  color: var(--color-texto-suave);
   margin-bottom: 6px;
 }
 .confirmar-resumen-fila {
   display: flex;
   justify-content: space-between;
   font-size: 13px;
-  color: var(--color-sobre-variante-superficie);
+  color: var(--color-texto-suave);
   padding: 4px 0;
-  border-bottom: 1px solid var(--color-contenedor-superficie-bajo);
+  border-bottom: 1px solid var(--color-superficie);
 }
 .confirmar-resumen-subtotal {
   display: flex;
   justify-content: space-between;
   font-size: 12px;
-  color: var(--color-sobre-variante-superficie);
+  color: var(--color-texto-suave);
   font-weight: 500;
   margin-top: 6px;
 }
@@ -148,8 +148,8 @@
   justify-content: space-between;
   font-size: 16px;
   font-weight: 700;
-  color: var(--color-sobre-superficie);
-  border-top: 1px solid var(--color-variante-contorno);
+  color: var(--color-texto);
+  border-top: 1px solid var(--color-borde);
   padding-top: 10px;
   margin-top: 4px;
 }
@@ -161,12 +161,12 @@
 .confirmar-dir-seccion-titulo {
   font-size: 12px;
   font-weight: 600;
-  color: var(--color-sobre-superficie);
+  color: var(--color-texto);
   margin-bottom: 4px;
 }
 .confirmar-dir-seccion-desc {
   font-size: 12px;
-  color: var(--color-sobre-variante-superficie);
+  color: var(--color-texto-suave);
   margin-bottom: 8px;
   line-height: 1.4;
 }
@@ -186,12 +186,12 @@
   align-items: flex-start;
   gap: 6px;
   padding: 8px 10px;
-  background: var(--color-contenedor-primario);
-  border: 1px solid var(--color-variante-contorno);
+  background: var(--color-info-suave);
+  border: 1px solid var(--color-borde);
   border-radius: 6px;
   margin-bottom: 8px;
   font-size: 13px;
-  color: var(--color-sobre-superficie);
+  color: var(--color-sobre-info-suave);
   line-height: 1.4;
 }
 .confirmar-dir-mapa-icono { flex-shrink: 0; margin-top: 1px; }
@@ -199,7 +199,7 @@
 .confirmar-dir-mapa-limpiar {
   background: none;
   border: none;
-  color: var(--color-sobre-variante-superficie);
+  color: var(--color-texto-suave);
   cursor: pointer;
   font-size: 12px;
   padding: 0 2px;
@@ -228,11 +228,11 @@
 .confirmar-btn-mapa--secundario {
   background: none;
   color: var(--color-primario);
-  border: 1px solid var(--color-variante-contorno);
+  border: 1px solid var(--color-borde);
   font-weight: 500;
 }
 .confirmar-btn-mapa--secundario:hover {
-  background: var(--color-contenedor-superficie-bajo);
+  background: var(--color-superficie);
   opacity: 1;
 }
 
@@ -255,7 +255,7 @@
   display: block;
   font-size: 12px;
   font-weight: 600;
-  color: var(--color-sobre-superficie);
+  color: var(--color-texto);
   margin-bottom: 4px;
 }
 .confirmar-requerido { color: var(--color-error); }
@@ -264,13 +264,13 @@
 .confirmar-select {
   width: 100%;
   height: 36px;
-  border: 1px solid var(--color-contorno);
+  border: 1px solid var(--color-borde);
   border-radius: 4px;
-  background: var(--color-contenedor-superficie-minimo);
+  background: var(--color-fondo);
   padding: 0 10px;
   font-size: 13px;
   font-family: inherit;
-  color: var(--color-sobre-superficie);
+  color: var(--color-texto);
   box-sizing: border-box;
   appearance: none;
 }
@@ -281,17 +281,17 @@
   padding-right: 30px;
   cursor: pointer;
 }
-.confirmar-input::placeholder { color: var(--color-sobre-variante-superficie); }
+.confirmar-input::placeholder { color: var(--color-texto-suave); }
 .confirmar-input:disabled,
 .confirmar-select:disabled {
-  background: var(--color-contenedor-superficie);
-  color: var(--color-sobre-variante-superficie);
+  background: var(--color-superficie);
+  color: var(--color-texto-suave);
   cursor: not-allowed;
 }
 
 .confirmar-input-ayuda {
   font-size: 11px;
-  color: var(--color-sobre-variante-superficie);
+  color: var(--color-texto-suave);
   margin-top: 10px;
 }
 .confirmar-error {
@@ -307,7 +307,7 @@
 }
 .confirmar-accion-desc {
   font-size: 13px;
-  color: var(--color-sobre-variante-superficie);
+  color: var(--color-texto-suave);
   line-height: 1.6;
   margin-bottom: 16px;
 }
@@ -335,7 +335,7 @@
   font-family: inherit;
   text-align: center;
   font-size: 12px;
-  color: var(--color-sobre-variante-superficie);
+  color: var(--color-texto-suave);
   margin-top: 10px;
   cursor: pointer;
 }
@@ -363,11 +363,11 @@
 .confirmar-exito-titulo {
   font-size: 22px;
   font-weight: 700;
-  color: var(--color-sobre-superficie);
+  color: var(--color-texto);
 }
 .confirmar-exito-subtitulo {
   font-size: 14px;
-  color: var(--color-sobre-variante-superficie);
+  color: var(--color-texto-suave);
 }
 .confirmar-exito-lista {
   display: flex;
@@ -381,13 +381,13 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: var(--color-contenedor-superficie);
-  border: 1px solid var(--color-variante-contorno);
+  background: var(--color-superficie);
+  border: 1px solid var(--color-borde);
   border-radius: 6px;
   padding: 10px 16px;
 }
-.confirmar-exito-label { font-size: 13px; color: var(--color-sobre-variante-superficie); }
-.confirmar-exito-num { font-size: 14px; font-weight: 700; color: var(--color-sobre-superficie); }
+.confirmar-exito-label { font-size: 13px; color: var(--color-texto-suave); }
+.confirmar-exito-num { font-size: 14px; font-weight: 700; color: var(--color-texto); }
 .confirmar-exito-btn {
   margin-top: 8px;
   padding: 10px 28px;
@@ -406,7 +406,7 @@
   padding: 60px 0;
   text-align: center;
   font-size: 14px;
-  color: var(--color-sobre-variante-superficie);
+  color: var(--color-texto-suave);
 }
 
 /* ── Mobile footer fijo ── */
@@ -430,12 +430,12 @@
     left: 0;
     right: 0;
     padding: 12px 16px 20px;
-    background: var(--color-contenedor-superficie-minimo);
-    border-top: 1px solid var(--color-variante-contorno);
+    background: var(--color-fondo);
+    border-top: 1px solid var(--color-borde);
   }
   .confirmar-mobile-footer-info {
     font-size: 12px;
-    color: var(--color-sobre-variante-superficie);
+    color: var(--color-texto-suave);
     text-align: center;
   }
   .confirmar-error-mobile { margin-top: 0; text-align: center; }

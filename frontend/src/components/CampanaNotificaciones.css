@@ -18,7 +18,7 @@
 }
 
 .campana-btn:hover {
-  background: var(--color-contenedor-superficie);
+  background: var(--color-superficie);
 }
 
 .campana-badge {
@@ -43,8 +43,8 @@
   top: calc(100% + 8px);
   right: 0;
   width: 320px;
-  background: var(--color-contenedor-superficie-minimo);
-  border: 1px solid var(--color-variante-contorno);
+  background: var(--color-fondo);
+  border: 1px solid var(--color-borde);
   border-radius: 6px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, .12);
   z-index: 100;
@@ -72,14 +72,14 @@
   padding: 20px;
   text-align: center;
   font-size: 13px;
-  color: var(--color-sobre-variante-superficie);
+  color: var(--color-texto-suave);
 }
 
 .campana-item {
   width: 100%;
   background: none;
   border: none;
-  border-bottom: 1px solid var(--color-variante-contorno);
+  border-bottom: 1px solid var(--color-borde);
   text-align: left;
   display: flex;
   align-items: flex-start;
@@ -94,18 +94,18 @@
 }
 
 .campana-item:hover {
-  background: var(--color-contenedor-superficie-bajo);
+  background: var(--color-superficie);
 }
 
 .campana-item.no-leida {
-  background: var(--color-contenedor-superficie-bajo);
+  background: var(--color-superficie);
 }
 
 .campana-punto {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: var(--color-sobre-superficie);
+  background: var(--color-texto);
   flex-shrink: 0;
   margin-top: 4px;
 }
@@ -118,7 +118,7 @@
   display: block;
   font-size: 13px;
   font-weight: 600;
-  color: var(--color-sobre-superficie);
+  color: var(--color-texto);
   line-height: 1.4;
   margin-bottom: 3px;
 }
@@ -137,7 +137,7 @@
 .campana-fecha {
   display: block;
   font-size: 11px;
-  color: var(--color-sobre-variante-superficie);
+  color: var(--color-texto-suave);
 }
 
 .campana-pedido-fila {
@@ -151,7 +151,7 @@
   width: 36px;
   height: 36px;
   border-radius: 4px;
-  background: var(--color-contenedor-superficie-bajo);
+  background: var(--color-superficie);
   object-fit: cover;
   flex-shrink: 0;
 }
@@ -169,7 +169,7 @@
 .campana-pedido-producto {
   display: block;
   font-size: 12px;
-  color: var(--color-sobre-superficie);
+  color: var(--color-texto);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -178,5 +178,5 @@
 .campana-pedido-detalle {
   display: block;
   font-size: 11px;
-  color: var(--color-sobre-variante-superficie);
+  color: var(--color-texto-suave);
 }

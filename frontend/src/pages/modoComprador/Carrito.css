@@ -3,7 +3,7 @@
   display: flex;
   flex-direction: column;
   font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
-  background: var(--color-superficie-tenue);
+  background: var(--color-superficie);
 }
 
 /* Contenido */
@@ -30,11 +30,11 @@
 .carrito-vacio-titulo {
   font-size: 20px;
   font-weight: 700;
-  color: var(--color-sobre-superficie);
+  color: var(--color-texto);
 }
 .carrito-vacio-subtitulo {
   font-size: 14px;
-  color: var(--color-sobre-variante-superficie);
+  color: var(--color-texto-suave);
 }
 .carrito-vacio-btn {
   margin-top: 8px;
@@ -66,8 +66,8 @@
 
 /* Grupo por distribuidor */
 .carrito-grupo {
-  background: var(--color-contenedor-superficie);
-  border: 1px solid var(--color-variante-contorno);
+  background: var(--color-superficie);
+  border: 1px solid var(--color-borde);
   border-radius: 8px;
   overflow: hidden;
 }
@@ -75,9 +75,9 @@
   padding: 12px 20px;
   font-size: 13px;
   font-weight: 600;
-  color: var(--color-sobre-variante-superficie);
-  background: var(--color-contenedor-superficie-bajo);
-  border-bottom: 1px solid var(--color-variante-contorno);
+  color: var(--color-texto-suave);
+  background: var(--color-superficie);
+  border-bottom: 1px solid var(--color-borde);
 }
 
 /* Item */
@@ -86,7 +86,7 @@
   align-items: center;
   gap: 16px;
   padding: 16px 20px;
-  border-bottom: 1px solid var(--color-variante-contorno);
+  border-bottom: 1px solid var(--color-borde);
 }
 .carrito-item:last-child { border-bottom: none; }
 
@@ -100,25 +100,25 @@
 .carrito-item-img-placeholder {
   width: 60px;
   height: 60px;
-  background: var(--color-variante-superficie);
+  background: var(--color-superficie);
   border-radius: 6px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 18px;
-  color: var(--color-sobre-variante-superficie);
+  color: var(--color-texto-suave);
 }
 
 .carrito-item-info { flex: 1; }
 .carrito-item-nombre {
   font-size: 14px;
   font-weight: 500;
-  color: var(--color-sobre-superficie);
+  color: var(--color-texto);
   margin-bottom: 4px;
 }
 .carrito-item-precio {
   font-size: 12px;
-  color: var(--color-sobre-variante-superficie);
+  color: var(--color-texto-suave);
 }
 
 .carrito-item-controles {
@@ -130,10 +130,10 @@
 .carrito-item-btn {
   width: 32px;
   height: 32px;
-  border: 1px solid var(--color-contorno);
+  border: 1px solid var(--color-borde);
   border-radius: 4px;
-  background: var(--color-contenedor-superficie-minimo);
-  color: var(--color-sobre-superficie);
+  background: var(--color-fondo);
+  color: var(--color-texto);
   font-size: 16px;
   cursor: pointer;
   display: flex;
@@ -144,7 +144,7 @@
 .carrito-item-cantidad {
   font-size: 14px;
   font-weight: 600;
-  color: var(--color-sobre-superficie);
+  color: var(--color-texto);
   min-width: 24px;
   text-align: center;
 }
@@ -152,7 +152,7 @@
 .carrito-item-eliminar {
   background: none;
   border: none;
-  color: var(--color-sobre-variante-superficie);
+  color: var(--color-texto-suave);
   font-size: 14px;
   cursor: pointer;
   padding: 4px 8px;
@@ -163,11 +163,11 @@
 
 .carrito-vaciar-btn {
   background: none;
-  border: 1px solid var(--color-contorno);
+  border: 1px solid var(--color-borde);
   border-radius: 6px;
   padding: 8px 16px;
   font-size: 12px;
-  color: var(--color-sobre-variante-superficie);
+  color: var(--color-texto-suave);
   cursor: pointer;
   font-family: inherit;
   align-self: flex-start;
@@ -177,8 +177,8 @@
 .carrito-resumen {
   width: 280px;
   flex-shrink: 0;
-  background: var(--color-contenedor-superficie);
-  border: 1px solid var(--color-variante-contorno);
+  background: var(--color-superficie);
+  border: 1px solid var(--color-borde);
   border-radius: 8px;
   padding: 24px;
   position: sticky;
@@ -187,19 +187,19 @@
 .carrito-resumen-titulo {
   font-size: 16px;
   font-weight: 700;
-  color: var(--color-sobre-superficie);
+  color: var(--color-texto);
   margin-bottom: 16px;
 }
 .carrito-resumen-fila {
   display: flex;
   justify-content: space-between;
   font-size: 14px;
-  color: var(--color-sobre-superficie);
+  color: var(--color-texto);
   margin-bottom: 12px;
 }
 .carrito-resumen-nota {
   font-size: 11px;
-  color: var(--color-sobre-variante-superficie);
+  color: var(--color-texto-suave);
   margin-bottom: 20px;
   line-height: 1.5;
 }

@@ -3,7 +3,7 @@
   display: flex;
   gap: 4px;
   margin-bottom: 20px;
-  border-bottom: 1px solid var(--color-variante-contorno);
+  border-bottom: 1px solid var(--color-borde);
 }
 
 .reportes-subnav-item {
@@ -11,17 +11,17 @@
   margin-right: 20px;
   font-size: 13px;
   font-weight: 600;
-  color: var(--color-sobre-variante-superficie);
+  color: var(--color-texto-suave);
   cursor: pointer;
   border-bottom: 2px solid transparent;
 }
 
 .reportes-subnav-item:hover {
-  color: var(--color-sobre-superficie);
+  color: var(--color-texto);
 }
 
 .reportes-subnav-item.activo {
-  color: var(--color-sobre-superficie);
+  color: var(--color-texto);
   border-bottom-color: var(--color-primario);
 }
 
@@ -46,10 +46,10 @@
 .reportes-periodo-tabs {
   display: flex;
   height: 34px;
-  border: 1px solid var(--color-contorno);
+  border: 1px solid var(--color-borde);
   border-radius: 4px;
   overflow: hidden;
-  background: var(--color-contenedor-superficie-minimo);
+  background: var(--color-fondo);
   flex-shrink: 0;
 }
 
@@ -58,7 +58,7 @@
   display: flex;
   align-items: center;
   font-size: 12px;
-  color: var(--color-sobre-variante-superficie);
+  color: var(--color-texto-suave);
   cursor: pointer;
 }
 
@@ -90,10 +90,10 @@
 .reportes-vacio {
   padding: 40px 24px;
   font-size: 13px;
-  color: var(--color-sobre-variante-superficie);
+  color: var(--color-texto-suave);
   text-align: center;
-  background: var(--color-contenedor-superficie-minimo);
-  border: 1px solid var(--color-variante-contorno);
+  background: var(--color-fondo);
+  border: 1px solid var(--color-borde);
   border-radius: 6px;
 }
 
@@ -108,15 +108,15 @@
 .reportes-kpi-card {
   flex: 1;
   min-width: 180px;
-  background: var(--color-contenedor-superficie-minimo);
-  border: 1px solid var(--color-variante-contorno);
+  background: var(--color-fondo);
+  border: 1px solid var(--color-borde);
   border-radius: 6px;
   padding: 16px 20px;
 }
 
 .reportes-kpi-label {
   font-size: 11px;
-  color: var(--color-sobre-variante-superficie);
+  color: var(--color-texto-suave);
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -126,7 +126,7 @@
 .reportes-kpi-valor {
   font-size: 26px;
   font-weight: 700;
-  color: var(--color-sobre-superficie);
+  color: var(--color-texto);
 }
 
 /* Tablas de ranking (más / menos vendidos) */
@@ -139,18 +139,18 @@
 .reportes-tabla-card {
   flex: 1;
   min-width: 280px;
-  background: var(--color-contenedor-superficie-minimo);
-  border: 1px solid var(--color-variante-contorno);
+  background: var(--color-fondo);
+  border: 1px solid var(--color-borde);
   border-radius: 6px;
   overflow: hidden;
 }
 
 .reportes-tabla-titulo {
   padding: 14px 18px;
-  border-bottom: 1px solid var(--color-variante-contorno);
+  border-bottom: 1px solid var(--color-borde);
   font-size: 14px;
   font-weight: 600;
-  color: var(--color-sobre-superficie);
+  color: var(--color-texto);
 }
 
 /* RF-035: "menos vendidos" queda vacía cuando todos los productos vendidos
@@ -158,7 +158,7 @@
 .reportes-tabla-nota {
   padding: 18px;
   font-size: 13px;
-  color: var(--color-sobre-variante-superficie);
+  color: var(--color-texto-suave);
 }
 
 .reportes-tabla-header,
@@ -168,21 +168,21 @@
 }
 
 .reportes-tabla-header {
-  background: var(--color-contenedor-superficie-bajo);
-  border-bottom: 1px solid var(--color-variante-contorno);
+  background: var(--color-superficie);
+  border-bottom: 1px solid var(--color-borde);
 }
 
 .reportes-tabla-header > div {
   padding: 10px 14px;
   font-size: 11px;
   font-weight: 700;
-  color: var(--color-sobre-variante-superficie);
+  color: var(--color-texto-suave);
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
 
 .reportes-tabla-fila {
-  border-bottom: 1px solid var(--color-contenedor-superficie-bajo);
+  border-bottom: 1px solid var(--color-superficie);
 }
 
 .reportes-tabla-fila:last-child {
@@ -192,7 +192,7 @@
 .reportes-tabla-fila > div {
   padding: 12px 14px;
   font-size: 13px;
-  color: var(--color-sobre-superficie);
+  color: var(--color-texto);
   display: flex;
   align-items: center;
 }
@@ -202,8 +202,8 @@
    scroll horizontal propio como red de seguridad en tablet/mobile, en
    vez de perder columnas. */
 .reportes-rentabilidad-wrapper {
-  background: var(--color-contenedor-superficie-minimo);
-  border: 1px solid var(--color-variante-contorno);
+  background: var(--color-fondo);
+  border: 1px solid var(--color-borde);
   border-radius: 6px;
   overflow-x: auto;
 }
@@ -216,21 +216,21 @@
 }
 
 .reportes-rentabilidad-header {
-  background: var(--color-contenedor-superficie-bajo);
-  border-bottom: 1px solid var(--color-variante-contorno);
+  background: var(--color-superficie);
+  border-bottom: 1px solid var(--color-borde);
 }
 
 .reportes-rentabilidad-header > div {
   padding: 10px 14px;
   font-size: 11px;
   font-weight: 700;
-  color: var(--color-sobre-variante-superficie);
+  color: var(--color-texto-suave);
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
 
 .reportes-rentabilidad-fila {
-  border-bottom: 1px solid var(--color-contenedor-superficie-bajo);
+  border-bottom: 1px solid var(--color-superficie);
 }
 
 .reportes-rentabilidad-fila:last-child {
@@ -240,13 +240,13 @@
 .reportes-rentabilidad-fila > div {
   padding: 12px 14px;
   font-size: 13px;
-  color: var(--color-sobre-superficie);
+  color: var(--color-texto);
   display: flex;
   align-items: center;
 }
 
 .reportes-sin-costo {
-  color: var(--color-sobre-variante-superficie) !important;
+  color: var(--color-texto-suave) !important;
   font-size: 12px !important;
 }
 

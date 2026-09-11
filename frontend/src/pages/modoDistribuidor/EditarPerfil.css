@@ -1,6 +1,6 @@
 .editarperfil-card {
-  background: var(--color-contenedor-superficie-minimo);
-  border: 1px solid var(--color-variante-contorno);
+  background: var(--color-fondo);
+  border: 1px solid var(--color-borde);
   border-radius: 6px;
   padding: 24px;
   max-width: 640px;
@@ -16,8 +16,8 @@
   width: 84px;
   height: 84px;
   border-radius: 50%;
-  border: 1px dashed var(--color-contorno);
-  background: var(--color-contenedor-superficie-bajo);
+  border: 1px dashed var(--color-borde);
+  background: var(--color-superficie);
   cursor: pointer;
   overflow: hidden;
   display: flex;
@@ -26,8 +26,8 @@
 }
 
 .editarperfil-logo-zona:hover {
-  border-color: var(--color-sobre-variante-superficie);
-  background: var(--color-contenedor-superficie);
+  border-color: var(--color-texto-suave);
+  background: var(--color-superficie);
 }
 
 .editarperfil-logo-preview {
@@ -38,7 +38,7 @@
 
 .editarperfil-logo-texto {
   font-size: 11px;
-  color: var(--color-sobre-variante-superficie);
+  color: var(--color-texto-suave);
   text-align: center;
   padding: 6px;
 }
@@ -51,18 +51,18 @@
   display: block;
   font-size: 12px;
   font-weight: 600;
-  color: var(--color-sobre-superficie);
+  color: var(--color-texto);
   margin-bottom: 5px;
 }
 
 .editarperfil-input,
 .editarperfil-textarea {
   width: 100%;
-  border: 1px solid var(--color-contorno);
+  border: 1px solid var(--color-borde);
   border-radius: 4px;
-  background: var(--color-contenedor-superficie-minimo);
+  background: var(--color-fondo);
   font-size: 13px;
-  color: var(--color-sobre-superficie);
+  color: var(--color-texto);
   box-sizing: border-box;
   font-family: inherit;
 }
@@ -106,18 +106,18 @@
   font-size: 13px;
   font-weight: 500;
   cursor: pointer;
-  background: var(--color-contenedor-superficie-minimo);
-  color: var(--color-sobre-superficie);
-  border: 1px solid var(--color-contorno);
+  background: var(--color-fondo);
+  color: var(--color-texto);
+  border: 1px solid var(--color-borde);
 }
 
 .editarperfil-btn-cancelar:hover {
-  background: var(--color-contenedor-superficie-bajo);
+  background: var(--color-superficie);
 }
 
 .editarperfil-mensaje {
   font-size: 13px;
-  color: var(--color-sobre-superficie);
+  color: var(--color-texto);
   margin: 14px 0 0 0;
 }
 

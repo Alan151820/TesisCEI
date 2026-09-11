@@ -3,14 +3,14 @@
   display: flex;
   flex-direction: column;
   font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
-  background: var(--color-superficie-tenue);
+  background: var(--color-superficie);
 }
 
 /* Header */
 .catalogo-header {
   height: 56px;
-  background: var(--color-contenedor-superficie-minimo);
-  border-bottom: 1px solid var(--color-variante-contorno);
+  background: var(--color-fondo);
+  border-bottom: 1px solid var(--color-borde);
   padding: 0 40px;
   display: flex;
   align-items: center;
@@ -21,7 +21,7 @@
 .catalogo-header-marca {
   font-size: 17px;
   font-weight: 700;
-  color: var(--color-sobre-superficie);
+  color: var(--color-texto);
   flex-shrink: 0;
   cursor: pointer;
 }
@@ -30,8 +30,8 @@
   flex: 1;
   max-width: 560px;
   height: 36px;
-  background: var(--color-contenedor-superficie-bajo);
-  border: 1px solid var(--color-contorno);
+  background: var(--color-superficie);
+  border: 1px solid var(--color-borde);
   border-radius: 4px;
   display: flex;
   align-items: center;
@@ -41,7 +41,7 @@
 
 .catalogo-header-buscador-icono {
   font-size: 14px;
-  color: var(--color-sobre-variante-superficie);
+  color: var(--color-texto-suave);
   flex-shrink: 0;
 }
 
@@ -51,12 +51,12 @@
   border: none;
   outline: none;
   font-size: 13px;
-  color: var(--color-sobre-superficie);
+  color: var(--color-texto);
   font-family: inherit;
 }
 
 .catalogo-header-buscador-input::placeholder {
-  color: var(--color-sobre-variante-superficie);
+  color: var(--color-texto-suave);
 }
 
 .catalogo-header-acciones {
@@ -69,7 +69,7 @@
 .catalogo-btn-login {
   background: none;
   border: none;
-  color: var(--color-sobre-variante-superficie);
+  color: var(--color-texto-suave);
   font-size: 13px;
   font-weight: 500;
   font-family: inherit;
@@ -78,7 +78,7 @@
 }
 
 .catalogo-btn-login:hover {
-  color: var(--color-sobre-superficie);
+  color: var(--color-texto);
 }
 
 .catalogo-btn-registro {
@@ -145,8 +145,8 @@
   display: flex;
   gap: 12px;
   padding: 16px 40px;
-  background: var(--color-contenedor-superficie-minimo);
-  border-bottom: 1px solid var(--color-variante-contorno);
+  background: var(--color-fondo);
+  border-bottom: 1px solid var(--color-borde);
   flex-wrap: wrap;
   align-items: center;
 }
@@ -155,12 +155,12 @@
 .catalogo-filtros input {
   height: 36px;
   padding: 0 12px;
-  border: 1px solid var(--color-contorno);
+  border: 1px solid var(--color-borde);
   border-radius: 4px;
-  background: var(--color-contenedor-superficie-bajo);
+  background: var(--color-superficie);
   font-size: 13px;
   font-family: inherit;
-  color: var(--color-sobre-superficie);
+  color: var(--color-texto);
   outline: none;
 }
 
@@ -184,13 +184,13 @@
   background: none;
   font-size: 13px;
   font-family: inherit;
-  color: var(--color-sobre-variante-superficie);
+  color: var(--color-texto-suave);
   cursor: pointer;
   text-decoration: underline;
 }
 
 .catalogo-filtros button:hover {
-  color: var(--color-sobre-superficie);
+  color: var(--color-texto);
 }
 
 /* Contenido */
@@ -203,7 +203,7 @@
 .catalogo-vacio {
   text-align: center;
   padding: 80px 0;
-  color: var(--color-sobre-variante-superficie);
+  color: var(--color-texto-suave);
   font-size: 14px;
 }
 
@@ -216,10 +216,10 @@
 
 /* Tarjeta */
 .catalogo-tarjeta {
-  background: var(--color-contenedor-superficie-minimo);
+  background: var(--color-fondo);
   border-radius: 10px;
   overflow: hidden;
-  border: 1px solid var(--color-variante-contorno);
+  border: 1px solid var(--color-borde);
   display: flex;
   flex-direction: column;
   cursor: pointer;
@@ -235,18 +235,18 @@
   width: 100%;
   aspect-ratio: 4 / 3;
   object-fit: contain;
-  background: var(--color-contenedor-superficie-bajo);
+  background: var(--color-superficie);
   display: block;
 }
 
 .catalogo-tarjeta-imagen-placeholder {
   width: 100%;
   aspect-ratio: 4 / 3;
-  background: var(--color-contenedor-superficie-bajo);
+  background: var(--color-superficie);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--color-sobre-variante-superficie);
+  color: var(--color-texto-suave);
   font-size: 13px;
 }
 
@@ -261,7 +261,7 @@
 .catalogo-tarjeta-categoria {
   font-size: 10px;
   font-weight: 600;
-  color: var(--color-sobre-variante-superficie);
+  color: var(--color-texto-suave);
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
@@ -269,13 +269,13 @@
 .catalogo-tarjeta-nombre {
   font-size: 14px;
   font-weight: 600;
-  color: var(--color-sobre-superficie);
+  color: var(--color-texto);
   line-height: 1.3;
 }
 
 .catalogo-tarjeta-descripcion {
   font-size: 12px;
-  color: var(--color-sobre-variante-superficie);
+  color: var(--color-texto-suave);
   line-height: 1.4;
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -293,7 +293,7 @@
 
 .catalogo-tarjeta-distribuidor {
   font-size: 11px;
-  color: var(--color-sobre-variante-superficie);
+  color: var(--color-texto-suave);
 }
 
 .catalogo-tarjeta-precio {
@@ -303,13 +303,13 @@
   column-gap: 6px;
   font-size: 15px;
   font-weight: 700;
-  color: var(--color-sobre-superficie);
+  color: var(--color-texto);
 }
 
 .catalogo-contador {
   margin-top: 24px;
   font-size: 12px;
-  color: var(--color-sobre-variante-superficie);
+  color: var(--color-texto-suave);
   text-align: right;
 }
 
@@ -357,12 +357,12 @@
   }
 
   .catalogo-filtros-btn {
-    background: var(--color-contenedor-superficie-bajo);
-    border: 1px solid var(--color-contorno);
+    background: var(--color-superficie);
+    border: 1px solid var(--color-borde);
     border-radius: 4px;
     padding: 7px 14px;
     font-size: 13px;
-    color: var(--color-sobre-superficie);
+    color: var(--color-texto);
     font-family: inherit;
     cursor: pointer;
   }
@@ -437,8 +437,8 @@
   .catalogo-bottom-nav {
     display: flex;
     height: 56px;
-    background: var(--color-contenedor-superficie-minimo);
-    border-top: 1px solid var(--color-variante-contorno);
+    background: var(--color-fondo);
+    border-top: 1px solid var(--color-borde);
     align-items: center;
     justify-content: space-around;
     flex-shrink: 0;
@@ -458,17 +458,17 @@
 
   .catalogo-bottom-icono {
     font-size: 18px;
-    color: var(--color-sobre-variante-superficie);
+    color: var(--color-texto-suave);
   }
 
   .catalogo-bottom-label {
     font-size: 9px;
-    color: var(--color-sobre-variante-superficie);
+    color: var(--color-texto-suave);
   }
 
   .catalogo-bottom-item.activo .catalogo-bottom-icono,
   .catalogo-bottom-item.activo .catalogo-bottom-label {
-    color: var(--color-sobre-superficie);
+    color: var(--color-texto);
     font-weight: 600;
   }
 
@@ -491,4 +491,4 @@
     width: 120px;
   }
 }
-.catalogo-tarjeta-precio-hasta { font-size: 0.87em; font-weight: 400; color: var(--color-sobre-variante-superficie); }
+.catalogo-tarjeta-precio-hasta { font-size: 0.87em; font-weight: 400; color: var(--color-texto-suave); }

@@ -10,8 +10,8 @@
 }
 
 .mapa-modal {
-  background: var(--color-contenedor-superficie-minimo);
-  border: 1px solid var(--color-variante-contorno);
+  background: var(--color-fondo);
+  border: 1px solid var(--color-borde);
   border-radius: 12px;
   width: 100%;
   max-width: 640px;
@@ -27,21 +27,21 @@
   align-items: center;
   justify-content: space-between;
   padding: 16px 20px 12px;
-  border-bottom: 1px solid var(--color-variante-contorno);
+  border-bottom: 1px solid var(--color-borde);
   flex-shrink: 0;
 }
 
 .mapa-titulo {
   font-size: 15px;
   font-weight: 700;
-  color: var(--color-sobre-superficie);
+  color: var(--color-texto);
 }
 
 .mapa-cerrar {
   background: none;
   border: none;
   font-size: 16px;
-  color: var(--color-sobre-variante-superficie);
+  color: var(--color-texto-suave);
   cursor: pointer;
   padding: 4px;
   line-height: 1;
@@ -54,12 +54,12 @@
 }
 
 .mapa-cerrar:hover {
-  background: var(--color-contenedor-superficie);
+  background: var(--color-superficie);
 }
 
 .mapa-instruccion {
   font-size: 12px;
-  color: var(--color-sobre-variante-superficie);
+  color: var(--color-texto-suave);
   padding: 10px 20px 0;
   flex-shrink: 0;
 }
@@ -74,9 +74,9 @@
 
 .mapa-btn-ubicacion {
   align-self: flex-start;
-  background: var(--color-contenedor-primario);
-  color: var(--color-sobre-contenedor-primario);
-  border: 1px solid var(--color-variante-contorno);
+  background: var(--color-info-suave);
+  color: var(--color-sobre-info-suave);
+  border: 1px solid var(--color-borde);
   border-radius: 6px;
   padding: 6px 14px;
   font-size: 12px;
@@ -106,7 +106,7 @@
   margin: 8px 20px 0;
   border-radius: 8px;
   overflow: hidden;
-  border: 1px solid var(--color-variante-contorno);
+  border: 1px solid var(--color-borde);
 }
 
 /* Leaflet necesita height explícita en el contenedor */
@@ -122,7 +122,7 @@
   gap: 6px;
   padding: 8px 20px 0;
   font-size: 12px;
-  color: var(--color-sobre-superficie);
+  color: var(--color-texto);
   flex-shrink: 0;
   line-height: 1.4;
 }
@@ -135,7 +135,7 @@
 .mapa-direccion-placeholder {
   padding: 8px 20px 0;
   font-size: 12px;
-  color: var(--color-sobre-variante-superficie);
+  color: var(--color-texto-suave);
   font-style: italic;
   flex-shrink: 0;
 }
@@ -145,24 +145,24 @@
   gap: 10px;
   justify-content: flex-end;
   padding: 12px 20px;
-  border-top: 1px solid var(--color-variante-contorno);
+  border-top: 1px solid var(--color-borde);
   margin-top: 8px;
   flex-shrink: 0;
 }
 
 .mapa-btn-cancelar {
   background: none;
-  border: 1px solid var(--color-variante-contorno);
+  border: 1px solid var(--color-borde);
   border-radius: 6px;
   padding: 8px 18px;
   font-size: 13px;
   font-family: inherit;
-  color: var(--color-sobre-superficie);
+  color: var(--color-texto);
   cursor: pointer;
 }
 
 .mapa-btn-cancelar:hover {
-  background: var(--color-contenedor-superficie-bajo);
+  background: var(--color-superficie);
 }
 
 .mapa-btn-confirmar {

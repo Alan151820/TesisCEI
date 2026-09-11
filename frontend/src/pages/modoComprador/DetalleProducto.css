@@ -3,22 +3,22 @@
   display: flex;
   flex-direction: column;
   font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
-  background: var(--color-superficie-tenue);
+  background: var(--color-superficie);
 }
 
 .detalleproducto-mensaje-pagina {
   text-align: center;
   margin-top: 100px;
   font-size: 14px;
-  color: var(--color-sobre-superficie);
+  color: var(--color-texto);
   font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
 }
 
 /* Header */
 .detalleproducto-header {
   height: 56px;
-  background: var(--color-contenedor-superficie-minimo);
-  border-bottom: 1px solid var(--color-variante-contorno);
+  background: var(--color-fondo);
+  border-bottom: 1px solid var(--color-borde);
   padding: 0 40px;
   display: flex;
   align-items: center;
@@ -29,7 +29,7 @@
 .detalleproducto-header-marca {
   font-size: 17px;
   font-weight: 700;
-  color: var(--color-sobre-superficie);
+  color: var(--color-texto);
   flex-shrink: 0;
   cursor: pointer;
 }
@@ -38,8 +38,8 @@
   flex: 1;
   max-width: 560px;
   height: 36px;
-  background: var(--color-contenedor-superficie-bajo);
-  border: 1px solid var(--color-contorno);
+  background: var(--color-superficie);
+  border: 1px solid var(--color-borde);
   border-radius: 4px;
   display: flex;
   align-items: center;
@@ -49,12 +49,12 @@
 
 .detalleproducto-header-buscador-icono {
   font-size: 13px;
-  color: var(--color-sobre-variante-superficie);
+  color: var(--color-texto-suave);
 }
 
 .detalleproducto-header-buscador-texto {
   font-size: 13px;
-  color: var(--color-sobre-variante-superficie);
+  color: var(--color-texto-suave);
 }
 
 .detalleproducto-header-acciones {
@@ -66,7 +66,7 @@
 
 .detalleproducto-header-link {
   font-size: 13px;
-  color: var(--color-sobre-variante-superficie);
+  color: var(--color-texto-suave);
 }
 
 .detalleproducto-header-registro {
@@ -87,7 +87,7 @@
 .detalleproducto-volver {
   background: none;
   border: none;
-  color: var(--color-sobre-variante-superficie);
+  color: var(--color-texto-suave);
   font-size: 13px;
   font-weight: 500;
   font-family: inherit;
@@ -97,23 +97,23 @@
 }
 
 .detalleproducto-volver:hover {
-  color: var(--color-sobre-superficie);
+  color: var(--color-texto);
 }
 
 .detalleproducto-breadcrumb {
   font-size: 12px;
-  color: var(--color-sobre-variante-superficie);
+  color: var(--color-texto-suave);
   margin-bottom: 16px;
 }
 
 .detalleproducto-breadcrumb span {
-  color: var(--color-sobre-superficie);
+  color: var(--color-texto);
 }
 
 /* Tarjeta principal */
 .detalleproducto-tarjeta {
-  background: var(--color-contenedor-superficie-minimo);
-  border: 1px solid var(--color-variante-contorno);
+  background: var(--color-fondo);
+  border: 1px solid var(--color-borde);
   border-radius: 6px;
   padding: 32px;
   display: flex;
@@ -130,12 +130,12 @@
 }
 
 .detalleproducto-imagen-placeholder {
-  background: var(--color-contenedor-superficie-bajo);
-  border: 1px dashed var(--color-contorno);
+  background: var(--color-superficie);
+  border: 1px dashed var(--color-borde);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--color-sobre-variante-superficie);
+  color: var(--color-texto-suave);
   font-size: 11px;
 }
 
@@ -146,7 +146,7 @@
 
 .detalleproducto-info-categoria {
   font-size: 11px;
-  color: var(--color-sobre-variante-superficie);
+  color: var(--color-texto-suave);
   margin-bottom: 4px;
 }
 
@@ -156,7 +156,7 @@
   padding: 0;
   font-family: inherit;
   font-size: inherit;
-  color: var(--color-sobre-superficie);
+  color: var(--color-texto);
   cursor: pointer;
   text-decoration: underline;
 }
@@ -164,13 +164,13 @@
 .detalleproducto-nombre {
   font-size: 26px;
   font-weight: 700;
-  color: var(--color-sobre-superficie);
+  color: var(--color-texto);
   margin: 0 0 8px 0;
 }
 
 .detalleproducto-descripcion {
   font-size: 13px;
-  color: var(--color-sobre-variante-superficie);
+  color: var(--color-texto-suave);
   line-height: 1.6;
   margin: 0 0 20px 0;
   max-width: 480px;
@@ -179,13 +179,13 @@
 .detalleproducto-tarifas-titulo {
   font-size: 13px;
   font-weight: 600;
-  color: var(--color-sobre-superficie);
+  color: var(--color-texto);
   margin: 0 0 8px 0;
 }
 
 .detalleproducto-tarifas-vacio {
   font-size: 13px;
-  color: var(--color-sobre-variante-superficie);
+  color: var(--color-texto-suave);
   margin: 0 0 20px 0;
 }
 
@@ -193,7 +193,7 @@
   width: 100%;
   max-width: 560px;
   border-collapse: collapse;
-  border: 1px solid var(--color-variante-contorno);
+  border: 1px solid var(--color-borde);
   border-radius: 4px;
   overflow: hidden;
   font-size: 12px;
@@ -201,25 +201,25 @@
 }
 
 .detalleproducto-tarifas-tabla thead {
-  background: var(--color-contenedor-superficie-bajo);
+  background: var(--color-superficie);
 }
 
 .detalleproducto-tarifas-tabla th {
   padding: 10px 14px;
   font-size: 11px;
   font-weight: 700;
-  color: var(--color-sobre-variante-superficie);
+  color: var(--color-texto-suave);
   text-transform: uppercase;
   letter-spacing: 0.5px;
   text-align: left;
-  border-bottom: 1px solid var(--color-variante-contorno);
+  border-bottom: 1px solid var(--color-borde);
 }
 
 .detalleproducto-tarifas-tabla td {
   padding: 12px 14px;
   font-size: 13px;
-  color: var(--color-sobre-superficie);
-  border-bottom: 1px solid var(--color-variante-contorno);
+  color: var(--color-texto);
+  border-bottom: 1px solid var(--color-borde);
 }
 
 .detalleproducto-tarifas-tabla tr:last-child td {
@@ -228,8 +228,8 @@
 
 /* Caja de carrito (placeholder visual — sin lógica de carrito en este RF) */
 .detalleproducto-carrito-caja {
-  background: var(--color-contenedor-superficie-bajo);
-  border: 1px solid var(--color-variante-contorno);
+  background: var(--color-superficie);
+  border: 1px solid var(--color-borde);
   border-radius: 6px;
   padding: 16px;
   max-width: 340px;
@@ -237,8 +237,8 @@
 /* Header autenticado */
 .detalleproducto-header-autenticado {
   height: 56px;
-  background: var(--color-contenedor-superficie-minimo);
-  border-bottom: 1px solid var(--color-variante-contorno);
+  background: var(--color-fondo);
+  border-bottom: 1px solid var(--color-borde);
   display: flex;
   align-items: center;
   padding: 0 40px;
@@ -285,7 +285,7 @@
 
 .detalleproducto-nav-link {
   font-size: 13px;
-  color: var(--color-sobre-variante-superficie);
+  color: var(--color-texto-suave);
   cursor: pointer;
   white-space: nowrap;
   padding: 4px 0;
@@ -293,8 +293,8 @@
 }
 
 .detalleproducto-nav-link:hover {
-  color: var(--color-sobre-superficie);
-  border-bottom-color: var(--color-sobre-superficie);
+  color: var(--color-texto);
+  border-bottom-color: var(--color-texto);
 }
 
 .detalleproducto-perfil {
@@ -306,41 +306,41 @@
 .detalleproducto-avatar {
   width: 32px;
   height: 32px;
-  background: var(--color-contenedor-superficie-alto);
+  background: var(--color-superficie);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 12px;
   font-weight: 600;
-  color: var(--color-sobre-variante-superficie);
+  color: var(--color-texto-suave);
   flex-shrink: 0;
 }
 
 .detalleproducto-nombre-usuario {
   font-size: 13px;
-  color: var(--color-sobre-superficie);
+  color: var(--color-texto);
 }
 
 .detalleproducto-btn-cerrar-sesion {
   background: none;
   border: none;
   font-size: 13px;
-  color: var(--color-sobre-variante-superficie);
+  color: var(--color-texto-suave);
   cursor: pointer;
   padding: 0;
   font-family: inherit;
 }
 
 .detalleproducto-btn-cerrar-sesion:hover {
-  color: var(--color-sobre-superficie);
+  color: var(--color-texto);
 }
 
 /* Header no autenticado - botones */
 .detalleproducto-btn-login {
   background: none;
   border: none;
-  color: var(--color-sobre-variante-superficie);
+  color: var(--color-texto-suave);
   font-size: 13px;
   font-weight: 500;
   font-family: inherit;
@@ -349,7 +349,7 @@
 }
 
 .detalleproducto-btn-login:hover {
-  color: var(--color-sobre-superficie);
+  color: var(--color-texto);
 }
 
 .detalleproducto-btn-registro {
@@ -371,7 +371,7 @@
 .detalleproducto-carrito-titulo {
   font-size: 13px;
   font-weight: 600;
-  color: var(--color-sobre-superficie);
+  color: var(--color-texto);
   margin-bottom: 10px;
 }
 
@@ -385,7 +385,7 @@
 .detalleproducto-carrito-stepper {
   display: flex;
   align-items: center;
-  border: 1px solid var(--color-contorno);
+  border: 1px solid var(--color-borde);
   border-radius: 4px;
   overflow: hidden;
   height: 38px;
@@ -394,11 +394,11 @@
 .detalleproducto-stepper-btn {
   width: 36px;
   height: 38px;
-  background: var(--color-contenedor-superficie-bajo);
+  background: var(--color-superficie);
   border: none;
   font-size: 16px;
   font-weight: 600;
-  color: var(--color-sobre-superficie);
+  color: var(--color-texto);
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -408,7 +408,7 @@
 }
 
 .detalleproducto-stepper-btn:hover {
-  background: var(--color-contenedor-superficie-alto);
+  background: var(--color-superficie);
 }
 
 .detalleproducto-stepper-valor {
@@ -417,7 +417,7 @@
   text-align: center;
   font-size: 14px;
   font-weight: 600;
-  color: var(--color-sobre-superficie);
+  color: var(--color-texto);
   padding: 0 4px;
   border: none;
   background: transparent;
@@ -440,7 +440,7 @@
 
 .detalleproducto-carrito-cantidad-info {
   font-size: 12px;
-  color: var(--color-sobre-variante-superficie);
+  color: var(--color-texto-suave);
 }
 
 .detalleproducto-carrito-boton {
@@ -463,7 +463,7 @@
 
 .detalleproducto-carrito-nota {
   font-size: 11px;
-  color: var(--color-sobre-variante-superficie);
+  color: var(--color-texto-suave);
   text-align: center;
   margin-top: 6px;
 }
@@ -527,6 +527,6 @@
 
 /* --- Rango de precio Desde/Hasta e indicador de stock (comprador) --- */
 .detalleproducto-rango { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; margin: 4px 0 14px; }
-.detalleproducto-rango-desde { font-size: 22px; font-weight: 700; color: var(--color-sobre-superficie); }
-.detalleproducto-rango-hasta { font-size: 14px; color: var(--color-sobre-variante-superficie); }
+.detalleproducto-rango-desde { font-size: 22px; font-weight: 700; color: var(--color-texto); }
+.detalleproducto-rango-hasta { font-size: 14px; color: var(--color-texto-suave); }
 .detalleproducto-sin-stock { display: inline-block; font-size: 13px; font-weight: 600; color: var(--color-error); margin-bottom: 10px; }

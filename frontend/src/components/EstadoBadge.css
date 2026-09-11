@@ -2,20 +2,17 @@
   font-size: 11px;
   padding: 3px 8px;
   border-radius: 3px;
-  background: var(--color-contenedor-superficie-maximo);
-  color: var(--color-sobre-superficie);
+  background: var(--color-superficie);
+  color: var(--color-texto);
   white-space: nowrap;
 }
 
-.estado-badge--entregado  { background: var(--color-contenedor-exito); color: var(--color-sobre-contenedor-exito); }
-.estado-badge--rechazado  { background: var(--color-contenedor-error); color: var(--color-sobre-contenedor-error); }
-.estado-badge--omitido    { background: var(--color-contenedor-advertencia); color: var(--color-sobre-contenedor-advertencia); }
-.estado-badge--en_camino  { background: var(--color-contenedor-info); color: var(--color-sobre-contenedor-info); }
-.estado-badge--pendiente  { background: var(--color-contenedor-superficie-maximo); color: var(--color-sobre-superficie); }
-.estado-badge--aceptado   { background: var(--color-contenedor-advertencia); color: var(--color-sobre-contenedor-advertencia); }
-.estado-badge--sin_empezar { background: var(--color-contenedor-superficie-maximo); color: var(--color-sobre-superficie); }
-.estado-badge--en_curso    { background: var(--color-contenedor-info); color: var(--color-sobre-contenedor-info); }
-.estado-badge--finalizado  { background: var(--color-contenedor-exito); color: var(--color-sobre-contenedor-exito); }
-.estado-badge--sin_empezar { background: var(--color-contenedor-superficie-maximo); color: var(--color-sobre-superficie); }
-.estado-badge--en_curso    { background: var(--color-contenedor-info); color: var(--color-sobre-contenedor-info); }
-.estado-badge--finalizado  { background: var(--color-contenedor-exito); color: var(--color-sobre-contenedor-exito); }
+.estado-badge--entregado  { background: var(--color-exito-suave); color: var(--color-sobre-exito-suave); }
+.estado-badge--rechazado  { background: var(--color-error-suave); color: var(--color-sobre-error-suave); }
+.estado-badge--omitido    { background: var(--color-advertencia-suave); color: var(--color-sobre-advertencia-suave); }
+.estado-badge--en_camino  { background: var(--color-info-suave); color: var(--color-sobre-info-suave); }
+.estado-badge--pendiente  { background: var(--color-superficie); color: var(--color-texto); }
+.estado-badge--aceptado   { background: var(--color-advertencia-suave); color: var(--color-sobre-advertencia-suave); }
+.estado-badge--sin_empezar { background: var(--color-superficie); color: var(--color-texto); }
+.estado-badge--en_curso    { background: var(--color-info-suave); color: var(--color-sobre-info-suave); }
+.estado-badge--finalizado  { background: var(--color-exito-suave); color: var(--color-sobre-exito-suave); }
