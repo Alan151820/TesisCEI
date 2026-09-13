@@ -2,7 +2,6 @@
   background: var(--color-superficie);
   min-height: 100vh;
   padding: 28px 32px;
-  font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
 }
 
 .ficha-contenedor {
