@@ -1,0 +1,21 @@
+:root {
+  /* ============================================================
+     ESCALA — las variables de tamaño que se repiten en botones,
+     inputs y tarjetas de toda la app. Mismo mecanismo que ya usa
+     colors.css para el color: un solo lugar que cambiar en vez de
+     un valor hardcodeado repetido en cada página.
+  ============================================================ */
+
+  /* Alto y radio de controles interactivos (botones, inputs, selects).
+     48px cumple WCAG 2.5.8 AA (mínimo 24×24) y AAA (44×44), además del
+     estándar real de Apple HIG (44pt) y Material (48dp). */
+  --alto-control: 48px;
+  --radio-control: 12px;
+
+  /* Radio de contenedores de contenido */
+  --radio-tarjeta: 18px;
+  --radio-chip: 8px;
+
+  /* Tipografía base */
+  --fuente-base: 16px;
+}
