@@ -11,6 +11,9 @@
     align-items: center;
     justify-content: space-around;
     flex-shrink: 0;
+    position: sticky;
+    bottom: 0;
+    z-index: 10;
   }
 
   .comprador-bottom-item {
