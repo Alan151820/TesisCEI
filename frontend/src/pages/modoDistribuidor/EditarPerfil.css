@@ -59,16 +59,16 @@
 .editarperfil-textarea {
   width: 100%;
   border: 1px solid var(--color-borde);
-  border-radius: 4px;
+  border-radius: var(--radio-control);
   background: var(--color-fondo);
-  font-size: 13px;
+  font-size: var(--fuente-control);
   color: var(--color-texto);
   box-sizing: border-box;
   font-family: inherit;
 }
 
 .editarperfil-input {
-  height: 38px;
+  height: var(--alto-control);
   padding: 0 12px;
 }
 
@@ -84,10 +84,10 @@
 }
 
 .editarperfil-btn-guardar {
-  height: 40px;
-  border-radius: 4px;
+  height: var(--alto-control);
+  border-radius: var(--radio-control);
   padding: 0 20px;
-  font-size: 13px;
+  font-size: var(--fuente-control);
   font-weight: 500;
   cursor: pointer;
   background: var(--color-primario);
@@ -100,10 +100,10 @@
 }
 
 .editarperfil-btn-cancelar {
-  height: 40px;
-  border-radius: 4px;
+  height: var(--alto-control);
+  border-radius: var(--radio-control);
   padding: 0 20px;
-  font-size: 13px;
+  font-size: var(--fuente-control);
   font-weight: 500;
   cursor: pointer;
   background: var(--color-fondo);
@@ -137,8 +137,8 @@
   .editarperfil-btn-guardar,
   .editarperfil-btn-cancelar {
     width: 100%;
-    height: 44px;
+    height: var(--alto-control);
   }
 
-  .editarperfil-input { height: 44px; }
+  .editarperfil-input { height: var(--alto-control); }
 }

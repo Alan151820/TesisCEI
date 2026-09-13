@@ -77,9 +77,9 @@
   background: var(--color-info-suave);
   color: var(--color-sobre-info-suave);
   border: 1px solid var(--color-borde);
-  border-radius: 6px;
+  border-radius: var(--radio-control);
   padding: 6px 14px;
-  font-size: 12px;
+  font-size: var(--fuente-control);
   font-weight: 500;
   font-family: inherit;
   cursor: pointer;
@@ -153,9 +153,9 @@
 .mapa-btn-cancelar {
   background: none;
   border: 1px solid var(--color-borde);
-  border-radius: 6px;
+  border-radius: var(--radio-control);
   padding: 8px 18px;
-  font-size: 13px;
+  font-size: var(--fuente-control);
   font-family: inherit;
   color: var(--color-texto);
   cursor: pointer;
@@ -169,9 +169,9 @@
   background: var(--color-primario);
   color: var(--color-sobre-primario);
   border: none;
-  border-radius: 6px;
+  border-radius: var(--radio-control);
   padding: 8px 20px;
-  font-size: 13px;
+  font-size: var(--fuente-control);
   font-weight: 600;
   font-family: inherit;
   cursor: pointer;

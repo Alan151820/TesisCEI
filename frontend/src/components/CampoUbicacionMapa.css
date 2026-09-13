@@ -18,12 +18,12 @@
 .campo-ubicacion-mapa-input {
   flex: 1;
   min-width: 0;
-  height: 38px;
+  height: var(--alto-control);
   padding: 0 12px;
   border: 1px solid var(--color-borde);
-  border-radius: 4px;
+  border-radius: var(--radio-control);
   background: var(--color-fondo);
-  font-size: 13px;
+  font-size: var(--fuente-control);
   color: var(--color-texto);
   box-sizing: border-box;
   font-family: inherit;
@@ -34,11 +34,11 @@
 }
 
 .campo-ubicacion-mapa-boton {
-  height: 38px;
+  height: var(--alto-control);
   flex-shrink: 0;
-  border-radius: 4px;
+  border-radius: var(--radio-control);
   padding: 0 16px;
-  font-size: 13px;
+  font-size: var(--fuente-control);
   font-weight: 500;
   cursor: pointer;
   background: var(--color-fondo);
@@ -60,6 +60,6 @@
 
   .campo-ubicacion-mapa-input,
   .campo-ubicacion-mapa-boton {
-    height: 44px;
+    height: var(--alto-control);
   }
 }

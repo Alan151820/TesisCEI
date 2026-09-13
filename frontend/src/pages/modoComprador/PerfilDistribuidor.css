@@ -34,10 +34,10 @@
 .perfildist-buscador {
   flex: 1;
   max-width: 560px;
-  height: 36px;
+  height: var(--alto-control);
   background: var(--color-superficie);
   border: 1px solid var(--color-borde);
-  border-radius: 4px;
+  border-radius: var(--radio-control);
   display: flex;
   align-items: center;
   padding: 0 14px;
@@ -45,12 +45,12 @@
 }
 
 .perfildist-buscador-icono {
-  font-size: 13px;
+  font-size: var(--fuente-control);
   color: var(--color-texto-suave);
 }
 
 .perfildist-buscador-texto {
-  font-size: 13px;
+  font-size: var(--fuente-control);
   color: var(--color-texto-suave);
 }
 
@@ -295,7 +295,7 @@
 .perfildist-btn-cerrar-sesion {
   background: none;
   border: none;
-  font-size: 13px;
+  font-size: var(--fuente-control);
   color: var(--color-texto-suave);
   cursor: pointer;
   padding: 0;
@@ -310,7 +310,7 @@
 .perfildist-btn-login {
   background: none;
   border: none;
-  font-size: 13px;
+  font-size: var(--fuente-control);
   color: var(--color-texto-suave);
   font-weight: 500;
   font-family: inherit;
@@ -323,8 +323,8 @@
   border: none;
   color: var(--color-sobre-primario);
   padding: 7px 18px;
-  border-radius: 4px;
-  font-size: 13px;
+  border-radius: var(--radio-control);
+  font-size: var(--fuente-control);
   font-weight: 500;
   font-family: inherit;
   cursor: pointer;

@@ -14,9 +14,9 @@
 
 .detallepedido-btn-volver {
   height: 32px;
-  border-radius: 4px;
+  border-radius: var(--radio-control);
   padding: 0 14px;
-  font-size: 13px;
+  font-size: var(--fuente-control);
   font-weight: 500;
   font-family: inherit;
   cursor: pointer;
@@ -59,7 +59,7 @@
 .detallepedido-tarjeta {
   background: var(--color-fondo);
   border: 1px solid var(--color-borde);
-  border-radius: 6px;
+  border-radius: var(--radio-tarjeta);
   padding: 20px 24px;
 }
 
@@ -176,10 +176,10 @@
 .detallepedido-producto-boton {
   background: var(--color-superficie);
   border: 1px solid var(--color-borde);
-  border-radius: 4px;
+  border-radius: var(--radio-control);
   padding: 6px 10px;
   font-family: inherit;
-  font-size: 13px;
+  font-size: var(--fuente-control);
   font-weight: 600;
   color: var(--color-texto);
   cursor: pointer;

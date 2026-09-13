@@ -28,10 +28,10 @@
 .catalogo-header-buscador {
   flex: 1;
   max-width: 560px;
-  height: 36px;
+  height: var(--alto-control);
   background: var(--color-superficie);
   border: 1px solid var(--color-borde);
-  border-radius: 4px;
+  border-radius: var(--radio-control);
   display: flex;
   align-items: center;
   padding: 0 14px;
@@ -39,7 +39,7 @@
 }
 
 .catalogo-header-buscador-icono {
-  font-size: 14px;
+  font-size: var(--fuente-control);
   color: var(--color-texto-suave);
   flex-shrink: 0;
 }
@@ -49,7 +49,7 @@
   background: none;
   border: none;
   outline: none;
-  font-size: 13px;
+  font-size: var(--fuente-control);
   color: var(--color-texto);
   font-family: inherit;
 }
@@ -69,7 +69,7 @@
   background: none;
   border: none;
   color: var(--color-texto-suave);
-  font-size: 13px;
+  font-size: var(--fuente-control);
   font-weight: 500;
   font-family: inherit;
   cursor: pointer;
@@ -85,8 +85,8 @@
   border: none;
   color: var(--color-sobre-primario);
   padding: 7px 18px;
-  border-radius: 4px;
-  font-size: 13px;
+  border-radius: var(--radio-control);
+  font-size: var(--fuente-control);
   font-weight: 500;
   font-family: inherit;
   cursor: pointer;
@@ -128,12 +128,12 @@
 .catalogo-tarjeta-agregar {
   margin-top: 10px;
   width: 100%;
-  height: 34px;
+  height: var(--alto-control);
   border: none;
-  border-radius: 6px;
+  border-radius: var(--radio-control);
   background: var(--color-primario);
   color: var(--color-sobre-primario);
-  font-size: 13px;
+  font-size: var(--fuente-control);
   font-weight: 600;
   font-family: inherit;
   cursor: pointer;
@@ -152,12 +152,12 @@
 
 .catalogo-filtros select,
 .catalogo-filtros input {
-  height: 36px;
+  height: var(--alto-control);
   padding: 0 12px;
   border: 1px solid var(--color-borde);
-  border-radius: 4px;
+  border-radius: var(--radio-control);
   background: var(--color-superficie);
-  font-size: 13px;
+  font-size: var(--fuente-control);
   font-family: inherit;
   color: var(--color-texto);
   outline: none;
@@ -176,12 +176,12 @@
 }
 
 .catalogo-filtros button {
-  height: 36px;
+  height: var(--alto-control);
   padding: 0 14px;
   border: none;
-  border-radius: 4px;
+  border-radius: var(--radio-control);
   background: none;
-  font-size: 13px;
+  font-size: var(--fuente-control);
   font-family: inherit;
   color: var(--color-texto-suave);
   cursor: pointer;
@@ -216,7 +216,7 @@
 /* Tarjeta */
 .catalogo-tarjeta {
   background: var(--color-fondo);
-  border-radius: 10px;
+  border-radius: var(--radio-tarjeta);
   overflow: hidden;
   border: 1px solid var(--color-borde);
   display: flex;
@@ -358,9 +358,9 @@
   .catalogo-filtros-btn {
     background: var(--color-superficie);
     border: 1px solid var(--color-borde);
-    border-radius: 4px;
+    border-radius: var(--radio-control);
     padding: 7px 14px;
-    font-size: 13px;
+    font-size: var(--fuente-control);
     color: var(--color-texto);
     font-family: inherit;
     cursor: pointer;
@@ -403,9 +403,6 @@
   }
 
   .catalogo-tarjeta-agregar {
-    height: 26px;
-    font-size: 10px;
-    border-radius: 4px;
     margin-top: 6px;
   }
 
@@ -474,12 +471,6 @@
   .catalogo-filtros {
     padding: 12px 16px;
     gap: 8px;
-  }
-
-  .catalogo-filtros select,
-  .catalogo-filtros input {
-    height: 32px;
-    font-size: 12px;
   }
 
   .catalogo-filtros input[type="number"] {

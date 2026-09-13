@@ -26,10 +26,10 @@
 .verificarrecuperacion-buscador {
   flex: 1;
   max-width: 560px;
-  height: 36px;
+  height: var(--alto-control);
   background: var(--color-superficie);
   border: 1px solid var(--color-borde);
-  border-radius: 4px;
+  border-radius: var(--radio-control);
   display: flex;
   align-items: center;
   padding: 0 14px;
@@ -38,7 +38,7 @@
 
 .verificarrecuperacion-buscador-icono,
 .verificarrecuperacion-buscador-texto {
-  font-size: 13px;
+  font-size: var(--fuente-control);
   color: var(--color-texto-suave);
 }
 
@@ -59,8 +59,8 @@
   color: var(--color-sobre-primario);
   border: none;
   padding: 7px 18px;
-  border-radius: 4px;
-  font-size: 13px;
+  border-radius: var(--radio-control);
+  font-size: var(--fuente-control);
   font-weight: 500;
   font-family: inherit;
   cursor: pointer;
@@ -79,7 +79,7 @@
   max-width: 100%;
   background: var(--color-superficie);
   border: 1px solid var(--color-borde);
-  border-radius: 8px;
+  border-radius: var(--radio-tarjeta);
   padding: 36px 40px;
 }
 
@@ -162,12 +162,12 @@
 
 .verificarrecuperacion-input {
   width: 100%;
-  height: 38px;
+  height: var(--alto-control);
   border: 1px solid var(--color-borde);
-  border-radius: 4px;
+  border-radius: var(--radio-control);
   background: var(--color-fondo);
   padding: 0 12px;
-  font-size: 13px;
+  font-size: var(--fuente-control);
   font-family: inherit;
   color: var(--color-texto);
   box-sizing: border-box;
@@ -179,12 +179,12 @@
 
 .verificarrecuperacion-boton {
   width: 100%;
-  height: 40px;
-  border-radius: 4px;
+  height: var(--alto-control);
+  border-radius: var(--radio-control);
   border: none;
   background: var(--color-primario);
   color: var(--color-sobre-primario);
-  font-size: 13px;
+  font-size: var(--fuente-control);
   font-weight: 500;
   font-family: inherit;
   cursor: pointer;
@@ -202,5 +202,4 @@
   .verificarrecuperacion-buscador, .verificarrecuperacion-encabezado-derecha { display: none; }
   .verificarrecuperacion-contenido { padding: 20px; }
   .verificarrecuperacion-tarjeta { width: 100%; padding: 28px 20px; border: none; box-shadow: 0 4px 24px rgba(0,0,0,0.08); }
-  .verificarrecuperacion-input, .verificarrecuperacion-boton { height: 44px; }
 }

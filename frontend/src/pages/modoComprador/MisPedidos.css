@@ -27,10 +27,10 @@
 .mispedidos-header-buscador {
   flex: 1;
   max-width: 560px;
-  height: 36px;
+  height: var(--alto-control);
   background: var(--color-superficie);
   border: 1px solid var(--color-borde);
-  border-radius: 4px;
+  border-radius: var(--radio-control);
   display: flex;
   align-items: center;
   padding: 0 14px;
@@ -38,14 +38,14 @@
 }
 
 .mispedidos-header-buscador-icono {
-  font-size: 13px;
+  font-size: var(--fuente-control);
   color: var(--color-texto-suave);
 }
 
 .mispedidos-header-buscador-input {
   border: none;
   background: transparent;
-  font-size: 13px;
+  font-size: var(--fuente-control);
   color: var(--color-texto);
   outline: none;
   width: 100%;
@@ -320,12 +320,17 @@
     flex-shrink: 0;
   }
 
+  /* Excepcion a la escala compartida: este buscador comparte una barra de
+     52px con el logo y el avatar (ambos de 28px), asi que se mantiene
+     chico a proposito -- el radio/tamano de fuente de --radio-control y
+     --fuente-control estan pensados para controles de 48px y se verian
+     desproporcionados en una caja de 28px. */
   .mispedidos-header-buscador-mobile {
     flex: 1;
     height: 28px;
     background: var(--color-superficie);
     border: 1px solid var(--color-borde);
-    border-radius: 4px;
+    border-radius: 14px;
     display: flex;
     align-items: center;
     padding: 0 8px;
@@ -333,12 +338,12 @@
   }
 
   .mispedidos-header-buscador-mobile .mispedidos-header-buscador-icono {
-    font-size: 11px;
+    font-size: 13px;
     color: var(--color-texto-suave);
   }
 
   .mispedidos-header-buscador-mobile .mispedidos-header-buscador-input {
-    font-size: 11px;
+    font-size: 13px;
     border: none;
     background: transparent;
     outline: none;

@@ -41,8 +41,8 @@
   background: var(--color-primario);
   color: var(--color-sobre-primario);
   border: none;
-  border-radius: 6px;
-  font-size: 14px;
+  border-radius: var(--radio-control);
+  font-size: var(--fuente-control);
   font-weight: 500;
   font-family: inherit;
   cursor: pointer;
@@ -130,7 +130,7 @@
   width: 32px;
   height: 32px;
   border: 1px solid var(--color-borde);
-  border-radius: 4px;
+  border-radius: var(--radio-control);
   background: var(--color-fondo);
   color: var(--color-texto);
   font-size: 16px;
@@ -163,9 +163,9 @@
 .carrito-vaciar-btn {
   background: none;
   border: 1px solid var(--color-borde);
-  border-radius: 6px;
+  border-radius: var(--radio-control);
   padding: 8px 16px;
-  font-size: 12px;
+  font-size: var(--fuente-control);
   color: var(--color-texto-suave);
   cursor: pointer;
   font-family: inherit;
@@ -204,12 +204,12 @@
 }
 .carrito-resumen-btn {
   width: 100%;
-  height: 44px;
+  height: var(--alto-control);
   background: var(--color-primario);
   color: var(--color-sobre-primario);
   border: none;
-  border-radius: 6px;
-  font-size: 14px;
+  border-radius: var(--radio-control);
+  font-size: var(--fuente-control);
   font-weight: 600;
   font-family: inherit;
   cursor: pointer;

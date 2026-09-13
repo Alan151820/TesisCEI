@@ -56,16 +56,16 @@
 .configperfil-textarea {
   width: 100%;
   border: 1px solid var(--color-borde);
-  border-radius: 4px;
+  border-radius: var(--radio-control);
   background: var(--color-fondo);
-  font-size: 13px;
+  font-size: var(--fuente-control);
   color: var(--color-texto);
   box-sizing: border-box;
   font-family: inherit;
 }
 
 .configperfil-input {
-  height: 38px;
+  height: var(--alto-control);
   padding: 0 12px;
 }
 
@@ -93,11 +93,11 @@
 }
 
 .configperfil-btn-guardar {
-  height: 40px;
+  height: var(--alto-control);
   flex: 1;
-  border-radius: 4px;
+  border-radius: var(--radio-control);
   padding: 0 20px;
-  font-size: 13px;
+  font-size: var(--fuente-control);
   font-weight: 500;
   cursor: pointer;
   background: var(--color-primario);
@@ -111,11 +111,11 @@
 }
 
 .configperfil-btn-cancelar {
-  height: 40px;
+  height: var(--alto-control);
   flex: 1;
-  border-radius: 4px;
+  border-radius: var(--radio-control);
   padding: 0 20px;
-  font-size: 13px;
+  font-size: var(--fuente-control);
   font-weight: 500;
   cursor: pointer;
   background: var(--color-fondo);
@@ -150,7 +150,7 @@
     padding: 24px;
   }
 
-  .configperfil-input { height: 44px; }
+  .configperfil-input { height: var(--alto-control); }
 
   .configperfil-acciones {
     flex-direction: column;
@@ -158,6 +158,6 @@
 
   .configperfil-btn-guardar,
   .configperfil-btn-cancelar {
-    height: 44px;
+    height: var(--alto-control);
   }
 }

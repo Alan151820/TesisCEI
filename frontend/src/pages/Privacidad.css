@@ -34,7 +34,7 @@
   max-width: 680px;
   background: var(--color-fondo);
   border: 1px solid var(--color-borde);
-  border-radius: 8px;
+  border-radius: var(--radio-tarjeta);
   padding: 32px;
   color: var(--color-texto);
   line-height: 1.6;

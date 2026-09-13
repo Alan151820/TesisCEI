@@ -35,10 +35,10 @@
 .detalleproducto-header-buscador {
   flex: 1;
   max-width: 560px;
-  height: 36px;
+  height: var(--alto-control);
   background: var(--color-superficie);
   border: 1px solid var(--color-borde);
-  border-radius: 4px;
+  border-radius: var(--radio-control);
   display: flex;
   align-items: center;
   padding: 0 14px;
@@ -46,12 +46,12 @@
 }
 
 .detalleproducto-header-buscador-icono {
-  font-size: 13px;
+  font-size: var(--fuente-control);
   color: var(--color-texto-suave);
 }
 
 .detalleproducto-header-buscador-texto {
-  font-size: 13px;
+  font-size: var(--fuente-control);
   color: var(--color-texto-suave);
 }
 
@@ -112,7 +112,7 @@
 .detalleproducto-tarjeta {
   background: var(--color-fondo);
   border: 1px solid var(--color-borde);
-  border-radius: 6px;
+  border-radius: var(--radio-tarjeta);
   padding: 32px;
   display: flex;
   gap: 40px;
@@ -323,7 +323,7 @@
 .detalleproducto-btn-cerrar-sesion {
   background: none;
   border: none;
-  font-size: 13px;
+  font-size: var(--fuente-control);
   color: var(--color-texto-suave);
   cursor: pointer;
   padding: 0;
@@ -339,7 +339,7 @@
   background: none;
   border: none;
   color: var(--color-texto-suave);
-  font-size: 13px;
+  font-size: var(--fuente-control);
   font-weight: 500;
   font-family: inherit;
   cursor: pointer;
@@ -355,8 +355,8 @@
   border: none;
   color: var(--color-sobre-primario);
   padding: 7px 18px;
-  border-radius: 4px;
-  font-size: 13px;
+  border-radius: var(--radio-control);
+  font-size: var(--fuente-control);
   font-weight: 500;
   font-family: inherit;
   cursor: pointer;
@@ -391,7 +391,7 @@
 
 .detalleproducto-stepper-btn {
   width: 36px;
-  height: 38px;
+  height: var(--alto-control);
   background: var(--color-superficie);
   border: none;
   font-size: 16px;
@@ -447,8 +447,8 @@
   background: var(--color-primario);
   color: var(--color-sobre-primario);
   border: none;
-  border-radius: 4px;
-  font-size: 14px;
+  border-radius: var(--radio-control);
+  font-size: var(--fuente-control);
   font-weight: 500;
   font-family: inherit;
   cursor: pointer;

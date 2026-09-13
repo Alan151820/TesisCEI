@@ -16,6 +16,8 @@
   --radio-tarjeta: 18px;
   --radio-chip: 8px;
 
-  /* Tipografía base */
+  /* Tipografía base y de controles (nunca por debajo de 15px: el texto
+     de botones/campos tiene que leerse sin esfuerzo). */
   --fuente-base: 16px;
+  --fuente-control: 15px;
 }

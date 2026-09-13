@@ -117,10 +117,10 @@
 }
 
 .reparto-btn-volver {
-  height: 36px;
-  border-radius: 4px;
+  height: var(--alto-control);
+  border-radius: var(--radio-control);
   padding: 0 16px;
-  font-size: 13px;
+  font-size: var(--fuente-control);
   font-weight: 500;
   font-family: inherit;
   cursor: pointer;
@@ -146,6 +146,9 @@
   opacity: 0.85;
 }
 
+/* Boton icono circular: no participa de --alto-control/--fuente-control
+   (pensadas para controles de 48px de alto) -- ancho y alto deben ser
+   iguales entre si para que border-radius:50% siga dibujando un circulo. */
 .reparto-btn-cruz {
   width: 28px;
   height: 28px;
@@ -153,7 +156,7 @@
   border: none;
   background: var(--color-fondo);
   color: var(--color-texto-suave);
-  font-size: 12px;
+  font-size: 14px;
   line-height: 1;
   cursor: pointer;
   padding: 0;
@@ -235,9 +238,9 @@
 }
 
 .reparto-btn-celda-chica {
-  font-size: 11px;
+  font-size: var(--fuente-control);
   padding: 4px 8px;
-  border-radius: 4px;
+  border-radius: var(--radio-control);
   border: 1px solid var(--color-borde);
   background: var(--color-superficie);
   color: var(--color-texto);
@@ -264,9 +267,9 @@
 }
 
 .reparto-btn-cambiar-estado {
-  font-size: 11px;
+  font-size: var(--fuente-control);
   padding: 4px 8px;
-  border-radius: 4px;
+  border-radius: var(--radio-control);
   border: 1px solid var(--color-borde);
   background: var(--color-superficie);
   color: var(--color-texto);
@@ -558,10 +561,10 @@
 .reparto-modal-textarea {
   width: 100%;
   border: 1px solid var(--color-borde);
-  border-radius: 6px;
+  border-radius: var(--radio-control);
   background: var(--color-fondo);
   padding: 10px 12px;
-  font-size: 13px;
+  font-size: var(--fuente-control);
   font-family: inherit;
   color: var(--color-texto);
   resize: vertical;
@@ -695,13 +698,13 @@
   .reparto-btn-celda-chica,
   .reparto-btn-cambiar-estado,
   .reparto-estado-menu-item {
-    font-size: 13px;
+    font-size: var(--fuente-control);
     padding: 8px 14px;
   }
 
   .reparto-btn-cruz {
     width: 36px;
     height: 36px;
-    font-size: 14px;
+    font-size: 16px;
   }
 }
