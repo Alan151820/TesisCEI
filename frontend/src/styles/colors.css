@@ -1,6 +1,6 @@
 :root {
   /* ============================================================
-     FUENTES — las DOS únicas variables que se cambian cuando se
+     FUENTES — las TRES únicas variables que se cambian cuando se
      elige el color real del proyecto.
 
      Formato: oklch(lightness% chroma hue)
@@ -8,21 +8,39 @@
        - chroma: 0–0.4 aprox. (0 = gris puro, 0.3+ = muy vívido)
        - hue: 0–360 (el matiz: 0=rojo, 120=verde, 250=azul, etc.)
   ============================================================ */
-  --_fuente-primaria:   oklch(52.343% 0.15074 44.56);
-  --_fuente-secundaria: oklch(63.558% 0.21734 36.057);
+  --_fuente-primaria:   oklch(52.343% 0.201   44.77);
+  --_fuente-secundaria: oklch(35.491% 0.11627 275.63);
+  --_fuente-terciaria:  oklch(91.677% 0.19153 101.41);
 
-  /* Acento primario y secundario */
-  --color-primario:        oklch(from var(--_fuente-primaria) 16% c h);
-  --color-sobre-primario:  oklch(from var(--_fuente-primaria) 100% 0 h);
-  --color-secundario:      oklch(from var(--_fuente-secundaria) 45% c h);
-  --color-sobre-secundario: oklch(from var(--_fuente-secundaria) 100% 0 h);
+  /* Acento primario, secundario y terciario: alias directo de la fuente,
+     sin transformar el lightness. El contraste con el texto/ícono que va
+     encima NO lo garantiza este rol — lo garantiza siempre el "sobre-"
+     correspondiente. Por eso estos 3 colores se usan como RELLENO SOLIDO
+     (fondo de botón/chip/header), nunca como texto suelto sobre el fondo
+     de la página. */
+  --color-primario:   var(--_fuente-primaria);
+  --color-secundario: var(--_fuente-secundaria);
+  --color-terciario:  var(--_fuente-terciaria);
 
-  /* Neutros — chromatic neutrals (mismo hue que la fuente primaria, chroma casi nulo) */
-  --color-fondo:        oklch(from var(--_fuente-primaria) 100% 0 h);
-  --color-superficie:   oklch(from var(--_fuente-primaria) 96% calc(c * 0.05) h);
-  --color-texto:        oklch(from var(--_fuente-primaria) 12% calc(c * 0.07) h);
-  --color-texto-suave:  oklch(from var(--_fuente-primaria) 53% calc(c * 0.08) h);
-  --color-borde:        oklch(from var(--_fuente-primaria) 85% calc(c * 0.10) h);
+  --color-sobre-primario:   oklch(from var(--_fuente-primaria) 100% calc(c * 0.04) h);
+  --color-sobre-secundario: oklch(from var(--_fuente-secundaria) 100% calc(c * 0.04) h);
+  --color-sobre-terciario:  oklch(from var(--_fuente-terciaria) 15%  calc(c * 0.04) h);
+
+  /* "suave": versión clara del secundario/terciario para chips y fondos
+     tenues (mismo patrón que los 4 semánticos de más abajo). */
+  --color-secundario-suave:       oklch(from var(--_fuente-secundaria) 91% calc(c * 0.5) h);
+  --color-sobre-secundario-suave: oklch(from var(--_fuente-secundaria) 12% calc(c * 0.3) h);
+  --color-terciario-suave:        oklch(from var(--_fuente-terciaria) 95% calc(c * 0.35) h);
+  --color-sobre-terciario-suave:  oklch(from var(--_fuente-terciaria) 25% calc(c * 0.5) h);
+
+  /* Neutros — chromatic neutrals puros (mismo hue que la fuente primaria,
+     chroma casi nula: apenas "vibran" con el hue de marca sin dejar de
+     leerse como blanco/negro/gris real). */
+  --color-fondo:        oklch(from var(--_fuente-primaria) 100% calc(c * 0.01)  h);
+  --color-superficie:   oklch(from var(--_fuente-primaria) 97%  calc(c * 0.02)  h);
+  --color-texto:        oklch(from var(--_fuente-primaria) 15%  calc(c * 0.015) h);
+  --color-texto-suave:  oklch(from var(--_fuente-primaria) 45%  calc(c * 0.02)  h);
+  --color-borde:        oklch(from var(--_fuente-primaria) 88%  calc(c * 0.03)  h);
 
   /* Semánticos — fijos, independientes del color de marca. Cada uno tiene
      su versión "suave" (fondo tenue) para insignias/avisos, y su "sobre-"
@@ -49,11 +67,31 @@
 }
 
 [data-tema="oscuro"] {
-  /* Tema oscuro: mismas fuentes, tonos claros y oscuros invertidos */
+  /* Tema oscuro: mismas fuentes, tonos claros y oscuros invertidos.
+     Primario/secundario mantienen la misma fórmula que ya usaba este
+     archivo (aclarar a L82% / oscurecer el "sobre" a L22%) — el punto de
+     partida en claro ya no es tan oscuro como antes (L16%→ahora alias
+     directo ~L52%), pero la dirección "aclarar la marca en oscuro" sigue
+     siendo la correcta para que el color se distinga del fondo oscuro.
+     Terciario es nuevo: en claro ya es muy claro (L91.7%, pensado para
+     fondo blanco), así que en oscuro se lo baja a un amarillo medio
+     (L75%) en vez de aclararlo más — sigue siendo un acento vívido sobre
+     fondo oscuro sin quedar "lavado". Secundario-suave/terciario-suave
+     siguen el mismo patrón que ya usan los 4 semánticos: en claro son un
+     fondo muy claro con texto oscuro, en oscuro se invierten a un fondo
+     oscuro-saturado con texto claro (mismo criterio que
+     error-suave/sobre-error-suave de más abajo). */
   --color-primario:         oklch(from var(--_fuente-primaria) 82% c h);
   --color-sobre-primario:   oklch(from var(--_fuente-primaria) 22% 0 h);
   --color-secundario:       oklch(from var(--_fuente-secundaria) 82% c h);
   --color-sobre-secundario: oklch(from var(--_fuente-secundaria) 22% 0 h);
+  --color-terciario:        oklch(from var(--_fuente-terciaria) 75% c h);
+  --color-sobre-terciario:  oklch(from var(--_fuente-terciaria) 15% calc(c * 0.3) h);
+
+  --color-secundario-suave:       oklch(from var(--_fuente-secundaria) 32% calc(c * 1.0) h);
+  --color-sobre-secundario-suave: oklch(from var(--_fuente-secundaria) 91% calc(c * 0.6) h);
+  --color-terciario-suave:        oklch(from var(--_fuente-terciaria) 32% calc(c * 0.7) h);
+  --color-sobre-terciario-suave:  oklch(from var(--_fuente-terciaria) 91% calc(c * 1.0) h);
 
   --color-fondo:        oklch(from var(--_fuente-primaria)  5% calc(c * 0.05) h);
   --color-superficie:   oklch(from var(--_fuente-primaria) 12% calc(c * 0.06) h);
