@@ -14,6 +14,9 @@
 
 /* Topbar */
 .perfildist-topbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
   height: 56px;
   background: var(--color-fondo);
   border-bottom: 1px solid var(--color-borde);
@@ -201,7 +204,7 @@
 .perfildist-producto-card {
   background: var(--color-fondo);
   border: 1px solid var(--color-borde);
-  border-radius: 6px;
+  border-radius: var(--radio-tarjeta);
   overflow: hidden;
   flex: 0 0 calc(25% - 12px);
   cursor: pointer;
@@ -330,7 +333,7 @@
   cursor: pointer;
 }
 
-.perfildist-mobile-header { display: none; }
+.perfildist-mobile-header { display: none; position: sticky; top: 0; z-index: 10; }
 
 @media (max-width: 768px) {
   /* Header blanco mobile con ← y título */

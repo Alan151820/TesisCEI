@@ -14,6 +14,9 @@
 
 /* Header */
 .detalleproducto-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
   height: 56px;
   background: var(--color-fondo);
   border-bottom: 1px solid var(--color-borde);
@@ -386,7 +389,7 @@
   border: 1px solid var(--color-borde);
   border-radius: 4px;
   overflow: hidden;
-  height: 38px;
+  height: var(--alto-control);
 }
 
 .detalleproducto-stepper-btn {
@@ -443,7 +446,7 @@
 
 .detalleproducto-carrito-boton {
   width: 100%;
-  height: 42px;
+  height: var(--alto-control);
   background: var(--color-primario);
   color: var(--color-sobre-primario);
   border: none;

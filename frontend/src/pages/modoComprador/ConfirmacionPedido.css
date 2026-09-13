@@ -8,6 +8,9 @@
 /* ── Mobile header ── */
 .confirmar-mobile-header {
   display: none;
+  position: sticky;
+  top: 0;
+  z-index: 10;
   height: 48px;
   align-items: center;
   padding: 0 16px;
@@ -37,6 +40,9 @@
 
 /* ── Desktop topbar ── */
 .confirmar-topbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
   height: 56px;
   flex-shrink: 0;
   background: var(--color-fondo);
@@ -106,7 +112,7 @@
 .confirmar-card {
   background: var(--color-fondo);
   border: 1px solid var(--color-borde);
-  border-radius: 8px;
+  border-radius: var(--radio-tarjeta);
   padding: 20px 24px;
 }
 .confirmar-card-titulo {

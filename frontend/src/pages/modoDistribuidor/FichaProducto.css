@@ -1,12 +1,16 @@
 .ficha-fondo {
   background: var(--color-superficie);
   min-height: 100vh;
-  padding: 28px 32px;
+  display: flex;
+  flex-direction: column;
 }
 
 .ficha-contenedor {
   max-width: 1200px;
+  width: 100%;
   margin: 0 auto;
+  padding: 28px 32px;
+  box-sizing: border-box;
 }
 
 .ficha-breadcrumb {
@@ -49,7 +53,7 @@
 .ficha-card {
   background: var(--color-fondo);
   border: 1px solid var(--color-borde);
-  border-radius: 6px;
+  border-radius: var(--radio-tarjeta);
   padding: 24px;
   margin-bottom: 16px;
 }
@@ -469,46 +473,53 @@
   color: var(--color-sobre-exito-suave);
 }
 
-.ficha-mobile-header { display: none; }
+/* Antes esta barra solo se mostraba en mobile (<=768px) y en desktop/tablet
+   la pagina quedaba sin ningun header -- el unico "volver" era el
+   breadcrumb, que ni siquiera es sticky. Ahora se muestra siempre y queda
+   fija arriba, igual que el resto de las paginas de distribuidor. */
+.ficha-mobile-header {
+  display: flex;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  height: 48px;
+  background: var(--color-superficie);
+  align-items: center;
+  padding: 0 16px;
+  gap: 12px;
+  flex-shrink: 0;
+}
+.ficha-mobile-volver {
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: inherit;
+  font-size: 18px;
+  color: var(--color-texto-suave);
+  cursor: pointer;
+  min-width: 44px;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+}
+.ficha-mobile-titulo {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-texto);
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* El breadcrumb queda reemplazado por el header de arriba en todos los
+   tamaños (mostrar los dos a la vez era redundante: ambos son "volver a
+   mis productos"). */
+.ficha-breadcrumb { display: none; }
 
 @media (max-width: 768px) {
-  /* Mobile header oscuro */
-  .ficha-mobile-header {
-    display: flex;
-    height: 48px;
-    background: var(--color-superficie);
-    align-items: center;
-    padding: 0 16px;
-    gap: 12px;
-    flex-shrink: 0;
-  }
-  .ficha-mobile-volver {
-    background: none;
-    border: none;
-    padding: 0;
-    font-family: inherit;
-    font-size: 18px;
-    color: var(--color-texto-suave);
-    cursor: pointer;
-    min-width: 44px;
-    min-height: 44px;
-    display: flex;
-    align-items: center;
-  }
-  .ficha-mobile-titulo {
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--color-texto);
-    flex: 1;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
 
-  /* Ocultar breadcrumb en mobile (reemplazado por header) */
-  .ficha-breadcrumb { display: none; }
-
-  .ficha-fondo { padding: 16px; }
+  .ficha-contenedor { padding: 16px; }
   .ficha-layout { flex-direction: column; }
   .ficha-sidebar { width: 100%; }
   .ficha-fila-top { flex-direction: column; }

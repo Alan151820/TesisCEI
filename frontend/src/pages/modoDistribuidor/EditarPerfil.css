@@ -1,7 +1,7 @@
 .editarperfil-card {
   background: var(--color-fondo);
   border: 1px solid var(--color-borde);
-  border-radius: 6px;
+  border-radius: var(--radio-tarjeta);
   padding: 24px;
   max-width: 640px;
   margin: 0 auto;
