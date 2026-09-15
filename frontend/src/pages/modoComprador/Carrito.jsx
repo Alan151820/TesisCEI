@@ -6,6 +6,8 @@ import BottomNav from '../../components/BottomNav'
 import MenuPerfilComprador from '../../components/MenuPerfilComprador'
 import Hdr from '../../components/Hdr'
 import Boton from '../../components/ui/Boton'
+import Tarjeta from '../../components/ui/Tarjeta'
+import EstadoLista from '../../components/ui/EstadoLista'
 import './InicioComprador.css'
 import './Carrito.css'
 
@@ -48,66 +50,72 @@ function Carrito() {
       <div className="carrito-contenido">
 
         {items.length === 0 ? (
-          <div className="carrito-vacio">
-            <div className="carrito-vacio-icono">🛒</div>
-            <div className="carrito-vacio-titulo">Tu carrito está vacío</div>
-            <div className="carrito-vacio-subtitulo">Explorá el catálogo y agregá productos.</div>
-            <button className="carrito-vacio-btn" onClick={() => navigate(rutaInicio())}>Ver catálogo</button>
-          </div>
+          <EstadoLista className="col gap-m" style={{ alignItems: 'center' }}>
+            <span style={{ fontSize: 36 }}>🛒</span>
+            <span className="texto" style={{ fontWeight: 700 }}>Tu carrito está vacío</span>
+            <span>Explorá el catálogo y agregá productos.</span>
+            <Boton onClick={() => navigate(rutaInicio())}>Ver catálogo</Boton>
+          </EstadoLista>
         ) : (
           <div className="carrito-layout">
             <div className="carrito-lista">
               {Object.entries(porDistribuidor).map(([distId, grupo]) => (
-                <div key={distId} className="carrito-grupo">
-                  <div className="carrito-grupo-header">{grupo.nombreDistribuidor}</div>
+                <Tarjeta key={distId} className="col gap-s carrito-grupo">
+                  <div className="texto-mudo">{grupo.nombreDistribuidor}</div>
                   {grupo.items.map(item => (
-                    <div key={item.id} className="carrito-item">
-                      <div className="carrito-item-foto">
-                        {item.imagenUrl
-                          ? <img src={`http://localhost:3000${item.imagenUrl}`} alt={item.nombre} className="carrito-item-img" />
-                          : <div className="carrito-item-img-placeholder">—</div>
-                        }
+                    <div key={item.id} className="fila gap-m carrito-item">
+                      {item.imagenUrl
+                        ? <img src={`http://localhost:3000${item.imagenUrl}`} alt={item.nombre} className="carrito-item-img" />
+                        : <div className="placeholder-img carrito-item-img">—</div>
+                      }
+                      <div className="col flex1">
+                        <span className="texto">{item.nombre}</span>
+                        <span className="texto-mudo">Precio est. ${Number(item.precioMinimo).toLocaleString('es-AR')} c/u</span>
                       </div>
-                      <div className="carrito-item-info">
-                        <div className="carrito-item-nombre">{item.nombre}</div>
-                        <div className="carrito-item-precio">
-                          Precio est. ${Number(item.precioMinimo).toLocaleString('es-AR')} c/u
-                        </div>
-                      </div>
-                      <div className="carrito-item-controles">
-                        <button
+                      <div className="fila gap-s">
+                        <Boton
+                          variante="outline"
                           className="carrito-item-btn"
                           onClick={() => modificarCantidad(item.id, item.cantidad - 1)}
-                        >−</button>
+                          aria-label="Restar unidad"
+                        >
+                          −
+                        </Boton>
                         <span className="carrito-item-cantidad">{item.cantidad}</span>
-                        <button
+                        <Boton
+                          variante="outline"
                           className="carrito-item-btn"
                           onClick={() => modificarCantidad(item.id, item.cantidad + 1)}
-                        >+</button>
+                          aria-label="Sumar unidad"
+                        >
+                          +
+                        </Boton>
                       </div>
-                      <button
-                        className="carrito-item-eliminar"
+                      <Boton
+                        variante="icono"
                         onClick={() => eliminarProducto(item.id)}
-                      >✕</button>
+                        aria-label="Eliminar producto"
+                      >
+                        ✕
+                      </Boton>
                     </div>
                   ))}
-                </div>
+                </Tarjeta>
               ))}
 
-              <button className="carrito-vaciar-btn" onClick={vaciar}>Vaciar carrito</button>
+              <Boton variante="outline" className="carrito-vaciar-btn" onClick={vaciar}>Vaciar carrito</Boton>
             </div>
 
-            <div className="carrito-resumen">
-              <div className="carrito-resumen-titulo">Resumen</div>
-              <div className="carrito-resumen-fila">
-                <span>Productos ({totalItems})</span>
-                <span>${subtotalTotal.toLocaleString('es-AR')}</span>
+            <Tarjeta className="col gap-s carrito-resumen">
+              <div className="titulo1">Resumen</div>
+              <div className="fila" style={{ justifyContent: 'space-between' }}>
+                <span className="texto">Productos ({totalItems})</span>
+                <span className="texto">${subtotalTotal.toLocaleString('es-AR')}</span>
               </div>
-              <div className="carrito-resumen-nota">
+              <p className="texto-mudo" style={{ margin: 0 }}>
                 * Los precios son estimados según el precio mínimo publicado. El total final depende del volumen y condiciones del distribuidor.
-              </div>
-              <button
-                className="carrito-resumen-btn"
+              </p>
+              <Boton
                 onClick={() => {
                   if (!localStorage.getItem('token')) {
                     navigate('/login')
@@ -117,8 +125,8 @@ function Carrito() {
                 }}
               >
                 Confirmar pedido
-              </button>
-            </div>
+              </Boton>
+            </Tarjeta>
           </div>
         )}
 

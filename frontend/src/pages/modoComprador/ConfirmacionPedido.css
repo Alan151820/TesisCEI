@@ -37,81 +37,30 @@
   flex-shrink: 0;
 }
 
-/* ── Card base ── */
-.confirmar-card {
-  background: var(--color-fondo);
-  border: 1px solid var(--color-borde);
-  border-radius: var(--radio-tarjeta);
-  padding: 20px 24px;
-}
-.confirmar-card-titulo {
-  font-size: 15px;
-  font-weight: 700;
-  color: var(--color-texto);
-  margin-bottom: 14px;
-}
-
 /* ── Resumen ── */
 .confirmar-resumen-grupo {
   margin-bottom: 14px;
 }
-.confirmar-resumen-dist {
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--color-texto-suave);
-  margin-bottom: 6px;
-}
 .confirmar-resumen-fila {
-  display: flex;
-  justify-content: space-between;
   font-size: 13px;
   color: var(--color-texto-suave);
   padding: 4px 0;
   border-bottom: 1px solid var(--color-superficie);
 }
 .confirmar-resumen-subtotal {
-  display: flex;
-  justify-content: space-between;
   font-size: 12px;
   color: var(--color-texto-suave);
   font-weight: 500;
   margin-top: 6px;
-}
-.confirmar-resumen-total {
-  display: flex;
-  justify-content: space-between;
-  font-size: 16px;
-  font-weight: 700;
-  color: var(--color-texto);
-  border-top: 1px solid var(--color-borde);
-  padding-top: 10px;
-  margin-top: 4px;
 }
 
 /* ── Secciones de dirección ── */
 .confirmar-dir-seccion {
   margin-bottom: 4px;
 }
-.confirmar-dir-seccion-titulo {
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--color-texto);
-  margin-bottom: 4px;
-}
-.confirmar-dir-seccion-desc {
-  font-size: 12px;
-  color: var(--color-texto-suave);
-  margin-bottom: 8px;
-  line-height: 1.4;
-}
 .confirmar-dir-fallback-link {
   font-size: 12px;
-  color: var(--color-primario);
-  cursor: pointer;
   margin-top: 8px;
-}
-.confirmar-dir-fallback-link:hover {
-  text-decoration: underline;
 }
 
 /* Resultado del mapa */
@@ -142,86 +91,11 @@
 }
 .confirmar-dir-mapa-limpiar:hover { color: var(--color-error); }
 
-/* Botón abrir mapa */
-.confirmar-btn-mapa {
-  display: block;
-  width: 100%;
-  padding: 9px 14px;
-  background: var(--color-primario);
-  color: var(--color-sobre-primario);
-  border: none;
-  border-radius: var(--radio-control);
-  font-size: var(--fuente-control);
-  font-weight: 600;
-  font-family: inherit;
-  cursor: pointer;
-  text-align: center;
-  transition: opacity 0.15s;
-}
-.confirmar-btn-mapa:hover { opacity: 0.88; }
-.confirmar-btn-mapa--secundario {
-  background: none;
-  color: var(--color-primario);
-  border: 1px solid var(--color-borde);
-  font-weight: 500;
-}
-.confirmar-btn-mapa--secundario:hover {
-  background: var(--color-superficie);
-  opacity: 1;
-}
-
 /* ── Campos de dirección manual ── */
-.confirmar-dir-campos {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-.confirmar-dir-fila {
-  display: flex;
-  gap: 10px;
-}
-.confirmar-dir-campo { flex: 1; }
 .confirmar-dir-campo--amplio { flex: 2; }
 .confirmar-dir-campo--angosto { flex: 0 0 110px; }
 
-/* ── Inputs y selects ── */
-.confirmar-label {
-  display: block;
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--color-texto);
-  margin-bottom: 4px;
-}
 .confirmar-requerido { color: var(--color-error); }
-
-.confirmar-input,
-.confirmar-select {
-  width: 100%;
-  height: var(--alto-control);
-  border: 1px solid var(--color-borde);
-  border-radius: var(--radio-control);
-  background: var(--color-fondo);
-  padding: 0 10px;
-  font-size: var(--fuente-control);
-  font-family: inherit;
-  color: var(--color-texto);
-  box-sizing: border-box;
-  appearance: none;
-}
-.confirmar-select {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23888' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 10px center;
-  padding-right: 30px;
-  cursor: pointer;
-}
-.confirmar-input::placeholder { color: var(--color-texto-suave); }
-.confirmar-input:disabled,
-.confirmar-select:disabled {
-  background: var(--color-superficie);
-  color: var(--color-texto-suave);
-  cursor: not-allowed;
-}
 
 .confirmar-input-ayuda {
   font-size: var(--fuente-control);
@@ -239,69 +113,18 @@
   position: sticky;
   top: 20px;
 }
-.confirmar-accion-desc {
-  font-size: 13px;
-  color: var(--color-texto-suave);
-  line-height: 1.6;
-  margin-bottom: 16px;
-}
-.confirmar-btn {
-  width: 100%;
-  height: var(--alto-control);
-  background: var(--color-primario);
-  color: var(--color-sobre-primario);
-  border: none;
-  border-radius: var(--radio-control);
-  font-size: var(--fuente-control);
-  font-weight: 600;
-  font-family: inherit;
-  cursor: pointer;
-  transition: opacity 0.15s;
-}
-.confirmar-btn:hover:not(:disabled) { opacity: 0.88; }
-.confirmar-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+
+/* Combinada con .link: layout propio nada más, el color/peso los pone .link. */
 .confirmar-btn-volver {
   display: block;
   width: 100%;
-  background: none;
-  border: none;
-  padding: 0;
-  font-family: inherit;
   text-align: center;
-  font-size: var(--fuente-control);
-  color: var(--color-texto-suave);
   margin-top: 10px;
-  cursor: pointer;
 }
 
 /* ── Pantalla de éxito ── */
 .confirmar-exito {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 60px 0;
-  gap: 12px;
-  text-align: center;
-}
-.confirmar-exito-icono {
-  width: 56px;
-  height: 56px;
-  border-radius: 50%;
-  background: var(--color-primario);
-  color: var(--color-sobre-primario);
-  font-size: 28px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.confirmar-exito-titulo {
-  font-size: 22px;
-  font-weight: 700;
-  color: var(--color-texto);
-}
-.confirmar-exito-subtitulo {
-  font-size: 14px;
-  color: var(--color-texto-suave);
+  padding: 40px 24px;
 }
 .confirmar-exito-lista {
   display: flex;
@@ -322,26 +145,6 @@
 }
 .confirmar-exito-label { font-size: 13px; color: var(--color-texto-suave); }
 .confirmar-exito-num { font-size: 14px; font-weight: 700; color: var(--color-texto); }
-.confirmar-exito-btn {
-  margin-top: 8px;
-  padding: 10px 28px;
-  background: var(--color-primario);
-  color: var(--color-sobre-primario);
-  border: none;
-  border-radius: var(--radio-control);
-  font-size: var(--fuente-control);
-  font-weight: 500;
-  font-family: inherit;
-  cursor: pointer;
-}
-
-/* ── Carrito vacío ── */
-.confirmar-vacio {
-  padding: 60px 0;
-  text-align: center;
-  font-size: 14px;
-  color: var(--color-texto-suave);
-}
 
 /* ── Mobile footer fijo ── */
 .confirmar-mobile-footer { display: none; }

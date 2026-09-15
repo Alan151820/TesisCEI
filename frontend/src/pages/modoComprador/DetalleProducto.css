@@ -22,83 +22,25 @@
   margin-bottom: 16px;
 }
 
-/* Tarjeta principal */
-.detalleproducto-tarjeta {
-  background: var(--color-fondo);
-  border: 1px solid var(--color-borde);
-  border-radius: var(--radio-tarjeta);
-  padding: 32px;
-  display: flex;
-  gap: 40px;
+/* Fila principal: imagen + info, sin card alrededor (el wireframe solo le
+   pone borde a la caja de "Agregar al carrito", no a todo el bloque).
+   Especificidad de 2 clases a propósito: tiene que ganarle a
+   .fila{align-items:center} sin depender del orden de las hojas de
+   estilo en el bundle. */
+.fila.detalleproducto-fila {
+  align-items: flex-start;
 }
 
-.detalleproducto-imagen,
-.detalleproducto-imagen-placeholder {
-  width: 320px;
-  height: 320px;
-  border-radius: 4px;
+.detalleproducto-imagen {
+  width: 260px;
+  height: 260px;
+  border-radius: 12px;
   flex-shrink: 0;
   object-fit: cover;
 }
 
-.detalleproducto-imagen-placeholder {
-  background: var(--color-superficie);
-  border: 1px dashed var(--color-borde);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--color-texto-suave);
-  font-size: 11px;
-}
-
-.detalleproducto-info {
-  flex: 1;
-  min-width: 0;
-}
-
-.detalleproducto-info-categoria {
-  font-size: 11px;
-  color: var(--color-texto-suave);
-  margin-bottom: 4px;
-}
-
-.detalleproducto-info-distribuidor {
-  background: none;
-  border: none;
-  padding: 0;
-  font-family: inherit;
-  font-size: inherit;
-  color: var(--color-texto);
-  cursor: pointer;
-  text-decoration: underline;
-}
-
-.detalleproducto-nombre {
-  font-size: 26px;
-  font-weight: 700;
-  color: var(--color-texto);
-  margin: 0 0 8px 0;
-}
-
 .detalleproducto-descripcion {
-  font-size: 13px;
-  color: var(--color-texto-suave);
-  line-height: 1.6;
-  margin: 0 0 20px 0;
   max-width: 480px;
-}
-
-.detalleproducto-tarifas-titulo {
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--color-texto);
-  margin: 0 0 8px 0;
-}
-
-.detalleproducto-tarifas-vacio {
-  font-size: 13px;
-  color: var(--color-texto-suave);
-  margin: 0 0 20px 0;
 }
 
 .detalleproducto-tarifas-tabla {
@@ -108,72 +50,25 @@
   margin-bottom: 20px;
 }
 
-/* Caja de carrito (placeholder visual — sin lógica de carrito en este RF) */
 .detalleproducto-carrito-caja {
-  background: var(--color-superficie);
-  border: 1px solid var(--color-borde);
-  border-radius: 6px;
-  padding: 16px;
-  max-width: 340px;
-}
-.detalleproducto-carrito-titulo {
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--color-texto);
-  margin-bottom: 10px;
+  max-width: 280px;
 }
 
-.detalleproducto-carrito-cantidad-fila {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  margin-bottom: 10px;
+/* Especificidad de 2 clases a propósito: tienen que ganarle a .btn/.campo
+   sin depender del orden de las hojas de estilo en el bundle. */
+.btn.detalleproducto-stepper-btn {
+  width: 44px;
+  height: 44px;
+  min-height: 44px;
+  padding: 0;
+  font-size: 20px;
 }
 
-.detalleproducto-carrito-stepper {
-  display: flex;
-  align-items: center;
-  border: 1px solid var(--color-borde);
-  border-radius: 4px;
-  overflow: hidden;
-  height: var(--alto-control);
-}
-
-.detalleproducto-stepper-btn {
-  width: 36px;
-  height: var(--alto-control);
-  background: var(--color-superficie);
-  border: none;
-  font-size: 16px;
-  font-weight: 600;
-  color: var(--color-texto);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: inherit;
-  flex-shrink: 0;
-}
-
-.detalleproducto-stepper-btn:hover {
-  background: var(--color-superficie);
-}
-
-.detalleproducto-stepper-valor {
-  width: 40px;
-  height: 100%;
+.campo.detalleproducto-stepper-valor {
+  width: 72px;
+  min-width: 0;
   text-align: center;
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--color-texto);
-  padding: 0 4px;
-  border: none;
-  background: transparent;
-  font-family: inherit;
-}
-
-.detalleproducto-stepper-valor:focus {
-  outline: none;
+  flex-shrink: 0;
 }
 
 .detalleproducto-stepper-valor::-webkit-outer-spin-button,
@@ -191,24 +86,6 @@
   color: var(--color-texto-suave);
 }
 
-.detalleproducto-carrito-boton {
-  width: 100%;
-  height: var(--alto-control);
-  background: var(--color-primario);
-  color: var(--color-sobre-primario);
-  border: none;
-  border-radius: var(--radio-control);
-  font-size: var(--fuente-control);
-  font-weight: 500;
-  font-family: inherit;
-  cursor: pointer;
-}
-
-.detalleproducto-carrito-boton:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
 .detalleproducto-carrito-nota {
   font-size: 11px;
   color: var(--color-texto-suave);
@@ -222,20 +99,14 @@
     padding: 16px 16px 24px;
   }
 
-  .detalleproducto-tarjeta {
+  .detalleproducto-fila {
     flex-direction: column;
     gap: 16px;
-    padding: 16px;
   }
 
-  .detalleproducto-imagen,
-  .detalleproducto-imagen-placeholder {
+  .detalleproducto-imagen {
     width: 100%;
     height: 200px;
-  }
-
-  .detalleproducto-nombre {
-    font-size: 20px;
   }
 
   .detalleproducto-descripcion {
@@ -247,7 +118,6 @@
     position: sticky;
     bottom: 0;
   }
-  
 }
 
 /* --- Rango de precio Desde/Hasta e indicador de stock (comprador) --- */

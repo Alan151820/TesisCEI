@@ -8,10 +8,13 @@ import BottomNav from '../../components/BottomNav'
 import MenuPerfilComprador from '../../components/MenuPerfilComprador'
 import Hdr from '../../components/Hdr'
 import Boton from '../../components/ui/Boton'
+import Campo from '../../components/ui/Campo'
+import Tarjeta from '../../components/ui/Tarjeta'
 import Tabla from '../../components/ui/Tabla'
 import TablaHeader from '../../components/ui/TablaHeader'
 import TablaFila from '../../components/ui/TablaFila'
 import Miga from '../../components/ui/Miga'
+import EstadoLista from '../../components/ui/EstadoLista'
 import { construirTituloProducto } from '../../lib/producto'
 import './InicioComprador.css'
 import './DetalleProducto.css'
@@ -92,25 +95,25 @@ function DetalleProducto() {
         <Boton variante="ghost" onClick={() => navigate(-1)} style={{ marginBottom: 8 }}>← Volver</Boton>
         <Miga items={[{ etiqueta: 'Catálogo' }, { etiqueta: producto.categoria }, { etiqueta: producto.nombre }]} className="detalleproducto-breadcrumb" />
 
-        <div className="detalleproducto-tarjeta">
+        <div className="fila gap-l detalleproducto-fila">
           {producto.imagenUrl
             ? <img src={`http://localhost:3000${producto.imagenUrl}`} alt={producto.nombre} className="detalleproducto-imagen" />
-            : <div className="detalleproducto-imagen-placeholder">[foto de producto]</div>
+            : <div className="placeholder-img detalleproducto-imagen">imagen</div>
           }
 
-          <div className="detalleproducto-info">
-            <div className="detalleproducto-info-categoria">
+          <div className="col gap-s flex1">
+            <span className="texto-mudo">
               {producto.categoria} ·{' '}
               <button
-                className="detalleproducto-info-distribuidor"
+                className="link"
                 onClick={() => navigate(`/perfilDistribuidor/${producto.distribuidorId}`, { replace: true })}
               >
                 {producto.nombreDistribuidor}
               </button>
-            </div>
+            </span>
 
-            <h1 className="detalleproducto-nombre">{titulo}</h1>
-            <p className="detalleproducto-descripcion">{producto.descripcion}</p>
+            <div className="titulo1">{titulo}</div>
+            <p className="texto detalleproducto-descripcion">{producto.descripcion}</p>
 
             {producto.tarifas.length > 0 && (
               <div className="detalleproducto-rango">
@@ -124,9 +127,9 @@ function DetalleProducto() {
               <div className="detalleproducto-sin-stock">Sin stock disponible</div>
             )}
 
-            <h2 className="detalleproducto-tarifas-titulo">Precios por volumen</h2>
+            <div className="titulo1">Precios por volumen</div>
             {producto.tarifas.length === 0 ? (
-              <p className="detalleproducto-tarifas-vacio">Este producto no tiene tarifas disponibles actualmente.</p>
+              <EstadoLista className="detalleproducto-tarifas-tabla">Este producto no tiene tarifas disponibles actualmente.</EstadoLista>
             ) : (
               <Tabla grid="1fr 1fr" className="detalleproducto-tarifas-tabla">
                 <TablaHeader columnas={['Cantidad mínima', 'Precio unitario']} />
@@ -139,13 +142,20 @@ function DetalleProducto() {
               </Tabla>
             )}
 
-            <div className="detalleproducto-carrito-caja">
-              <div className="detalleproducto-carrito-titulo">Agregar al carrito</div>
+            <Tarjeta className="col gap-s detalleproducto-carrito-caja">
+              <div className="titulo1">Agregar al carrito</div>
               {producto.tarifas.length > 0 && (
-                <div className="detalleproducto-carrito-cantidad-fila">
-                  <div className="detalleproducto-carrito-stepper">
-                    <button className="detalleproducto-stepper-btn" onClick={decrementar}>−</button>
-                    <input
+                <>
+                  <div className="fila gap-s">
+                    <Boton
+                      variante="outline"
+                      className="detalleproducto-stepper-btn"
+                      onClick={decrementar}
+                      aria-label="Restar unidad"
+                    >
+                      −
+                    </Boton>
+                    <Campo
                       type="number"
                       className="detalleproducto-stepper-valor"
                       min="1"
@@ -153,27 +163,32 @@ function DetalleProducto() {
                       onChange={handleCantidadChange}
                       onBlur={handleCantidadBlur}
                     />
-                    <button className="detalleproducto-stepper-btn" onClick={incrementar}>+</button>
+                    <Boton
+                      variante="outline"
+                      className="detalleproducto-stepper-btn"
+                      onClick={incrementar}
+                      aria-label="Sumar unidad"
+                    >
+                      +
+                    </Boton>
+                    <span className="texto-mudo">unidades</span>
                   </div>
                   <div className="detalleproducto-carrito-cantidad-info">
-                    unidades · <strong>${Number(producto.tarifas[0].precioVenta).toLocaleString('es-AR')} c/u</strong>
+                    ${Number(producto.tarifas[0].precioVenta).toLocaleString('es-AR')} c/u
                   </div>
-                </div>
+                </>
               )}
               {token ? (
-                <button
-                  className="detalleproducto-carrito-boton"
-                  onClick={() => agregarProducto({ ...producto, precioMinimo }, Number(cantidad) || 1)}
-                >
+                <Boton onClick={() => agregarProducto({ ...producto, precioMinimo }, Number(cantidad) || 1)}>
                   Agregar al carrito
-                </button>
+                </Boton>
               ) : (
                 <>
-                  <button className="detalleproducto-carrito-boton" disabled>Agregar al carrito</button>
+                  <Boton disabled>Agregar al carrito</Boton>
                   <div className="detalleproducto-carrito-nota">Iniciá sesión para comprar</div>
                 </>
               )}
-            </div>
+            </Tarjeta>
           </div>
         </div>
       </div>
