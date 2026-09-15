@@ -1,0 +1,31 @@
+.campo {
+  min-height: var(--alto-control);
+  width: 100%;
+  border: 2px solid var(--color-borde);
+  border-radius: var(--radio-control);
+  padding: 10px 16px;
+  background: var(--color-fondo);
+  color: var(--color-texto);
+  font-size: var(--fuente-control);
+  font-family: inherit;
+  box-sizing: border-box;
+}
+
+.campo::placeholder { color: var(--color-texto-suave); }
+
+.campo--area {
+  min-height: 92px;
+  resize: vertical;
+}
+
+.campo:disabled {
+  background: var(--color-superficie);
+  color: var(--color-texto-suave);
+  cursor: not-allowed;
+}
+
+.campo:focus {
+  outline: 2px solid var(--color-primario);
+  outline-offset: 2px;
+  border-color: var(--color-primario);
+}

@@ -11,8 +11,8 @@ function ToggleTema() {
       onClick={(e) => { e.stopPropagation(); alternarTema() }}
     >
       <span>Tema oscuro</span>
-      <span className="toggle-tema" role="switch" aria-checked={esOscuro}>
-        <span className="toggle-tema-perilla" />
+      <span className="toggle" role="switch" aria-checked={esOscuro}>
+        <span className="perilla" />
       </span>
     </div>
   )

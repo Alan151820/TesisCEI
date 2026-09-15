@@ -5,6 +5,8 @@ import App from './App.jsx'
 import './index.css'
 import './styles/colors.css'
 import './styles/escala.css'
+import './styles/controles.css'
+import './styles/utilidades.css'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>

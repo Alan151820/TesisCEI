@@ -1,0 +1,51 @@
+/* ============================================================
+   UTILIDADES — clases de layout y tipografía genéricas que se
+   repiten en todas las pantallas (fila/columna flex, espaciado,
+   texto mudo, links, separadores). Mismo mecanismo que
+   colors.css/escala.css: un lugar central en vez de reinventar
+   el mismo wrapper de layout por página.
+============================================================ */
+
+.fila { display: flex; align-items: center; flex-wrap: wrap; min-width: 0; }
+.col { display: flex; flex-direction: column; min-width: 0; }
+.gap-s { gap: 12px; }
+.gap-m { gap: 20px; }
+.gap-l { gap: 32px; }
+.flex1 { flex: 1; min-width: 0; }
+.p-m { padding: 28px 24px; }
+.p-l { padding: 40px 32px; }
+
+.texto { color: var(--color-texto); font-size: var(--fuente-base); }
+.texto-mudo { color: var(--color-texto-suave); font-size: 14px; }
+
+.link {
+  text-decoration: none;
+  cursor: pointer;
+  color: var(--color-primario);
+  font-weight: 700;
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+}
+.link:hover { text-decoration: underline; }
+
+.titulo1 {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--color-primario);
+  border-left: 4px solid var(--color-primario);
+  padding-left: 12px;
+}
+
+.separador { border: none; border-top: 1px solid var(--color-borde); margin: 0; }
+
+@media (max-width: 760px) {
+  .p-m { padding: 20px 16px; }
+  .p-l { padding: 24px 16px; }
+}
+
+@media (max-width: 560px) {
+  .titulo1 { font-size: 18px; }
+}

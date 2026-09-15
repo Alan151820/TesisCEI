@@ -1,0 +1,9 @@
+.miga {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  font-weight: 500;
+}
+
+.miga-sep { color: var(--color-texto-suave); }

@@ -1,0 +1,19 @@
+.avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: var(--color-secundario);
+  color: var(--color-sobre-secundario);
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 14px;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  transition: filter .12s ease;
+}
+
+.avatar:hover { filter: brightness(1.15); }
