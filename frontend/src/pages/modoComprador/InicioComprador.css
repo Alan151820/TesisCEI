@@ -111,56 +111,16 @@
 
 /* Filtros — idéntico al Catálogo */
 .comprador-filtros {
-  display: flex;
-  gap: 12px;
   width: 100%;
   padding: 16px max(40px, calc((100% - 1280px) / 2));
   background: var(--color-fondo);
   border-bottom: 1px solid var(--color-borde);
-  flex-wrap: wrap;
-  align-items: center;
+  box-sizing: border-box;
 }
 
-.comprador-filtros select,
-.comprador-filtros input {
-  height: var(--alto-control);
-  padding: 0 12px;
-  border: 1px solid var(--color-borde);
-  border-radius: var(--radio-control);
-  background: var(--color-superficie);
-  font-size: var(--fuente-control);
-  font-family: inherit;
-  color: var(--color-texto);
-  outline: none;
-}
-
-.comprador-filtros select {
-  min-width: 140px;
-}
-
-.comprador-filtros input[type="number"] {
-  width: 120px;
-}
-
-.comprador-filtros input[type="text"] {
-  width: 160px;
-}
-
-.comprador-filtros button {
-  height: var(--alto-control);
-  padding: 0 14px;
-  border: none;
-  border-radius: var(--radio-control);
-  background: none;
-  font-size: var(--fuente-control);
-  font-family: inherit;
-  color: var(--color-texto-suave);
-  cursor: pointer;
-  text-decoration: underline;
-}
-
-.comprador-filtros button:hover {
-  color: var(--color-texto);
+.comprador-filtro-campo {
+  flex: 1 1 190px;
+  min-width: 170px;
 }
 
 /* === MOBILE === */

@@ -8,6 +8,7 @@ import BottomNav from '../../components/BottomNav'
 import MenuPerfilComprador from '../../components/MenuPerfilComprador'
 import Hdr from '../../components/Hdr'
 import Boton from '../../components/ui/Boton'
+import Campo from '../../components/ui/Campo'
 import GridCards from '../../components/ui/GridCards'
 import CardProducto from '../../components/ui/CardProducto'
 import EsqueletoTarjetas from '../../components/ui/EsqueletoTarjetas'
@@ -85,34 +86,42 @@ function InicioComprador() {
         <MenuPerfilComprador />
       </Hdr>
 
-      <div className="comprador-filtros">
-        <select value={filtroCategoria} onChange={e => { setFiltroCategoria(e.target.value); aplicarFiltros({ categoria: e.target.value }) }}>
+      <div className="fila gap-m comprador-filtros">
+        <Campo
+          as="select"
+          className="comprador-filtro-campo"
+          value={filtroCategoria}
+          onChange={e => { setFiltroCategoria(e.target.value); aplicarFiltros({ categoria: e.target.value }) }}
+        >
           <option value=''>Categoría</option>
           {categorias.map(c => <option key={c.id} value={c.nombre}>{c.nombre}</option>)}
-        </select>
+        </Campo>
 
-        <input
+        <Campo
+          className="comprador-filtro-campo"
           type="text"
           placeholder="Distribuidor"
           value={filtroDistribuidor}
           onChange={e => { setFiltroDistribuidor(e.target.value); aplicarFiltros({ distribuidor: e.target.value }) }}
         />
 
-        <input
+        <Campo
+          className="comprador-filtro-campo"
           type="number"
           placeholder="Precio mínimo"
           value={filtroPrecioMin}
           onChange={e => { setFiltroPrecioMin(e.target.value); aplicarFiltros({ precioMinimo: e.target.value }) }}
         />
 
-        <input
+        <Campo
+          className="comprador-filtro-campo"
           type="number"
           placeholder="Precio máximo"
           value={filtroPrecioMax}
           onChange={e => { setFiltroPrecioMax(e.target.value); aplicarFiltros({ precioMaximo: e.target.value }) }}
         />
 
-        {hayFiltros && <button onClick={limpiarFiltros}>Limpiar filtros</button>}
+        {hayFiltros && <button type="button" className="link" onClick={limpiarFiltros}>Limpiar filtros</button>}
       </div>
 
       <main className="comprador-contenido">
