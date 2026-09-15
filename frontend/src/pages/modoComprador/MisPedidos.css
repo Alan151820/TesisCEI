@@ -34,15 +34,6 @@
   margin: 0;
 }
 
-.mispedidos-vacio {
-  text-align: center;
-  padding: 48px 16px;
-  font-size: 14px;
-  color: var(--color-texto-suave);
-}
-
-.mispedidos-error { color: var(--color-error); }
-
 .mispedidos-celda {
   font-size: 13px;
   color: var(--color-texto);

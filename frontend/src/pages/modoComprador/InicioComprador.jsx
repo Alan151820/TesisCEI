@@ -10,6 +10,8 @@ import Hdr from '../../components/Hdr'
 import Boton from '../../components/ui/Boton'
 import GridCards from '../../components/ui/GridCards'
 import CardProducto from '../../components/ui/CardProducto'
+import EsqueletoTarjetas from '../../components/ui/EsqueletoTarjetas'
+import EstadoLista from '../../components/ui/EstadoLista'
 import './InicioComprador.css'
 
 function InicioComprador() {
@@ -115,12 +117,12 @@ function InicioComprador() {
 
       <main className="comprador-contenido">
 
-        {cargando && <div className="comprador-vacio">Cargando productos...</div>}
+        {cargando && <GridCards><EsqueletoTarjetas /></GridCards>}
 
         {!cargando && productos.length === 0 && (
-          <div className="comprador-vacio">
+          <EstadoLista>
             {hayFiltros ? 'No se encontraron productos con los filtros aplicados.' : 'No hay productos disponibles en este momento.'}
-          </div>
+          </EstadoLista>
         )}
 
         {!cargando && productos.length > 0 && (

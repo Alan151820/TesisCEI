@@ -13,6 +13,8 @@ import Boton from '../../components/ui/Boton'
 import Tabla from '../../components/ui/Tabla'
 import TablaHeader from '../../components/ui/TablaHeader'
 import TablaFila from '../../components/ui/TablaFila'
+import EsqueletoFilas from '../../components/ui/EsqueletoFilas'
+import EstadoLista from '../../components/ui/EstadoLista'
 import './InicioComprador.css'
 import './MisPedidos.css'
 
@@ -60,15 +62,18 @@ function MisPedidos() {
         </div>
 
         {cargando && (
-          <div className="mispedidos-vacio">Cargando pedidos...</div>
+          <Tabla grid={GRID}>
+            <TablaHeader columnas={COLUMNAS} />
+            <EsqueletoFilas columnas={COLUMNAS.length} />
+          </Tabla>
         )}
 
         {!cargando && error && (
-          <div className="mispedidos-vacio mispedidos-error">{error}</div>
+          <EstadoLista variante="error">{error}</EstadoLista>
         )}
 
         {!cargando && !error && pedidos.length === 0 && (
-          <div className="mispedidos-vacio">Aún no realizaste pedidos.</div>
+          <EstadoLista>Aún no realizaste pedidos.</EstadoLista>
         )}
 
         {!cargando && !error && pedidos.length > 0 && (

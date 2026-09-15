@@ -13,6 +13,8 @@ import Modal from '../../components/ui/Modal'
 import ModalHeader from '../../components/ui/ModalHeader'
 import ModalBody from '../../components/ui/ModalBody'
 import ModalFooter from '../../components/ui/ModalFooter'
+import EsqueletoFilas from '../../components/ui/EsqueletoFilas'
+import EstadoLista from '../../components/ui/EstadoLista'
 import './Inicio.css'
 import './MisPedidos.css'
 import './Reparto.css'
@@ -110,15 +112,18 @@ function Reparto() {
           </div>
 
           {cargando && (
-            <div className="panel-tabla-vacio">Cargando repartos...</div>
+            <Tabla grid={GRID} className="panel-tabla-reflow">
+              <TablaHeader columnas={COLUMNAS} className="reparto-panel-header" />
+              <EsqueletoFilas columnas={COLUMNAS.length} />
+            </Tabla>
           )}
 
           {!cargando && error && (
-            <div className="panel-tabla-vacio pedidos-error">{error}</div>
+            <EstadoLista variante="error">{error}</EstadoLista>
           )}
 
           {!cargando && !error && planes.length === 0 && (
-            <div className="panel-tabla-vacio">Aún no generaste ningún plan de reparto.</div>
+            <EstadoLista>Aún no generaste ningún plan de reparto.</EstadoLista>
           )}
 
           {!cargando && !error && planes.length > 0 && (

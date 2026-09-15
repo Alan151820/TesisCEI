@@ -101,12 +101,6 @@
   margin: 0;
 }
 
-.comprador-vacio {
-  text-align: center;
-  padding: 80px 0;
-  font-size: 14px;
-  color: var(--color-texto-suave);
-}
 
 .comprador-contador {
   margin-top: 24px;

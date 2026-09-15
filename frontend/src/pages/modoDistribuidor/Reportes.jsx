@@ -7,6 +7,9 @@ import TablaHeader from '../../components/ui/TablaHeader'
 import TablaFila from '../../components/ui/TablaFila'
 import Kpi from '../../components/ui/Kpi'
 import TabRow from '../../components/ui/TabRow'
+import Esqueleto from '../../components/ui/Esqueleto'
+import EsqueletoFilas from '../../components/ui/EsqueletoFilas'
+import EstadoLista from '../../components/ui/EstadoLista'
 import './Reportes.css'
 
 const COLUMNAS_RANKING = ['Producto', 'Unidades']
@@ -62,9 +65,28 @@ function Reportes() {
         <TabRow tabs={PERIODOS} activo={periodo} onCambiar={setPeriodo} className="reportes-periodo-tabs" />
       </div>
 
-      {mensaje && <p className="reportes-vacio">{mensaje}</p>}
+      {mensaje && <EstadoLista variante="error">{mensaje}</EstadoLista>}
 
-      {cargando && !mensaje && <p className="reportes-vacio">Cargando...</p>}
+      {cargando && !mensaje && (
+        <>
+          <div className="kpi-row">
+            <div className="kpi col gap-s"><Esqueleto width="55%" height={13} /><Esqueleto width="45%" height={28} /></div>
+            <div className="kpi col gap-s"><Esqueleto width="55%" height={13} /><Esqueleto width="45%" height={28} /></div>
+          </div>
+          <div className="reportes-tablas">
+            <div className="reportes-tabla-card" style={GRID_RANKING}>
+              <div className="reportes-tabla-titulo">Productos más vendidos</div>
+              <TablaHeader columnas={COLUMNAS_RANKING} className="reportes-tabla-header" />
+              <EsqueletoFilas columnas={COLUMNAS_RANKING.length} filas={3} />
+            </div>
+            <div className="reportes-tabla-card" style={GRID_RANKING}>
+              <div className="reportes-tabla-titulo">Productos menos vendidos</div>
+              <TablaHeader columnas={COLUMNAS_RANKING} className="reportes-tabla-header" />
+              <EsqueletoFilas columnas={COLUMNAS_RANKING.length} filas={3} />
+            </div>
+          </div>
+        </>
+      )}
 
       {!cargando && !mensaje && reporte && (
         <>
@@ -74,7 +96,7 @@ function Reportes() {
           </div>
 
           {sinPedidos ? (
-            <p className="reportes-vacio">No hay pedidos completados en el período seleccionado.</p>
+            <EstadoLista>No hay pedidos completados en el período seleccionado.</EstadoLista>
           ) : (
             <div className="reportes-tablas">
               <div className="reportes-tabla-card" style={GRID_RANKING}>

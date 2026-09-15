@@ -7,6 +7,8 @@ import Tabla from '../../components/ui/Tabla'
 import TablaHeader from '../../components/ui/TablaHeader'
 import TablaFila from '../../components/ui/TablaFila'
 import TabRow from '../../components/ui/TabRow'
+import EsqueletoFilas from '../../components/ui/EsqueletoFilas'
+import EstadoLista from '../../components/ui/EstadoLista'
 import './Reportes.css'
 
 const COLUMNAS = ['Producto', 'Cant. mín.', 'Precio venta', 'Precio costo', 'Diferencia $', 'Diferencia %']
@@ -47,11 +49,17 @@ function Rentabilidad() {
         </div>
       </div>
 
-      {mensaje && <p className="reportes-vacio">{mensaje}</p>}
-      {cargando && !mensaje && <p className="reportes-vacio">Cargando...</p>}
+      {mensaje && <EstadoLista variante="error">{mensaje}</EstadoLista>}
+
+      {cargando && !mensaje && (
+        <Tabla grid={GRID} className="reportes-rentabilidad-wrapper">
+          <TablaHeader columnas={COLUMNAS} className="reportes-rentabilidad-header" />
+          <EsqueletoFilas columnas={COLUMNAS.length} />
+        </Tabla>
+      )}
 
       {!cargando && !mensaje && lista.length === 0 && (
-        <p className="reportes-vacio">Todavía no tenés precios por volumen registrados.</p>
+        <EstadoLista>Todavía no tenés precios por volumen registrados.</EstadoLista>
       )}
 
       {!cargando && !mensaje && lista.length > 0 && (

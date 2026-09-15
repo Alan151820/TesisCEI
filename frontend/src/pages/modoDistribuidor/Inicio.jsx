@@ -6,6 +6,8 @@ import PanelDistribuidor from '../../components/PanelDistribuidor'
 import Tabla from '../../components/ui/Tabla'
 import TablaHeader from '../../components/ui/TablaHeader'
 import TablaFila from '../../components/ui/TablaFila'
+import EsqueletoFilas from '../../components/ui/EsqueletoFilas'
+import EstadoLista from '../../components/ui/EstadoLista'
 import './Inicio.css'
 
 const COLUMNAS = ['', 'Producto', 'Categoría', 'Stock disp.', 'Stock res.', 'Estado', 'Acciones']
@@ -229,11 +231,11 @@ function Inicio() {
             <TablaHeader columnas={COLUMNAS} className="panel-tabla-header" />
 
             {cargando && (
-              <div className="panel-tabla-vacio">Cargando productos...</div>
+              <EsqueletoFilas columnas={COLUMNAS.length} />
             )}
 
             {!cargando && productos.length === 0 && (
-              <div className="panel-tabla-vacio">
+              <EstadoLista>
                 {filtroCategoria || filtroVisibilidad || filtroStock
                   ? 'No hay productos que coincidan con los filtros aplicados.'
                   : <>Aún no tenés productos. Creá el primero con el botón{' '}
@@ -241,7 +243,7 @@ function Inicio() {
                       + Nuevo producto
                     </span>.</>
                 }
-              </div>
+              </EstadoLista>
             )}
 
             {!cargando && productos.map(p => (

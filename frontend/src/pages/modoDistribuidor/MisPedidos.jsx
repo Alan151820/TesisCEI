@@ -8,6 +8,8 @@ import PanelDistribuidor from '../../components/PanelDistribuidor'
 import Tabla from '../../components/ui/Tabla'
 import TablaHeader from '../../components/ui/TablaHeader'
 import TablaFila from '../../components/ui/TablaFila'
+import EsqueletoFilas from '../../components/ui/EsqueletoFilas'
+import EstadoLista from '../../components/ui/EstadoLista'
 import { ETIQUETA_ESTADO } from '../../lib/pedido'
 import './Inicio.css'
 import './MisPedidos.css'
@@ -188,19 +190,22 @@ function MisPedidos() {
             )}
 
             {cargando && (
-              <div className="panel-tabla-vacio">Cargando pedidos...</div>
+              <Tabla grid={GRID}>
+                <TablaHeader columnas={COLUMNAS} className="pedidos-tabla-header" />
+                <EsqueletoFilas columnas={COLUMNAS.length} />
+              </Tabla>
             )}
 
             {!cargando && error && (
-              <div className="panel-tabla-vacio pedidos-error">{error}</div>
+              <EstadoLista variante="error">{error}</EstadoLista>
             )}
 
             {!cargando && !error && pedidos.length === 0 && (
-              <div className="panel-tabla-vacio">Aún no recibiste pedidos.</div>
+              <EstadoLista>Aún no recibiste pedidos.</EstadoLista>
             )}
 
             {!cargando && !error && pedidos.length > 0 && pedidosFiltrados.length === 0 && (
-              <div className="panel-tabla-vacio">No hay pedidos que coincidan con los filtros aplicados.</div>
+              <EstadoLista>No hay pedidos que coincidan con los filtros aplicados.</EstadoLista>
             )}
 
             {!cargando && !error && pedidosFiltrados.length > 0 && (
