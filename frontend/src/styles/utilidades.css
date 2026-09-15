@@ -41,6 +41,17 @@
 
 .separador { border: none; border-top: 1px solid var(--color-borde); margin: 0; }
 
+.estrellas {
+  background: var(--color-terciario);
+  color: var(--color-sobre-terciario);
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  padding: 4px 12px;
+  border-radius: 20px;
+  align-self: flex-start;
+  width: fit-content;
+}
+
 .placeholder-img {
   background: var(--color-superficie);
   border: 1px dashed var(--color-borde);

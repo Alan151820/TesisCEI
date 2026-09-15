@@ -23,10 +23,10 @@
 }
 
 .perfildist-logo {
-  width: 80px;
-  height: 80px;
+  width: 100px;
+  height: 100px;
   background: var(--color-superficie);
-  border-radius: 4px;
+  border-radius: 50%;
   border: 1px dashed var(--color-borde);
   display: flex;
   align-items: center;
@@ -88,27 +88,6 @@
 .perfildist-info-valor {
   font-size: 13px;
   color: var(--color-texto);
-}
-
-.perfildist-calificacion {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.perfildist-estrellas {
-  display: flex;
-  gap: 2px;
-}
-
-.perfildist-estrella-llena {
-  color: var(--color-texto-suave);
-  font-size: 16px;
-}
-
-.perfildist-estrella-vacia {
-  color: var(--color-borde);
-  font-size: 16px;
 }
 
 /* Catálogo */

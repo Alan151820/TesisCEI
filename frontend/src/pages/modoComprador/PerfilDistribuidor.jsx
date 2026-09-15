@@ -88,12 +88,8 @@ function PerfilDistribuidor() {
             <div className="perfildist-info-bloque">
               <span className="perfildist-info-label">Calificación</span>
               {distribuidor.calificacionPromedio ? (
-                <div className="perfildist-calificacion">
-                  <span className="perfildist-estrellas">
-                    {[1, 2, 3, 4, 5].map(n => (
-                      <span key={n} className={n <= calificacionRedondeada ? 'perfildist-estrella-llena' : 'perfildist-estrella-vacia'}>★</span>
-                    ))}
-                  </span>
+                <div className="fila gap-s">
+                  <span className="estrellas">{'★'.repeat(calificacionRedondeada)}{'☆'.repeat(5 - calificacionRedondeada)}</span>
                   <span className="perfildist-info-valor">{distribuidor.calificacionPromedio} / 5</span>
                 </div>
               ) : (

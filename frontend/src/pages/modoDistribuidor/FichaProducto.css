@@ -14,21 +14,7 @@
 }
 
 .ficha-breadcrumb {
-  display: flex;
-  align-items: center;
-  gap: 8px;
   margin-bottom: 20px;
-  font-size: 13px;
-  color: var(--color-texto);
-}
-
-.ficha-breadcrumb-link {
-  color: var(--color-texto-suave);
-  cursor: pointer;
-}
-
-.ficha-breadcrumb-sep {
-  color: var(--color-borde);
 }
 
 .ficha-layout {
@@ -389,12 +375,15 @@
   color: var(--color-sobre-exito-suave);
 }
 
-/* Antes esta barra solo se mostraba en mobile (<=768px) y en desktop/tablet
-   la pagina quedaba sin ningun header -- el unico "volver" era el
-   breadcrumb, que ni siquiera es sticky. Ahora se muestra siempre y queda
-   fija arriba, igual que el resto de las paginas de distribuidor. */
+/* Header real (logo + "Volver a mis productos") solo en desktop/tablet,
+   igual que el wireframe; en mobile lo reemplaza la barra compacta de
+   abajo con flecha + título, más cómoda para pantallas chicas. */
+@media (max-width: 768px) {
+  .ficha-hdr-desktop { display: none; }
+}
+
 .ficha-mobile-header {
-  display: flex;
+  display: none;
   position: sticky;
   top: 0;
   z-index: 10;
@@ -428,12 +417,8 @@
   text-overflow: ellipsis;
 }
 
-/* El breadcrumb queda reemplazado por el header de arriba en todos los
-   tamaños (mostrar los dos a la vez era redundante: ambos son "volver a
-   mis productos"). */
-.ficha-breadcrumb { display: none; }
-
 @media (max-width: 768px) {
+  .ficha-mobile-header { display: flex; }
 
   .ficha-contenedor { padding: 16px; }
   .ficha-layout { flex-direction: column; }

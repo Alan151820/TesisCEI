@@ -4,9 +4,11 @@ import { useNavigate } from 'react-router-dom'
 import api from '../../lib/axios'
 import TarjetaProductoPreview from '../../components/TarjetaProductoPreview'
 import FormularioTramoPrecio from '../../components/FormularioTramoPrecio'
+import Hdr from '../../components/Hdr'
 import Tarjeta from '../../components/ui/Tarjeta'
 import Campo from '../../components/ui/Campo'
 import Boton from '../../components/ui/Boton'
+import Miga from '../../components/ui/Miga'
 import { convertirAWebP } from '../../lib/imagenProducto'
 import { totalDesdeDescuento, descuentoDesdeTotal, precioUnitario } from '../../lib/tramoPrecio'
 import './FichaProducto.css'
@@ -181,17 +183,16 @@ function FichaProducto() {
 
   return (
     <div className="ficha-fondo">
+      <Hdr className="ficha-hdr-desktop" logo={<span className="hdr-logo" onClick={() => navigate('/inicio')}>MarketDist</span>}>
+        <span className="link" onClick={() => navigate('/inicio')}>← Volver a mis productos</span>
+      </Hdr>
       <div className="ficha-mobile-header" data-tema="oscuro">
         <button type="button" className="ficha-mobile-volver" onClick={() => navigate('/inicio')}>←</button>
         <div className="ficha-mobile-titulo">Nuevo producto</div>
       </div>
       <div className="ficha-contenedor">
 
-        <div className="ficha-breadcrumb">
-          <span className="ficha-breadcrumb-link" onClick={() => navigate('/inicio')}>Mis productos</span>
-          <span className="ficha-breadcrumb-sep">›</span>
-          <span>Nuevo producto</span>
-        </div>
+        <Miga className="ficha-breadcrumb" items={[{ etiqueta: 'Mis productos', to: '/inicio' }, { etiqueta: 'Nuevo producto' }]} />
 
         <div className="ficha-layout">
           <div className="ficha-columna-principal">
