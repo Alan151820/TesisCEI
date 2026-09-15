@@ -3,7 +3,13 @@ import { mensajeDeError } from '../../lib/errores'
 import { useNavigate } from 'react-router-dom'
 import api from '../../lib/axios'
 import PanelDistribuidor from '../../components/PanelDistribuidor'
+import Tabla from '../../components/ui/Tabla'
+import TablaHeader from '../../components/ui/TablaHeader'
+import TablaFila from '../../components/ui/TablaFila'
 import './Inicio.css'
+
+const COLUMNAS = ['', 'Producto', 'Categoría', 'Stock disp.', 'Stock res.', 'Estado', 'Acciones']
+const GRID = '52px 1fr 140px 120px 120px 120px 180px'
 
 function Inicio() {
   const navigate = useNavigate()
@@ -219,16 +225,8 @@ function Inicio() {
             </div>
           )}
 
-          <div className="panel-tabla-wrapper">
-            <div className="panel-tabla-header">
-              <div></div>
-              <div>Producto</div>
-              <div>Categoría</div>
-              <div>Stock disp.</div>
-              <div>Stock res.</div>
-              <div>Estado</div>
-              <div>Acciones</div>
-            </div>
+          <Tabla grid={GRID} className="panel-tabla-reflow">
+            <TablaHeader columnas={COLUMNAS} className="panel-tabla-header" />
 
             {cargando && (
               <div className="panel-tabla-vacio">Cargando productos...</div>
@@ -248,7 +246,7 @@ function Inicio() {
 
             {!cargando && productos.map(p => (
               <div key={p.id}>
-                <div className="panel-tabla-fila">
+                <TablaFila className="panel-tabla-fila">
                   <div className="panel-tabla-celda">
                     {p.imagenUrl
                       ? <img src={`http://localhost:3000${p.imagenUrl}`} alt={p.nombre} className="panel-producto-foto-img" />
@@ -275,7 +273,7 @@ function Inicio() {
                     {' · '}
                     <span className="panel-accion-link" onClick={() => navigate(`/producto/editar/${p.id}`)}>Editar</span>
                   </div>
-                </div>
+                </TablaFila>
 
                 <div className="panel-lista-fila">
                   <div className="panel-lista-foto">
@@ -307,7 +305,7 @@ function Inicio() {
                 )}
               </div>
             ))}
-          </div>
+          </Tabla>
 
           {!cargando && productos.length > 0 && (
             <div className="panel-tabla-contador">

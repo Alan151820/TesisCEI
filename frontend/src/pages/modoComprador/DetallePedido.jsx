@@ -10,8 +10,14 @@ import EstadoBadge from '../../components/EstadoBadge'
 import MenuPerfilComprador from '../../components/MenuPerfilComprador'
 import Hdr from '../../components/Hdr'
 import Boton from '../../components/ui/Boton'
+import Tabla from '../../components/ui/Tabla'
+import TablaHeader from '../../components/ui/TablaHeader'
+import TablaFila from '../../components/ui/TablaFila'
 import './InicioComprador.css'
 import './DetallePedido.css'
+
+const COLUMNAS = ['Producto', 'Cantidad', 'Precio unit.', 'Subtotal']
+const GRID = '1fr 120px 140px 140px'
 
 function formatearFecha(isoString) {
   const d = new Date(isoString)
@@ -99,15 +105,10 @@ function DetallePedido() {
               <div className="detallepedido-motivo">Motivo del rechazo: {pedido.motivoRechazo}</div>
             )}
 
-            <div className="detallepedido-tabla">
-              <div className="detallepedido-tabla-header">
-                <div>Producto</div>
-                <div>Cantidad</div>
-                <div>Precio unit.</div>
-                <div>Subtotal</div>
-              </div>
+            <Tabla className="detallepedido-tabla" grid={GRID}>
+              <TablaHeader columnas={COLUMNAS} className="detallepedido-tabla-header" />
               {pedido.items.map((item, i) => (
-                <div key={i} className="detallepedido-tabla-fila">
+                <TablaFila key={i} className="detallepedido-tabla-fila">
                   <div className="detallepedido-celda detallepedido-celda-producto">
                     {item.imagenUrl
                       ? <img src={`http://localhost:3000${item.imagenUrl}`} alt={item.nombreProducto} className="detallepedido-thumb" />
@@ -130,11 +131,11 @@ function DetallePedido() {
                   <div className="detallepedido-celda">{Number(item.cantidad)} u.</div>
                   <div className="detallepedido-celda">${Number(item.precioVentaCongelado).toLocaleString('es-AR')}</div>
                   <div className="detallepedido-celda">${(Number(item.cantidad) * Number(item.precioVentaCongelado)).toLocaleString('es-AR')}</div>
-                </div>
+                </TablaFila>
               ))}
-              <div className="detallepedido-total">
-                Total: ${Number(pedido.total).toLocaleString('es-AR')}
-              </div>
+            </Tabla>
+            <div className="fila" style={{ justifyContent: 'flex-end', marginTop: 10 }}>
+              <span className="texto" style={{ fontWeight: 700 }}>Total: ${Number(pedido.total).toLocaleString('es-AR')}</span>
             </div>
 
             {(pedido.estado === 'pendiente' || pedido.estado === 'aceptado') && (

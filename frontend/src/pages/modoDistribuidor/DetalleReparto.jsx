@@ -7,9 +7,15 @@ import 'leaflet/dist/leaflet.css'
 import api from '../../lib/axios'
 import EstadoBadge from '../../components/EstadoBadge'
 import PanelDistribuidor from '../../components/PanelDistribuidor'
+import Tabla from '../../components/ui/Tabla'
+import TablaHeader from '../../components/ui/TablaHeader'
+import TablaFila from '../../components/ui/TablaFila'
 import './Inicio.css'
 import './MisPedidos.css'
 import './Reparto.css'
+
+const COLUMNAS_PARADAS = ['N°', 'Pedido', 'Comprador', 'Dirección', 'Estado', 'Acciones']
+const GRID_PARADAS = '36px 80px 130px 1fr 90px 320px'
 
 function crearIcono(colorVar, tamano) {
   return L.divIcon({
@@ -408,18 +414,11 @@ function DetalleReparto() {
               )}
 
               {paradas.length > 0 && (
-                <div className="panel-tabla-wrapper">
-                  <div className="reparto-paradas-header">
-                    <div>N°</div>
-                    <div>Pedido</div>
-                    <div>Comprador</div>
-                    <div>Dirección</div>
-                    <div>Estado</div>
-                    <div>Acciones</div>
-                  </div>
+                <Tabla grid={GRID_PARADAS} className="panel-tabla-reflow">
+                  <TablaHeader columnas={COLUMNAS_PARADAS} className="reparto-paradas-header" />
 
                   {paradas.map(p => (
-                    <div key={p.id} className="reparto-paradas-fila">
+                    <TablaFila key={p.id} className="reparto-paradas-fila">
                       <div className="reparto-celda">{p.orden}</div>
                       <div className="reparto-celda">#{p.pedidoId}</div>
                       <div className="reparto-celda">{p.nombreComprador}</div>
@@ -496,9 +495,9 @@ function DetalleReparto() {
                           </button>
                         )}
                       </div>
-                    </div>
+                    </TablaFila>
                   ))}
-                </div>
+                </Tabla>
               )}
 
               {errorEditar && (

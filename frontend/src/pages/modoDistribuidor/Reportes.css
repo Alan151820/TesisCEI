@@ -161,88 +161,23 @@
   color: var(--color-texto-suave);
 }
 
-.reportes-tabla-header,
-.reportes-tabla-fila {
-  display: grid;
-  grid-template-columns: 1fr 100px;
-}
-
-.reportes-tabla-header {
-  background: var(--color-superficie);
-  border-bottom: 1px solid var(--color-borde);
-}
-
-.reportes-tabla-header > div {
-  padding: 10px 14px;
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--color-texto-suave);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.reportes-tabla-fila {
-  border-bottom: 1px solid var(--color-superficie);
-}
-
-.reportes-tabla-fila:last-child {
-  border-bottom: none;
-}
-
+.reportes-tabla-header > div,
 .reportes-tabla-fila > div {
-  padding: 12px 14px;
   font-size: 13px;
-  color: var(--color-texto);
-  display: flex;
-  align-items: center;
 }
 
 /* Tabla de rentabilidad — RF-040. Igual criterio que el resto del panel
    (Inicio.css/Reparto.css/MisPedidos.css): grid de columnas fijas con
    scroll horizontal propio como red de seguridad en tablet/mobile, en
    vez de perder columnas. */
-.reportes-rentabilidad-wrapper {
-  background: var(--color-fondo);
-  border: 1px solid var(--color-borde);
-  border-radius: 6px;
-  overflow-x: auto;
-}
-
 .reportes-rentabilidad-header,
 .reportes-rentabilidad-fila {
-  display: grid;
-  grid-template-columns: 200px 100px 130px 130px 120px 120px;
   min-width: 700px;
 }
 
-.reportes-rentabilidad-header {
-  background: var(--color-superficie);
-  border-bottom: 1px solid var(--color-borde);
-}
-
-.reportes-rentabilidad-header > div {
-  padding: 10px 14px;
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--color-texto-suave);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.reportes-rentabilidad-fila {
-  border-bottom: 1px solid var(--color-superficie);
-}
-
-.reportes-rentabilidad-fila:last-child {
-  border-bottom: none;
-}
-
+.reportes-rentabilidad-header > div,
 .reportes-rentabilidad-fila > div {
-  padding: 12px 14px;
   font-size: 13px;
-  color: var(--color-texto);
-  display: flex;
-  align-items: center;
 }
 
 .reportes-sin-costo {

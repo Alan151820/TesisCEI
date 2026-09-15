@@ -6,11 +6,16 @@ import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 import api from '../../lib/axios'
 import PanelDistribuidor from '../../components/PanelDistribuidor'
+import Tabla from '../../components/ui/Tabla'
+import TablaHeader from '../../components/ui/TablaHeader'
+import TablaFila from '../../components/ui/TablaFila'
 import './Inicio.css'
 import './MisPedidos.css'
 import './Reparto.css'
 
 const MONTEVIDEO = [-34.9011, -56.1645]
+const COLUMNAS = ['', 'N° Pedido', 'Comprador', 'Dirección de entrega', 'Productos']
+const GRID = '44px 120px 180px 1fr 200px'
 
 function crearIcono(colorVar, tamano) {
   return L.divIcon({
@@ -142,20 +147,15 @@ function CrearReparto() {
           {perfilCargado && direccionPartida && !cargando && !error && pedidos.length > 0 && (
             <div className="reparto-crear-layout">
               <div className="reparto-crear-lista">
-                <div className="panel-tabla-wrapper">
-                  <div className="reparto-tabla-header">
-                    <div></div>
-                    <div>N° Pedido</div>
-                    <div>Comprador</div>
-                    <div>Dirección de entrega</div>
-                    <div>Productos</div>
-                  </div>
+                <Tabla grid={GRID} className="panel-tabla-reflow">
+                  <TablaHeader columnas={COLUMNAS} className="reparto-tabla-header" />
 
                   {pedidos.map(p => (
-                    <div key={p.id} className="reparto-tabla-fila">
+                    <TablaFila key={p.id} className="reparto-tabla-fila">
                       <div className="reparto-celda">
                         <input
                           type="checkbox"
+                          className="checkbox"
                           checked={seleccionados.has(p.id)}
                           onChange={() => alternarSeleccion(p.id)}
                         />
@@ -166,26 +166,26 @@ function CrearReparto() {
                       <div className="reparto-celda">
                         {p.items.map(it => `${it.nombreProducto} ×${Number(it.cantidad)}`).join(', ')}
                       </div>
-                    </div>
+                    </TablaFila>
                   ))}
+                </Tabla>
 
-                  <div className="reparto-pie">
-                    <div className="panel-tabla-contador">
-                      {seleccionados.size} pedido{seleccionados.size !== 1 ? 's' : ''} seleccionado{seleccionados.size !== 1 ? 's' : ''} de {pedidos.length} disponible{pedidos.length !== 1 ? 's' : ''}
-                    </div>
-                    <button className="panel-btn-nuevo" onClick={handleGenerarPlan} disabled={seleccionados.size < 2 || generando}>
-                      {generando ? 'Generando…' : `Generar plan de carga (${seleccionados.size} parada${seleccionados.size !== 1 ? 's' : ''})`}
-                    </button>
+                <div className="reparto-pie">
+                  <div className="panel-tabla-contador">
+                    {seleccionados.size} pedido{seleccionados.size !== 1 ? 's' : ''} seleccionado{seleccionados.size !== 1 ? 's' : ''} de {pedidos.length} disponible{pedidos.length !== 1 ? 's' : ''}
                   </div>
-
-                  {seleccionados.size < 2 && (
-                    <div className="panel-error-visibilidad">Seleccioná al menos dos pedidos para generar la planificación.</div>
-                  )}
-
-                  {errorGenerar && (
-                    <div className="panel-error-visibilidad">{errorGenerar}</div>
-                  )}
+                  <button className="panel-btn-nuevo" onClick={handleGenerarPlan} disabled={seleccionados.size < 2 || generando}>
+                    {generando ? 'Generando…' : `Generar plan de carga (${seleccionados.size} parada${seleccionados.size !== 1 ? 's' : ''})`}
+                  </button>
                 </div>
+
+                {seleccionados.size < 2 && (
+                  <div className="panel-error-visibilidad">Seleccioná al menos dos pedidos para generar la planificación.</div>
+                )}
+
+                {errorGenerar && (
+                  <div className="panel-error-visibilidad">{errorGenerar}</div>
+                )}
               </div>
 
               <div className="reparto-crear-mapa-wrapper">

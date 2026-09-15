@@ -3,7 +3,13 @@ import { mensajeDeError } from '../../lib/errores'
 import { useNavigate } from 'react-router-dom'
 import api from '../../lib/axios'
 import PanelDistribuidor from '../../components/PanelDistribuidor'
+import Tabla from '../../components/ui/Tabla'
+import TablaHeader from '../../components/ui/TablaHeader'
+import TablaFila from '../../components/ui/TablaFila'
 import './Reportes.css'
+
+const COLUMNAS = ['Producto', 'Cant. mín.', 'Precio venta', 'Precio costo', 'Diferencia $', 'Diferencia %']
+const GRID = '200px 100px 130px 130px 120px 120px'
 
 function formatearPesos(valor) {
   return `$${Number(valor).toLocaleString('es-AR')}`
@@ -47,17 +53,10 @@ function Rentabilidad() {
       )}
 
       {!cargando && !mensaje && lista.length > 0 && (
-        <div className="reportes-rentabilidad-wrapper">
-          <div className="reportes-rentabilidad-header">
-            <div>Producto</div>
-            <div>Cant. mín.</div>
-            <div>Precio venta</div>
-            <div>Precio costo</div>
-            <div>Diferencia $</div>
-            <div>Diferencia %</div>
-          </div>
+        <Tabla grid={GRID} className="reportes-rentabilidad-wrapper">
+          <TablaHeader columnas={COLUMNAS} className="reportes-rentabilidad-header" />
           {lista.map(r => (
-            <div className="reportes-rentabilidad-fila" key={r.precioVolumenId}>
+            <TablaFila key={r.precioVolumenId} className="reportes-rentabilidad-fila">
               <div>{r.productoNombre}</div>
               <div>{r.cantidadMinima} u.</div>
               <div>{formatearPesos(r.precioVenta)}</div>
@@ -74,9 +73,9 @@ function Rentabilidad() {
                   <div>—</div>
                 </>
               )}
-            </div>
+            </TablaFila>
           ))}
-        </div>
+        </Tabla>
       )}
     </PanelDistribuidor>
   )

@@ -1,10 +1,5 @@
 @import '../../styles/detallePedido.css';
 
-.detallepedido-tabla-header--dist,
-.detallepedido-tabla-fila--dist {
-  grid-template-columns: 1fr 100px 120px 120px 110px;
-}
-
 .detallepedido-stock-cero {
   color: var(--color-error);
   font-weight: 600;
@@ -54,11 +49,5 @@
 }
 
 @media (max-width: 768px) {
-  .detallepedido-tabla-header--dist { display: none; }
-
-  .detallepedido-tabla-fila--dist {
-    grid-template-columns: 1fr;
-  }
-
   .detallepedido-celda:nth-child(5)::before { content: 'Stock disponible:'; color: var(--color-texto-suave); }
 }

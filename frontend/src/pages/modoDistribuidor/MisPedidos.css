@@ -1,47 +1,8 @@
-.pedidos-tabla-header {
-  display: grid;
-  grid-template-columns: 80px 100px 150px 1fr 100px 110px 180px;
-  background: var(--color-superficie);
-  border: 1px solid var(--color-borde);
-  border-radius: 6px 6px 0 0;
-  border-bottom: none;
-}
-
-.pedidos-tabla-header > div {
-  padding: 10px 14px;
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--color-texto-suave);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.pedidos-tabla-fila {
-  display: grid;
-  grid-template-columns: 80px 100px 150px 1fr 100px 110px 180px;
-  background: var(--color-fondo);
-  border: 1px solid var(--color-borde);
-  border-top: none;
-}
-
-.pedidos-tabla-fila:last-of-type {
-  border-radius: 0 0 6px 6px;
-}
-
-.pedidos-fila-clickeable { cursor: pointer; }
-.pedidos-fila-clickeable:hover { background: var(--color-superficie); }
-
 .pedidos-celda {
-  padding: 12px 14px;
   font-size: 13px;
   color: var(--color-texto);
   display: flex;
   align-items: flex-start;
-  border-bottom: 1px solid var(--color-superficie);
-}
-
-.pedidos-tabla-fila:last-of-type .pedidos-celda {
-  border-bottom: none;
 }
 
 .pedidos-numero {
@@ -295,26 +256,21 @@
    tarjetas a partir de mobile, donde una tabla de columnas fijas ya no
    entra sin ese scroll permanente. */
 @media (max-width: 767px) {
-  .pedidos-tabla-header {
+  /* Especificidad de 2 clases a propósito: tienen que ganarle a
+     `.tabla-header/.tabla-fila{display:grid;grid-template-columns:...}`
+     sin depender del orden de las hojas de estilo en el bundle. */
+  .tabla-header.pedidos-tabla-header {
     display: none;
   }
 
-  .pedidos-tabla-fila {
+  .tabla-fila.pedidos-tabla-fila {
     display: flex;
     flex-direction: column;
-    border-radius: 6px;
-    margin-bottom: 8px;
-    border: 1px solid var(--color-borde);
-    border-top: 1px solid var(--color-borde);
-  }
-
-  .pedidos-celda {
-    border-bottom: 1px solid var(--color-superficie);
     padding: 10px 14px;
   }
 
-  .pedidos-celda:last-child {
-    border-bottom: none;
+  .pedidos-celda {
+    padding: 4px 0;
   }
 
   .pedidos-numero {

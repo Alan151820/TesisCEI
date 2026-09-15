@@ -8,6 +8,9 @@ import BottomNav from '../../components/BottomNav'
 import MenuPerfilComprador from '../../components/MenuPerfilComprador'
 import Hdr from '../../components/Hdr'
 import Boton from '../../components/ui/Boton'
+import Tabla from '../../components/ui/Tabla'
+import TablaHeader from '../../components/ui/TablaHeader'
+import TablaFila from '../../components/ui/TablaFila'
 import { construirTituloProducto } from '../../lib/producto'
 import './InicioComprador.css'
 import './DetalleProducto.css'
@@ -127,22 +130,15 @@ function DetalleProducto() {
             {producto.tarifas.length === 0 ? (
               <p className="detalleproducto-tarifas-vacio">Este producto no tiene tarifas disponibles actualmente.</p>
             ) : (
-              <table className="detalleproducto-tarifas-tabla">
-                <thead>
-                  <tr>
-                    <th>Cantidad mínima</th>
-                    <th>Precio unitario</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {producto.tarifas.map((t, i) => (
-                    <tr key={i}>
-                      <td>{t.cantidadMinima} u.</td>
-                      <td>${Number(t.precioVenta).toLocaleString('es-AR')}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+              <Tabla grid="1fr 1fr" className="detalleproducto-tarifas-tabla">
+                <TablaHeader columnas={['Cantidad mínima', 'Precio unitario']} />
+                {producto.tarifas.map((t, i) => (
+                  <TablaFila key={i}>
+                    <div>{t.cantidadMinima} u.</div>
+                    <div>${Number(t.precioVenta).toLocaleString('es-AR')}</div>
+                  </TablaFila>
+                ))}
+              </Tabla>
             )}
 
             <div className="detalleproducto-carrito-caja">

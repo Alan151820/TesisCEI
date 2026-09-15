@@ -5,10 +5,16 @@ import api from '../../lib/axios'
 import ModalMapaDireccion from '../../components/ModalMapaDireccion'
 import EstadoBadge from '../../components/EstadoBadge'
 import PanelDistribuidor from '../../components/PanelDistribuidor'
+import Tabla from '../../components/ui/Tabla'
+import TablaHeader from '../../components/ui/TablaHeader'
+import TablaFila from '../../components/ui/TablaFila'
 import { ETIQUETA_ESTADO } from '../../lib/pedido'
 import './Inicio.css'
 import './MisPedidos.css'
 import './DetallePedido.css'
+
+const COLUMNAS = ['Producto', 'Cantidad', 'Precio unit.', 'Subtotal', 'Stock disp.']
+const GRID = '1fr 100px 120px 120px 110px'
 
 const MOTIVOS_RECHAZO_PENDIENTE = [
   'Sin stock del producto solicitado',
@@ -144,16 +150,10 @@ function DetallePedido() {
                     <div className="detallepedido-motivo">Motivo del rechazo: {pedido.motivoRechazo}</div>
                   )}
 
-                  <div className="detallepedido-tabla">
-                    <div className="detallepedido-tabla-header detallepedido-tabla-header--dist">
-                      <div>Producto</div>
-                      <div>Cantidad</div>
-                      <div>Precio unit.</div>
-                      <div>Subtotal</div>
-                      <div>Stock disp.</div>
-                    </div>
+                  <Tabla className="detallepedido-tabla" grid={GRID}>
+                    <TablaHeader columnas={COLUMNAS} className="detallepedido-tabla-header" />
                     {pedido.items.map((item, i) => (
-                      <div key={i} className="detallepedido-tabla-fila detallepedido-tabla-fila--dist">
+                      <TablaFila key={i} className="detallepedido-tabla-fila">
                         <div className="detallepedido-celda detallepedido-celda-producto">
                           {item.imagenUrl
                             ? <img src={`http://localhost:3000${item.imagenUrl}`} alt={item.nombreProducto} className="detallepedido-thumb" />
@@ -165,11 +165,11 @@ function DetallePedido() {
                         <div className="detallepedido-celda">${Number(item.precioVentaCongelado).toLocaleString('es-AR')}</div>
                         <div className="detallepedido-celda">${(Number(item.cantidad) * Number(item.precioVentaCongelado)).toLocaleString('es-AR')}</div>
                         <div className={`detallepedido-celda${Number(item.stockDisponible) === 0 ? ' detallepedido-stock-cero' : ''}`}>{item.stockDisponible} u.</div>
-                      </div>
+                      </TablaFila>
                     ))}
-                    <div className="detallepedido-total">
-                      Total: ${Number(pedido.total).toLocaleString('es-AR')}
-                    </div>
+                  </Tabla>
+                  <div className="fila" style={{ justifyContent: 'flex-end', marginTop: 10 }}>
+                    <span className="texto" style={{ fontWeight: 700 }}>Total: ${Number(pedido.total).toLocaleString('es-AR')}</span>
                   </div>
 
                   {pedido.latitud && pedido.longitud && (

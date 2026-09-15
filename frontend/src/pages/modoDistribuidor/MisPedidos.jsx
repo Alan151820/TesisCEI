@@ -5,11 +5,21 @@ import api from '../../lib/axios'
 import ModalMapaDireccion from '../../components/ModalMapaDireccion'
 import EstadoBadge from '../../components/EstadoBadge'
 import PanelDistribuidor from '../../components/PanelDistribuidor'
+import Tabla from '../../components/ui/Tabla'
+import TablaHeader from '../../components/ui/TablaHeader'
+import TablaFila from '../../components/ui/TablaFila'
 import { ETIQUETA_ESTADO } from '../../lib/pedido'
 import './Inicio.css'
 import './MisPedidos.css'
 
 const ESTADOS_PEDIDO = ['pendiente', 'aceptado', 'en_camino', 'rechazado', 'cancelado', 'entregado']
+const COLUMNAS = [
+  'Pedido', 'Fecha', 'Comprador', 'Productos',
+  { label: 'Total', className: 'pedidos-celda--derecha' },
+  { label: 'Estado', className: 'pedidos-celda--centro' },
+  '',
+]
+const GRID = '80px 100px 150px 1fr 100px 110px 180px'
 
 function formatearFecha(isoString) {
   const d = new Date(isoString)
@@ -18,7 +28,7 @@ function formatearFecha(isoString) {
 
 function FilaPedido({ pedido: p, onVerUbicacion, navigate }) {
   return (
-    <div className="pedidos-tabla-fila pedidos-fila-clickeable" onClick={() => navigate(`/pedidos/${p.id}`)}>
+    <TablaFila className="pedidos-tabla-fila" onClick={() => navigate(`/pedidos/${p.id}`)}>
       <div className="pedidos-celda pedidos-numero">#{p.id}</div>
       <div className="pedidos-celda">{formatearFecha(p.fechaCreacion)}</div>
       <div className="pedidos-celda">{p.nombreComprador}</div>
@@ -55,7 +65,7 @@ function FilaPedido({ pedido: p, onVerUbicacion, navigate }) {
           </button>
         </div>
       </div>
-    </div>
+    </TablaFila>
   )
 }
 
@@ -194,26 +204,19 @@ function MisPedidos() {
             )}
 
             {!cargando && !error && pedidosFiltrados.length > 0 && (
-              <div className="panel-tabla-wrapper">
-                <div className="pedidos-tabla-header">
-                  <div>Pedido</div>
-                  <div>Fecha</div>
-                  <div>Comprador</div>
-                  <div>Productos</div>
-                  <div className="pedidos-celda--derecha">Total</div>
-                  <div className="pedidos-celda--centro">Estado</div>
-                  <div></div>
-                </div>
-
-                {pedidosFiltrados.map(p => (
-                  <FilaPedido key={p.id} pedido={p} onVerUbicacion={setPedidoMapa} navigate={navigate} />
-                ))}
+              <>
+                <Tabla grid={GRID}>
+                  <TablaHeader columnas={COLUMNAS} className="pedidos-tabla-header" />
+                  {pedidosFiltrados.map(p => (
+                    <FilaPedido key={p.id} pedido={p} onVerUbicacion={setPedidoMapa} navigate={navigate} />
+                  ))}
+                </Tabla>
 
                 <div className="panel-tabla-contador">
                   {pedidosFiltrados.length} pedido{pedidosFiltrados.length !== 1 ? 's' : ''}
                   {hayFiltros ? ` de ${pedidos.length} en total` : ' en total'}
                 </div>
-              </div>
+              </>
             )}
 
             </div>

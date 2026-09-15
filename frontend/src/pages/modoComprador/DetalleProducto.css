@@ -125,39 +125,9 @@
 
 .detalleproducto-tarifas-tabla {
   width: 100%;
-  max-width: 560px;
-  border-collapse: collapse;
-  border: 1px solid var(--color-borde);
-  border-radius: 4px;
-  overflow: hidden;
-  font-size: 12px;
+  max-width: 320px;
+  min-width: 0;
   margin-bottom: 20px;
-}
-
-.detalleproducto-tarifas-tabla thead {
-  background: var(--color-superficie);
-}
-
-.detalleproducto-tarifas-tabla th {
-  padding: 10px 14px;
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--color-texto-suave);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  text-align: left;
-  border-bottom: 1px solid var(--color-borde);
-}
-
-.detalleproducto-tarifas-tabla td {
-  padding: 12px 14px;
-  font-size: 13px;
-  color: var(--color-texto);
-  border-bottom: 1px solid var(--color-borde);
-}
-
-.detalleproducto-tarifas-tabla tr:last-child td {
-  border-bottom: none;
 }
 
 /* Caja de carrito (placeholder visual — sin lógica de carrito en este RF) */

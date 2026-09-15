@@ -3,7 +3,12 @@ import { mensajeDeError } from '../../lib/errores'
 import { useNavigate } from 'react-router-dom'
 import api from '../../lib/axios'
 import PanelDistribuidor from '../../components/PanelDistribuidor'
+import TablaHeader from '../../components/ui/TablaHeader'
+import TablaFila from '../../components/ui/TablaFila'
 import './Reportes.css'
+
+const COLUMNAS_RANKING = ['Producto', 'Unidades']
+const GRID_RANKING = { '--tabla-cols': '1fr 100px' }
 
 const PERIODOS = [
   { valor: 'dia', label: 'Día' },
@@ -84,20 +89,17 @@ function Reportes() {
             <p className="reportes-vacio">No hay pedidos completados en el período seleccionado.</p>
           ) : (
             <div className="reportes-tablas">
-              <div className="reportes-tabla-card">
+              <div className="reportes-tabla-card" style={GRID_RANKING}>
                 <div className="reportes-tabla-titulo">Productos más vendidos</div>
-                <div className="reportes-tabla-header">
-                  <div>Producto</div>
-                  <div>Unidades</div>
-                </div>
+                <TablaHeader columnas={COLUMNAS_RANKING} className="reportes-tabla-header" />
                 {reporte.productosMasVendidos.map(p => (
-                  <div className="reportes-tabla-fila" key={p.id}>
+                  <TablaFila key={p.id} className="reportes-tabla-fila">
                     <div>{p.nombre}</div>
                     <div>{p.unidadesVendidas}</div>
-                  </div>
+                  </TablaFila>
                 ))}
               </div>
-              <div className="reportes-tabla-card">
+              <div className="reportes-tabla-card" style={GRID_RANKING}>
                 <div className="reportes-tabla-titulo">Productos menos vendidos</div>
                 {reporte.productosMenosVendidos.length === 0 ? (
                   <div className="reportes-tabla-nota">
@@ -105,15 +107,12 @@ function Reportes() {
                   </div>
                 ) : (
                   <>
-                    <div className="reportes-tabla-header">
-                      <div>Producto</div>
-                      <div>Unidades</div>
-                    </div>
+                    <TablaHeader columnas={COLUMNAS_RANKING} className="reportes-tabla-header" />
                     {reporte.productosMenosVendidos.map(p => (
-                      <div className="reportes-tabla-fila" key={p.id}>
+                      <TablaFila key={p.id} className="reportes-tabla-fila">
                         <div>{p.nombre}</div>
                         <div>{p.unidadesVendidas}</div>
-                      </div>
+                      </TablaFila>
                     ))}
                   </>
                 )}

@@ -10,8 +10,14 @@ import EstadoBadge from '../../components/EstadoBadge'
 import MenuPerfilComprador from '../../components/MenuPerfilComprador'
 import Hdr from '../../components/Hdr'
 import Boton from '../../components/ui/Boton'
+import Tabla from '../../components/ui/Tabla'
+import TablaHeader from '../../components/ui/TablaHeader'
+import TablaFila from '../../components/ui/TablaFila'
 import './InicioComprador.css'
 import './MisPedidos.css'
+
+const COLUMNAS = ['Pedido', 'Fecha', 'Imagen', 'Producto', 'Distribuidor', 'Total', 'Estado']
+const GRID = '70px 100px 72px minmax(200px,1fr) 160px 100px 120px'
 
 function formatearFecha(isoString) {
   const d = new Date(isoString)
@@ -67,18 +73,10 @@ function MisPedidos() {
 
         {!cargando && !error && pedidos.length > 0 && (
           <>
-            <div className="mispedidos-tabla">
-              <div className="mispedidos-tabla-header">
-                <div>Pedido</div>
-                <div>Fecha</div>
-                <div>Imagen</div>
-                <div>Producto</div>
-                <div>Distribuidor</div>
-                <div>Total</div>
-                <div>Estado</div>
-              </div>
+            <Tabla className="mispedidos-tabla" grid={GRID}>
+              <TablaHeader columnas={COLUMNAS} />
               {pedidos.map(p => (
-                <div key={p.id} className="mispedidos-tabla-fila mispedidos-fila-clickeable" onClick={() => navigate(`/pedido/${p.id}`)}>
+                <TablaFila key={p.id} onClick={() => navigate(`/pedido/${p.id}`)}>
                   <div className="mispedidos-celda mispedidos-celda-id">#{p.id}</div>
                   <div className="mispedidos-celda">{formatearFecha(p.fechaCreacion)}</div>
                   <div className="mispedidos-celda mispedidos-celda-col">
@@ -124,9 +122,9 @@ function MisPedidos() {
                   <div className="mispedidos-celda">
                     <EstadoBadge estado={p.estado} />
                   </div>
-                </div>
+                </TablaFila>
               ))}
-            </div>
+            </Tabla>
 
             <div className="mispedidos-cards">
               {pedidos.map(p => (

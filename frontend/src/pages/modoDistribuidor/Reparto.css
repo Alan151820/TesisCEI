@@ -1,85 +1,17 @@
-.reparto-tabla-header {
-  display: grid;
-  grid-template-columns: 44px 120px 180px 1fr 200px;
-  background: var(--color-superficie);
-  border-bottom: 1px solid var(--color-borde);
-}
-
-.reparto-tabla-header > div {
-  padding: 10px 14px;
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--color-texto-suave);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.reparto-tabla-fila {
-  display: grid;
-  grid-template-columns: 44px 120px 180px 1fr 200px;
-  border-bottom: 1px solid var(--color-superficie);
-  background: var(--color-fondo);
-}
-
-.reparto-tabla-fila:last-of-type {
-  border-bottom: none;
-}
-
 .reparto-celda {
-  padding: 12px 14px;
   font-size: 13px;
   color: var(--color-texto);
   display: flex;
   align-items: center;
 }
 
-.reparto-celda input[type="checkbox"] {
-  width: 16px;
-  height: 16px;
-  accent-color: var(--color-primario);
-  cursor: pointer;
-}
-
 .reparto-pie {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 14px;
-}
-
-.reparto-panel-header {
-  display: grid;
-  grid-template-columns: 80px 120px 120px 1fr 100px;
-  background: var(--color-superficie);
-  border-bottom: 1px solid var(--color-borde);
-}
-
-.reparto-panel-header > div {
-  padding: 10px 14px;
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--color-texto-suave);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.reparto-panel-fila {
-  display: grid;
-  grid-template-columns: 80px 120px 120px 1fr 100px;
-  border-bottom: 1px solid var(--color-superficie);
-  background: var(--color-fondo);
-}
-
-.reparto-panel-fila:last-of-type {
-  border-bottom: none;
-}
-
-.reparto-panel-fila--clickeable {
-  cursor: pointer;
-}
-
-.reparto-panel-fila--clickeable:hover {
-  background: var(--color-superficie);
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 14px;
 }
 
 .reparto-progreso {
@@ -198,32 +130,6 @@
   border: 1px solid var(--color-borde);
 }
 
-.reparto-paradas-header {
-  display: grid;
-  grid-template-columns: 36px 80px 130px 1fr 90px 320px;
-  background: var(--color-superficie);
-  border-bottom: 1px solid var(--color-borde);
-}
-
-.reparto-paradas-header > div {
-  padding: 10px 14px;
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--color-texto-suave);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.reparto-paradas-fila {
-  display: grid;
-  grid-template-columns: 36px 80px 130px 1fr 90px 320px;
-  border-bottom: 1px solid var(--color-superficie);
-  background: var(--color-fondo);
-}
-
-.reparto-paradas-fila:last-of-type {
-  border-bottom: none;
-}
 
 .reparto-celda-acciones {
   gap: 8px;
@@ -656,15 +562,18 @@
    si hace falta —, y solo se convierten en filas apiladas en mobile, donde
    una tabla de columnas fijas ya no entra sin ese scroll permanente. */
 @media (max-width: 767px) {
-  .reparto-tabla-header,
-  .reparto-panel-header,
-  .reparto-paradas-header {
+  /* Especificidad de 2 clases a propósito: tienen que ganarle a
+     `.tabla-header/.tabla-fila{display:grid;...}` sin depender del orden
+     de las hojas de estilo en el bundle. */
+  .tabla-header.reparto-tabla-header,
+  .tabla-header.reparto-panel-header,
+  .tabla-header.reparto-paradas-header {
     display: none;
   }
 
-  .reparto-tabla-fila,
-  .reparto-panel-fila,
-  .reparto-paradas-fila {
+  .tabla-fila.reparto-tabla-fila,
+  .tabla-fila.reparto-panel-fila,
+  .tabla-fila.reparto-paradas-fila {
     display: flex;
     align-items: flex-start;
     flex-wrap: wrap;

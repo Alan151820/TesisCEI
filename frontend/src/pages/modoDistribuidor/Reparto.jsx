@@ -4,9 +4,15 @@ import { useNavigate, useLocation } from 'react-router-dom'
 import api from '../../lib/axios'
 import EstadoBadge from '../../components/EstadoBadge'
 import PanelDistribuidor from '../../components/PanelDistribuidor'
+import Tabla from '../../components/ui/Tabla'
+import TablaHeader from '../../components/ui/TablaHeader'
+import TablaFila from '../../components/ui/TablaFila'
 import './Inicio.css'
 import './MisPedidos.css'
 import './Reparto.css'
+
+const COLUMNAS = ['Reparto', 'Fecha', 'Estado', 'Progreso', '']
+const GRID = '80px 120px 120px 1fr 100px'
 
 function formatearFecha(isoString) {
   const d = new Date(isoString)
@@ -110,19 +116,13 @@ function Reparto() {
           )}
 
           {!cargando && !error && planes.length > 0 && (
-            <div className="panel-tabla-wrapper">
-              <div className="reparto-panel-header">
-                <div>Reparto</div>
-                <div>Fecha</div>
-                <div>Estado</div>
-                <div>Progreso</div>
-                <div></div>
-              </div>
+            <Tabla grid={GRID} className="panel-tabla-reflow">
+              <TablaHeader columnas={COLUMNAS} className="reparto-panel-header" />
 
               {planes.map(plan => (
-                <div
+                <TablaFila
                   key={plan.id}
-                  className="reparto-panel-fila reparto-panel-fila--clickeable"
+                  className="reparto-panel-fila"
                   onClick={() => navigate(`/reparto/${plan.id}`)}
                 >
                   <div className="reparto-celda">#{plan.id}</div>
@@ -152,9 +152,9 @@ function Reparto() {
                       </button>
                     )}
                   </div>
-                </div>
+                </TablaFila>
               ))}
-            </div>
+            </Tabla>
           )}
 
           {errorEliminar && (
