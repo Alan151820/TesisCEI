@@ -83,12 +83,8 @@ function PanelDistribuidor({ tituloMobile, accionMobile, activo, buscadorValor, 
           Salir de distribuidora
         </Boton>
         <CampanaNotificaciones rutaDestino="/pedidos" rutaDetalle="/pedidos" />
-        <div className="desplegable-ancla comprador-perfil-wrapper" ref={perfilRef}>
-          <button type="button" className="comprador-perfil-trigger" onClick={() => setMenuPerfil(v => !v)}>
-            <Avatar nombre={nombre} className="comprador-avatar" />
-            <span className="comprador-nombre">{nombre}</span>
-            <span className="comprador-perfil-flecha">{menuPerfil ? '▴' : '▾'}</span>
-          </button>
+        <div className="desplegable-ancla" ref={perfilRef}>
+          <Avatar nombre={nombre} onClick={() => setMenuPerfil(v => !v)} />
           {menuPerfil && (
             <div className="desplegable comprador-menu-desplegable">
               <ToggleTema />
@@ -100,10 +96,10 @@ function PanelDistribuidor({ tituloMobile, accionMobile, activo, buscadorValor, 
 
       <div className="panel-layout">
 
-        <aside className="panel-sidebar" data-tema="oscuro">
+        <aside className="panel-sidebar">
           <div className="panel-sidebar-marca">
-            <div className="panel-sidebar-titulo">MarketDist</div>
-            <div className="panel-sidebar-subtitulo">Panel del Distribuidor</div>
+            <div className="titulo1">MarketDist</div>
+            <span className="texto-mudo">Panel del Distribuidor</span>
           </div>
 
           <nav className="panel-nav">
@@ -117,17 +113,6 @@ function PanelDistribuidor({ tituloMobile, accionMobile, activo, buscadorValor, 
               </div>
             ))}
           </nav>
-
-          <div className="panel-sidebar-footer">
-            <div className="panel-sidebar-usuario">
-              <Avatar nombre={nombre} className="panel-avatar-small" />
-              <div>
-                <div className="panel-sidebar-nombre">{nombre}</div>
-                <div className="panel-sidebar-rol">Distribuidor</div>
-              </div>
-            </div>
-            <div className="panel-sidebar-accion" onClick={handleCerrarSesion}>Cerrar sesión</div>
-          </div>
         </aside>
 
         <main className="panel-main">

@@ -129,106 +129,50 @@
 
 /* Sidebar — franja oscura fija (data-tema="oscuro" en el JSX) */
 .panel-sidebar {
-  width: 220px;
+  width: 248px;
   background: var(--color-fondo);
+  border-right: 1px solid var(--color-borde);
   display: flex;
   flex-direction: column;
   flex-shrink: 0;
+  padding: 24px 0;
   height: 100%;
+  box-sizing: border-box;
 }
 
 .panel-sidebar-marca {
-  padding: 18px 20px;
+  padding: 0 20px 20px;
   border-bottom: 1px solid var(--color-borde);
-}
-
-.panel-sidebar-titulo {
-  font-size: 16px;
-  font-weight: 700;
-  color: var(--color-texto);
-}
-
-.panel-sidebar-subtitulo {
-  font-size: 10px;
-  color: var(--color-texto-suave);
-  margin-top: 2px;
+  margin-bottom: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
 .panel-nav {
   flex: 1;
-  padding: 8px 0;
 }
 
 .panel-nav-item {
-  height: 44px;
-  display: flex;
-  align-items: center;
-  padding: 0 20px;
-  font-size: 13px;
+  padding: 14px 20px;
+  font-size: 16px;
+  font-weight: 600;
   color: var(--color-texto-suave);
-  border-left: 3px solid transparent;
+  border-radius: 0 24px 24px 0;
+  white-space: nowrap;
   cursor: pointer;
-  transition: background 0.15s;
+  transition: background-color 0.12s ease, color 0.12s ease;
 }
 
-.panel-nav-item:hover {
+.panel-nav-item:not(.activo):hover {
   background: var(--color-superficie);
   color: var(--color-texto);
 }
 
 .panel-nav-item.activo {
-  color: var(--color-texto);
-  background: var(--color-superficie);
-  border-left-color: var(--color-texto);
-}
-
-/* Perfil en footer del sidebar */
-.panel-sidebar-footer {
-  border-top: 1px solid var(--color-borde);
-  padding: 16px 20px 28px;
-}
-
-.panel-sidebar-usuario {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 14px;
-}
-
-.panel-avatar-small {
-  width: 38px;
-  height: 38px;
-  background: var(--color-superficie);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 13px;
-  color: var(--color-texto-suave);
-  font-weight: 600;
-  flex-shrink: 0;
-}
-
-.panel-sidebar-nombre {
-  font-size: 13px;
-  color: var(--color-texto);
-  font-weight: 500;
-}
-
-.panel-sidebar-rol {
-  font-size: 11px;
-  color: var(--color-texto-suave);
-  margin-top: 1px;
-}
-
-.panel-sidebar-accion {
-  font-size: 12px;
-  color: var(--color-texto-suave);
-  cursor: pointer;
-}
-
-.panel-sidebar-accion:hover {
-  color: var(--color-texto);
+  background: var(--color-secundario);
+  color: var(--color-sobre-secundario);
+  font-weight: 700;
 }
 
 /* Main */
