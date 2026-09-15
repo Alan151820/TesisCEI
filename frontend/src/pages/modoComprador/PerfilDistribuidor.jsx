@@ -7,7 +7,8 @@ import BottomNav from '../../components/BottomNav'
 import MenuPerfilComprador from '../../components/MenuPerfilComprador'
 import Hdr from '../../components/Hdr'
 import Boton from '../../components/ui/Boton'
-import { construirTituloProducto } from '../../lib/producto'
+import GridCards from '../../components/ui/GridCards'
+import CardProducto from '../../components/ui/CardProducto'
 import './InicioComprador.css'
 import './PerfilDistribuidor.css'
 
@@ -109,20 +110,16 @@ function PerfilDistribuidor() {
         {productos.length === 0 ? (
           <p className="perfildist-catalogo-vacio">Este distribuidor no tiene productos publicados actualmente.</p>
         ) : (
-          <div className="perfildist-grid">
+          <GridCards>
             {productos.map(p => (
-<div key={p.id} className="perfildist-producto-card" onClick={() => navigate(`/producto/${p.id}`, { replace: true })}>                {p.imagenUrl
-                  ? <img src={`http://localhost:3000${p.imagenUrl}`} alt={p.nombre} className="perfildist-producto-img" />
-                  : <div className="perfildist-producto-img-placeholder">[foto]</div>
-                }
-                <div className="perfildist-producto-info">
-                  <div className="perfildist-producto-categoria">{p.categoria}</div>
-                  <h3 className="perfildist-producto-nombre">{construirTituloProducto(p)}</h3>
-                  <p className="perfildist-producto-descripcion">{p.descripcion}</p>
-                </div>
-              </div>
+              <CardProducto
+                key={p.id}
+                producto={p}
+                compacta
+                onClick={() => navigate(`/producto/${p.id}`, { replace: true })}
+              />
             ))}
-          </div>
+          </GridCards>
         )}
       </div>
 

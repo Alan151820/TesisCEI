@@ -41,6 +41,19 @@
 
 .separador { border: none; border-top: 1px solid var(--color-borde); margin: 0; }
 
+.placeholder-img {
+  background: var(--color-superficie);
+  border: 1px dashed var(--color-borde);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-texto-suave);
+  font-size: 14px;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
 .panel-centrado {
   flex: 1;
   width: 100%;

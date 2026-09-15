@@ -1,5 +1,6 @@
 import { construirTituloProducto } from '../lib/producto'
-import './TarjetaProductoPreview.css'
+import Boton from './ui/Boton'
+import './ui/CardProducto.css'
 
 function TarjetaProductoPreview({ nombre, marca, magnitudValor, magnitudUnidad, categoriaNombre, descripcion, imagenSrc, nombreDistribuidor, precioMinimo, precioBase }) {
   const tieneNombre = nombre && nombre.trim() !== ''
@@ -7,29 +8,27 @@ function TarjetaProductoPreview({ nombre, marca, magnitudValor, magnitudUnidad, 
   const titulo = tieneNombre ? construirTituloProducto({ nombre, marca, magnitudValor, magnitudUnidad }) : 'Nombre del producto'
 
   return (
-    <div className="preview-tarjeta">
+    <div className="card-producto">
       {imagenSrc
-        ? <img src={imagenSrc} alt={nombre || 'Producto'} className="preview-tarjeta-imagen" />
-        : <div className="preview-tarjeta-imagen-placeholder">Sin imagen</div>
+        ? <img src={imagenSrc} alt={nombre || 'Producto'} className="card-producto-imagen" />
+        : <div className="placeholder-img card-producto-imagen">Sin imagen</div>
       }
-      <div className="preview-tarjeta-cuerpo">
-        <div className="preview-tarjeta-categoria">{categoriaNombre || 'Categoría'}</div>
-        <div className="preview-tarjeta-nombre">{titulo}</div>
-        {descripcion && <div className="preview-tarjeta-descripcion">{descripcion}</div>}
-        <div className="preview-tarjeta-pie">
-          <div className="preview-tarjeta-distribuidor">{nombreDistribuidor || 'Tu distribuidora'}</div>
-          <div className="preview-tarjeta-precio">
-            {tienePrecio ? (
-              <>
-                <div>Desde ${Number(precioMinimo).toLocaleString('es-AR')}</div>
-                {Number(precioBase) > Number(precioMinimo) && (
-                  <div className="preview-tarjeta-precio-hasta">Hasta ${Number(precioBase).toLocaleString('es-AR')}</div>
-                )}
-              </>
-            ) : <div>Desde $—</div>}
-          </div>
-        </div>
-        <div className="preview-tarjeta-agregar">+ Agregar</div>
+      <div className="card-producto-info col gap-s">
+        <span className="texto-mudo">{categoriaNombre || 'Categoría'}</span>
+        <span className="titulo1">{titulo}</span>
+        {descripcion && <span className="texto-mudo">{descripcion}</span>}
+        <span className="texto-mudo">{nombreDistribuidor || 'Tu distribuidora'}</span>
+        <span className="texto">
+          {tienePrecio ? (
+            <>
+              Desde ${Number(precioMinimo).toLocaleString('es-AR')}
+              {Number(precioBase) > Number(precioMinimo) && (
+                <span className="texto-mudo"> hasta ${Number(precioBase).toLocaleString('es-AR')}</span>
+              )}
+            </>
+          ) : 'Desde $—'}
+        </span>
+        <Boton variante="fill" style={{ width: '100%' }}>+ Agregar</Boton>
       </div>
     </div>
   )

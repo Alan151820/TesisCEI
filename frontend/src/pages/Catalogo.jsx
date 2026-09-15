@@ -4,8 +4,9 @@ import { useCarrito } from '../context/CarritoContext'
 import BottomNav from '../components/BottomNav'
 import Hdr from '../components/Hdr'
 import Boton from '../components/ui/Boton'
+import GridCards from '../components/ui/GridCards'
+import CardProducto from '../components/ui/CardProducto'
 import api from '../lib/axios'
-import { construirTituloProducto } from '../lib/producto'
 import './Catalogo.css'
 
 function Catalogo() {
@@ -117,36 +118,16 @@ function Catalogo() {
 
         {!cargando && productos.length > 0 && (
           <>
-            <div className="catalogo-grilla">
+            <GridCards>
               {productos.map(p => (
-                <div key={p.id} className="catalogo-tarjeta" onClick={() => navigate(`/producto/${p.id}`)}>
-                  {p.imagenUrl
-                    ? <img src={`http://localhost:3000${p.imagenUrl}`} alt={p.nombre} className="catalogo-tarjeta-imagen" />
-                    : <div className="catalogo-tarjeta-imagen-placeholder">Sin imagen</div>
-                  }
-                  <div className="catalogo-tarjeta-cuerpo">
-                    <div className="catalogo-tarjeta-categoria">{p.categoria}</div>
-                    <div className="catalogo-tarjeta-nombre">{construirTituloProducto(p)}</div>
-                    {p.descripcion && <div className="catalogo-tarjeta-descripcion">{p.descripcion}</div>}
-                    <div className="catalogo-tarjeta-pie">
-                      <div className="catalogo-tarjeta-distribuidor">{p.nombreDistribuidor}</div>
-                      <div className="catalogo-tarjeta-precio">
-                        <div>Desde ${Number(p.precioMinimo).toLocaleString('es-AR')}</div>
-                        {Number(p.precioBase) > Number(p.precioMinimo) && (
-                          <div className="catalogo-tarjeta-precio-hasta">Hasta ${Number(p.precioBase).toLocaleString('es-AR')}</div>
-                        )}
-                      </div>
-                    </div>
-                    <button
-                      className="catalogo-tarjeta-agregar"
-                      onClick={() => agregarProducto(p)}
-                    >
-                      + Agregar
-                    </button>
-                  </div>
-                </div>
+                <CardProducto
+                  key={p.id}
+                  producto={p}
+                  onClick={() => navigate(`/producto/${p.id}`)}
+                  onAgregar={agregarProducto}
+                />
               ))}
-            </div>
+            </GridCards>
             <div className="catalogo-contador">
               {productos.length} producto{productos.length !== 1 ? 's' : ''} disponible{productos.length !== 1 ? 's' : ''}
             </div>

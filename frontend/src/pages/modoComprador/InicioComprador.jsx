@@ -8,7 +8,8 @@ import BottomNav from '../../components/BottomNav'
 import MenuPerfilComprador from '../../components/MenuPerfilComprador'
 import Hdr from '../../components/Hdr'
 import Boton from '../../components/ui/Boton'
-import { construirTituloProducto } from '../../lib/producto'
+import GridCards from '../../components/ui/GridCards'
+import CardProducto from '../../components/ui/CardProducto'
 import './InicioComprador.css'
 
 function InicioComprador() {
@@ -124,36 +125,16 @@ function InicioComprador() {
 
         {!cargando && productos.length > 0 && (
           <>
-            <div className="comprador-grilla">
+            <GridCards>
               {productos.map(p => (
-                <div key={p.id} className="comprador-tarjeta" onClick={() => navigate(`/producto/${p.id}`)}>
-                  {p.imagenUrl
-                    ? <img src={`http://localhost:3000${p.imagenUrl}`} alt={p.nombre} className="comprador-tarjeta-imagen" />
-                    : <div className="comprador-tarjeta-imagen-placeholder">Sin imagen</div>
-                  }
-                  <div className="comprador-tarjeta-cuerpo">
-                    <div className="comprador-tarjeta-categoria">{p.categoria}</div>
-                    <div className="comprador-tarjeta-nombre">{construirTituloProducto(p)}</div>
-                    {p.descripcion && <div className="comprador-tarjeta-descripcion">{p.descripcion}</div>}
-                    <div className="comprador-tarjeta-pie">
-                      <div className="comprador-tarjeta-distribuidor">{p.nombreDistribuidor}</div>
-                      <div className="comprador-tarjeta-precio">
-                        <div>Desde ${Number(p.precioMinimo).toLocaleString('es-AR')}</div>
-                        {Number(p.precioBase) > Number(p.precioMinimo) && (
-                          <div className="comprador-tarjeta-precio-hasta">Hasta ${Number(p.precioBase).toLocaleString('es-AR')}</div>
-                        )}
-                      </div>
-                    </div>
-                    <button
-                      className="comprador-tarjeta-agregar"
-                      onClick={e => { e.stopPropagation(); agregarProducto(p) }}
-                    >
-                      + Agregar
-                    </button>
-                  </div>
-                </div>
+                <CardProducto
+                  key={p.id}
+                  producto={p}
+                  onClick={() => navigate(`/producto/${p.id}`)}
+                  onAgregar={agregarProducto}
+                />
               ))}
-            </div>
+            </GridCards>
             <div className="comprador-contador">
               {productos.length} producto{productos.length !== 1 ? 's' : ''} disponible{productos.length !== 1 ? 's' : ''}
             </div>
