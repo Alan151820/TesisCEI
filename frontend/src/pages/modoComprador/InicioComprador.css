@@ -62,31 +62,15 @@
 }
 
 .comprador-menu-desplegable {
-  position: absolute;
-  top: calc(100% + 6px);
-  right: 0;
-  background: var(--color-fondo);
-  border: 1px solid var(--color-borde);
-  border-radius: 6px;
-  min-width: 140px;
-  box-shadow: 0 4px 16px rgba(0,0,0,.08);
-  z-index: 100;
-  overflow: hidden;
+  width: 100%;
+  max-width: 280px;
+  min-width: 240px;
 }
 
-.comprador-menu-item {
-  padding: 10px 16px;
-  font-size: 13px;
-  color: var(--color-texto);
-  cursor: pointer;
-}
-
-.comprador-menu-item:hover {
-  background: var(--color-superficie);
-}
-
-/* Ítems que sólo aparecen en el dropdown en mobile */
-.comprador-menu-item--mobile {
+/* Ítems que sólo aparecen en el dropdown en mobile. Especificidad de 2
+   clases a propósito: tienen que ganarle a `.desplegable-item{display:flex}`
+   sin depender del orden de las hojas de estilo en el bundle. */
+.desplegable-item.comprador-menu-item--mobile {
   display: none;
 }
 
@@ -316,13 +300,8 @@
   }
 
   /* Mostrar ítems de Mis pedidos y Distribuidora en el dropdown */
-  .comprador-menu-item--mobile {
-    display: block;
-  }
-
-  /* Separador visual entre ítems de nav y cerrar sesión */
-  .comprador-menu-item--mobile:last-of-type {
-    border-bottom: 1px solid var(--color-borde);
+  .desplegable-item.comprador-menu-item--mobile {
+    display: flex;
   }
 
   .comprador-avatar {

@@ -1,9 +1,11 @@
-import { useState, useRef, useEffect } from 'react'
+import { useState } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import CampanaNotificaciones from './CampanaNotificaciones'
 import ToggleTema from './ToggleTema'
 import Hdr from './Hdr'
 import Boton from './ui/Boton'
+import Avatar from './ui/Avatar'
+import useDesplegable from '../hooks/useDesplegable'
 import { cerrarSesion } from '../lib/auth'
 import '../pages/modoComprador/InicioComprador.css'
 import '../pages/modoDistribuidor/Inicio.css'
@@ -28,18 +30,9 @@ function PanelDistribuidor({ tituloMobile, accionMobile, activo, children }) {
   const location = useLocation()
   const rutaActiva = activo ?? location.pathname
   const nombre = localStorage.getItem('nombre') || ''
-  const iniciales = nombre.split(' ').map(p => p[0]).join('').slice(0, 2).toUpperCase()
 
   const [menuAbierto, setMenuAbierto] = useState(false)
-  const [menuPerfil, setMenuPerfil] = useState(false)
-  const perfilRef = useRef(null)
-
-  useEffect(() => {
-    if (!menuPerfil) return
-    const cerrar = (e) => { if (!perfilRef.current?.contains(e.target)) setMenuPerfil(false) }
-    document.addEventListener('mousedown', cerrar)
-    return () => document.removeEventListener('mousedown', cerrar)
-  }, [menuPerfil])
+  const { abierto: menuPerfil, setAbierto: setMenuPerfil, ref: perfilRef } = useDesplegable()
 
   const handleCerrarSesion = () => cerrarSesionDistribuidor(navigate)
 
@@ -87,16 +80,16 @@ function PanelDistribuidor({ tituloMobile, accionMobile, activo, children }) {
           Salir de distribuidora
         </Boton>
         <CampanaNotificaciones rutaDestino="/pedidos" rutaDetalle="/pedidos" />
-        <div className="comprador-perfil-wrapper" ref={perfilRef}>
-          <button className="comprador-perfil-trigger" onClick={() => setMenuPerfil(v => !v)}>
-            <div className="comprador-avatar">{iniciales}</div>
+        <div className="desplegable-ancla comprador-perfil-wrapper" ref={perfilRef}>
+          <button type="button" className="comprador-perfil-trigger" onClick={() => setMenuPerfil(v => !v)}>
+            <Avatar nombre={nombre} className="comprador-avatar" />
             <span className="comprador-nombre">{nombre}</span>
             <span className="comprador-perfil-flecha">{menuPerfil ? '▴' : '▾'}</span>
           </button>
           {menuPerfil && (
-            <div className="comprador-menu-desplegable">
+            <div className="desplegable comprador-menu-desplegable">
               <ToggleTema />
-              <div className="comprador-menu-item" onClick={handleCerrarSesion}>Cerrar sesión</div>
+              <div className="desplegable-item" onClick={handleCerrarSesion}>Cerrar sesión</div>
             </div>
           )}
         </div>
@@ -124,7 +117,7 @@ function PanelDistribuidor({ tituloMobile, accionMobile, activo, children }) {
 
           <div className="panel-sidebar-footer">
             <div className="panel-sidebar-usuario">
-              <div className="panel-avatar-small">{iniciales}</div>
+              <Avatar nombre={nombre} className="panel-avatar-small" />
               <div>
                 <div className="panel-sidebar-nombre">{nombre}</div>
                 <div className="panel-sidebar-rol">Distribuidor</div>

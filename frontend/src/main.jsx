@@ -7,6 +7,7 @@ import './styles/colors.css'
 import './styles/escala.css'
 import './styles/controles.css'
 import './styles/utilidades.css'
+import './styles/desplegable.css'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>

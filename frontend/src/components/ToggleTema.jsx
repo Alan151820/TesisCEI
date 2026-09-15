@@ -7,7 +7,7 @@ function ToggleTema() {
 
   return (
     <div
-      className="comprador-menu-item toggle-tema-item"
+      className="desplegable-item toggle-tema-item"
       onClick={(e) => { e.stopPropagation(); alternarTema() }}
     >
       <span>Tema oscuro</span>
