@@ -7,6 +7,12 @@ import PanelDistribuidor from '../../components/PanelDistribuidor'
 import Tabla from '../../components/ui/Tabla'
 import TablaHeader from '../../components/ui/TablaHeader'
 import TablaFila from '../../components/ui/TablaFila'
+import Boton from '../../components/ui/Boton'
+import Campo from '../../components/ui/Campo'
+import Modal from '../../components/ui/Modal'
+import ModalHeader from '../../components/ui/ModalHeader'
+import ModalBody from '../../components/ui/ModalBody'
+import ModalFooter from '../../components/ui/ModalFooter'
 import './Inicio.css'
 import './MisPedidos.css'
 import './Reparto.css'
@@ -165,43 +171,30 @@ function Reparto() {
           )}
 
       {planCerrar && (
-        <div className="reparto-modal-overlay" onClick={() => setPlanCerrar(null)}>
-          <div className="reparto-modal" onClick={e => e.stopPropagation()}>
-            <div className="reparto-modal-header">
-              <div className="reparto-modal-titulo">Cerrar reparto #{planCerrar.id}</div>
-              <button type="button" className="reparto-modal-cerrar" onClick={() => setPlanCerrar(null)}>✕</button>
-            </div>
-
-            <div className="reparto-modal-body">
-              <p className="panel-subtitulo" style={{ marginBottom: 10 }}>
-                Las paradas pendientes de este reparto se van a marcar como Omitida con el motivo que ingreses acá, y el reparto va a quedar Finalizado.
-              </p>
-              <textarea
-                className="reparto-modal-textarea"
-                rows={4}
-                placeholder="Motivo (por ejemplo: se reprograma para otro día)"
-                value={motivoCerrar}
-                onChange={e => setMotivoCerrar(e.target.value)}
-              />
-              {errorCerrar && (
-                <div className="panel-error-visibilidad">{errorCerrar}</div>
-              )}
-            </div>
-
-            <div className="reparto-modal-footer">
-              <button type="button" className="reparto-btn-volver" onClick={() => setPlanCerrar(null)}>Cancelar</button>
-              <button
-                type="button"
-                className="pedidos-accion-btn pedidos-accion-btn--peligro"
-                style={{ width: 'auto' }}
-                disabled={cerrandoEnBloque}
-                onClick={handleCerrarEnBloque}
-              >
-                {cerrandoEnBloque ? 'Cerrando…' : 'Confirmar cierre'}
-              </button>
-            </div>
-          </div>
-        </div>
+        <Modal onCerrar={() => setPlanCerrar(null)}>
+          <ModalHeader titulo={`Cerrar reparto #${planCerrar.id}`} onCerrar={() => setPlanCerrar(null)} />
+          <ModalBody>
+            <p className="texto-mudo" style={{ margin: 0 }}>
+              Las paradas pendientes de este reparto se van a marcar como Omitida con el motivo que ingreses acá, y el reparto va a quedar Finalizado.
+            </p>
+            <Campo
+              area
+              rows={4}
+              placeholder="Motivo (por ejemplo: se reprograma para otro día)"
+              value={motivoCerrar}
+              onChange={e => setMotivoCerrar(e.target.value)}
+            />
+            {errorCerrar && (
+              <div className="panel-error-visibilidad">{errorCerrar}</div>
+            )}
+          </ModalBody>
+          <ModalFooter>
+            <Boton variante="outline" onClick={() => setPlanCerrar(null)}>Cancelar</Boton>
+            <Boton variante="peligro" disabled={cerrandoEnBloque} onClick={handleCerrarEnBloque}>
+              {cerrandoEnBloque ? 'Cerrando…' : 'Confirmar cierre'}
+            </Boton>
+          </ModalFooter>
+        </Modal>
       )}
     </PanelDistribuidor>
   )

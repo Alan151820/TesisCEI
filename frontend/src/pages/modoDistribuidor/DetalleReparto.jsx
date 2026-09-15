@@ -10,6 +10,12 @@ import PanelDistribuidor from '../../components/PanelDistribuidor'
 import Tabla from '../../components/ui/Tabla'
 import TablaHeader from '../../components/ui/TablaHeader'
 import TablaFila from '../../components/ui/TablaFila'
+import Boton from '../../components/ui/Boton'
+import Campo from '../../components/ui/Campo'
+import Modal from '../../components/ui/Modal'
+import ModalHeader from '../../components/ui/ModalHeader'
+import ModalBody from '../../components/ui/ModalBody'
+import ModalFooter from '../../components/ui/ModalFooter'
 import './Inicio.css'
 import './MisPedidos.css'
 import './Reparto.css'
@@ -542,96 +548,72 @@ function DetalleReparto() {
           )}
 
       {modalAbierto && (
-        <div className="reparto-modal-overlay" onClick={() => setModalAbierto(false)}>
-          <div className="reparto-modal" onClick={e => e.stopPropagation()}>
-            <div className="reparto-modal-header">
-              <div className="reparto-modal-titulo">Agregar pedido al reparto</div>
-              <button type="button" className="reparto-modal-cerrar" onClick={() => setModalAbierto(false)}>✕</button>
-            </div>
+        <Modal onCerrar={() => setModalAbierto(false)}>
+          <ModalHeader titulo="Agregar pedido al reparto" onCerrar={() => setModalAbierto(false)} />
+          <ModalBody>
+            {cargandoDisponibles && (
+              <div className="panel-tabla-vacio">Cargando pedidos...</div>
+            )}
 
-            <div className="reparto-modal-body">
-              {cargandoDisponibles && (
-                <div className="panel-tabla-vacio">Cargando pedidos...</div>
-              )}
+            {!cargandoDisponibles && !errorModal && disponibles.length === 0 && (
+              <div className="panel-tabla-vacio">No hay pedidos prontos para repartir disponibles para agregar.</div>
+            )}
 
-              {!cargandoDisponibles && !errorModal && disponibles.length === 0 && (
-                <div className="panel-tabla-vacio">No hay pedidos prontos para repartir disponibles para agregar.</div>
-              )}
-
-              {!cargandoDisponibles && disponibles.length > 0 && disponibles.map(p => (
-                <label key={p.id} className="reparto-modal-fila">
-                  <input
-                    type="checkbox"
-                    checked={seleccionModal.has(p.id)}
-                    onChange={() => alternarSeleccionModal(p.id)}
-                  />
-                  <div className="reparto-modal-fila-info">
-                    <div className="reparto-modal-fila-titulo">#{p.id} — {p.nombreComprador}</div>
-                    <div className="reparto-modal-fila-detalle">{p.direccionEntrega}</div>
-                    <div className="reparto-modal-fila-detalle">
-                      {p.items.map(it => `${it.nombreProducto} ×${Number(it.cantidad)}`).join(', ')}
-                    </div>
+            {!cargandoDisponibles && disponibles.length > 0 && disponibles.map(p => (
+              <label key={p.id} className="reparto-modal-fila">
+                <input
+                  type="checkbox"
+                  checked={seleccionModal.has(p.id)}
+                  onChange={() => alternarSeleccionModal(p.id)}
+                />
+                <div className="reparto-modal-fila-info">
+                  <div className="reparto-modal-fila-titulo">#{p.id} — {p.nombreComprador}</div>
+                  <div className="reparto-modal-fila-detalle">{p.direccionEntrega}</div>
+                  <div className="reparto-modal-fila-detalle">
+                    {p.items.map(it => `${it.nombreProducto} ×${Number(it.cantidad)}`).join(', ')}
                   </div>
-                </label>
-              ))}
+                </div>
+              </label>
+            ))}
 
-              {errorModal && (
-                <div className="panel-error-visibilidad">{errorModal}</div>
-              )}
-            </div>
-
-            <div className="reparto-modal-footer">
-              <button type="button" className="reparto-btn-volver" onClick={() => setModalAbierto(false)}>Cancelar</button>
-              <button
-                type="button"
-                className="panel-btn-nuevo"
-                disabled={seleccionModal.size === 0 || agregando}
-                onClick={handleAgregar}
-              >
-                {agregando ? 'Agregando…' : `Agregar (${seleccionModal.size})`}
-              </button>
-            </div>
-          </div>
-        </div>
+            {errorModal && (
+              <div className="panel-error-visibilidad">{errorModal}</div>
+            )}
+          </ModalBody>
+          <ModalFooter>
+            <Boton variante="outline" onClick={() => setModalAbierto(false)}>Cancelar</Boton>
+            <Boton disabled={seleccionModal.size === 0 || agregando} onClick={handleAgregar}>
+              {agregando ? 'Agregando…' : `Agregar (${seleccionModal.size})`}
+            </Boton>
+          </ModalFooter>
+        </Modal>
       )}
 
       {paradaMotivo && (
-        <div className="reparto-modal-overlay" onClick={() => setParadaMotivo(null)}>
-          <div className="reparto-modal" onClick={e => e.stopPropagation()}>
-            <div className="reparto-modal-header">
-              <div className="reparto-modal-titulo">
-                Marcar parada como {paradaMotivo.accion === 'omitido' ? 'Omitida' : 'Rechazada'}
-              </div>
-              <button type="button" className="reparto-modal-cerrar" onClick={() => setParadaMotivo(null)}>✕</button>
-            </div>
-
-            <div className="reparto-modal-body">
-              <textarea
-                className="reparto-modal-textarea"
-                rows={4}
-                placeholder="Motivo"
-                value={motivoTexto}
-                onChange={e => setMotivoTexto(e.target.value)}
-              />
-              {errorMotivo && (
-                <div className="panel-error-visibilidad">{errorMotivo}</div>
-              )}
-            </div>
-
-            <div className="reparto-modal-footer">
-              <button type="button" className="reparto-btn-volver" onClick={() => setParadaMotivo(null)}>Cancelar</button>
-              <button
-                type="button"
-                className="pedidos-accion-btn pedidos-accion-btn--peligro"
-                style={{ width: 'auto' }}
-                disabled={confirmandoMotivo}
-                onClick={handleConfirmarMotivo}
-              >
-                {confirmandoMotivo ? 'Confirmando…' : 'Confirmar'}
-              </button>
-            </div>
-          </div>
-        </div>
+        <Modal onCerrar={() => setParadaMotivo(null)}>
+          <ModalHeader
+            titulo={`Marcar parada como ${paradaMotivo.accion === 'omitido' ? 'Omitida' : 'Rechazada'}`}
+            onCerrar={() => setParadaMotivo(null)}
+          />
+          <ModalBody>
+            <Campo
+              area
+              rows={4}
+              placeholder="Motivo"
+              value={motivoTexto}
+              onChange={e => setMotivoTexto(e.target.value)}
+            />
+            {errorMotivo && (
+              <div className="panel-error-visibilidad">{errorMotivo}</div>
+            )}
+          </ModalBody>
+          <ModalFooter>
+            <Boton variante="outline" onClick={() => setParadaMotivo(null)}>Cancelar</Boton>
+            <Boton variante="peligro" disabled={confirmandoMotivo} onClick={handleConfirmarMotivo}>
+              {confirmandoMotivo ? 'Confirmando…' : 'Confirmar'}
+            </Boton>
+          </ModalFooter>
+        </Modal>
       )}
     </PanelDistribuidor>
   )

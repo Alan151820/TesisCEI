@@ -10,6 +10,11 @@ import TablaHeader from '../../components/ui/TablaHeader'
 import TablaFila from '../../components/ui/TablaFila'
 import Miga from '../../components/ui/Miga'
 import Boton from '../../components/ui/Boton'
+import Campo from '../../components/ui/Campo'
+import Modal from '../../components/ui/Modal'
+import ModalHeader from '../../components/ui/ModalHeader'
+import ModalBody from '../../components/ui/ModalBody'
+import ModalFooter from '../../components/ui/ModalFooter'
 import { ETIQUETA_ESTADO } from '../../lib/pedido'
 import './Inicio.css'
 import './MisPedidos.css'
@@ -261,14 +266,14 @@ function DetallePedido() {
       )}
 
       {modalRechazo && (
-        <div className="rechazo-overlay" onClick={cerrarModalRechazo}>
-          <div className="rechazo-modal" onClick={e => e.stopPropagation()}>
-            <div className="rechazo-titulo">Rechazar pedido #{id}</div>
-            <div className="rechazo-subtitulo">
+        <Modal onCerrar={cerrarModalRechazo}>
+          <ModalHeader titulo={`Rechazar pedido #${id}`} onCerrar={cerrarModalRechazo} />
+          <ModalBody>
+            <p className="texto-mudo" style={{ margin: 0 }}>
               {pedido?.estado === 'pendiente'
                 ? 'Seleccioná el motivo del rechazo.'
                 : 'Ingresá el motivo del rechazo ocurrido durante la entrega.'}
-            </div>
+            </p>
 
             {pedido?.estado === 'pendiente' ? (
               <div className="rechazo-motivos">
@@ -286,8 +291,8 @@ function DetallePedido() {
                 ))}
               </div>
             ) : (
-              <textarea
-                className="rechazo-textarea"
+              <Campo
+                area
                 rows={4}
                 placeholder="Describí la situación ocurrida durante la entrega."
                 value={motivoRechazo}
@@ -296,25 +301,14 @@ function DetallePedido() {
             )}
 
             {errorRechazo && <div className="rechazo-error">{errorRechazo}</div>}
-
-            <div className="rechazo-acciones">
-              <button
-                className="pedidos-accion-btn pedidos-accion-btn--peligro rechazo-btn"
-                disabled={rechazando}
-                onClick={handleConfirmarRechazo}
-              >
-                {rechazando ? 'Confirmando...' : 'Confirmar rechazo'}
-              </button>
-              <button
-                className="pedidos-accion-btn rechazo-btn"
-                disabled={rechazando}
-                onClick={cerrarModalRechazo}
-              >
-                Cancelar
-              </button>
-            </div>
-          </div>
-        </div>
+          </ModalBody>
+          <ModalFooter>
+            <Boton variante="outline" disabled={rechazando} onClick={cerrarModalRechazo}>Cancelar</Boton>
+            <Boton variante="peligro" disabled={rechazando} onClick={handleConfirmarRechazo}>
+              {rechazando ? 'Confirmando...' : 'Confirmar rechazo'}
+            </Boton>
+          </ModalFooter>
+        </Modal>
       )}
     </PanelDistribuidor>
   )
