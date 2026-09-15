@@ -38,6 +38,7 @@ function Reparto() {
   const [eliminandoId, setEliminandoId] = useState(null)
   const [errorEliminar, setErrorEliminar] = useState('')
   const [mensajeEliminado, setMensajeEliminado] = useState(location.state?.mensaje || '')
+  const [planEliminar, setPlanEliminar] = useState(null)
 
   const [planCerrar, setPlanCerrar] = useState(null)
   const [motivoCerrar, setMotivoCerrar] = useState('')
@@ -65,16 +66,21 @@ function Reparto() {
 
     setErrorEliminar('')
     setMensajeEliminado('')
-    if (!window.confirm(`¿Eliminar el reparto #${plan.id}? Esta acción no se puede deshacer.`)) return
+    setPlanEliminar(plan)
+  }
 
-    setEliminandoId(plan.id)
-    api.delete(`/api/reparto/${plan.id}`)
+  const handleConfirmarEliminar = () => {
+    setEliminandoId(planEliminar.id)
+    api.delete(`/api/reparto/${planEliminar.id}`)
       .then(res => {
         setMensajeEliminado(res.data.mensaje)
         cargarPlanes()
       })
       .catch(err => setErrorEliminar(mensajeDeError(err)))
-      .finally(() => setEliminandoId(null))
+      .finally(() => {
+        setEliminandoId(null)
+        setPlanEliminar(null)
+      })
   }
 
   const handleCerrarEnBloque = async () => {
@@ -197,6 +203,23 @@ function Reparto() {
             <Boton variante="outline" onClick={() => setPlanCerrar(null)}>Cancelar</Boton>
             <Boton variante="peligro" disabled={cerrandoEnBloque} onClick={handleCerrarEnBloque}>
               {cerrandoEnBloque ? 'Cerrando…' : 'Confirmar cierre'}
+            </Boton>
+          </ModalFooter>
+        </Modal>
+      )}
+
+      {planEliminar && (
+        <Modal onCerrar={() => setPlanEliminar(null)}>
+          <ModalHeader titulo={`Eliminar reparto #${planEliminar.id}`} onCerrar={() => setPlanEliminar(null)} />
+          <ModalBody>
+            <p className="texto-mudo" style={{ margin: 0 }}>
+              ¿Eliminar el reparto #{planEliminar.id}? Esta acción no se puede deshacer.
+            </p>
+          </ModalBody>
+          <ModalFooter>
+            <Boton variante="outline" onClick={() => setPlanEliminar(null)}>Cancelar</Boton>
+            <Boton variante="peligro" disabled={eliminandoId === planEliminar.id} onClick={handleConfirmarEliminar}>
+              {eliminandoId === planEliminar.id ? 'Eliminando…' : 'Eliminar reparto'}
             </Boton>
           </ModalFooter>
         </Modal>

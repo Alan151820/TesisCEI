@@ -12,6 +12,7 @@ import TablaHeader from '../../components/ui/TablaHeader'
 import TablaFila from '../../components/ui/TablaFila'
 import Boton from '../../components/ui/Boton'
 import Campo from '../../components/ui/Campo'
+import Avatar from '../../components/ui/Avatar'
 import Modal from '../../components/ui/Modal'
 import ModalHeader from '../../components/ui/ModalHeader'
 import ModalBody from '../../components/ui/ModalBody'
@@ -98,6 +99,7 @@ function DetalleReparto() {
 
   const [marcandoId, setMarcandoId] = useState(null)
   const [errorMarcar, setErrorMarcar] = useState('')
+  const [paradaEntregar, setParadaEntregar] = useState(null)
   const [paradaMotivo, setParadaMotivo] = useState(null)
   const [motivoTexto, setMotivoTexto] = useState('')
   const [confirmandoMotivo, setConfirmandoMotivo] = useState(false)
@@ -191,18 +193,23 @@ function DetalleReparto() {
   const marcarParada = (paradaId, accion, motivo) =>
     api.post(`/api/reparto/${id}/paradas/${paradaId}/marcar`, { accion, motivo })
 
-  const handleMarcarEntregado = async (parada) => {
+  const handleMarcarEntregado = (parada) => {
     setMenuEstadoId(null)
-    if (!window.confirm('¿Marcar esta parada como Entregada? Esta acción no se puede deshacer.')) return
     setErrorMarcar('')
-    setMarcandoId(parada.id)
+    setParadaEntregar(parada)
+  }
+
+  const handleConfirmarEntregado = async () => {
+    setErrorMarcar('')
+    setMarcandoId(paradaEntregar.id)
     try {
-      await marcarParada(parada.id, 'entregado')
+      await marcarParada(paradaEntregar.id, 'entregado')
       cargarDetalle()
     } catch (err) {
       setErrorMarcar(mensajeDeError(err))
     } finally {
       setMarcandoId(null)
+      setParadaEntregar(null)
     }
   }
 
@@ -524,7 +531,7 @@ function DetalleReparto() {
                       {i > 0 && <hr className="reparto-carga-separador" />}
                       <div className="reparto-carga-parada">
                         <div className="reparto-carga-parada-header">
-                          <span className="reparto-carga-parada-orden">{i + 1}</span>
+                          <Avatar nombre={String(i + 1)} />
                           <div className="reparto-carga-parada-comprador">{p.nombreComprador}</div>
                         </div>
                         <div className="reparto-carga-productos">
@@ -611,6 +618,26 @@ function DetalleReparto() {
             <Boton variante="outline" onClick={() => setParadaMotivo(null)}>Cancelar</Boton>
             <Boton variante="peligro" disabled={confirmandoMotivo} onClick={handleConfirmarMotivo}>
               {confirmandoMotivo ? 'Confirmando…' : 'Confirmar'}
+            </Boton>
+          </ModalFooter>
+        </Modal>
+      )}
+
+      {paradaEntregar && (
+        <Modal onCerrar={() => setParadaEntregar(null)}>
+          <ModalHeader titulo="Marcar parada como Entregada" onCerrar={() => setParadaEntregar(null)} />
+          <ModalBody>
+            <p className="texto-mudo" style={{ margin: 0 }}>
+              ¿Marcar esta parada como Entregada? Esta acción no se puede deshacer.
+            </p>
+            {errorMarcar && (
+              <div className="panel-error-visibilidad">{errorMarcar}</div>
+            )}
+          </ModalBody>
+          <ModalFooter>
+            <Boton variante="outline" onClick={() => setParadaEntregar(null)}>Cancelar</Boton>
+            <Boton disabled={marcandoId === paradaEntregar.id} onClick={handleConfirmarEntregado}>
+              {marcandoId === paradaEntregar.id ? 'Confirmando…' : 'Confirmar'}
             </Boton>
           </ModalFooter>
         </Modal>

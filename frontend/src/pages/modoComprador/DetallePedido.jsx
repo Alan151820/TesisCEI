@@ -14,6 +14,10 @@ import Tabla from '../../components/ui/Tabla'
 import TablaHeader from '../../components/ui/TablaHeader'
 import TablaFila from '../../components/ui/TablaFila'
 import Miga from '../../components/ui/Miga'
+import Modal from '../../components/ui/Modal'
+import ModalHeader from '../../components/ui/ModalHeader'
+import ModalBody from '../../components/ui/ModalBody'
+import ModalFooter from '../../components/ui/ModalFooter'
 import './InicioComprador.css'
 import './DetallePedido.css'
 
@@ -37,6 +41,7 @@ function DetallePedido() {
 
   const [cancelando, setCancelando] = useState(false)
   const [errorCancelar, setErrorCancelar] = useState('')
+  const [modalCancelar, setModalCancelar] = useState(false)
 
   useEffect(() => {
     api.get(`/api/pedidos/${id}`)
@@ -46,13 +51,13 @@ function DetallePedido() {
   }, [id])
 
   const handleCancelar = async () => {
-    if (!window.confirm('¿Cancelar este pedido? Esta acción no se puede deshacer.')) return
     setErrorCancelar('')
     setCancelando(true)
     try {
       await api.patch(`/api/pedidos/${id}/cancelar`)
       const res = await api.get(`/api/pedidos/${id}`)
       setPedido(res.data)
+      setModalCancelar(false)
     } catch (err) {
       setErrorCancelar(mensajeDeError(err))
     } finally {
@@ -137,14 +142,9 @@ function DetallePedido() {
 
             {(pedido.estado === 'pendiente' || pedido.estado === 'aceptado') && (
               <>
-                <button
-                  type="button"
-                  className="pedidos-accion-btn pedidos-accion-btn--peligro"
-                  disabled={cancelando}
-                  onClick={handleCancelar}
-                >
-                  {cancelando ? 'Cancelando...' : 'Cancelar pedido'}
-                </button>
+                <Boton variante="peligro" onClick={() => setModalCancelar(true)}>
+                  Cancelar pedido
+                </Boton>
 
                 {errorCancelar && <div className="pedidos-error-accion">{errorCancelar}</div>}
               </>
@@ -153,6 +153,23 @@ function DetallePedido() {
         )}
 
       </main>
+
+      {modalCancelar && (
+        <Modal onCerrar={() => setModalCancelar(false)}>
+          <ModalHeader titulo="Cancelar pedido" onCerrar={() => setModalCancelar(false)} />
+          <ModalBody>
+            <p className="texto-mudo" style={{ margin: 0 }}>
+              ¿Cancelar este pedido? Esta acción no se puede deshacer.
+            </p>
+          </ModalBody>
+          <ModalFooter>
+            <Boton variante="outline" onClick={() => setModalCancelar(false)}>Volver</Boton>
+            <Boton variante="peligro" disabled={cancelando} onClick={handleCancelar}>
+              {cancelando ? 'Cancelando...' : 'Cancelar pedido'}
+            </Boton>
+          </ModalFooter>
+        </Modal>
+      )}
 
       <BottomNav />
 

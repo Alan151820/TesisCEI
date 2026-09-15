@@ -232,20 +232,6 @@
   margin-bottom: 12px;
 }
 
-.reparto-carga-parada-orden {
-  flex-shrink: 0;
-  width: 26px;
-  height: 26px;
-  border-radius: 50%;
-  background: var(--color-primario);
-  color: var(--color-sobre-primario);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 12px;
-  font-weight: 700;
-}
-
 .reparto-carga-parada-comprador {
   font-size: 15px;
   font-weight: 700;
