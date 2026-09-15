@@ -1,8 +1,9 @@
 import './Hdr.css'
 
-function Hdr({ logo, buscador = false, buscadorValor, onBuscadorChange, buscadorPlaceholder = 'Buscar productos…', children, className = '' }) {
+function Hdr({ menuBoton, logo, buscador = false, buscadorValor, onBuscadorChange, buscadorPlaceholder = 'Buscar productos…', children, className = '' }) {
   return (
     <div className={`hdr${className ? ` ${className}` : ''}`}>
+      {menuBoton}
       {logo}
       {buscador && (
         <div className="hdr-buscador">

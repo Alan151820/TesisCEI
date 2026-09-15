@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import CampanaNotificaciones from './CampanaNotificaciones'
 import ToggleTema from './ToggleTema'
@@ -22,12 +23,28 @@ function cerrarSesionDistribuidor(navigate) {
   navigate('/login')
 }
 
+// Misma lista de navegación para el sidebar de escritorio y el cajón
+// mobile: una sola fuente de verdad para los links y el estado "activo".
+function NavItems({ rutaActiva, onNavegar }) {
+  const navigate = useNavigate()
+  return NAV_ITEMS.map(item => (
+    <div
+      key={item.ruta}
+      className={`panel-nav-item${rutaActiva === item.ruta ? ' activo' : ''}`}
+      onClick={() => { navigate(item.ruta); onNavegar?.() }}
+    >
+      {item.label}
+    </div>
+  ))
+}
+
 function PanelDistribuidor({ activo, buscadorValor, onBuscadorChange, children }) {
   const navigate = useNavigate()
   const location = useLocation()
   const rutaActiva = activo ?? location.pathname
   const nombre = localStorage.getItem('nombre') || ''
 
+  const [menuAbierto, setMenuAbierto] = useState(false)
   const { abierto: menuPerfil, setAbierto: setMenuPerfil, ref: perfilRef } = useDesplegable()
 
   const handleCerrarSesion = () => cerrarSesionDistribuidor(navigate)
@@ -36,6 +53,16 @@ function PanelDistribuidor({ activo, buscadorValor, onBuscadorChange, children }
     <div className="panel-shell">
 
       <Hdr
+        menuBoton={
+          <Boton
+            variante="icono"
+            className="panel-menu-btn"
+            onClick={() => setMenuAbierto(true)}
+            aria-label="Abrir menú"
+          >
+            ☰
+          </Boton>
+        }
         logo={<span className="hdr-logo">MarketDist</span>}
         buscador
         buscadorValor={buscadorValor}
@@ -56,6 +83,20 @@ function PanelDistribuidor({ activo, buscadorValor, onBuscadorChange, children }
         </div>
       </Hdr>
 
+      {menuAbierto && (
+        <div className="panel-drawer-overlay" onClick={() => setMenuAbierto(false)}>
+          <nav className="panel-drawer" onClick={e => e.stopPropagation()}>
+            <div className="panel-sidebar-marca">
+              <div className="titulo1">MarketDist</div>
+              <Boton variante="icono" onClick={() => setMenuAbierto(false)} aria-label="Cerrar menú">✕</Boton>
+            </div>
+            <div className="panel-nav">
+              <NavItems rutaActiva={rutaActiva} onNavegar={() => setMenuAbierto(false)} />
+            </div>
+          </nav>
+        </div>
+      )}
+
       <div className="panel-layout">
 
         <aside className="panel-sidebar">
@@ -65,15 +106,7 @@ function PanelDistribuidor({ activo, buscadorValor, onBuscadorChange, children }
           </div>
 
           <nav className="panel-nav">
-            {NAV_ITEMS.map(item => (
-              <div
-                key={item.ruta}
-                className={`panel-nav-item${rutaActiva === item.ruta ? ' activo' : ''}`}
-                onClick={() => navigate(item.ruta)}
-              >
-                {item.label}
-              </div>
-            ))}
+            <NavItems rutaActiva={rutaActiva} />
           </nav>
         </aside>
 
