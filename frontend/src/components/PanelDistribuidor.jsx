@@ -37,7 +37,7 @@ function PanelDistribuidor({ tituloMobile, accionMobile, activo, children }) {
   const handleCerrarSesion = () => cerrarSesionDistribuidor(navigate)
 
   return (
-    <div className="panel-root">
+    <div className="panel-shell">
 
       {menuAbierto && (
         <div className="panel-drawer-overlay" onClick={() => setMenuAbierto(false)}>
@@ -128,7 +128,7 @@ function PanelDistribuidor({ tituloMobile, accionMobile, activo, children }) {
         </aside>
 
         <main className="panel-main">
-          <div className="panel-contenido">
+          <div className="panel-body">
             {children}
           </div>
         </main>

@@ -18,30 +18,8 @@
   padding: 24px 40px 40px;
 }
 
-.detalleproducto-volver {
-  background: none;
-  border: none;
-  color: var(--color-texto-suave);
-  font-size: 13px;
-  font-weight: 500;
-  font-family: inherit;
-  cursor: pointer;
-  padding: 0;
-  margin-bottom: 16px;
-}
-
-.detalleproducto-volver:hover {
-  color: var(--color-texto);
-}
-
 .detalleproducto-breadcrumb {
-  font-size: 12px;
-  color: var(--color-texto-suave);
   margin-bottom: 16px;
-}
-
-.detalleproducto-breadcrumb span {
-  color: var(--color-texto);
 }
 
 /* Tarjeta principal */

@@ -8,6 +8,8 @@ import PanelDistribuidor from '../../components/PanelDistribuidor'
 import Tabla from '../../components/ui/Tabla'
 import TablaHeader from '../../components/ui/TablaHeader'
 import TablaFila from '../../components/ui/TablaFila'
+import Miga from '../../components/ui/Miga'
+import Boton from '../../components/ui/Boton'
 import { ETIQUETA_ESTADO } from '../../lib/pedido'
 import './Inicio.css'
 import './MisPedidos.css'
@@ -117,13 +119,9 @@ function DetallePedido() {
     <PanelDistribuidor tituloMobile={`Pedido #${id}`} activo="/pedidos">
             <div className="panel-contenido-centrado">
 
-            <div className="detallepedido-migas">
-              <div className="detallepedido-migas-ruta">
-                <span className="detallepedido-miga-link" onClick={() => navigate('/pedidos')}>Pedidos activos</span>
-                <span className="detallepedido-miga-separador">›</span>
-                <span className="detallepedido-miga-actual">Pedido #{id}</span>
-              </div>
-              <button type="button" className="detallepedido-btn-volver" onClick={() => navigate('/pedidos')}>Volver</button>
+            <div className="fila" style={{ justifyContent: 'space-between', marginBottom: 20 }}>
+              <Miga items={[{ etiqueta: 'Pedidos activos', to: '/pedidos' }, { etiqueta: `Pedido #${id}` }]} />
+              <Boton variante="outline" onClick={() => navigate('/pedidos')}>Volver</Boton>
             </div>
 
             {cargando && <div className="detallepedido-vacio">Cargando pedido...</div>}

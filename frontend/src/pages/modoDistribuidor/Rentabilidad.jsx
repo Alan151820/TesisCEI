@@ -6,10 +6,15 @@ import PanelDistribuidor from '../../components/PanelDistribuidor'
 import Tabla from '../../components/ui/Tabla'
 import TablaHeader from '../../components/ui/TablaHeader'
 import TablaFila from '../../components/ui/TablaFila'
+import TabRow from '../../components/ui/TabRow'
 import './Reportes.css'
 
 const COLUMNAS = ['Producto', 'Cant. mín.', 'Precio venta', 'Precio costo', 'Diferencia $', 'Diferencia %']
 const GRID = '200px 100px 130px 130px 120px 120px'
+const SUBNAV_REPORTES = [
+  { valor: '/reportes', etiqueta: 'Rendimiento' },
+  { valor: '/reportes/rentabilidad', etiqueta: 'Rentabilidad' },
+]
 
 function formatearPesos(valor) {
   return `$${Number(valor).toLocaleString('es-AR')}`
@@ -33,10 +38,7 @@ function Rentabilidad() {
 
   return (
     <PanelDistribuidor tituloMobile="Reportes" activo="/reportes">
-      <div className="reportes-subnav">
-        <span className="reportes-subnav-item" onClick={() => navigate('/reportes')}>Rendimiento</span>
-        <span className="reportes-subnav-item activo" onClick={() => navigate('/reportes/rentabilidad')}>Rentabilidad</span>
-      </div>
+      <TabRow tabs={SUBNAV_REPORTES} activo="/reportes/rentabilidad" onCambiar={navigate} className="reportes-subnav" />
 
       <div className="panel-seccion-header panel-seccion-header--sub">
         <div>

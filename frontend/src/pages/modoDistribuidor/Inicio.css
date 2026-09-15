@@ -1,5 +1,5 @@
 /* Contenedor raíz del panel */
-.panel-root {
+.panel-shell {
   display: flex;
   flex-direction: column;
   height: 100vh;
@@ -242,7 +242,7 @@
 
 
 /* Contenido */
-.panel-contenido {
+.panel-body {
   flex: 1;
   width: 100%;
   max-width: 1280px;
@@ -694,7 +694,7 @@
    red de seguridad en el extremo angosto — nada se oculta ni se resume
    todavía, es exactamente lo mismo que ve un usuario de escritorio. */
 @media (max-width: 1024px) {
-  .panel-root .hdr { display: none; }
+  .panel-shell .hdr { display: none; }
   .panel-mobile-header {
     display: flex;
     height: 48px;
@@ -721,7 +721,7 @@
   }
 
   .panel-sidebar { display: none; }
-  .panel-contenido { padding: 0 0 20px; overflow-x: hidden; }
+  .panel-body { padding: 0 0 20px; overflow-x: hidden; }
   .panel-seccion-header { display: none; }
 
   /* Opt-in: páginas que conservan su línea de contexto (.panel-subtitulo)

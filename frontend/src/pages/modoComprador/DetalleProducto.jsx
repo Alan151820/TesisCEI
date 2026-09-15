@@ -11,6 +11,7 @@ import Boton from '../../components/ui/Boton'
 import Tabla from '../../components/ui/Tabla'
 import TablaHeader from '../../components/ui/TablaHeader'
 import TablaFila from '../../components/ui/TablaFila'
+import Miga from '../../components/ui/Miga'
 import { construirTituloProducto } from '../../lib/producto'
 import './InicioComprador.css'
 import './DetalleProducto.css'
@@ -88,11 +89,8 @@ function DetalleProducto() {
       </Hdr>
 
       <div className="detalleproducto-contenido">
-        <button className="detalleproducto-volver" onClick={() => navigate(-1)}>← Volver</button>
-
-        <div className="detalleproducto-breadcrumb">
-          Catálogo / {producto.categoria} / <span>{producto.nombre}</span>
-        </div>
+        <Boton variante="ghost" onClick={() => navigate(-1)} style={{ marginBottom: 8 }}>← Volver</Boton>
+        <Miga items={[{ etiqueta: 'Catálogo' }, { etiqueta: producto.categoria }, { etiqueta: producto.nombre }]} className="detalleproducto-breadcrumb" />
 
         <div className="detalleproducto-tarjeta">
           {producto.imagenUrl

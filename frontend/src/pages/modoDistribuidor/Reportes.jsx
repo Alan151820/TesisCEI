@@ -5,15 +5,22 @@ import api from '../../lib/axios'
 import PanelDistribuidor from '../../components/PanelDistribuidor'
 import TablaHeader from '../../components/ui/TablaHeader'
 import TablaFila from '../../components/ui/TablaFila'
+import Kpi from '../../components/ui/Kpi'
+import TabRow from '../../components/ui/TabRow'
 import './Reportes.css'
 
 const COLUMNAS_RANKING = ['Producto', 'Unidades']
 const GRID_RANKING = { '--tabla-cols': '1fr 100px' }
 
 const PERIODOS = [
-  { valor: 'dia', label: 'Día' },
-  { valor: 'semana', label: 'Semana' },
-  { valor: 'mes', label: 'Mes' },
+  { valor: 'dia', etiqueta: 'Día' },
+  { valor: 'semana', etiqueta: 'Semana' },
+  { valor: 'mes', etiqueta: 'Mes' },
+]
+
+const SUBNAV_REPORTES = [
+  { valor: '/reportes', etiqueta: 'Rendimiento' },
+  { valor: '/reportes/rentabilidad', etiqueta: 'Rentabilidad' },
 ]
 
 function formatearPesos(valor) {
@@ -43,10 +50,7 @@ function Reportes() {
 
   return (
     <PanelDistribuidor tituloMobile="Reportes" activo="/reportes">
-      <div className="reportes-subnav">
-        <span className="reportes-subnav-item activo" onClick={() => navigate('/reportes')}>Rendimiento</span>
-        <span className="reportes-subnav-item" onClick={() => navigate('/reportes/rentabilidad')}>Rentabilidad</span>
-      </div>
+      <TabRow tabs={SUBNAV_REPORTES} activo="/reportes" onCambiar={navigate} className="reportes-subnav" />
 
       <div className="reportes-encabezado">
         <div className="panel-seccion-header panel-seccion-header--sub">
@@ -55,17 +59,7 @@ function Reportes() {
             <p className="panel-subtitulo">Resumen del período seleccionado.</p>
           </div>
         </div>
-        <div className="reportes-periodo-tabs">
-          {PERIODOS.map(p => (
-            <div
-              key={p.valor}
-              className={`reportes-periodo-tab${periodo === p.valor ? ' activo' : ''}`}
-              onClick={() => setPeriodo(p.valor)}
-            >
-              {p.label}
-            </div>
-          ))}
-        </div>
+        <TabRow tabs={PERIODOS} activo={periodo} onCambiar={setPeriodo} className="reportes-periodo-tabs" />
       </div>
 
       {mensaje && <p className="reportes-vacio">{mensaje}</p>}
@@ -74,15 +68,9 @@ function Reportes() {
 
       {!cargando && !mensaje && reporte && (
         <>
-          <div className="reportes-kpis">
-            <div className="reportes-kpi-card">
-              <div className="reportes-kpi-label">Total facturado</div>
-              <div className="reportes-kpi-valor">{formatearPesos(reporte.totalFacturado)}</div>
-            </div>
-            <div className="reportes-kpi-card">
-              <div className="reportes-kpi-label">Pedidos entregados</div>
-              <div className="reportes-kpi-valor">{reporte.cantidadPedidosEntregados}</div>
-            </div>
+          <div className="kpi-row">
+            <Kpi etiqueta="Total facturado" valor={formatearPesos(reporte.totalFacturado)} />
+            <Kpi etiqueta="Pedidos entregados" valor={reporte.cantidadPedidosEntregados} />
           </div>
 
           {sinPedidos ? (
