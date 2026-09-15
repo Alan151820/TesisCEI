@@ -89,12 +89,17 @@ class Producto {
   }
 
   static async listarPorDistribuidor(usuarioId, filtros = {}) {
-    const { categoria, visibilidad, stock } = filtros
+    const { nombre, categoria, visibilidad, stock } = filtros
 
     let condiciones = ['d.usuario_id = $1', 'p.habilitado = true']
     let params = [usuarioId]
     let contador = 2
 
+    if (nombre) {
+      condiciones.push(`p.nombre ILIKE $${contador}`)
+      params.push(`%${nombre.replace(/[\\%_]/g, m => `\\${m}`)}%`)
+      contador++
+    }
     if (categoria) {
       condiciones.push(`c.nombre = $${contador}`)
       params.push(categoria)

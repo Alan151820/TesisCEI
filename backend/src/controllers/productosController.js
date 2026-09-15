@@ -61,6 +61,7 @@ async function crearProducto(req, res, next) {
 async function listarProductos(req, res, next) {
   try {
     const filtros = {
+      nombre: req.query.nombre || null,
       categoria: req.query.categoria || null,
       visibilidad: req.query.visibilidad || null,
       stock: req.query.stock || null

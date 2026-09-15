@@ -20,6 +20,7 @@ function Inicio() {
   const [cargando, setCargando] = useState(true)
   const [errorVisibilidad, setErrorVisibilidad] = useState({})
   const [categorias, setCategorias] = useState([])
+  const [busqueda, setBusqueda] = useState('')
   const [filtroCategoria, setFiltroCategoria] = useState('')
   const [filtroVisibilidad, setFiltroVisibilidad] = useState('')
   const [filtroStock, setFiltroStock] = useState('')
@@ -30,10 +31,11 @@ function Inicio() {
   const [errorDescuento, setErrorDescuento] = useState('')
   const [mensajeDescuento, setMensajeDescuento] = useState('')
 
-  const cargarProductos = async (categoria = '', visibilidad = '', stock = '') => {
+  const cargarProductos = async (nombre = '', categoria = '', visibilidad = '', stock = '') => {
     setCargando(true)
     try {
       const params = {}
+      if (nombre) params.nombre = nombre
       if (categoria) params.categoria = categoria
       if (visibilidad) params.visibilidad = visibilidad
       if (stock) params.stock = stock
@@ -53,22 +55,28 @@ function Inicio() {
       .catch(() => {})
   }, [])
 
+  const handleBuscar = (valor) => {
+    setBusqueda(valor)
+    cargarProductos(valor, filtroCategoria, filtroVisibilidad, filtroStock)
+  }
+
   const filtrarPorCategoria = (e) => {
     setFiltroCategoria(e.target.value)
-    cargarProductos(e.target.value, filtroVisibilidad, filtroStock)
+    cargarProductos(busqueda, e.target.value, filtroVisibilidad, filtroStock)
   }
 
   const filtrarPorVisibilidad = (e) => {
     setFiltroVisibilidad(e.target.value)
-    cargarProductos(filtroCategoria, e.target.value, filtroStock)
+    cargarProductos(busqueda, filtroCategoria, e.target.value, filtroStock)
   }
 
   const filtrarPorStock = (e) => {
     setFiltroStock(e.target.value)
-    cargarProductos(filtroCategoria, filtroVisibilidad, e.target.value)
+    cargarProductos(busqueda, filtroCategoria, filtroVisibilidad, e.target.value)
   }
 
   const limpiarFiltros = () => {
+    setBusqueda('')
     setFiltroCategoria('')
     setFiltroVisibilidad('')
     setFiltroStock('')
@@ -123,7 +131,7 @@ function Inicio() {
       })
       setMensajeDescuento(res.data.mensaje)
       setDescuentoPct('')
-      await cargarProductos(filtroCategoria, filtroVisibilidad, filtroStock)
+      await cargarProductos(busqueda, filtroCategoria, filtroVisibilidad, filtroStock)
     } catch (err) {
       setErrorDescuento(mensajeDeError(err))
     } finally {
@@ -139,6 +147,8 @@ function Inicio() {
     <PanelDistribuidor
       tituloMobile="Mis productos"
       accionMobile={<button className="panel-mobile-nuevo" onClick={() => navigate('/producto/nuevo')}>+</button>}
+      buscadorValor={busqueda}
+      onBuscadorChange={handleBuscar}
     >
           <div className="panel-seccion-header panel-seccion-header--sub">
             <div>
@@ -193,7 +203,7 @@ function Inicio() {
                   onChange={e => setDescuentoPct(e.target.value)}
                 />
                 <span className="panel-descuento-ayuda">
-                  % sobre {productos.length} producto{productos.length !== 1 ? 's' : ''} {filtroCategoria || filtroVisibilidad || filtroStock ? 'filtrado' + (productos.length !== 1 ? 's' : '') : 'del catálogo'}
+                  % sobre {productos.length} producto{productos.length !== 1 ? 's' : ''} {busqueda || filtroCategoria || filtroVisibilidad || filtroStock ? 'filtrado' + (productos.length !== 1 ? 's' : '') : 'del catálogo'}
                 </span>
                 <button className="panel-btn-nuevo" onClick={handleAplicarDescuento} disabled={aplicandoDescuento}>
                   {aplicandoDescuento ? 'Aplicando…' : 'Aplicar'}
@@ -236,7 +246,7 @@ function Inicio() {
 
             {!cargando && productos.length === 0 && (
               <EstadoLista>
-                {filtroCategoria || filtroVisibilidad || filtroStock
+                {busqueda || filtroCategoria || filtroVisibilidad || filtroStock
                   ? 'No hay productos que coincidan con los filtros aplicados.'
                   : <>Aún no tenés productos. Creá el primero con el botón{' '}
                     <span className="panel-tabla-vacio-link" onClick={() => navigate('/producto/nuevo')}>

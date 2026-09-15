@@ -23,7 +23,7 @@ function cerrarSesionDistribuidor(navigate) {
   navigate('/login')
 }
 
-function PanelDistribuidor({ tituloMobile, accionMobile, activo, children }) {
+function PanelDistribuidor({ tituloMobile, accionMobile, activo, buscadorValor, onBuscadorChange, children }) {
   const navigate = useNavigate()
   const location = useLocation()
   const rutaActiva = activo ?? location.pathname
@@ -73,7 +73,12 @@ function PanelDistribuidor({ tituloMobile, accionMobile, activo, children }) {
         {accionMobile || <div style={{ width: 40 }} />}
       </div>
 
-      <Hdr logo={<span className="hdr-logo">MarketDist</span>} buscador>
+      <Hdr
+        logo={<span className="hdr-logo">MarketDist</span>}
+        buscador
+        buscadorValor={buscadorValor}
+        onBuscadorChange={onBuscadorChange}
+      >
         <Boton variante="fill" onClick={() => navigate('/inicioComprador')}>
           Salir de distribuidora
         </Boton>
