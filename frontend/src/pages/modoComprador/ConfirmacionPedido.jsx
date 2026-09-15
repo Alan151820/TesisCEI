@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import api from '../../lib/axios'
 import { rutaInicio } from '../../lib/auth'
 import { useCarrito } from '../../context/CarritoContext'
+import { precioAplicable } from '../../lib/precios'
 import ModalMapaDireccion from '../../components/ModalMapaDireccion'
 import Hdr from '../../components/Hdr'
 import Boton from '../../components/ui/Boton'
@@ -102,7 +103,7 @@ function ConfirmacionPedido() {
     return acc
   }, {})
 
-  const totalEstimado = items.reduce((acc, i) => acc + Number(i.precioMinimo) * i.cantidad, 0)
+  const totalEstimado = items.reduce((acc, i) => acc + (precioAplicable(i.tarifas, i.cantidad) || 0) * i.cantidad, 0)
 
   const camposManualCompletos = departamento && ciudad.trim() && calle.trim() && numero.trim()
 
@@ -245,14 +246,14 @@ function ConfirmacionPedido() {
             <Tarjeta className="col gap-s">
               <div className="titulo1">Resumen del pedido</div>
               {Object.entries(porDistribuidor).map(([distId, grupo]) => {
-                const subtotal = grupo.items.reduce((acc, i) => acc + Number(i.precioMinimo) * i.cantidad, 0)
+                const subtotal = grupo.items.reduce((acc, i) => acc + (precioAplicable(i.tarifas, i.cantidad) || 0) * i.cantidad, 0)
                 return (
                   <div key={distId} className="confirmar-resumen-grupo">
                     <div className="texto-mudo">{grupo.nombreDistribuidor}</div>
                     {grupo.items.map(item => (
                       <div key={item.id} className="fila confirmar-resumen-fila" style={{ justifyContent: 'space-between' }}>
                         <span className="texto">{item.nombre} × {item.cantidad}</span>
-                        <span className="texto">${(Number(item.precioMinimo) * item.cantidad).toLocaleString('es-AR')}</span>
+                        <span className="texto">${((precioAplicable(item.tarifas, item.cantidad) || 0) * item.cantidad).toLocaleString('es-AR')}</span>
                       </div>
                     ))}
                     <div className="fila confirmar-resumen-subtotal" style={{ justifyContent: 'space-between' }}>

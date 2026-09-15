@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom'
 import { useCarrito } from '../../context/CarritoContext'
 import { rutaInicio } from '../../lib/auth'
+import { precioAplicable } from '../../lib/precios'
 import CampanaNotificaciones from '../../components/CampanaNotificaciones'
 import BottomNav from '../../components/BottomNav'
 import MenuPerfilComprador from '../../components/MenuPerfilComprador'
@@ -24,7 +25,7 @@ function Carrito() {
     return acc
   }, {})
 
-  const subtotalTotal = items.reduce((acc, i) => acc + Number(i.precioMinimo) * i.cantidad, 0)
+  const subtotalTotal = items.reduce((acc, i) => acc + (precioAplicable(i.tarifas, i.cantidad) || 0) * i.cantidad, 0)
 
   return (
     <div className="carrito-pagina">
@@ -70,7 +71,7 @@ function Carrito() {
                       }
                       <div className="col flex1">
                         <span className="texto">{item.nombre}</span>
-                        <span className="texto-mudo">Precio est. ${Number(item.precioMinimo).toLocaleString('es-AR')} c/u</span>
+                        <span className="texto-mudo">Precio est. ${(precioAplicable(item.tarifas, item.cantidad) || 0).toLocaleString('es-AR')} c/u</span>
                       </div>
                       <div className="fila gap-s">
                         <Boton

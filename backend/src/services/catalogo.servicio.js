@@ -62,7 +62,25 @@ async function listarCatalogo(nombre = '', categoria = '', distribuidor = '', pr
      ORDER BY p.fecha_creacion DESC`,
     params
   )
-  return resultado.rows
+  const productos = resultado.rows
+  if (productos.length === 0) return productos
+
+  const resultTarifas = await pool.query(
+    `SELECT producto_id AS "productoId", cantidad_minima AS "cantidadMinima", precio_venta AS "precioVenta"
+     FROM precio_volumen
+     WHERE producto_id = ANY($1)
+     ORDER BY cantidad_minima ASC`,
+    [productos.map(p => p.id)]
+  )
+  const tarifasPorProducto = {}
+  for (const t of resultTarifas.rows) {
+    if (!tarifasPorProducto[t.productoId]) tarifasPorProducto[t.productoId] = []
+    tarifasPorProducto[t.productoId].push({ cantidadMinima: t.cantidadMinima, precioVenta: t.precioVenta })
+  }
+  for (const p of productos) {
+    p.tarifas = tarifasPorProducto[p.id] || []
+  }
+  return productos
 }
 
 async function obtenerDetalle(id) {

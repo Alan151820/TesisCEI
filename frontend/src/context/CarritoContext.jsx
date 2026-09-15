@@ -59,7 +59,7 @@ export function CarritoProvider({ children }) {
         imagenUrl: producto.imagenUrl,
         distribuidorId: producto.distribuidorId,
         nombreDistribuidor: producto.nombreDistribuidor,
-        precioMinimo: producto.precioMinimo,
+        tarifas: producto.tarifas || [],
         cantidad,
       }]
     })

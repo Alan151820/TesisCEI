@@ -3,6 +3,7 @@ import { mensajeDeError } from '../../lib/errores'
 import { useParams, useNavigate } from 'react-router-dom'
 import api from '../../lib/axios'
 import { useCarrito } from '../../context/CarritoContext'
+import { precioAplicable } from '../../lib/precios'
 import CampanaNotificaciones from '../../components/CampanaNotificaciones'
 import BottomNav from '../../components/BottomNav'
 import MenuPerfilComprador from '../../components/MenuPerfilComprador'
@@ -174,12 +175,12 @@ function DetalleProducto() {
                     <span className="texto-mudo">unidades</span>
                   </div>
                   <div className="detalleproducto-carrito-cantidad-info">
-                    ${Number(producto.tarifas[0].precioVenta).toLocaleString('es-AR')} c/u
+                    ${precioAplicable(producto.tarifas, cantidad).toLocaleString('es-AR')} c/u
                   </div>
                 </>
               )}
               {token ? (
-                <Boton onClick={() => agregarProducto({ ...producto, precioMinimo }, Number(cantidad) || 1)}>
+                <Boton onClick={() => agregarProducto(producto, Number(cantidad) || 1)}>
                   Agregar al carrito
                 </Boton>
               ) : (
