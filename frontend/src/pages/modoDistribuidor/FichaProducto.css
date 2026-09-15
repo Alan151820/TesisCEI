@@ -51,10 +51,6 @@
 }
 
 .ficha-card {
-  background: var(--color-fondo);
-  border: 1px solid var(--color-borde);
-  border-radius: var(--radio-tarjeta);
-  padding: 24px;
   margin-bottom: 16px;
 }
 
@@ -209,7 +205,9 @@
   gap: 8px;
 }
 
-.ficha-nombre-fila .ficha-input {
+/* :first-child (no clase extra) para no pisar el ancho fijo de
+   .ficha-input-cantidad, el otro hijo de esta fila. */
+.ficha-nombre-fila > .campo:first-child {
   flex: 1;
 }
 
@@ -222,20 +220,6 @@
   color: var(--color-error);
 }
 
-.ficha-input,
-.ficha-select {
-  width: 100%;
-  height: var(--alto-control);
-  border: 1px solid var(--color-borde);
-  border-radius: var(--radio-control);
-  background: var(--color-fondo);
-  padding: 0 12px;
-  font-size: var(--fuente-control);
-  color: var(--color-texto);
-  box-sizing: border-box;
-  font-family: inherit;
-}
-
 .ficha-input-angosto {
   max-width: 160px;
 }
@@ -244,20 +228,6 @@
   background: var(--color-superficie);
   color: var(--color-texto-suave);
   cursor: default;
-}
-
-.ficha-textarea {
-  width: 100%;
-  height: 60px;
-  border: 1px solid var(--color-borde);
-  border-radius: var(--radio-control);
-  background: var(--color-fondo);
-  padding: 8px 12px;
-  font-size: var(--fuente-control);
-  color: var(--color-texto);
-  resize: vertical;
-  box-sizing: border-box;
-  font-family: inherit;
 }
 
 .ficha-radio-grupo {
@@ -319,43 +289,6 @@
   line-height: 1.4;
 }
 
-.ficha-btn-guardar {
-  width: 100%;
-  height: var(--alto-control);
-  background: var(--color-primario);
-  color: var(--color-sobre-primario);
-  border: none;
-  border-radius: var(--radio-control);
-  font-size: var(--fuente-control);
-  font-weight: 500;
-  font-family: inherit;
-  cursor: pointer;
-  margin-bottom: 8px;
-}
-
-.ficha-btn-guardar:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-.ficha-btn-cancelar {
-  width: 100%;
-  height: var(--alto-control);
-  background: var(--color-fondo);
-  color: var(--color-texto);
-  border: 1px solid var(--color-borde);
-  border-radius: var(--radio-control);
-  font-size: var(--fuente-control);
-  font-weight: 500;
-  font-family: inherit;
-  cursor: pointer;
-}
-
-.ficha-btn-cancelar:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
 /* Sección precios por volumen */
 .ficha-precios-header {
   display: flex;
@@ -366,17 +299,6 @@
 
 .ficha-precios-header .ficha-card-titulo {
   margin-bottom: 0;
-}
-
-.ficha-btn-agregar-precio {
-  background: none;
-  border: 1px solid var(--color-primario);
-  color: var(--color-primario);
-  border-radius: var(--radio-control);
-  padding: 6px 14px;
-  font-size: var(--fuente-control);
-  font-family: inherit;
-  cursor: pointer;
 }
 
 .ficha-precios-tabla {
@@ -439,12 +361,6 @@
   display: flex;
   gap: 8px;
   margin-top: 12px;
-}
-
-.ficha-form-precio-acciones .ficha-btn-guardar,
-.ficha-form-precio-acciones .ficha-btn-cancelar {
-  width: auto;
-  padding: 0 20px;
 }
 
 .ficha-precios-nota {
@@ -532,12 +448,6 @@
 
   .ficha-fila-dos,
   .ficha-fila-tres { flex-direction: column; }
-
-  /* Touch targets mínimos 44px */
-  .ficha-input,
-  .ficha-select { height: var(--alto-control); }
-  .ficha-btn-guardar,
-  .ficha-btn-cancelar { height: var(--alto-control); }
 }
 
 .ficha-preview-bloque { display: flex; flex-direction: column; gap: 8px; }
@@ -569,8 +479,8 @@
 
 /* --- Modelo "todo por unidad": marca, peso/longitud, tramos, descuento total --- */
 .ficha-magnitud { display: flex; gap: 8px; }
-.ficha-magnitud .ficha-input { flex: 1; min-width: 0; }
-.ficha-magnitud .ficha-select { width: 84px; flex: 0 0 auto; }
+.ficha-magnitud-valor { flex: 1; min-width: 0; }
+.ficha-magnitud-unidad { width: 84px; flex: 0 0 auto; }
 .ficha-ayuda-inline { font-size: 12px; font-weight: 400; color: var(--color-texto-suave); margin-left: 6px; }
 .ficha-cant-mas { color: var(--color-primario); font-weight: 700; margin-right: 1px; }
 .ficha-tramo-desc { color: var(--color-primario); font-weight: 700; font-size: 12px; margin-left: 8px; }

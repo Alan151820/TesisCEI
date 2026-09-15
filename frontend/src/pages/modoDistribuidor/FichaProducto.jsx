@@ -4,6 +4,9 @@ import { useNavigate } from 'react-router-dom'
 import api from '../../lib/axios'
 import TarjetaProductoPreview from '../../components/TarjetaProductoPreview'
 import FormularioTramoPrecio from '../../components/FormularioTramoPrecio'
+import Tarjeta from '../../components/ui/Tarjeta'
+import Campo from '../../components/ui/Campo'
+import Boton from '../../components/ui/Boton'
 import { convertirAWebP } from '../../lib/imagenProducto'
 import { totalDesdeDescuento, descuentoDesdeTotal, precioUnitario } from '../../lib/tramoPrecio'
 import './FichaProducto.css'
@@ -193,7 +196,7 @@ function FichaProducto() {
         <div className="ficha-layout">
           <div className="ficha-columna-principal">
 
-            <div className="ficha-card">
+            <Tarjeta className="ficha-card">
               <div className="ficha-card-titulo">Datos del producto</div>
 
               <div className="ficha-info-box">
@@ -243,17 +246,16 @@ function FichaProducto() {
                       </div>
                     </div>
                     <div className="ficha-nombre-fila">
-                      <input
+                      <Campo
                         type="text"
-                        className="ficha-input"
                         value={nombre}
                         onChange={e => setNombre(e.target.value)}
                         placeholder="Ej: Gaseosa"
                       />
                       {incluyeCantidad && (
-                        <input
+                        <Campo
                           type="number"
-                          className="ficha-input ficha-input-cantidad"
+                          className="ficha-input-cantidad"
                           min="1"
                           step="1"
                           placeholder="Ej: 6"
@@ -267,9 +269,8 @@ function FichaProducto() {
 
                   <div className="ficha-campo">
                     <label className="ficha-label">Marca <span className="ficha-requerido">*</span></label>
-                    <input
+                    <Campo
                       type="text"
-                      className="ficha-input"
                       value={marca}
                       onChange={e => setMarca(e.target.value)}
                       placeholder="Ej: Coca Cola"
@@ -282,16 +283,16 @@ function FichaProducto() {
                 <div className="ficha-campo">
                   <label className="ficha-label">Contenido / Longitud <span className="ficha-ayuda-inline">opcional</span></label>
                   <div className="ficha-magnitud">
-                    <input
+                    <Campo
                       type="number"
-                      className="ficha-input"
+                      className="ficha-magnitud-valor"
                       min="0"
                       step="0.01"
                       placeholder="Ej: 1.5"
                       value={magnitudValor}
                       onChange={e => setMagnitudValor(e.target.value)}
                     />
-                    <select className="ficha-select" value={magnitudUnidad} onChange={e => setMagnitudUnidad(e.target.value)}>
+                    <Campo as="select" className="ficha-magnitud-unidad" value={magnitudUnidad} onChange={e => setMagnitudUnidad(e.target.value)}>
                       <option value="">—</option>
                       <option value="kg">kg</option>
                       <option value="g">g</option>
@@ -299,32 +300,31 @@ function FichaProducto() {
                       <option value="l">L</option>
                       <option value="cm">cm</option>
                       <option value="m">m</option>
-                    </select>
+                    </Campo>
                   </div>
                   <span className="ficha-ayuda">Solo arma el título. No afecta precio ni stock.</span>
                 </div>
 
                 <div className="ficha-campo">
                   <label className="ficha-label">Categoría <span className="ficha-requerido">*</span></label>
-                  <select className="ficha-select" value={categoriaId} onChange={e => setCategoriaId(e.target.value)}>
+                  <Campo as="select" value={categoriaId} onChange={e => setCategoriaId(e.target.value)}>
                     <option value="">Seleccioná una categoría</option>
                     {categorias.map(cat => (
                       <option key={cat.id} value={cat.id}>{cat.nombre}</option>
                     ))}
-                  </select>
+                  </Campo>
                 </div>
               </div>
 
               <div className="ficha-campo">
                 <label className="ficha-label">Descripción</label>
-                <textarea className="ficha-textarea" value={descripcion} onChange={e => setDescripcion(e.target.value)} placeholder="Descripción del producto" />
+                <Campo area value={descripcion} onChange={e => setDescripcion(e.target.value)} placeholder="Descripción del producto" />
               </div>
 
               <div className="ficha-campo">
                 <label className="ficha-label">Precio <span className="ficha-requerido">*</span></label>
-                <input
+                <Campo
                   type="number"
-                  className="ficha-input"
                   min="0.01"
                   step="0.01"
                   placeholder="Ej: 9000"
@@ -336,24 +336,24 @@ function FichaProducto() {
               <div className="ficha-fila-dos">
                 <div className="ficha-campo">
                   <label className="ficha-label">Stock inicial <span className="ficha-requerido">*</span></label>
-                  <input type="number" className="ficha-input ficha-input-angosto" min="0" value={stockInicial} onChange={e => setStockInicial(e.target.value)} placeholder="0" />
+                  <Campo type="number" className="ficha-input-angosto" min="0" value={stockInicial} onChange={e => setStockInicial(e.target.value)} placeholder="0" />
                   <span className="ficha-ayuda">Cantidad de este producto que tenés disponible para vender.</span>
                 </div>
                 <div className="ficha-campo">
                   <label className="ficha-label">Precio de costo <span className="ficha-ayuda-inline">opcional</span></label>
-                  <input type="number" className="ficha-input ficha-input-angosto" min="0" step="0.01" placeholder="Opcional" value={precioCosto} onChange={e => setPrecioCosto(e.target.value)} />
+                  <Campo type="number" className="ficha-input-angosto" min="0" step="0.01" placeholder="Opcional" value={precioCosto} onChange={e => setPrecioCosto(e.target.value)} />
                   <span className="ficha-ayuda">Lo que te cuesta a vos este producto.</span>
                 </div>
               </div>
-            </div>
+            </Tarjeta>
 
-            <div className="ficha-card">
+            <Tarjeta className="ficha-card">
               <div className="ficha-precios-header">
                 <div className="ficha-card-titulo">Precios por volumen</div>
                 {!mostrarFormPrecio && (
-                  <button className="ficha-btn-agregar-precio" onClick={() => setMostrarFormPrecio(true)}>
+                  <Boton variante="outline" onClick={() => setMostrarFormPrecio(true)}>
                     + Agregar tramo
-                  </button>
+                  </Boton>
                 )}
               </div>
 
@@ -410,14 +410,14 @@ function FichaProducto() {
               <div className="ficha-precios-nota">
                 La cantidad de cada tramo se cuenta en la misma unidad que cargaste como producto: si cargaste un pack, la cantidad se mide en packs; si cargaste una unidad individual, se mide en unidades individuales.
               </div>
-            </div>
+            </Tarjeta>
 
-            <div className="ficha-card">
+            <Tarjeta className="ficha-card">
               <div className="ficha-card-titulo">Descuento total</div>
               <div className="ficha-descuento-fila">
-                <input
+                <Campo
                   type="number"
-                  className="ficha-input ficha-input-angosto"
+                  className="ficha-input-angosto"
                   min="0"
                   max="99"
                   placeholder="0"
@@ -425,32 +425,32 @@ function FichaProducto() {
                   onChange={e => setDescuentoTotal(e.target.value)}
                 />
                 <span className="ficha-ayuda-inline">% sobre todos los precios</span>
-                <button className="ficha-btn-guardar" onClick={handleAplicarDescuento}>
+                <Boton onClick={handleAplicarDescuento}>
                   Aplicar
-                </button>
+                </Boton>
               </div>
               {errorDescuento && <div className="ficha-error">{errorDescuento}</div>}
               <span className="ficha-ayuda">Al aplicar, baja ese porcentaje en el precio base y en todos los tramos cargados hasta ahora. Se guarda todo junto al guardar el producto.</span>
-            </div>
+            </Tarjeta>
 
             {errorProducto && <div className="ficha-error">{errorProducto}</div>}
 
           </div>
 
           <div className="ficha-sidebar">
-            <div className="ficha-card ficha-card-estado">
+            <Tarjeta className="ficha-card ficha-card-estado">
               <div className="ficha-sidebar-titulo">Estado</div>
               <div className="ficha-estado-texto">Pausado</div>
               <span className="ficha-estado-nota">El producto se crea pausado. Publicalo una vez que tenga precios.</span>
-            </div>
-            <div className="ficha-card">
-              <button className="ficha-btn-guardar" onClick={handleGuardarProducto} disabled={cargandoProducto}>
+            </Tarjeta>
+            <Tarjeta className="ficha-card col gap-s">
+              <Boton onClick={handleGuardarProducto} disabled={cargandoProducto}>
                 {cargandoProducto ? 'Guardando…' : 'Guardar producto'}
-              </button>
-              <button className="ficha-btn-cancelar" onClick={() => navigate('/inicio')} disabled={cargandoProducto}>
-               Cancelar
-              </button>
-            </div>
+              </Boton>
+              <Boton variante="outline" onClick={() => navigate('/inicio')} disabled={cargandoProducto}>
+                Cancelar
+              </Boton>
+            </Tarjeta>
 
             <div className="ficha-preview-bloque">
               <div className="ficha-sidebar-titulo">Así se va a ver en el catálogo</div>

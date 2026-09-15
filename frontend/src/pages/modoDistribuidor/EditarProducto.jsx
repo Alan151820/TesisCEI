@@ -4,6 +4,9 @@ import { useNavigate, useParams } from 'react-router-dom'
 import api from '../../lib/axios'
 import TarjetaProductoPreview from '../../components/TarjetaProductoPreview'
 import FormularioTramoPrecio from '../../components/FormularioTramoPrecio'
+import Tarjeta from '../../components/ui/Tarjeta'
+import Campo from '../../components/ui/Campo'
+import Boton from '../../components/ui/Boton'
 import { convertirAWebP } from '../../lib/imagenProducto'
 import { totalDesdeDescuento, descuentoDesdeTotal, precioUnitario } from '../../lib/tramoPrecio'
 import './FichaProducto.css'
@@ -270,16 +273,16 @@ function EditarProducto() {
         </div>
 
         {guardado && (
-          <div className="ficha-card ficha-card-ok" style={{ marginBottom: '1rem' }}>
+          <Tarjeta className="ficha-card ficha-card-ok" style={{ marginBottom: '1rem' }}>
             <span className="ficha-ok-icono">✓</span>
             <span className="ficha-ok-texto">Producto actualizado correctamente.</span>
-          </div>
+          </Tarjeta>
         )}
 
         <div className="ficha-layout">
           <div className="ficha-columna-principal">
 
-            <div className="ficha-card">
+            <Tarjeta className="ficha-card">
               <div className="ficha-card-titulo">Datos del producto</div>
 
               <div className="ficha-fila-top">
@@ -316,17 +319,16 @@ function EditarProducto() {
                       </div>
                     </div>
                     <div className="ficha-nombre-fila">
-                      <input
+                      <Campo
                         type="text"
-                        className="ficha-input"
                         value={nombre}
                         onChange={e => setNombre(e.target.value)}
                         placeholder="Ej: Gaseosa"
                       />
                       {incluyeCantidad && (
-                        <input
+                        <Campo
                           type="number"
-                          className="ficha-input ficha-input-cantidad"
+                          className="ficha-input-cantidad"
                           min="1"
                           step="1"
                           placeholder="Ej: 6"
@@ -340,7 +342,7 @@ function EditarProducto() {
 
                   <div className="ficha-campo">
                     <label className="ficha-label">Marca <span className="ficha-requerido">*</span></label>
-                    <input type="text" className="ficha-input" value={marca} onChange={e => setMarca(e.target.value)} placeholder="Ej: Coca Cola" />
+                    <Campo type="text" value={marca} onChange={e => setMarca(e.target.value)} placeholder="Ej: Coca Cola" />
                   </div>
                 </div>
               </div>
@@ -349,8 +351,8 @@ function EditarProducto() {
                 <div className="ficha-campo">
                   <label className="ficha-label">Contenido / Longitud <span className="ficha-ayuda-inline">opcional</span></label>
                   <div className="ficha-magnitud">
-                    <input type="number" className="ficha-input" min="0" step="0.01" placeholder="Ej: 1.5" value={magnitudValor} onChange={e => setMagnitudValor(e.target.value)} />
-                    <select className="ficha-select" value={magnitudUnidad} onChange={e => setMagnitudUnidad(e.target.value)}>
+                    <Campo type="number" className="ficha-magnitud-valor" min="0" step="0.01" placeholder="Ej: 1.5" value={magnitudValor} onChange={e => setMagnitudValor(e.target.value)} />
+                    <Campo as="select" className="ficha-magnitud-unidad" value={magnitudUnidad} onChange={e => setMagnitudUnidad(e.target.value)}>
                       <option value="">—</option>
                       <option value="kg">kg</option>
                       <option value="g">g</option>
@@ -358,50 +360,50 @@ function EditarProducto() {
                       <option value="l">L</option>
                       <option value="cm">cm</option>
                       <option value="m">m</option>
-                    </select>
+                    </Campo>
                   </div>
                   <span className="ficha-ayuda">Solo arma el título. No afecta precio ni stock.</span>
                 </div>
 
                 <div className="ficha-campo">
                   <label className="ficha-label">Categoría <span className="ficha-requerido">*</span></label>
-                  <select className="ficha-select" value={categoriaId} onChange={e => setCategoriaId(e.target.value)}>
+                  <Campo as="select" value={categoriaId} onChange={e => setCategoriaId(e.target.value)}>
                     <option value="">Seleccioná una categoría</option>
                     {categorias.map(cat => (
                       <option key={cat.id} value={cat.id}>{cat.nombre}</option>
                     ))}
-                  </select>
+                  </Campo>
                 </div>
               </div>
 
               <div className="ficha-campo">
                 <label className="ficha-label">Descripción</label>
-                <textarea className="ficha-textarea" value={descripcion} onChange={e => setDescripcion(e.target.value)} placeholder="Descripción del producto" />
+                <Campo area value={descripcion} onChange={e => setDescripcion(e.target.value)} placeholder="Descripción del producto" />
               </div>
 
               <div className="ficha-fila-dos">
                 <div className="ficha-campo">
                   <label className="ficha-label">Stock total <span className="ficha-requerido">*</span></label>
-                  <input type="number" className="ficha-input ficha-input-angosto" min="0" value={stockTotal} onChange={e => setStockTotal(e.target.value)} placeholder="0" />
+                  <Campo type="number" className="ficha-input-angosto" min="0" value={stockTotal} onChange={e => setStockTotal(e.target.value)} placeholder="0" />
                   <span className="ficha-ayuda">No puede reducirse por debajo del stock reservado.</span>
                 </div>
                 <div className="ficha-campo">
                   <label className="ficha-label">Precio de costo <span className="ficha-ayuda-inline">opcional</span></label>
-                  <input type="number" className="ficha-input ficha-input-angosto" min="0" step="0.01" placeholder="Opcional" value={precioCosto} onChange={e => setPrecioCosto(e.target.value)} />
+                  <Campo type="number" className="ficha-input-angosto" min="0" step="0.01" placeholder="Opcional" value={precioCosto} onChange={e => setPrecioCosto(e.target.value)} />
                   <span className="ficha-ayuda">Lo que te cuesta a vos este producto.</span>
                 </div>
               </div>
 
               {errorProducto && <div className="ficha-error">{errorProducto}</div>}
-            </div>
+            </Tarjeta>
 
-            <div className="ficha-card">
+            <Tarjeta className="ficha-card">
               <div className="ficha-card-titulo">Alerta de stock bajo</div>
               <div className="ficha-campo">
                 <label className="ficha-label">Umbral mínimo de stock</label>
-                <input
+                <Campo
                   type="number"
-                  className="ficha-input ficha-input-angosto"
+                  className="ficha-input-angosto"
                   min="0"
                   value={umbralMinimoStock}
                   onChange={e => setUmbralMinimoStock(e.target.value)}
@@ -413,20 +415,20 @@ function EditarProducto() {
               </div>
               {errorUmbral && <div className="ficha-error">{errorUmbral}</div>}
               {umbralGuardado && <div className="ficha-ok-texto" style={{ fontSize: '13px', marginTop: '8px' }}>Umbral configurado correctamente.</div>}
-              <div style={{ marginTop: '12px' }}>
-                <button className="ficha-btn-guardar" onClick={handleGuardarUmbral} disabled={cargandoUmbral}>
+              <div style={{ marginTop: '12px' }} className="col">
+                <Boton onClick={handleGuardarUmbral} disabled={cargandoUmbral}>
                   {cargandoUmbral ? 'Guardando…' : 'Guardar umbral'}
-                </button>
+                </Boton>
               </div>
-            </div>
+            </Tarjeta>
 
-            <div className="ficha-card">
+            <Tarjeta className="ficha-card">
               <div className="ficha-precios-header">
                 <div className="ficha-card-titulo">Precios por volumen</div>
                 {!mostrarFormPrecio && editandoPrecioId === null && (
-                  <button className="ficha-btn-agregar-precio" onClick={() => setMostrarFormPrecio(true)}>
+                  <Boton variante="outline" onClick={() => setMostrarFormPrecio(true)}>
                     + Agregar tramo
-                  </button>
+                  </Boton>
                 )}
               </div>
 
@@ -506,19 +508,19 @@ function EditarProducto() {
               <div className="ficha-precios-nota">
                 Para publicar el producto necesitás al menos un precio por volumen.
               </div>
-            </div>
+            </Tarjeta>
 
           </div>
 
           <div className="ficha-sidebar">
-            <div className="ficha-card">
-              <button className="ficha-btn-guardar" onClick={handleGuardarProducto} disabled={cargandoProducto}>
+            <Tarjeta className="ficha-card col gap-s">
+              <Boton onClick={handleGuardarProducto} disabled={cargandoProducto}>
                 {cargandoProducto ? 'Guardando…' : 'Guardar cambios'}
-              </button>
-              <button className="ficha-btn-cancelar" onClick={() => navigate('/inicio')} disabled={cargandoProducto}>
+              </Boton>
+              <Boton variante="outline" onClick={() => navigate('/inicio')} disabled={cargandoProducto}>
                 Cancelar
-              </button>
-            </div>
+              </Boton>
+            </Tarjeta>
 
             <div className="ficha-preview-bloque">
               <div className="ficha-sidebar-titulo">Así se ve en el catálogo</div>

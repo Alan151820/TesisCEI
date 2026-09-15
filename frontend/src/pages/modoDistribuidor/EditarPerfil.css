@@ -1,9 +1,6 @@
 .editarperfil-card {
-  background: var(--color-fondo);
-  border: 1px solid var(--color-borde);
-  border-radius: var(--radio-tarjeta);
-  padding: 24px;
-  max-width: 640px;
+  width: 100%;
+  max-width: 460px;
   margin: 0 auto;
 }
 
@@ -43,102 +40,8 @@
   padding: 6px;
 }
 
-.editarperfil-campo {
-  margin-bottom: 16px;
-}
-
-.editarperfil-label {
-  display: block;
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--color-texto);
-  margin-bottom: 5px;
-}
-
-.editarperfil-input,
-.editarperfil-textarea {
-  width: 100%;
-  border: 1px solid var(--color-borde);
-  border-radius: var(--radio-control);
-  background: var(--color-fondo);
-  font-size: var(--fuente-control);
-  color: var(--color-texto);
-  box-sizing: border-box;
-  font-family: inherit;
-}
-
-.editarperfil-input {
-  height: var(--alto-control);
-  padding: 0 12px;
-}
-
-.editarperfil-textarea {
-  height: 80px;
-  padding: 10px 12px;
-  resize: vertical;
-}
-
-.editarperfil-acciones {
-  display: flex;
-  gap: 10px;
-}
-
-.editarperfil-btn-guardar {
-  height: var(--alto-control);
-  border-radius: var(--radio-control);
-  padding: 0 20px;
-  font-size: var(--fuente-control);
-  font-weight: 500;
-  cursor: pointer;
-  background: var(--color-primario);
-  color: var(--color-sobre-primario);
-  border: none;
-}
-
-.editarperfil-btn-guardar:hover {
-  opacity: 0.9;
-}
-
-.editarperfil-btn-cancelar {
-  height: var(--alto-control);
-  border-radius: var(--radio-control);
-  padding: 0 20px;
-  font-size: var(--fuente-control);
-  font-weight: 500;
-  cursor: pointer;
-  background: var(--color-fondo);
-  color: var(--color-texto);
-  border: 1px solid var(--color-borde);
-}
-
-.editarperfil-btn-cancelar:hover {
-  background: var(--color-superficie);
-}
-
-.editarperfil-mensaje {
-  font-size: 13px;
-  color: var(--color-texto);
-  margin: 14px 0 0 0;
-}
-
-.editarperfil-mensaje:empty {
-  margin: 0;
-}
-
 @media (max-width: 768px) {
   .editarperfil-card {
     max-width: 100%;
   }
-
-  .editarperfil-acciones {
-    flex-direction: column;
-  }
-
-  .editarperfil-btn-guardar,
-  .editarperfil-btn-cancelar {
-    width: 100%;
-    height: var(--alto-control);
-  }
-
-  .editarperfil-input { height: var(--alto-control); }
 }

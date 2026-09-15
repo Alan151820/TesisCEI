@@ -1,3 +1,6 @@
+import Campo from './ui/Campo'
+import Boton from './ui/Boton'
+
 function FormularioTramoPrecio({
   cantidadMinima,
   descuentoPct,
@@ -17,9 +20,8 @@ function FormularioTramoPrecio({
       <div className="ficha-fila-tres">
         <div className="ficha-campo">
           <label className="ficha-label">Cantidad (desde) <span className="ficha-requerido">*</span></label>
-          <input
+          <Campo
             type="number"
-            className="ficha-input"
             min="1"
             step="1"
             placeholder="Ej: 10"
@@ -30,9 +32,8 @@ function FormularioTramoPrecio({
         </div>
         <div className="ficha-campo">
           <label className="ficha-label">Descuento %</label>
-          <input
+          <Campo
             type="number"
-            className="ficha-input"
             min="0"
             max="99"
             step="1"
@@ -44,9 +45,8 @@ function FormularioTramoPrecio({
         </div>
         <div className="ficha-campo">
           <label className="ficha-label">Precio total <span className="ficha-requerido">*</span></label>
-          <input
+          <Campo
             type="number"
-            className="ficha-input"
             min="0.01"
             step="0.01"
             placeholder="Ej: 8100.00"
@@ -57,21 +57,21 @@ function FormularioTramoPrecio({
       </div>
       <div className="ficha-campo">
         <label className="ficha-label">Precio por unidad</label>
-        <input
+        <Campo
           type="text"
-          className="ficha-input ficha-input-solo-lectura ficha-input-angosto"
+          className="ficha-input-solo-lectura ficha-input-angosto"
           readOnly
           value={precioPorUnidadCalc != null ? `$${precioPorUnidadCalc.toFixed(2)}` : '—'}
         />
       </div>
       {error && <div className="ficha-error">{error}</div>}
       <div className="ficha-form-precio-acciones">
-        <button className="ficha-btn-guardar" onClick={onGuardar} disabled={cargando}>
+        <Boton onClick={onGuardar} disabled={cargando}>
           {cargando ? 'Guardando…' : textoGuardar}
-        </button>
-        <button className="ficha-btn-cancelar" onClick={onCancelar} disabled={cargando}>
+        </Boton>
+        <Boton variante="outline" onClick={onCancelar} disabled={cargando}>
           Cancelar
-        </button>
+        </Boton>
       </div>
     </div>
   )
