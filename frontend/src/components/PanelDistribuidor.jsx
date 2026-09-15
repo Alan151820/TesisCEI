@@ -13,10 +13,8 @@ import '../pages/modoDistribuidor/Inicio.css'
 const NAV_ITEMS = [
   { label: 'Pedidos', ruta: '/pedidos' },
   { label: 'Productos', ruta: '/inicio' },
-  { label: 'Proveedores', ruta: '/proveedores' },
   { label: 'Reparto', ruta: '/reparto' },
   { label: 'Reportes', ruta: '/reportes' },
-  { label: 'Empleados', ruta: '/empleados' },
   { label: 'Editar perfil', ruta: '/editarPerfil' },
 ]
 

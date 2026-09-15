@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import api from '../../lib/axios'
+import { mensajeDeError } from '../../lib/errores'
 import Hdr from '../../components/Hdr'
 import Tarjeta from '../../components/ui/Tarjeta'
 import Campo from '../../components/ui/Campo'
@@ -28,7 +29,7 @@ function NuevaContrasena() {
       setMensaje(res.data.mensaje)
       navigate('/login')
     } catch (error) {
-      setMensaje(error.response.data.mensaje)
+      setMensaje(mensajeDeError(error))
     }
   }
 

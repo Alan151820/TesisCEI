@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { formatearTelefonoUy } from '../../lib/telefono'
+import { mensajeDeError } from '../../lib/errores'
 import { useNavigate } from 'react-router-dom'
 import api from '../../lib/axios'
 import Hdr from '../../components/Hdr'
@@ -23,7 +24,7 @@ function RecuperarContrasena() {
       setMensaje(res.data.mensaje)
       navigate('/verificarRecuperacion', { state: { telefono, codigoDev: res.data.codigo_dev } })
     } catch (error) {
-      setMensaje(error.response.data.mensaje)
+      setMensaje(mensajeDeError(error))
     }
   }
 

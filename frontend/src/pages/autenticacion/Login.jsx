@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { formatearTelefonoUy } from '../../lib/telefono'
+import { mensajeDeError } from '../../lib/errores'
 import { useNavigate } from 'react-router-dom'
 import api from '../../lib/axios'
 import Hdr from '../../components/Hdr'
@@ -34,7 +35,7 @@ function Login() {
       window.dispatchEvent(new Event('auth-changed'))
       navigate('/inicioComprador')
     } catch (error) {
-      setMensaje(error.response.data.mensaje)
+      setMensaje(mensajeDeError(error))
     }
   }
 
@@ -50,7 +51,7 @@ function Login() {
           <p className="texto-mudo">Usá tu número de teléfono y contraseña.</p>
 
           <div className="col gap-s">
-            <span className="texto">Número de teléfono</span>
+            <span className="texto">Teléfono</span>
             <Campo
               type="text"
               placeholder="099 123 456"
@@ -60,12 +61,7 @@ function Login() {
           </div>
 
           <div className="col gap-s">
-            <div className="fila" style={{ justifyContent: 'space-between' }}>
-              <span className="texto">Contraseña</span>
-              <button type="button" className="link" onClick={() => navigate('/recuperarContrasena')}>
-                ¿Olvidaste tu contraseña?
-              </button>
-            </div>
+            <span className="texto">Contraseña</span>
             <Campo
               type="password"
               placeholder="••••••••"
@@ -73,6 +69,10 @@ function Login() {
               onChange={(e) => setContrasena(e.target.value)}
             />
           </div>
+
+          <button type="button" className="link" onClick={() => navigate('/recuperarContrasena')} style={{ alignSelf: 'flex-start' }}>
+            ¿Olvidaste tu contraseña?
+          </button>
 
           <Boton variante="fill" style={{ width: '100%' }} onClick={handleLogin}>
             Iniciar sesión

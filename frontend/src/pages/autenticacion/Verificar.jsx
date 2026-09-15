@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import api from '../../lib/axios'
+import { mensajeDeError } from '../../lib/errores'
 import Hdr from '../../components/Hdr'
 import TabRow from '../../components/ui/TabRow'
 import Tarjeta from '../../components/ui/Tarjeta'
@@ -35,7 +36,7 @@ function Verificar() {
       window.dispatchEvent(new Event('auth-changed'))
       navigate('/inicioComprador')
     } catch (error) {
-      setMensaje(error.response.data.mensaje)
+      setMensaje(mensajeDeError(error))
     }
   }
 
