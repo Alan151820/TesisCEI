@@ -2,7 +2,14 @@ import { useState } from 'react'
 import { formatearTelefonoUy } from '../../lib/telefono'
 import { useNavigate } from 'react-router-dom'
 import api from '../../lib/axios'
+import Hdr from '../../components/Hdr'
+import Tarjeta from '../../components/ui/Tarjeta'
+import Campo from '../../components/ui/Campo'
+import Boton from '../../components/ui/Boton'
+import Stepper from '../../components/ui/Stepper'
 import './RecuperarContrasena.css'
+
+const PASOS = ['Teléfono', 'Código SMS', 'Nueva contraseña']
 
 function RecuperarContrasena() {
   const [telefonoInput, setTelefonoInput] = useState('')
@@ -22,56 +29,31 @@ function RecuperarContrasena() {
 
   return (
     <div className="recuperar-pagina">
-      <header className="recuperar-encabezado">
-        <span className="recuperar-logo">MarketPlace</span>
+      <Hdr logo={<span className="hdr-logo" onClick={() => navigate('/')}>MarketPlace</span>} />
 
-      </header>
+      <div className="panel-centrado">
+        <Tarjeta as="main" className="auth-card col gap-m">
+          <div className="titulo1">Recuperar contraseña</div>
+          <p className="texto-mudo">Ingresá tu teléfono para recibir un código de verificación.</p>
 
-      <main className="recuperar-contenido">
-        <div className="recuperar-tarjeta">
-          <h1 className="recuperar-titulo">Recuperar contraseña</h1>
-          <p className="recuperar-subtitulo">Ingresá tu teléfono para recibir un código de verificación.</p>
+          <Stepper pasos={PASOS} pasoActivo={1} />
 
-          <div className="recuperar-stepper">
-            <div className="recuperar-paso recuperar-paso-activo">
-              <span className="recuperar-paso-numero">1</span>
-              <span className="recuperar-paso-texto">Teléfono</span>
-            </div>
-            <div className="recuperar-paso">
-              <span className="recuperar-paso-numero">2</span>
-              <span className="recuperar-paso-texto">Código SMS</span>
-            </div>
-            <div className="recuperar-paso">
-              <span className="recuperar-paso-numero">3</span>
-              <span className="recuperar-paso-texto">Nueva contraseña</span>
-            </div>
+          <div className="col gap-s">
+            <span className="texto">Número de teléfono registrado</span>
+            <Campo placeholder="099 123 456" value={telefonoInput} onChange={(e) => setTelefonoInput(e.target.value)} />
           </div>
 
-          <div className="recuperar-campo">
-            <label className="recuperar-etiqueta">Número de teléfono registrado</label>
-            <input
-              className="recuperar-input"
-              placeholder="099 123 456"
-              value={telefonoInput}
-              onChange={e => setTelefonoInput(e.target.value)}
-            />
-          </div>
-
-          <button
-            type="button"
-            className="recuperar-boton"
-            onClick={handleRecuperar}
-          >
+          <Boton variante="fill" style={{ width: '100%' }} onClick={handleRecuperar}>
             Enviar código SMS
-          </button>
+          </Boton>
 
-          {mensaje && <p className="recuperar-mensaje-error">{mensaje}</p>}
+          {mensaje && <p className="texto" style={{ color: 'var(--color-error)', textAlign: 'center', margin: 0 }}>{mensaje}</p>}
 
-          <p className="recuperar-pie">
-            ← <button type="button" className="recuperar-pie-link"onClick={() => navigate('/login')} >Volver al inicio de sesión</button>
+          <p className="texto-mudo" style={{ textAlign: 'center', margin: 0 }}>
+            ← <button type="button" className="link" onClick={() => navigate('/login')}>Volver al inicio de sesión</button>
           </p>
-        </div>
-      </main>
+        </Tarjeta>
+      </div>
     </div>
   )
 }

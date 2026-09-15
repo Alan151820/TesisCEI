@@ -41,9 +41,32 @@
 
 .separador { border: none; border-top: 1px solid var(--color-borde); margin: 0; }
 
+.panel-centrado {
+  flex: 1;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 24px;
+}
+
+.auth-card { width: 100%; max-width: 460px; }
+
+@media (max-width: 600px) {
+  .panel-centrado { padding: 20px; }
+  .auth-card.tarjeta { border: none; box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08); }
+}
+
 @media (max-width: 760px) {
   .p-m { padding: 20px 16px; }
   .p-l { padding: 24px 16px; }
+}
+
+/* Botón de carrito del header: en páginas con bottom-nav mobile, el
+   carrito ya tiene ícono propio ahí, así que el del header se oculta
+   para no duplicar la acción. */
+@media (max-width: 768px) {
+  .hdr-btn-carrito { display: none; }
 }
 
 @media (max-width: 560px) {

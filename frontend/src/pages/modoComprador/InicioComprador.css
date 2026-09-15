@@ -5,87 +5,14 @@
   background: var(--color-superficie);
 }
 
-/* Encabezado autenticado */
-.comprador-encabezado {
-  position: sticky;
-  top: 0;
-  z-index: 10;
-  height: 56px;
-  background: var(--color-fondo);
-  border-bottom: 1px solid var(--color-borde);
-  display: grid;
-  grid-template-columns: auto minmax(200px, 1fr) auto;
-  align-items: center;
-  width: 100%;
-  padding: 0 max(40px, calc((100% - 1280px) / 2));
-  gap: 24px;
-  flex-shrink: 0;
-}
-
-.comprador-logo {
-  font-size: 17px;
-  font-weight: 700;
-  color: var(--color-texto);
-  flex-shrink: 0;
-  cursor: pointer;
-}
-
-.comprador-buscador {
-  width: 100%;
-  min-width: 0;
-  height: var(--alto-control);
-  background: var(--color-superficie);
-  border: 1px solid var(--color-borde);
-  border-radius: var(--radio-control);
-  display: flex;
-  align-items: center;
-  padding: 0 14px;
-  gap: 8px;
-  cursor: text;
-}
-
-.comprador-buscador-icono {
-  font-size: var(--fuente-control);
-  color: var(--color-texto-suave);
-  flex-shrink: 0;
-}
-
-.comprador-buscador-input {
-  flex: 1;
-  min-width: 0;
-  background: none;
-  border: none;
-  outline: none;
-  font-size: var(--fuente-control);
-  color: var(--color-texto);
-  font-family: inherit;
-}
-
-.comprador-buscador-input::placeholder {
-  color: var(--color-texto-suave);
-}
-
-.comprador-acciones {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-
-.comprador-nav-link {
-  font-size: 13px;
-  color: var(--color-texto-suave);
-  cursor: pointer;
-  white-space: nowrap;
-  padding: 4px 0;
-  border-bottom: 1px solid transparent;
-}
-
-.comprador-nav-link:hover {
-  color: var(--color-texto);
-  border-bottom-color: var(--color-texto);
-}
-
-/* Perfil con dropdown */
+/* Perfil con dropdown — el trigger vive dentro del Hdr (fondo de marca),
+   así que su texto usa el color invertido "sobre-primario" en vez del
+   color de texto normal. */
+.hdr .comprador-nombre { color: var(--color-sobre-primario); }
+.hdr .comprador-perfil-flecha { color: color-mix(in oklch, var(--color-sobre-primario) 80%, transparent); }
+.hdr .comprador-avatar { background: var(--color-fondo); color: var(--color-primario); }
+.hdr .comprador-perfil-trigger { background: none; border-color: color-mix(in oklch, var(--color-sobre-primario) 45%, transparent); }
+.hdr .comprador-perfil-trigger:hover { background: color-mix(in oklch, var(--color-sobre-primario) 18%, transparent); }
 .comprador-perfil-wrapper {
   position: relative;
 }
@@ -161,36 +88,6 @@
 /* Ítems que sólo aparecen en el dropdown en mobile */
 .comprador-menu-item--mobile {
   display: none;
-}
-
-.comprador-btn-carrito {
-  position: relative;
-  background: none;
-  border: none;
-  font-size: 20px;
-  cursor: pointer;
-  padding: 4px 6px;
-  line-height: 1;
-  display: flex;
-  align-items: center;
-}
-
-.comprador-carrito-badge {
-  position: absolute;
-  top: -2px;
-  right: -4px;
-  background: var(--color-primario);
-  color: var(--color-sobre-primario);
-  font-size: 10px;
-  font-weight: 700;
-  min-width: 16px;
-  height: 16px;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0 3px;
-  box-sizing: border-box;
 }
 
 /* Contenido */
@@ -408,35 +305,6 @@
 
 /* === MOBILE === */
 @media (max-width: 768px) {
-  .comprador-encabezado {
-    display: flex;
-    height: 52px;
-    padding: 0 16px;
-    gap: 12px;
-  }
-
-  .comprador-logo {
-    display: none;
-  }
-
-  .comprador-buscador {
-    flex: 1;
-    max-width: none;
-    height: 32px;
-  }
-
-  .comprador-acciones {
-    margin-left: auto;
-    gap: 8px;
-  }
-
-  /* Deja espacio para el buscador en mobile: quedan la campana y el perfil.
-     El carrito va en la bottom-nav; las notificaciones no tienen otro
-     acceso en mobile, así que la campana se mantiene visible acá. */
-  .comprador-btn-carrito {
-    display: none;
-  }
-
   /* Ocultar nav-links del header en mobile — van al dropdown */
   .comprador-nav-link {
     display: none;

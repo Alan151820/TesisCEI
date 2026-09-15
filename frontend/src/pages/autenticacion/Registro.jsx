@@ -2,7 +2,17 @@ import { useState } from 'react'
 import { formatearTelefonoUy } from '../../lib/telefono'
 import { useNavigate } from 'react-router-dom'
 import api from '../../lib/axios'
+import Hdr from '../../components/Hdr'
+import TabRow from '../../components/ui/TabRow'
+import Tarjeta from '../../components/ui/Tarjeta'
+import Campo from '../../components/ui/Campo'
+import Boton from '../../components/ui/Boton'
 import './Registro.css'
+
+const AUTH_TABS = [
+  { valor: 'login', etiqueta: 'Iniciar sesión' },
+  { valor: 'registro', etiqueta: 'Registrarse' },
+]
 
 function Registro() {
   const [nombre, setNombre] = useState('')
@@ -34,88 +44,66 @@ function Registro() {
 
   return (
     <div className="registro-pagina">
-      <header className="registro-encabezado">
-        <span className="registro-logo">MarketPlace</span>
-        
-        <div className="login-encabezado-derecha">
-          <div className="auth-tabs">
-            <button type="button" className="auth-tab" onClick={() => navigate('/login')}>Iniciar sesión</button>
-            <button type="button" className="auth-tab activo">Registrarse</button>
-          </div>
-        </div>
-      </header>
+      <Hdr logo={<span className="hdr-logo" onClick={() => navigate('/')}>MarketPlace</span>}>
+        <TabRow tabs={AUTH_TABS} activo="registro" onCambiar={(v) => navigate(v === 'login' ? '/login' : '/registro')} />
+      </Hdr>
 
-      <main className="registro-contenido">
-        <div className="registro-tarjeta">
-          <h1 className="registro-titulo">Crear cuenta</h1>
-          <p className="registro-subtitulo">Completá tus datos para registrarte.</p>
+      <div className="panel-centrado">
+        <Tarjeta as="main" className="auth-card col gap-m">
+          <div className="titulo1">Crear cuenta</div>
+          <p className="texto-mudo">Completá tus datos para registrarte.</p>
 
-          <div className="registro-campo">
-            <label className="registro-etiqueta">Nombre completo</label>
-            <input
-              className="registro-input"
-              placeholder="María García"
-              value={nombre}
-              onChange={e => setNombre(e.target.value)}
-            />
+          <div className="col gap-s">
+            <span className="texto">Nombre completo</span>
+            <Campo placeholder="María García" value={nombre} onChange={(e) => setNombre(e.target.value)} />
           </div>
 
-          <div className="registro-campo">
-            <label className="registro-etiqueta">Número de teléfono</label>
-            <input
-              className="registro-input"
-              placeholder="099 123 456"
-              value={telefonoInput}
-              onChange={e => setTelefonoInput(e.target.value)}
-            />
-            <span className="registro-ayuda">Se usará para verificar tu identidad y recuperar tu contraseña.</span>
+          <div className="col gap-s">
+            <span className="texto">Número de teléfono</span>
+            <Campo placeholder="099 123 456" value={telefonoInput} onChange={(e) => setTelefonoInput(e.target.value)} />
+            <span className="texto-mudo">Se usará para verificar tu identidad y recuperar tu contraseña.</span>
           </div>
 
-          <div className="registro-campo">
-            <label className="registro-etiqueta">Contraseña</label>
-            <input
-              className="registro-input"
+          <div className="col gap-s">
+            <span className="texto">Contraseña</span>
+            <Campo
               type="password"
               placeholder="••••••••"
               value={contrasena}
-              onChange={e => setContrasena(e.target.value)}
+              onChange={(e) => setContrasena(e.target.value)}
             />
-            <span className="registro-ayuda">Mínimo 8 caracteres.</span>
+            <span className="texto-mudo">Mínimo 8 caracteres.</span>
           </div>
 
-          <label className="registro-consentimiento">
+          <label className="fila gap-s">
             <input
               type="checkbox"
-              className="registro-checkbox"
+              className="checkbox"
               checked={consentimientoAceptado}
-              onChange={e => setConsentimientoAceptado(e.target.checked)}
+              onChange={(e) => setConsentimientoAceptado(e.target.checked)}
             />
-            <span className="registro-consentimiento-texto">
+            <span className="texto-mudo">
               Acepto el tratamiento de mis datos personales (nombre, teléfono y contraseña) para crear y
               operar mi cuenta, conforme a la{' '}
-              <a href="/privacidad" target="_blank" rel="noopener noreferrer">Política de privacidad</a>.
+              <a href="/privacidad" target="_blank" rel="noopener noreferrer" className="link">Política de privacidad</a>.
             </span>
           </label>
 
-          <button
-            type="button"
-            className="registro-boton-crear"
-            onClick={handleRegistro}
-          >
+          <Boton variante="fill" style={{ width: '100%' }} onClick={handleRegistro}>
             Crear cuenta
-          </button>
+          </Boton>
 
-          <div className="registro-paso-info">
+          <div className="texto-mudo">
             <strong>Paso 2/2:</strong> Una vez enviado el formulario, ingresá el código de verificación que recibirás por SMS.
           </div>
 
-          {mensaje && <p className="registro-mensaje-error">{mensaje}</p>}
+          {mensaje && <p className="texto" style={{ color: 'var(--color-error)', textAlign: 'center', margin: 0 }}>{mensaje}</p>}
 
-          <p className="registro-pie">
-            ¿Ya tenés cuenta? <button type="button" className="registro-pie-link">Iniciá sesión</button>
+          <p className="texto-mudo" style={{ textAlign: 'center', margin: 0 }}>
+            ¿Ya tenés cuenta? <button type="button" className="link" onClick={() => navigate('/login')}>Iniciá sesión</button>
           </p>
-        </div>
-      </main>
+        </Tarjeta>
+      </div>
     </div>
   )
 }

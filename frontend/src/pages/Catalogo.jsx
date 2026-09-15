@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useCarrito } from '../context/CarritoContext'
+import BottomNav from '../components/BottomNav'
+import Hdr from '../components/Hdr'
+import Boton from '../components/ui/Boton'
 import api from '../lib/axios'
 import { construirTituloProducto } from '../lib/producto'
 import './Catalogo.css'
@@ -10,7 +13,6 @@ function Catalogo() {
 
   const [productos, setProductos] = useState([])
   const [cargando, setCargando] = useState(true)
-  const token = localStorage.getItem('token')
   const { agregarProducto, totalItems } = useCarrito()
   const [categorias, setCategorias] = useState([])
   const [busqueda, setBusqueda] = useState('')
@@ -63,26 +65,16 @@ function Catalogo() {
   return (
     <div className="catalogo-layout">
 
-      <header className="catalogo-header">
-        <div className="catalogo-header-marca" onClick={() => navigate('/')}>MarketDist</div>
-        <div className="catalogo-header-buscador">
-          <span className="catalogo-header-buscador-icono">⌕</span>
-          <input
-            className="catalogo-header-buscador-input"
-            type="text"
-            placeholder="Buscar productos…"
-            value={busqueda}
-            onChange={e => { setBusqueda(e.target.value); aplicarFiltros({ nombre: e.target.value }) }}
-          />
-        </div>
-        <div className="catalogo-header-acciones">
-          <button className="catalogo-btn-carrito" onClick={() => navigate('/carrito')}>
-            🛒{totalItems > 0 && <span className="catalogo-carrito-badge">{totalItems}</span>}
-          </button>
-          <button className="catalogo-btn-login" onClick={() => navigate('/login')}>Iniciar sesión</button>
-          <button className="catalogo-btn-registro" onClick={() => navigate('/registro')}>Registrarse</button>
-        </div>
-      </header>
+      <Hdr
+        logo={<span className="hdr-logo" onClick={() => navigate('/')}>MarketDist</span>}
+        buscador
+        buscadorValor={busqueda}
+        onBuscadorChange={(valor) => { setBusqueda(valor); aplicarFiltros({ nombre: valor }) }}
+      >
+        <Boton variante="icono" className="hdr-btn-carrito" badge={totalItems} onClick={() => navigate('/carrito')} aria-label="Carrito">🛒</Boton>
+        <Boton variante="ghost" className="catalogo-btn-auth" onClick={() => navigate('/login')}>Iniciar sesión</Boton>
+        <Boton variante="fill" className="catalogo-btn-auth" onClick={() => navigate('/registro')}>Registrarse</Boton>
+      </Hdr>
 
       <div className="catalogo-filtros">
         <select value={filtroCategoria} onChange={e => { setFiltroCategoria(e.target.value); aplicarFiltros({ categoria: e.target.value }) }}>
@@ -162,29 +154,7 @@ function Catalogo() {
         )}
       </div>
 
-      <nav className="catalogo-bottom-nav">
-        <div className="catalogo-bottom-item activo">
-          <span className="catalogo-bottom-icono">◻</span>
-          <span className="catalogo-bottom-label">Catálogo</span>
-        </div>
-        <div className="catalogo-bottom-item catalogo-bottom-carrito" onClick={() => navigate('/carrito')}>
-          <span className="catalogo-bottom-icono">
-            🛒{totalItems > 0 && <span className="catalogo-bottom-badge">{totalItems}</span>}
-          </span>
-          <span className="catalogo-bottom-label">Carrito</span>
-        </div>
-        {token ? (
-          <div className="catalogo-bottom-item" onClick={() => navigate('/inicio')}>
-            <span className="catalogo-bottom-icono">⊞</span>
-            <span className="catalogo-bottom-label">Panel</span>
-          </div>
-        ) : (
-          <div className="catalogo-bottom-item" onClick={() => navigate('/login')}>
-            <span className="catalogo-bottom-icono">○</span>
-            <span className="catalogo-bottom-label">Cuenta</span>
-          </div>
-        )}
-      </nav>
+      <BottomNav variante="publico" />
 
     </div>
   )

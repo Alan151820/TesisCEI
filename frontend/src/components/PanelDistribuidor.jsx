@@ -2,7 +2,10 @@ import { useState, useRef, useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import CampanaNotificaciones from './CampanaNotificaciones'
 import ToggleTema from './ToggleTema'
+import Hdr from './Hdr'
+import Boton from './ui/Boton'
 import { cerrarSesion } from '../lib/auth'
+import '../pages/modoComprador/InicioComprador.css'
 import '../pages/modoDistribuidor/Inicio.css'
 
 const NAV_ITEMS = [
@@ -79,32 +82,25 @@ function PanelDistribuidor({ tituloMobile, accionMobile, activo, children }) {
         {accionMobile || <div style={{ width: 40 }} />}
       </div>
 
-      <header className="panel-master-header">
-        <div className="panel-master-header-marca">MarketDist</div>
-        <div className="panel-master-header-buscador">
-          <span className="panel-master-header-buscador-icono">⌕</span>
-          <input className="panel-master-header-buscador-input" type="text" placeholder="Buscar productos…" />
-        </div>
-        <div className="panel-master-header-perfil">
-          <button className="panel-header-salir-btn" onClick={() => navigate('/inicioComprador')}>
-            Salir de distribuidora
+      <Hdr logo={<span className="hdr-logo">MarketDist</span>} buscador>
+        <Boton variante="fill" onClick={() => navigate('/inicioComprador')}>
+          Salir de distribuidora
+        </Boton>
+        <CampanaNotificaciones rutaDestino="/pedidos" rutaDetalle="/pedidos" />
+        <div className="comprador-perfil-wrapper" ref={perfilRef}>
+          <button className="comprador-perfil-trigger" onClick={() => setMenuPerfil(v => !v)}>
+            <div className="comprador-avatar">{iniciales}</div>
+            <span className="comprador-nombre">{nombre}</span>
+            <span className="comprador-perfil-flecha">{menuPerfil ? '▴' : '▾'}</span>
           </button>
-          <CampanaNotificaciones rutaDestino="/pedidos" rutaDetalle="/pedidos" />
-          <div className="comprador-perfil-wrapper" ref={perfilRef}>
-            <button className="comprador-perfil-trigger" onClick={() => setMenuPerfil(v => !v)}>
-              <div className="comprador-avatar">{iniciales}</div>
-              <span className="comprador-nombre">{nombre}</span>
-              <span className="comprador-perfil-flecha">{menuPerfil ? '▴' : '▾'}</span>
-            </button>
-            {menuPerfil && (
-              <div className="comprador-menu-desplegable">
-                <ToggleTema />
-                <div className="comprador-menu-item" onClick={handleCerrarSesion}>Cerrar sesión</div>
-              </div>
-            )}
-          </div>
+          {menuPerfil && (
+            <div className="comprador-menu-desplegable">
+              <ToggleTema />
+              <div className="comprador-menu-item" onClick={handleCerrarSesion}>Cerrar sesión</div>
+            </div>
+          )}
         </div>
-      </header>
+      </Hdr>
 
       <div className="panel-layout">
 

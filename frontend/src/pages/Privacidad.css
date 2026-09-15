@@ -5,76 +5,7 @@
   background: var(--color-superficie);
 }
 
-.privacidad-encabezado {
-  position: sticky;
-  top: 0;
-  z-index: 10;
-  height: 56px;
-  flex-shrink: 0;
-  background: var(--color-fondo);
-  border-bottom: 1px solid var(--color-borde);
-  display: flex;
-  align-items: center;
-  padding: 0 40px;
-}
-
-.privacidad-logo {
-  font-size: 17px;
-  font-weight: 700;
-  color: var(--color-texto);
-  cursor: pointer;
-}
-
-.privacidad-contenido {
-  flex: 1;
-  display: flex;
-  justify-content: center;
-  padding: 32px 16px 64px;
-}
-
 .privacidad-tarjeta {
   width: 100%;
   max-width: 680px;
-  background: var(--color-fondo);
-  border: 1px solid var(--color-borde);
-  border-radius: var(--radio-tarjeta);
-  padding: 32px;
-  color: var(--color-texto);
-  line-height: 1.6;
-}
-
-.privacidad-titulo {
-  font-size: 24px;
-  margin: 0 0 4px;
-}
-
-.privacidad-actualizado {
-  font-size: 13px;
-  color: var(--color-texto-suave);
-  margin: 0 0 24px;
-}
-
-.privacidad-subtitulo {
-  font-size: 16px;
-  margin: 24px 0 8px;
-}
-
-.privacidad-tarjeta p {
-  font-size: 14px;
-  margin: 0 0 8px;
-}
-
-.privacidad-tarjeta a {
-  color: var(--color-primario);
-}
-
-.privacidad-volver {
-  margin-top: 24px;
-  background: none;
-  border: 1px solid var(--color-borde);
-  border-radius: 6px;
-  padding: 8px 16px;
-  font-size: 14px;
-  color: var(--color-texto);
-  cursor: pointer;
 }

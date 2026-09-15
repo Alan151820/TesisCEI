@@ -5,9 +5,11 @@ import api from '../../lib/axios'
 import { rutaInicio } from '../../lib/auth'
 import { useCarrito } from '../../context/CarritoContext'
 import CampanaNotificaciones from '../../components/CampanaNotificaciones'
-import BottomNavComprador from '../../components/BottomNavComprador'
+import BottomNav from '../../components/BottomNav'
 import EstadoBadge from '../../components/EstadoBadge'
 import MenuPerfilComprador from '../../components/MenuPerfilComprador'
+import Hdr from '../../components/Hdr'
+import Boton from '../../components/ui/Boton'
 import './InicioComprador.css'
 import './DetallePedido.css'
 
@@ -54,22 +56,13 @@ function DetallePedido() {
   return (
     <div className="detallepedido-pagina">
 
-      <header className="comprador-encabezado">
-        <div className="comprador-logo" onClick={() => navigate(rutaInicio())}>MarketDist</div>
-        <div className="comprador-buscador">
-          <span className="comprador-buscador-icono">⌕</span>
-          <input className="comprador-buscador-input" type="text" placeholder="Buscar productos…" />
-        </div>
-        <div className="comprador-acciones">
-          <span className="comprador-nav-link" onClick={() => navigate('/misPedidos')}>Mis pedidos</span>
-          <span className="comprador-nav-link" onClick={() => navigate(modoDistribuidorActivo ? '/inicio' : '/configurarPerfil')}>Distribuidora</span>
-          <CampanaNotificaciones rutaDestino="/misPedidos" rutaDetalle="/pedido" />
-          <button className="comprador-btn-carrito" onClick={() => navigate('/carrito')}>
-            🛒{totalItems > 0 && <span className="comprador-carrito-badge">{totalItems}</span>}
-          </button>
-          <MenuPerfilComprador />
-        </div>
-      </header>
+      <Hdr logo={<span className="hdr-logo" onClick={() => navigate(rutaInicio())}>MarketDist</span>} buscador>
+        <span className="link comprador-nav-link" onClick={() => navigate('/misPedidos')}>Mis pedidos</span>
+        <span className="link comprador-nav-link" onClick={() => navigate(modoDistribuidorActivo ? '/inicio' : '/configurarPerfil')}>Distribuidora</span>
+        <CampanaNotificaciones rutaDestino="/misPedidos" rutaDetalle="/pedido" />
+        <Boton variante="icono" className="hdr-btn-carrito" badge={totalItems} onClick={() => navigate('/carrito')} aria-label="Carrito">🛒</Boton>
+        <MenuPerfilComprador />
+      </Hdr>
 
       <main className="detallepedido-main">
 
@@ -163,7 +156,7 @@ function DetallePedido() {
 
       </main>
 
-      <BottomNavComprador />
+      <BottomNav />
 
     </div>
   )

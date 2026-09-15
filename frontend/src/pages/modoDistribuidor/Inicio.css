@@ -6,84 +6,6 @@
   overflow: hidden;
 }
 
-/* Header master — siempre visible */
-.panel-master-header {
-  height: 56px;
-  background: var(--color-fondo);
-  border-bottom: 1px solid var(--color-borde);
-  display: flex;
-  align-items: center;
-  width: 100%;
-  padding: 0 max(40px, calc((100% - 1280px) / 2));
-  gap: 24px;
-  flex-shrink: 0;
-}
-
-.panel-master-header-marca {
-  font-size: 17px;
-  font-weight: 700;
-  color: var(--color-texto);
-  white-space: nowrap;
-  flex-shrink: 0;
-}
-
-.panel-master-header-buscador {
-  flex: 1;
-  height: var(--alto-control);
-  background: var(--color-superficie);
-  border: 1px solid var(--color-borde);
-  border-radius: var(--radio-control);
-  display: flex;
-  align-items: center;
-  padding: 0 14px;
-  gap: 8px;
-  cursor: text;
-}
-
-.panel-master-header-buscador-icono {
-  font-size: var(--fuente-control);
-  color: var(--color-texto-suave);
-  flex-shrink: 0;
-}
-
-.panel-master-header-buscador-input {
-  flex: 1;
-  background: none;
-  border: none;
-  outline: none;
-  font-size: var(--fuente-control);
-  color: var(--color-texto);
-  font-family: inherit;
-}
-
-.panel-master-header-buscador-input::placeholder {
-  color: var(--color-texto-suave);
-}
-
-.panel-master-header-perfil {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  margin-left: auto;
-}
-
-.panel-header-salir-btn {
-  height: var(--alto-control);
-  padding: 0 16px;
-  border: none;
-  border-radius: var(--radio-control);
-  background: var(--color-primario);
-  color: var(--color-sobre-primario);
-  font-size: var(--fuente-control);
-  font-weight: 600;
-  font-family: inherit;
-  cursor: pointer;
-  white-space: nowrap;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
 /* Notificaciones */
 .panel-notif {
   position: relative;
@@ -809,7 +731,7 @@
    red de seguridad en el extremo angosto — nada se oculta ni se resume
    todavía, es exactamente lo mismo que ve un usuario de escritorio. */
 @media (max-width: 1024px) {
-  .panel-master-header { display: none; }
+  .panel-root .hdr { display: none; }
   .panel-mobile-header {
     display: flex;
     height: 48px;

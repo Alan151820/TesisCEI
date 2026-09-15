@@ -2,8 +2,10 @@ import { useNavigate } from 'react-router-dom'
 import { useCarrito } from '../../context/CarritoContext'
 import { rutaInicio } from '../../lib/auth'
 import CampanaNotificaciones from '../../components/CampanaNotificaciones'
-import BottomNavComprador from '../../components/BottomNavComprador'
+import BottomNav from '../../components/BottomNav'
 import MenuPerfilComprador from '../../components/MenuPerfilComprador'
+import Hdr from '../../components/Hdr'
+import Boton from '../../components/ui/Boton'
 import './InicioComprador.css'
 import './Carrito.css'
 
@@ -25,34 +27,23 @@ function Carrito() {
   return (
     <div className="carrito-pagina">
 
-      <header className="comprador-encabezado">
-        <div className="comprador-logo" onClick={() => navigate(rutaInicio())}>MarketDist</div>
-        <div className="comprador-buscador">
-          <span className="comprador-buscador-icono">⌕</span>
-          <input className="comprador-buscador-input" type="text" placeholder="Buscar productos…" />
-        </div>
-        <div className="comprador-acciones">
-          {token ? (
-            <>
-              <span className="comprador-nav-link" onClick={() => navigate('/misPedidos')}>Mis pedidos</span>
-              <span className="comprador-nav-link" onClick={() => navigate(modoDistribuidorActivo ? '/inicio' : '/configurarPerfil')}>Distribuidora</span>
-              <CampanaNotificaciones rutaDestino="/misPedidos" rutaDetalle="/pedido" />
-              <button className="comprador-btn-carrito" onClick={() => navigate('/carrito')}>
-                🛒{totalItems > 0 && <span className="comprador-carrito-badge">{totalItems}</span>}
-              </button>
-              <MenuPerfilComprador />
-            </>
-          ) : (
-            <>
-              <button className="comprador-btn-carrito" onClick={() => navigate('/carrito')}>
-                🛒{totalItems > 0 && <span className="comprador-carrito-badge">{totalItems}</span>}
-              </button>
-              <button className="catalogo-btn-login" onClick={() => navigate('/login')}>Iniciar sesión</button>
-              <button className="catalogo-btn-registro" onClick={() => navigate('/registro')}>Registrarse</button>
-            </>
-          )}
-        </div>
-      </header>
+      <Hdr logo={<span className="hdr-logo" onClick={() => navigate(rutaInicio())}>MarketDist</span>} buscador>
+        {token ? (
+          <>
+            <span className="link comprador-nav-link" onClick={() => navigate('/misPedidos')}>Mis pedidos</span>
+            <span className="link comprador-nav-link" onClick={() => navigate(modoDistribuidorActivo ? '/inicio' : '/configurarPerfil')}>Distribuidora</span>
+            <CampanaNotificaciones rutaDestino="/misPedidos" rutaDetalle="/pedido" />
+            <Boton variante="icono" className="hdr-btn-carrito" badge={totalItems} onClick={() => navigate('/carrito')} aria-label="Carrito">🛒</Boton>
+            <MenuPerfilComprador />
+          </>
+        ) : (
+          <>
+            <Boton variante="icono" className="hdr-btn-carrito" badge={totalItems} onClick={() => navigate('/carrito')} aria-label="Carrito">🛒</Boton>
+            <Boton variante="ghost" onClick={() => navigate('/login')}>Iniciar sesión</Boton>
+            <Boton variante="fill" onClick={() => navigate('/registro')}>Registrarse</Boton>
+          </>
+        )}
+      </Hdr>
 
       <div className="carrito-contenido">
 
@@ -133,7 +124,7 @@ function Carrito() {
 
       </div>
 
-      <BottomNavComprador />
+      <BottomNav />
 
     </div>
   )

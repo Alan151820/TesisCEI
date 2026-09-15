@@ -4,18 +4,19 @@ import { useParams, useNavigate } from 'react-router-dom'
 import api from '../../lib/axios'
 import { useCarrito } from '../../context/CarritoContext'
 import CampanaNotificaciones from '../../components/CampanaNotificaciones'
-import BottomNavComprador from '../../components/BottomNavComprador'
+import BottomNav from '../../components/BottomNav'
+import MenuPerfilComprador from '../../components/MenuPerfilComprador'
+import Hdr from '../../components/Hdr'
+import Boton from '../../components/ui/Boton'
 import { construirTituloProducto } from '../../lib/producto'
-import { cerrarSesion } from '../../lib/auth'
+import './InicioComprador.css'
 import './DetalleProducto.css'
 
 function DetalleProducto() {
   const { id } = useParams()
   const navigate = useNavigate()
   const token = localStorage.getItem('token')
-  const nombre = localStorage.getItem('nombre') || ''
   const modoDistribuidorActivo = localStorage.getItem('modoDistribuidorActivo') === 'true'
-  const iniciales = nombre.split(' ').map(p => p[0]).join('').slice(0, 2).toUpperCase()
   const [producto, setProducto] = useState(null)
   const [mensaje, setMensaje] = useState('')
   const [cantidad, setCantidad] = useState(1)
@@ -31,11 +32,6 @@ function DetalleProducto() {
         setMensaje(mensajeDeError(err))
       })
   }, [id])
-
-  const handleCerrarSesion = () => {
-    cerrarSesion()
-    navigate('/catalogo', { replace: true })
-  }
 
   const decrementar = () => {
     setCantidad(prev => Math.max(1, (Number(prev) || 1) - 1))
@@ -70,38 +66,23 @@ function DetalleProducto() {
   return (
     <div className="detalleproducto-layout">
 
-      <header className={token ? 'detalleproducto-header-autenticado' : 'detalleproducto-header'}>
-        <div className="detalleproducto-header-marca" onClick={() => navigate('/')}>MarketDist</div>
-        <div className="detalleproducto-header-buscador">
-          <span className="detalleproducto-header-buscador-icono">⌕</span>
-          <span className="detalleproducto-header-buscador-texto">Buscar productos…</span>
-        </div>
-        <div className={token ? 'detalleproducto-acciones-auth' : 'detalleproducto-header-acciones'}>
-          <button className="detalleproducto-btn-carrito" onClick={() => navigate('/carrito')}>
-            🛒{totalItems > 0 && <span className="detalleproducto-carrito-badge">{totalItems}</span>}
-          </button>
-          {token ? (
-            <>
-              <span className="detalleproducto-nav-link" onClick={() => navigate(modoDistribuidorActivo ? '/inicio' : '/configurarPerfil')}>
-                Distribuidora
-              </span>
-              <CampanaNotificaciones rutaDestino="/misPedidos" rutaDetalle="/pedido" />
-              <div className="detalleproducto-perfil">
-                <div className="detalleproducto-avatar">{iniciales}</div>
-                <span className="detalleproducto-nombre-usuario">{nombre}</span>
-              </div>
-              <button className="detalleproducto-btn-cerrar-sesion" onClick={handleCerrarSesion}>
-                Cerrar sesión
-              </button>
-            </>
-          ) : (
-            <>
-              <button className="detalleproducto-btn-login" onClick={() => navigate('/login')}>Iniciar sesión</button>
-              <button className="detalleproducto-btn-registro" onClick={() => navigate('/registro')}>Registrarse</button>
-            </>
-          )}
-        </div>
-      </header>
+      <Hdr logo={<span className="hdr-logo" onClick={() => navigate('/')}>MarketDist</span>} buscador>
+        <Boton variante="icono" className="hdr-btn-carrito" badge={totalItems} onClick={() => navigate('/carrito')} aria-label="Carrito">🛒</Boton>
+        {token ? (
+          <>
+            <span className="link" onClick={() => navigate(modoDistribuidorActivo ? '/inicio' : '/configurarPerfil')}>
+              Distribuidora
+            </span>
+            <CampanaNotificaciones rutaDestino="/misPedidos" rutaDetalle="/pedido" />
+            <MenuPerfilComprador />
+          </>
+        ) : (
+          <>
+            <Boton variante="ghost" onClick={() => navigate('/login')}>Iniciar sesión</Boton>
+            <Boton variante="fill" onClick={() => navigate('/registro')}>Registrarse</Boton>
+          </>
+        )}
+      </Hdr>
 
       <div className="detalleproducto-contenido">
         <button className="detalleproducto-volver" onClick={() => navigate(-1)}>← Volver</button>
@@ -203,7 +184,7 @@ function DetalleProducto() {
         </div>
       </div>
 
-      {token && <BottomNavComprador />}
+      {token && <BottomNav />}
 
     </div>
   )

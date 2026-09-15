@@ -2,7 +2,17 @@ import { useState } from 'react'
 import { formatearTelefonoUy } from '../../lib/telefono'
 import { useNavigate } from 'react-router-dom'
 import api from '../../lib/axios'
+import Hdr from '../../components/Hdr'
+import TabRow from '../../components/ui/TabRow'
+import Tarjeta from '../../components/ui/Tarjeta'
+import Campo from '../../components/ui/Campo'
+import Boton from '../../components/ui/Boton'
 import './Login.css'
+
+const AUTH_TABS = [
+  { valor: 'login', etiqueta: 'Iniciar sesión' },
+  { valor: 'registro', etiqueta: 'Registrarse' },
+]
 
 function Login() {
   const [telefonoInput, setTelefonoInput] = useState('')
@@ -30,66 +40,51 @@ function Login() {
 
   return (
     <div className="login-pagina">
-      <header className="login-encabezado">
-        <span className="login-logo">MarketPlace</span>
+      <Hdr logo={<span className="hdr-logo" onClick={() => navigate('/')}>MarketPlace</span>}>
+        <TabRow tabs={AUTH_TABS} activo="login" onCambiar={(v) => navigate(v === 'login' ? '/login' : '/registro')} />
+      </Hdr>
 
-      
+      <div className="panel-centrado">
+        <Tarjeta as="main" className="auth-card col gap-m">
+          <div className="titulo1">Iniciar sesión</div>
+          <p className="texto-mudo">Usá tu número de teléfono y contraseña.</p>
 
-        <div className="login-encabezado-derecha">
-          <div className="auth-tabs">
-            <button type="button" className="auth-tab activo" onClick={() => navigate('/login')}>Iniciar sesión</button>
-            <button type="button" className="auth-tab" onClick={() => navigate('/registro')}>Registrarse</button>
-          </div>
-        </div>
-      </header>
-
-      <main className="login-contenido">
-        <div className="login-tarjeta">
-          <h1 className="login-titulo">Iniciar sesión</h1>
-          <p className="login-subtitulo">Usá tu número de teléfono y contraseña.</p>
-
-          <div className="login-campo">
-            <label className="login-etiqueta">Número de teléfono</label>
-            <input
-              className="login-input"
+          <div className="col gap-s">
+            <span className="texto">Número de teléfono</span>
+            <Campo
               type="text"
               placeholder="099 123 456"
               value={telefonoInput}
-              onChange={e => setTelefonoInput(e.target.value)}
+              onChange={(e) => setTelefonoInput(e.target.value)}
             />
           </div>
 
-          <div className="login-campo">
-            <div className="login-campo-encabezado">
-              <label className="login-etiqueta">Contraseña</label>
-              <button
-                type="button"
-                className="login-olvido"
-                onClick={() => navigate('/recuperarContrasena')}
-              >
+          <div className="col gap-s">
+            <div className="fila" style={{ justifyContent: 'space-between' }}>
+              <span className="texto">Contraseña</span>
+              <button type="button" className="link" onClick={() => navigate('/recuperarContrasena')}>
                 ¿Olvidaste tu contraseña?
               </button>
             </div>
-            <input
-              className="login-input"
+            <Campo
               type="password"
               placeholder="••••••••"
               value={contrasena}
-              onChange={e => setContrasena(e.target.value)}
+              onChange={(e) => setContrasena(e.target.value)}
             />
           </div>
 
-          <button type="button" className="login-boton-ingresar" onClick={handleLogin}>
+          <Boton variante="fill" style={{ width: '100%' }} onClick={handleLogin}>
             Iniciar sesión
-          </button>
+          </Boton>
 
-          {mensaje && <p className="login-mensaje-error">{mensaje}</p>}
+          {mensaje && <p className="texto" style={{ color: 'var(--color-error)', textAlign: 'center', margin: 0 }}>{mensaje}</p>}
 
-          <p className="login-pie">
-            ¿No tenés cuenta? <button type="button" className="login-pie-link" onClick={() => navigate('/registro')}>Registrarse gratis</button>
+          <p className="texto-mudo" style={{ textAlign: 'center', margin: 0 }}>
+            ¿No tenés cuenta? <button type="button" className="link" onClick={() => navigate('/registro')}>Registrarse gratis</button>
           </p>
-        </div>
-      </main>
+        </Tarjeta>
+      </div>
     </div>
   )
 }

@@ -5,6 +5,7 @@ import api from '../../lib/axios'
 import { rutaInicio } from '../../lib/auth'
 import { useCarrito } from '../../context/CarritoContext'
 import ModalMapaDireccion from '../../components/ModalMapaDireccion'
+import Hdr from '../../components/Hdr'
 import './ConfirmacionPedido.css'
 
 const DEPARTAMENTOS = [
@@ -173,13 +174,9 @@ function ConfirmacionPedido() {
   if (pedidosConfirmados) {
     return (
       <div className="confirmar-pagina">
-        <div className="confirmar-mobile-header">
-          <div className="confirmar-mobile-titulo">Pedido confirmado</div>
-        </div>
-        <header className="confirmar-topbar">
-          <div className="confirmar-topbar-marca" onClick={() => navigate(rutaInicio())}>MarketDist</div>
-          <div className="confirmar-topbar-titulo">Pedido confirmado</div>
-        </header>
+        <Hdr logo={<span className="hdr-logo" onClick={() => navigate(rutaInicio())}>MarketDist</span>}>
+          <span className="titulo1">Pedido confirmado</span>
+        </Hdr>
         <div className="confirmar-contenido">
           <div className="confirmar-exito">
             <div className="confirmar-exito-icono">✓</div>
@@ -207,14 +204,9 @@ function ConfirmacionPedido() {
   if (totalItems === 0) {
     return (
       <div className="confirmar-pagina">
-        <div className="confirmar-mobile-header">
-          <button type="button" className="confirmar-mobile-volver" onClick={() => navigate(-1)}>←</button>
-          <div className="confirmar-mobile-titulo">Confirmar pedido</div>
-        </div>
-        <header className="confirmar-topbar">
-          <div className="confirmar-topbar-marca" onClick={() => navigate(rutaInicio())}>MarketDist</div>
-          <div className="confirmar-topbar-titulo">Confirmar pedido</div>
-        </header>
+        <Hdr logo={<span className="hdr-logo" onClick={() => navigate(rutaInicio())}>MarketDist</span>}>
+          <span className="titulo1">Confirmar pedido</span>
+        </Hdr>
         <div className="confirmar-contenido">
           <div className="confirmar-vacio">El carrito está vacío. No hay pedido para confirmar.</div>
         </div>
@@ -232,16 +224,10 @@ function ConfirmacionPedido() {
         />
       )}
 
-      <div className="confirmar-mobile-header">
-        <button type="button" className="confirmar-mobile-volver" onClick={() => navigate('/carrito')}>←</button>
-        <div className="confirmar-mobile-titulo">Confirmar pedido</div>
-      </div>
-
-      <header className="confirmar-topbar">
-        <div className="confirmar-topbar-marca" onClick={() => navigate(rutaInicio())}>MarketDist</div>
-        <div className="confirmar-topbar-titulo">Confirmar pedido</div>
-        <button type="button" className="confirmar-topbar-link" onClick={() => navigate('/carrito')}>← Volver al carrito</button>
-      </header>
+      <Hdr logo={<span className="hdr-logo" onClick={() => navigate(rutaInicio())}>MarketDist</span>}>
+        <span className="titulo1">Confirmar pedido</span>
+        <button type="button" className="link" onClick={() => navigate('/carrito')}>← Volver al carrito</button>
+      </Hdr>
 
       <div className="confirmar-contenido">
         <div className="confirmar-descripcion">

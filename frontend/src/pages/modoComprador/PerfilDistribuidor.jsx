@@ -3,18 +3,19 @@ import { mensajeDeError } from '../../lib/errores'
 import { useParams, useNavigate } from 'react-router-dom'
 import api from '../../lib/axios'
 import CampanaNotificaciones from '../../components/CampanaNotificaciones'
-import BottomNavComprador from '../../components/BottomNavComprador'
+import BottomNav from '../../components/BottomNav'
+import MenuPerfilComprador from '../../components/MenuPerfilComprador'
+import Hdr from '../../components/Hdr'
+import Boton from '../../components/ui/Boton'
 import { construirTituloProducto } from '../../lib/producto'
-import { cerrarSesion } from '../../lib/auth'
+import './InicioComprador.css'
 import './PerfilDistribuidor.css'
 
 function PerfilDistribuidor() {
   const { id } = useParams()
   const navigate = useNavigate()
   const token = localStorage.getItem('token')
-  const nombre = localStorage.getItem('nombre') || ''
   const modoDistribuidorActivo = localStorage.getItem('modoDistribuidorActivo') === 'true'
-  const iniciales = nombre.split(' ').map(p => p[0]).join('').slice(0, 2).toUpperCase()
 
   const [distribuidor, setDistribuidor] = useState(null)
   const [productos, setProductos] = useState([])
@@ -43,11 +44,6 @@ function PerfilDistribuidor() {
     obtenerProductos()
   }, [id])
 
-  const handleCerrarSesion = () => {
-    cerrarSesion()
-    navigate('/catalogo', { replace: true })
-  }
-
   if (mensaje) return <p className="perfildist-mensaje-pagina">{mensaje}</p>
   if (!distribuidor) return <p className="perfildist-mensaje-pagina">Cargando...</p>
 
@@ -56,40 +52,22 @@ function PerfilDistribuidor() {
   return (
     <div className="perfildist-fondo">
 
-      <div className="perfildist-mobile-header">
-        <button type="button" className="perfildist-mobile-volver" onClick={() => window.history.back()}>←</button>
-        <div className="perfildist-mobile-titulo">Perfil del distribuidor</div>
-      </div>
-
-      <header className="perfildist-topbar">
-        <div className="perfildist-marca" onClick={() => navigate('/')}>MarketDist</div>
-        <div className="perfildist-buscador">
-          <span className="perfildist-buscador-icono">⌕</span>
-          <span className="perfildist-buscador-texto">Buscar productos…</span>
-        </div>
-        <div className="perfildist-topbar-acciones">
-          {token ? (
-            <>
-              <span className="perfildist-nav-link" onClick={() => navigate(modoDistribuidorActivo ? '/inicio' : '/configurarPerfil')}>
-                Distribuidora
-              </span>
-              <CampanaNotificaciones rutaDestino="/misPedidos" rutaDetalle="/pedido" />
-              <div className="perfildist-perfil">
-                <div className="perfildist-avatar">{iniciales}</div>
-                <span className="perfildist-nombre-usuario">{nombre}</span>
-              </div>
-              <button className="perfildist-btn-cerrar-sesion" onClick={handleCerrarSesion}>
-                Cerrar sesión
-              </button>
-            </>
-          ) : (
-            <>
-              <button className="perfildist-btn-login" onClick={() => navigate('/login')}>Iniciar sesión</button>
-              <button className="perfildist-btn-registro" onClick={() => navigate('/registro')}>Registrarse</button>
-            </>
-          )}
-        </div>
-      </header>
+      <Hdr logo={<span className="hdr-logo" onClick={() => navigate('/')}>MarketDist</span>} buscador>
+        {token ? (
+          <>
+            <span className="link" onClick={() => navigate(modoDistribuidorActivo ? '/inicio' : '/configurarPerfil')}>
+              Distribuidora
+            </span>
+            <CampanaNotificaciones rutaDestino="/misPedidos" rutaDetalle="/pedido" />
+            <MenuPerfilComprador />
+          </>
+        ) : (
+          <>
+            <Boton variante="ghost" onClick={() => navigate('/login')}>Iniciar sesión</Boton>
+            <Boton variante="fill" onClick={() => navigate('/registro')}>Registrarse</Boton>
+          </>
+        )}
+      </Hdr>
 
       <div className="perfildist-cabecera">
         <div className="perfildist-logo">
@@ -148,7 +126,7 @@ function PerfilDistribuidor() {
         )}
       </div>
 
-      {token && <BottomNavComprador />}
+      {token && <BottomNav />}
 
     </div>
   )

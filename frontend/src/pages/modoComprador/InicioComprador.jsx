@@ -4,8 +4,10 @@ import api from '../../lib/axios'
 import { rutaInicio } from '../../lib/auth'
 import { useCarrito } from '../../context/CarritoContext'
 import CampanaNotificaciones from '../../components/CampanaNotificaciones'
-import BottomNavComprador from '../../components/BottomNavComprador'
+import BottomNav from '../../components/BottomNav'
 import MenuPerfilComprador from '../../components/MenuPerfilComprador'
+import Hdr from '../../components/Hdr'
+import Boton from '../../components/ui/Boton'
 import { construirTituloProducto } from '../../lib/producto'
 import './InicioComprador.css'
 
@@ -67,28 +69,18 @@ function InicioComprador() {
   return (
     <div className="comprador-layout">
 
-      <header className="comprador-encabezado">
-        <div className="comprador-logo" onClick={() => navigate(rutaInicio())}>MarketDist</div>
-        <div className="comprador-buscador">
-          <span className="comprador-buscador-icono">⌕</span>
-          <input
-            className="comprador-buscador-input"
-            type="text"
-            placeholder="Buscar productos…"
-            value={busqueda}
-            onChange={e => { setBusqueda(e.target.value); aplicarFiltros({ nombre: e.target.value }) }}
-          />
-        </div>
-        <div className="comprador-acciones">
-          <span className="comprador-nav-link" onClick={() => navigate('/misPedidos')}>Mis pedidos</span>
-          <span className="comprador-nav-link" onClick={() => navigate(modoDistribuidorActivo ? '/inicio' : '/configurarPerfil')}>Distribuidora</span>
-          <CampanaNotificaciones rutaDestino="/misPedidos" rutaDetalle="/pedido" />
-          <button className="comprador-btn-carrito" onClick={() => navigate('/carrito')}>
-            🛒{totalItems > 0 && <span className="comprador-carrito-badge">{totalItems}</span>}
-          </button>
-          <MenuPerfilComprador />
-        </div>
-      </header>
+      <Hdr
+        logo={<span className="hdr-logo" onClick={() => navigate(rutaInicio())}>MarketDist</span>}
+        buscador
+        buscadorValor={busqueda}
+        onBuscadorChange={(valor) => { setBusqueda(valor); aplicarFiltros({ nombre: valor }) }}
+      >
+        <span className="link comprador-nav-link" onClick={() => navigate('/misPedidos')}>Mis pedidos</span>
+        <span className="link comprador-nav-link" onClick={() => navigate(modoDistribuidorActivo ? '/inicio' : '/configurarPerfil')}>Distribuidora</span>
+        <CampanaNotificaciones rutaDestino="/misPedidos" rutaDetalle="/pedido" />
+        <Boton variante="icono" className="hdr-btn-carrito" badge={totalItems} onClick={() => navigate('/carrito')} aria-label="Carrito">🛒</Boton>
+        <MenuPerfilComprador />
+      </Hdr>
 
       <div className="comprador-filtros">
         <select value={filtroCategoria} onChange={e => { setFiltroCategoria(e.target.value); aplicarFiltros({ categoria: e.target.value }) }}>
@@ -170,7 +162,7 @@ function InicioComprador() {
 
       </main>
 
-      <BottomNavComprador />
+      <BottomNav />
 
     </div>
   )
