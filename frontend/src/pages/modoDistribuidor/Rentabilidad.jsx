@@ -39,7 +39,7 @@ function Rentabilidad() {
   }, [])
 
   return (
-    <PanelDistribuidor tituloMobile="Reportes" activo="/reportes">
+    <PanelDistribuidor activo="/reportes">
       <TabRow tabs={SUBNAV_REPORTES} activo="/reportes/rentabilidad" onCambiar={navigate} className="reportes-subnav" />
 
       <div className="panel-seccion-header panel-seccion-header--sub">

@@ -145,8 +145,6 @@ function Inicio() {
 
   return (
     <PanelDistribuidor
-      tituloMobile="Mis productos"
-      accionMobile={<button className="panel-mobile-nuevo" onClick={() => navigate('/producto/nuevo')}>+</button>}
       buscadorValor={busqueda}
       onBuscadorChange={handleBuscar}
     >

@@ -103,10 +103,7 @@ function Reparto() {
   }
 
   return (
-    <PanelDistribuidor
-      tituloMobile="Reparto"
-      accionMobile={<button className="panel-mobile-nuevo" title="Crear reparto" onClick={() => navigate('/reparto/nuevo')}>+</button>}
-    >
+    <PanelDistribuidor>
           <div className="panel-seccion-header panel-seccion-header--sub">
             <div>
               <h1 className="panel-h1">Panel de repartos</h1>

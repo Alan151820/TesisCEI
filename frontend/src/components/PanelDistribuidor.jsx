@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import CampanaNotificaciones from './CampanaNotificaciones'
 import ToggleTema from './ToggleTema'
@@ -23,55 +22,18 @@ function cerrarSesionDistribuidor(navigate) {
   navigate('/login')
 }
 
-function PanelDistribuidor({ tituloMobile, accionMobile, activo, buscadorValor, onBuscadorChange, children }) {
+function PanelDistribuidor({ activo, buscadorValor, onBuscadorChange, children }) {
   const navigate = useNavigate()
   const location = useLocation()
   const rutaActiva = activo ?? location.pathname
   const nombre = localStorage.getItem('nombre') || ''
 
-  const [menuAbierto, setMenuAbierto] = useState(false)
   const { abierto: menuPerfil, setAbierto: setMenuPerfil, ref: perfilRef } = useDesplegable()
 
   const handleCerrarSesion = () => cerrarSesionDistribuidor(navigate)
 
   return (
     <div className="panel-shell">
-
-      {menuAbierto && (
-        <div className="panel-drawer-overlay" onClick={() => setMenuAbierto(false)}>
-          <nav className="panel-drawer" data-tema="oscuro" onClick={e => e.stopPropagation()}>
-            <div className="panel-drawer-top">
-              <div className="panel-drawer-marca">MarketDist</div>
-              <button className="panel-drawer-cerrar-btn" onClick={() => setMenuAbierto(false)}>✕</button>
-            </div>
-            {NAV_ITEMS.map(item => (
-              <div
-                key={item.ruta}
-                className={`panel-drawer-item${rutaActiva === item.ruta ? ' activo' : ''}`}
-                onClick={() => { navigate(item.ruta); setMenuAbierto(false) }}
-              >
-                {item.label}
-              </div>
-            ))}
-            <div className="panel-drawer-sep" />
-            <button className="panel-drawer-modo" onClick={() => { navigate('/inicioComprador'); setMenuAbierto(false) }}>
-              ← Modo comprador
-            </button>
-            <div className="panel-drawer-footer">
-              <div className="panel-drawer-nombre">{nombre}</div>
-              <div className="panel-drawer-rol">Distribuidor</div>
-              <button className="panel-drawer-logout" onClick={handleCerrarSesion}>Cerrar sesión</button>
-            </div>
-          </nav>
-        </div>
-      )}
-
-      <div className="panel-mobile-header" data-tema="oscuro">
-        <span className="panel-mobile-hamburger" onClick={() => setMenuAbierto(true)}>≡</span>
-        <div className="panel-mobile-titulo">{tituloMobile}</div>
-        <CampanaNotificaciones rutaDestino="/pedidos" rutaDetalle="/pedidos" />
-        {accionMobile || <div style={{ width: 40 }} />}
-      </div>
 
       <Hdr
         logo={<span className="hdr-logo">MarketDist</span>}

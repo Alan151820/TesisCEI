@@ -112,7 +112,7 @@ function CrearReparto() {
   }, [pedidosConUbicacion, latitudPartida, longitudPartida])
 
   return (
-    <PanelDistribuidor tituloMobile="Crear reparto" activo="/reparto">
+    <PanelDistribuidor activo="/reparto">
           <div className="panel-seccion-header reparto-crear-header">
             <div>
               <h1 className="panel-h1">Crear reparto</h1>

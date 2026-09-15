@@ -116,7 +116,7 @@ function MisPedidos() {
   }, [])
 
   return (
-    <PanelDistribuidor tituloMobile="Pedidos">
+    <PanelDistribuidor>
             <div className="panel-seccion-header panel-seccion-header--sub">
               <div>
                 <h1 className="panel-h1">Pedidos</h1>

@@ -121,7 +121,7 @@ function DetallePedido() {
   }
 
   return (
-    <PanelDistribuidor tituloMobile={`Pedido #${id}`} activo="/pedidos">
+    <PanelDistribuidor activo="/pedidos">
             <div className="panel-contenido-centrado">
 
             <div className="fila" style={{ justifyContent: 'space-between', marginBottom: 20 }}>

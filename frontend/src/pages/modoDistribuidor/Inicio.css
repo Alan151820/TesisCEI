@@ -127,7 +127,6 @@
   overflow: hidden;
 }
 
-/* Sidebar — franja oscura fija (data-tema="oscuro" en el JSX) */
 .panel-sidebar {
   width: 248px;
   background: var(--color-fondo);
@@ -488,133 +487,6 @@
   border-top: 1px solid var(--color-borde);
 }
 
-/* Drawer — oculto siempre (solo existe via React conditional). z-index alto
-   a propósito: páginas como DetalleReparto/CrearReparto tienen un mapa de
-   Leaflet en el contenido, y los panes de Leaflet (hasta 700) más sus
-   controles (zoom, etc., 1000) usan z-index propios — si el drawer no les
-   gana a todos, el mapa se pinta encima del cajón de navegación en vez de
-   quedar debajo. */
-.panel-drawer-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.5);
-  z-index: 2000;
-}
-
-.panel-drawer {
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: 260px;
-  max-width: 80vw;
-  background: var(--color-fondo);
-  display: flex;
-  flex-direction: column;
-  overflow-y: auto;
-}
-
-.panel-drawer-top {
-  height: 52px;
-  display: flex;
-  align-items: center;
-  padding: 0 20px;
-  border-bottom: 1px solid var(--color-borde);
-  flex-shrink: 0;
-  justify-content: space-between;
-}
-
-.panel-drawer-marca {
-  font-size: 15px;
-  font-weight: 700;
-  color: var(--color-texto);
-}
-
-.panel-drawer-cerrar-btn {
-  background: none;
-  border: none;
-  color: var(--color-texto-suave);
-  font-size: 16px;
-  cursor: pointer;
-  min-width: 44px;
-  min-height: var(--alto-control);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.panel-drawer-item {
-  height: 48px;
-  display: flex;
-  align-items: center;
-  padding: 0 20px;
-  font-size: 14px;
-  color: var(--color-texto-suave);
-  cursor: pointer;
-  border-left: 3px solid transparent;
-}
-
-.panel-drawer-item.activo {
-  color: var(--color-texto);
-  background: var(--color-superficie);
-  border-left-color: var(--color-texto);
-}
-
-.panel-drawer-item:hover {
-  background: var(--color-superficie);
-  color: var(--color-texto-suave);
-}
-
-.panel-drawer-sep {
-  height: 1px;
-  background: var(--color-borde);
-  margin: 4px 0;
-  flex-shrink: 0;
-}
-
-.panel-drawer-modo {
-  background: none;
-  border: none;
-  padding: 0 20px;
-  height: 44px;
-  font-size: 12px;
-  color: var(--color-texto-suave);
-  cursor: pointer;
-  text-align: left;
-  width: 100%;
-  font-family: inherit;
-}
-
-.panel-drawer-footer {
-  padding: 12px 20px 28px;
-  border-top: 1px solid var(--color-borde);
-  margin-top: auto;
-}
-
-.panel-drawer-nombre {
-  font-size: 13px;
-  color: var(--color-texto-suave);
-  font-weight: 500;
-}
-
-.panel-drawer-rol {
-  font-size: 11px;
-  color: var(--color-texto-suave);
-  margin-top: 2px;
-}
-
-.panel-drawer-logout {
-  background: none;
-  border: none;
-  padding: 0;
-  margin-top: 12px;
-  font-size: 12px;
-  color: var(--color-texto-suave);
-  cursor: pointer;
-  text-align: left;
-  font-family: inherit;
-  display: block;
-}
 
 /* Toggle badge mobile */
 .panel-lista-toggle {
@@ -625,64 +497,54 @@
   justify-content: center;
 }
 
-.panel-mobile-header { display: none; }
 .panel-lista-fila { display: none; }
 
-/* ── Tablet (≤1024px): el sidebar fijo de 220px + el header con buscador
-   ya no entran cómodos junto al contenido, así que la navegación pasa al
-   mismo drawer/hamburguesa que mobile — un patrón estándar de dashboard
-   (colapsar el sidebar en un cajón a partir de cierto ancho) que no le
-   quita ninguna función, solo la vuelve "a pedido" en vez de fija. El
-   CONTENIDO todavía no cambia acá: sigue siendo la tabla completa de
-   escritorio, con scroll horizontal propio (`.panel-tabla-wrapper`) como
-   red de seguridad en el extremo angosto — nada se oculta ni se resume
-   todavía, es exactamente lo mismo que ve un usuario de escritorio. */
+/* ── Tablet/mobile (≤1024px): igual que el wireframe — el header real
+   (`Hdr`) se mantiene siempre visible, y el sidebar deja de ser una
+   columna fija para volverse una franja horizontal con scroll propio,
+   arriba del contenido, en vez de esconderse en un cajón. Ninguna
+   función se pierde ni queda "a pedido": los mismos 5 links siguen
+   visibles y accesibles con un swipe. El CONTENIDO todavía no cambia
+   acá: sigue siendo la tabla completa de escritorio, con scroll
+   horizontal propio (`.panel-tabla-wrapper`) como red de seguridad en
+   el extremo angosto — nada se oculta ni se resume todavía, es
+   exactamente lo mismo que ve un usuario de escritorio. */
 @media (max-width: 1024px) {
-  .panel-shell .hdr { display: none; }
-  .panel-mobile-header {
-    display: flex;
-    height: 48px;
-    background: var(--color-superficie);
+  .panel-layout { flex-direction: column; }
+
+  .panel-sidebar {
+    width: 100%;
+    height: auto;
+    flex-direction: row;
     align-items: center;
-    padding: 0 16px;
-    gap: 12px;
+    gap: 4px;
+    padding: 0;
+    border-right: none;
+    border-bottom: 1px solid var(--color-borde);
+    overflow-x: auto;
+  }
+
+  .panel-sidebar-marca {
+    border-bottom: none;
+    margin: 0;
+    padding: 16px 20px;
     flex-shrink: 0;
   }
-  .panel-mobile-hamburger { font-size: 18px; color: var(--color-texto-suave); cursor: pointer; min-width: 44px; min-height: 44px; display: flex; align-items: center; }
-  .panel-mobile-titulo { font-size: 14px; font-weight: 600; color: var(--color-texto); flex: 1; }
-  .panel-mobile-nuevo {
-    background: none;
-    border: none;
-    font-size: 22px;
-    color: var(--color-texto-suave);
-    cursor: pointer;
-    padding: 0;
-    min-width: 44px;
-    min-height: 44px;
+
+  .panel-nav {
     display: flex;
-    align-items: center;
-    justify-content: center;
+    flex-shrink: 0;
   }
 
-  .panel-sidebar { display: none; }
-  .panel-body { padding: 0 0 20px; overflow-x: hidden; }
-  .panel-seccion-header { display: none; }
+  .panel-nav-item {
+    border-radius: 12px;
+    margin: 8px 0;
+    flex-shrink: 0;
+  }
 
-  /* Opt-in: páginas que conservan su línea de contexto (.panel-subtitulo)
-     en mobile, para no perder la orientación que sí está en escritorio.
-     El título ya lo muestra el header compacto (.panel-mobile-titulo), así
-     que acá se oculta el h1 (redundante); y las acciones que la página
-     movió a accionMobile (.panel-btn-nuevo) también se ocultan — no se
-     "des-ocultan" al volver visible el contenedor. */
-  .panel-seccion-header.panel-seccion-header--sub {
-    display: block;
-    margin-bottom: 14px;
-    padding: 0 14px;
-  }
-  .panel-seccion-header--sub .panel-h1,
-  .panel-seccion-header--sub .panel-btn-nuevo {
-    display: none;
-  }
+  .panel-body { padding: 20px 16px; overflow-x: hidden; }
+
+  .panel-seccion-header { flex-wrap: wrap; gap: 12px; }
 
   /* Filtros siempre visibles — sticky dentro del scroll. Siguen en
      flex-wrap (heredado de la regla base): si no entran en una línea,
@@ -693,7 +555,7 @@
     z-index: 5;
     background: var(--color-superficie);
     padding: 10px 14px;
-    margin-bottom: 0;
+    margin: 0 -16px 0;
     border-bottom: 1px solid var(--color-borde);
   }
   .panel-filtro-chip { height: 30px; font-size: 11px; }
@@ -703,7 +565,7 @@
      sola linea en mobile. */
   .panel-btn-descuento { height: 30px; font-size: 11px; margin-left: 0; }
 
-  .panel-descuento-card { margin: 0 14px 14px; }
+  .panel-descuento-card { margin: 0 0 14px; }
 }
 
 /* ── Mobile (≤767px): acá sí cambia el contenido — la tabla de columnas

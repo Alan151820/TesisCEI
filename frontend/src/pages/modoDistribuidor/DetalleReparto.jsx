@@ -316,7 +316,7 @@ function DetalleReparto() {
   }, [detalle?.plan?.estado, id])
 
   return (
-    <PanelDistribuidor tituloMobile={`Reparto #${id}`} activo="/reparto">
+    <PanelDistribuidor activo="/reparto">
           <div className="panel-seccion-header reparto-detalle-header">
             <div>
               <h1 className="panel-h1">

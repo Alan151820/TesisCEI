@@ -52,7 +52,7 @@ function Reportes() {
   const sinPedidos = reporte && reporte.cantidadPedidosEntregados === 0
 
   return (
-    <PanelDistribuidor tituloMobile="Reportes" activo="/reportes">
+    <PanelDistribuidor activo="/reportes">
       <TabRow tabs={SUBNAV_REPORTES} activo="/reportes" onCambiar={navigate} className="reportes-subnav" />
 
       <div className="reportes-encabezado">

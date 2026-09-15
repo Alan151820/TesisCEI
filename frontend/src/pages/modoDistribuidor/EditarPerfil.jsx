@@ -81,7 +81,7 @@ function EditarPerfil() {
   }
 
   return (
-    <PanelDistribuidor tituloMobile="Editar perfil">
+    <PanelDistribuidor>
           <div className="panel-seccion-header panel-seccion-header--sub">
             <div>
               <h1 className="panel-h1">Editar perfil</h1>
