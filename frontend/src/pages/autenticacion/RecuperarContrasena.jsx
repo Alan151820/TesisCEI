@@ -9,6 +9,7 @@ import Campo from '../../components/ui/Campo'
 import Boton from '../../components/ui/Boton'
 import Stepper from '../../components/ui/Stepper'
 import './RecuperarContrasena.css'
+import Marca from '../../components/Marca'
 
 const PASOS = ['Teléfono', 'Código SMS', 'Nueva contraseña']
 
@@ -30,7 +31,7 @@ function RecuperarContrasena() {
 
   return (
     <div className="recuperar-pagina">
-      <Hdr logo={<span className="hdr-logo" onClick={() => navigate('/')}>MarketPlace</span>} />
+      <Hdr logo={<span className="hdr-logo" onClick={() => navigate('/')}><Marca /></span>} />
 
       <div className="panel-centrado">
         <Tarjeta as="main" className="auth-card col gap-m">

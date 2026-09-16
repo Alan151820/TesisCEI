@@ -14,6 +14,7 @@ import CardProducto from '../../components/ui/CardProducto'
 import EsqueletoTarjetas from '../../components/ui/EsqueletoTarjetas'
 import EstadoLista from '../../components/ui/EstadoLista'
 import './InicioComprador.css'
+import Marca from '../../components/Marca'
 
 function InicioComprador() {
   const navigate = useNavigate()
@@ -74,7 +75,7 @@ function InicioComprador() {
     <div className="comprador-layout">
 
       <Hdr
-        logo={<span className="hdr-logo" onClick={() => navigate(rutaInicio())}>MarketDist</span>}
+        logo={<span className="hdr-logo" onClick={() => navigate(rutaInicio())}><Marca /></span>}
         buscador
         buscadorValor={busqueda}
         onBuscadorChange={(valor) => { setBusqueda(valor); aplicarFiltros({ nombre: valor }) }}

@@ -1,10 +1,10 @@
 import { useState } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import CampanaNotificaciones from './CampanaNotificaciones'
-import ToggleTema from './ToggleTema'
 import Hdr from './Hdr'
 import Boton from './ui/Boton'
 import Avatar from './ui/Avatar'
+import Marca from './Marca'
 import useDesplegable from '../hooks/useDesplegable'
 import { cerrarSesion } from '../lib/auth'
 import '../pages/modoComprador/InicioComprador.css'
@@ -61,7 +61,7 @@ function PanelDistribuidor({ activo, buscadorValor, onBuscadorChange, children }
             ☰
           </Boton>
         }
-        logo={<span className="hdr-logo">MarketDist</span>}
+        logo={<span className="hdr-logo"><Marca /></span>}
         buscador
         buscadorValor={buscadorValor}
         onBuscadorChange={onBuscadorChange}
@@ -74,7 +74,6 @@ function PanelDistribuidor({ activo, buscadorValor, onBuscadorChange, children }
           <Avatar nombre={nombre} onClick={() => setMenuPerfil(v => !v)} />
           {menuPerfil && (
             <div className="desplegable comprador-menu-desplegable">
-              <ToggleTema />
               <div className="desplegable-item" onClick={handleCerrarSesion}>Cerrar sesión</div>
             </div>
           )}
@@ -85,7 +84,7 @@ function PanelDistribuidor({ activo, buscadorValor, onBuscadorChange, children }
         <div className="panel-drawer-overlay" onClick={() => setMenuAbierto(false)}>
           <nav className="panel-drawer" onClick={e => e.stopPropagation()}>
             <div className="panel-sidebar-marca">
-              <div className="titulo1">MarketDist</div>
+              <Marca variante="panel" />
               <Boton variante="icono" onClick={() => setMenuAbierto(false)} aria-label="Cerrar menú">✕</Boton>
             </div>
             <div className="panel-nav">
@@ -99,7 +98,7 @@ function PanelDistribuidor({ activo, buscadorValor, onBuscadorChange, children }
 
         <aside className="panel-sidebar">
           <div className="panel-sidebar-marca">
-            <div className="titulo1">MarketDist</div>
+            <Marca variante="panel" />
             <span className="texto-mudo">Panel del Distribuidor</span>
           </div>
 

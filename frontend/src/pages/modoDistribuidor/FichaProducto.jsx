@@ -12,6 +12,7 @@ import Miga from '../../components/ui/Miga'
 import { convertirAWebP } from '../../lib/imagenProducto'
 import { totalDesdeDescuento, descuentoDesdeTotal, precioUnitario } from '../../lib/tramoPrecio'
 import './FichaProducto.css'
+import Marca from '../../components/Marca'
 
 function FichaProducto() {
   const navigate = useNavigate()
@@ -183,10 +184,10 @@ function FichaProducto() {
 
   return (
     <div className="ficha-fondo">
-      <Hdr className="ficha-hdr-desktop" logo={<span className="hdr-logo" onClick={() => navigate('/inicio')}>MarketDist</span>}>
+      <Hdr className="ficha-hdr-desktop" logo={<span className="hdr-logo" onClick={() => navigate('/inicio')}><Marca /></span>}>
         <span className="link" onClick={() => navigate('/inicio')}>← Volver a mis productos</span>
       </Hdr>
-      <div className="ficha-mobile-header" data-tema="oscuro">
+      <div className="ficha-mobile-header">
         <button type="button" className="ficha-mobile-volver" onClick={() => navigate('/inicio')}>←</button>
         <div className="ficha-mobile-titulo">Nuevo producto</div>
       </div>

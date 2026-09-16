@@ -11,6 +11,7 @@ import GridCards from '../../components/ui/GridCards'
 import CardProducto from '../../components/ui/CardProducto'
 import './InicioComprador.css'
 import './PerfilDistribuidor.css'
+import Marca from '../../components/Marca'
 
 function PerfilDistribuidor() {
   const { id } = useParams()
@@ -53,7 +54,7 @@ function PerfilDistribuidor() {
   return (
     <div className="perfildist-fondo">
 
-      <Hdr logo={<span className="hdr-logo" onClick={() => navigate('/')}>MarketDist</span>} buscador>
+      <Hdr logo={<span className="hdr-logo" onClick={() => navigate('/')}><Marca /></span>} buscador>
         {token ? (
           <>
             <span className="link" onClick={() => navigate(modoDistribuidorActivo ? '/inicio' : '/configurarPerfil')}>

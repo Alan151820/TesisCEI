@@ -8,6 +8,7 @@ import Tarjeta from '../../components/ui/Tarjeta'
 import Campo from '../../components/ui/Campo'
 import Boton from '../../components/ui/Boton'
 import './Verificar.css'
+import Marca from '../../components/Marca'
 
 const AUTH_TABS = [
   { valor: 'login', etiqueta: 'Iniciar sesión' },
@@ -42,7 +43,7 @@ function Verificar() {
 
   return (
     <div className="verificar-pagina">
-      <Hdr logo={<span className="hdr-logo" onClick={() => navigate('/')}>MarketPlace</span>} buscador>
+      <Hdr logo={<span className="hdr-logo" onClick={() => navigate('/')}><Marca /></span>} buscador>
         <TabRow tabs={AUTH_TABS} activo="registro" onCambiar={(v) => navigate(v === 'login' ? '/login' : '/registro')} />
       </Hdr>
 

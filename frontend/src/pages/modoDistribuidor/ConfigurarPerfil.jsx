@@ -9,6 +9,7 @@ import Tarjeta from '../../components/ui/Tarjeta'
 import Campo from '../../components/ui/Campo'
 import Boton from '../../components/ui/Boton'
 import './ConfigurarPerfil.css'
+import Marca from '../../components/Marca'
 
 function ConfigurarPerfil() {
   const [nombreComercial, setNombreComercial] = useState('')
@@ -42,7 +43,7 @@ function ConfigurarPerfil() {
 
   return (
     <div className="configperfil-fondo">
-      <Hdr logo={<span className="hdr-logo">MarketDist</span>} />
+      <Hdr logo={<span className="hdr-logo"><Marca /></span>} />
 
       <div className="p-l">
         <Tarjeta className="col gap-m configperfil-card">

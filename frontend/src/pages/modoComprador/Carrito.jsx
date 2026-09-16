@@ -11,6 +11,7 @@ import Tarjeta from '../../components/ui/Tarjeta'
 import EstadoLista from '../../components/ui/EstadoLista'
 import './InicioComprador.css'
 import './Carrito.css'
+import Marca from '../../components/Marca'
 
 function Carrito() {
   const navigate = useNavigate()
@@ -30,7 +31,7 @@ function Carrito() {
   return (
     <div className="carrito-pagina">
 
-      <Hdr logo={<span className="hdr-logo" onClick={() => navigate(rutaInicio())}>MarketDist</span>} buscador>
+      <Hdr logo={<span className="hdr-logo" onClick={() => navigate(rutaInicio())}><Marca /></span>} buscador>
         {token ? (
           <>
             <span className="link comprador-nav-link" onClick={() => navigate('/misPedidos')}>Mis pedidos</span>

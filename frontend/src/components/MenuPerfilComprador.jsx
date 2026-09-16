@@ -2,7 +2,6 @@ import { useNavigate } from 'react-router-dom'
 import { cerrarSesion } from '../lib/auth'
 import useDesplegable from '../hooks/useDesplegable'
 import Avatar from './ui/Avatar'
-import ToggleTema from './ToggleTema'
 
 function MenuPerfilComprador() {
   const navigate = useNavigate()
@@ -28,7 +27,6 @@ function MenuPerfilComprador() {
         <div className="desplegable comprador-menu-desplegable">
           <div className="desplegable-item comprador-menu-item--mobile" onClick={() => { setAbierto(false); navigate('/misPedidos') }}>Mis pedidos</div>
           <div className="desplegable-item comprador-menu-item--mobile" onClick={() => { setAbierto(false); navigate(rutaDistribuidora) }}>Distribuidora</div>
-          <ToggleTema />
           <div className="desplegable-item" onClick={handleCerrarSesion}>Cerrar sesión</div>
         </div>
       )}

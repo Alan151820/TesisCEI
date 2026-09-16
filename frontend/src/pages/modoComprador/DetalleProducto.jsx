@@ -19,6 +19,7 @@ import EstadoLista from '../../components/ui/EstadoLista'
 import { construirTituloProducto } from '../../lib/producto'
 import './InicioComprador.css'
 import './DetalleProducto.css'
+import Marca from '../../components/Marca'
 
 function DetalleProducto() {
   const { id } = useParams()
@@ -74,7 +75,7 @@ function DetalleProducto() {
   return (
     <div className="detalleproducto-layout">
 
-      <Hdr logo={<span className="hdr-logo" onClick={() => navigate('/')}>MarketDist</span>} buscador>
+      <Hdr logo={<span className="hdr-logo" onClick={() => navigate('/')}><Marca /></span>} buscador>
         <Boton variante="icono" className="hdr-btn-carrito" badge={totalItems} onClick={() => navigate('/carrito')} aria-label="Carrito">🛒</Boton>
         {token ? (
           <>

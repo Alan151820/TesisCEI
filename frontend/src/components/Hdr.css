@@ -14,13 +14,38 @@
 }
 
 .hdr-logo {
-  font-family: 'Space Grotesk', 'Inter', system-ui, sans-serif;
-  font-size: 22px;
-  font-weight: 800;
-  letter-spacing: -0.02em;
+  display: inline-flex;
+  align-items: center;
   cursor: pointer;
   flex-shrink: 0;
 }
+
+.marca {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.marca-icono {
+  width: 29px;
+  height: 30px;
+  flex-shrink: 0;
+}
+
+.marca-texto {
+  width: 91px;
+  height: 25px;
+  flex-shrink: 0;
+  --marca-acento: var(--color-terciario);
+}
+
+.marca--panel { color: var(--color-secundario); }
+.marca .marca-icono { color: var(--color-primario); }
+.hdr .marca .marca-icono, .marca--claro .marca-icono { color: currentColor; }
+.hdr .marca-texto { --marca-acento: var(--color-sobre-primario); }
+.marca--grande .marca-icono { width: 52px; height: 54px; }
+.marca--grande .marca-texto { width: 164px; height: 45px; }
 
 .hdr-buscador {
   flex: 1 1 200px;

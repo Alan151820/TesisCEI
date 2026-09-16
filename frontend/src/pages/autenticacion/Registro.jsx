@@ -9,6 +9,7 @@ import Tarjeta from '../../components/ui/Tarjeta'
 import Campo from '../../components/ui/Campo'
 import Boton from '../../components/ui/Boton'
 import './Registro.css'
+import Marca from '../../components/Marca'
 
 const AUTH_TABS = [
   { valor: 'login', etiqueta: 'Iniciar sesión' },
@@ -45,7 +46,7 @@ function Registro() {
 
   return (
     <div className="registro-pagina">
-      <Hdr logo={<span className="hdr-logo" onClick={() => navigate('/')}>MarketPlace</span>}>
+      <Hdr logo={<span className="hdr-logo" onClick={() => navigate('/')}><Marca /></span>}>
         <TabRow tabs={AUTH_TABS} activo="registro" onCambiar={(v) => navigate(v === 'login' ? '/login' : '/registro')} />
       </Hdr>
 

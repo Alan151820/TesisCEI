@@ -11,6 +11,7 @@ import EsqueletoTarjetas from '../components/ui/EsqueletoTarjetas'
 import EstadoLista from '../components/ui/EstadoLista'
 import api from '../lib/axios'
 import './Catalogo.css'
+import Marca from '../components/Marca'
 
 function Catalogo() {
   const navigate = useNavigate()
@@ -70,7 +71,7 @@ function Catalogo() {
     <div className="catalogo-layout">
 
       <Hdr
-        logo={<span className="hdr-logo" onClick={() => navigate('/')}>MarketDist</span>}
+        logo={<span className="hdr-logo" onClick={() => navigate('/')}><Marca /></span>}
         buscador
         buscadorValor={busqueda}
         onBuscadorChange={(valor) => { setBusqueda(valor); aplicarFiltros({ nombre: valor }) }}

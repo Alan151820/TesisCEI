@@ -3,13 +3,14 @@ import Hdr from '../components/Hdr'
 import Tarjeta from '../components/ui/Tarjeta'
 import Boton from '../components/ui/Boton'
 import './Privacidad.css'
+import Marca from '../components/Marca'
 
 function Privacidad() {
   const navigate = useNavigate()
 
   return (
     <div className="privacidad-pagina">
-      <Hdr logo={<span className="hdr-logo" onClick={() => navigate('/')}>MarketDist</span>} />
+      <Hdr logo={<span className="hdr-logo" onClick={() => navigate('/')}><Marca /></span>} />
 
       <div className="panel-centrado">
         <Tarjeta as="main" className="col gap-m privacidad-tarjeta">

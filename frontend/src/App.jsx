@@ -1,7 +1,7 @@
 import { Routes, Route } from 'react-router-dom'
 import { CarritoProvider } from './context/CarritoContext'
-import { TemaProvider } from './context/TemaContext'
 import { RutaProtegida, RutaDistribuidor } from './components/RutaProtegida'
+import MarcaSprite from './components/MarcaSprite'
 import Registro from './pages/autenticacion/Registro'
 import Verificar from './pages/autenticacion/Verificar'
 import Login from './pages/autenticacion/Login'
@@ -33,7 +33,8 @@ import Rentabilidad from './pages/modoDistribuidor/Rentabilidad'
 
 function App() {
   return (
-    <TemaProvider>
+    <>
+      <MarcaSprite />
       <CarritoProvider>
         <Routes>
           <Route path='/registro' element={<Registro />} />
@@ -72,7 +73,7 @@ function App() {
           </Route>
         </Routes>
       </CarritoProvider>
-    </TemaProvider>
+    </>
   )
 }
 

@@ -17,6 +17,7 @@ import EsqueletoFilas from '../../components/ui/EsqueletoFilas'
 import EstadoLista from '../../components/ui/EstadoLista'
 import './InicioComprador.css'
 import './MisPedidos.css'
+import Marca from '../../components/Marca'
 
 const COLUMNAS = ['Pedido', 'Fecha', 'Imagen', 'Producto', 'Distribuidor', 'Total', 'Estado']
 const GRID = '70px 100px 72px minmax(200px,1fr) 160px 100px 120px'
@@ -46,7 +47,7 @@ function MisPedidos() {
   return (
     <div className="mispedidos-pagina">
 
-      <Hdr logo={<span className="hdr-logo" onClick={() => navigate(rutaInicio())}>MarketDist</span>} buscador>
+      <Hdr logo={<span className="hdr-logo" onClick={() => navigate(rutaInicio())}><Marca /></span>} buscador>
         <span className="link comprador-nav-link" onClick={() => navigate('/misPedidos')}>Mis pedidos</span>
         <span className="link comprador-nav-link" onClick={() => navigate(modoDistribuidorActivo ? '/inicio' : '/configurarPerfil')}>Distribuidora</span>
         <CampanaNotificaciones rutaDestino="/misPedidos" rutaDetalle="/pedido" />

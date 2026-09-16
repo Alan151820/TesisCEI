@@ -20,6 +20,7 @@ import ModalBody from '../../components/ui/ModalBody'
 import ModalFooter from '../../components/ui/ModalFooter'
 import './InicioComprador.css'
 import './DetallePedido.css'
+import Marca from '../../components/Marca'
 
 const COLUMNAS = ['Producto', 'Cantidad', 'Precio unit.', 'Subtotal']
 const GRID = '1fr 120px 140px 140px'
@@ -68,7 +69,7 @@ function DetallePedido() {
   return (
     <div className="detallepedido-pagina">
 
-      <Hdr logo={<span className="hdr-logo" onClick={() => navigate(rutaInicio())}>MarketDist</span>} buscador>
+      <Hdr logo={<span className="hdr-logo" onClick={() => navigate(rutaInicio())}><Marca /></span>} buscador>
         <span className="link comprador-nav-link" onClick={() => navigate('/misPedidos')}>Mis pedidos</span>
         <span className="link comprador-nav-link" onClick={() => navigate(modoDistribuidorActivo ? '/inicio' : '/configurarPerfil')}>Distribuidora</span>
         <CampanaNotificaciones rutaDestino="/misPedidos" rutaDetalle="/pedido" />

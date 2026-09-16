@@ -12,6 +12,7 @@ import Campo from '../../components/ui/Campo'
 import Tarjeta from '../../components/ui/Tarjeta'
 import EstadoLista from '../../components/ui/EstadoLista'
 import './ConfirmacionPedido.css'
+import Marca from '../../components/Marca'
 
 const DEPARTAMENTOS = [
   'Artigas', 'Canelones', 'Cerro Largo', 'Colonia', 'Durazno',
@@ -179,7 +180,7 @@ function ConfirmacionPedido() {
   if (pedidosConfirmados) {
     return (
       <div className="confirmar-pagina">
-        <Hdr logo={<span className="hdr-logo" onClick={() => navigate(rutaInicio())}>MarketDist</span>}>
+        <Hdr logo={<span className="hdr-logo" onClick={() => navigate(rutaInicio())}><Marca /></span>}>
           <span className="titulo1">Pedido confirmado</span>
         </Hdr>
         <div className="confirmar-contenido">
@@ -209,7 +210,7 @@ function ConfirmacionPedido() {
   if (totalItems === 0) {
     return (
       <div className="confirmar-pagina">
-        <Hdr logo={<span className="hdr-logo" onClick={() => navigate(rutaInicio())}>MarketDist</span>}>
+        <Hdr logo={<span className="hdr-logo" onClick={() => navigate(rutaInicio())}><Marca /></span>}>
           <span className="titulo1">Confirmar pedido</span>
         </Hdr>
         <div className="confirmar-contenido">
@@ -229,7 +230,7 @@ function ConfirmacionPedido() {
         />
       )}
 
-      <Hdr logo={<span className="hdr-logo" onClick={() => navigate(rutaInicio())}>MarketDist</span>}>
+      <Hdr logo={<span className="hdr-logo" onClick={() => navigate(rutaInicio())}><Marca /></span>}>
         <span className="titulo1">Confirmar pedido</span>
         <button type="button" className="link" onClick={() => navigate('/carrito')}>← Volver al carrito</button>
       </Hdr>
