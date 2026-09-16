@@ -1,6 +1,7 @@
 import 'dotenv/config'
 import express from 'express'
 import cors from 'cors'
+import multer from 'multer'
 import path from 'path'
 import { fileURLToPath } from 'url'
 import authRoutes from './routes/auth.js'
@@ -35,6 +36,12 @@ app.use('/api/reportes', reportesRoutes)
 
 app.use((err, req, res, next) => {
   console.error(err)
+  if (err instanceof multer.MulterError) {
+    const mensaje = err.code === 'LIMIT_FILE_SIZE'
+      ? 'La imagen supera el tamaño máximo permitido (5 MB).'
+      : 'No fue posible subir el archivo.'
+    return res.status(400).json({ error: mensaje })
+  }
   const status = err.status || 500
   const mensaje = status < 500 ? err.message : 'No fue posible completar la operación. Intente nuevamente más tarde.'
   res.status(status).json({ error: mensaje })

@@ -24,11 +24,6 @@ class Distribuidor {
   return null
 }
 
-  // RF-048 (ampliación): la ubicación del depósito ya se puede elegir en
-  // el mapa desde el alta inicial, no solo después desde Editar perfil
-  // (RF-042) — sigue siendo opcional acá también: si no se eligió
-  // ubicación, se guarda igual el resto del perfil con estos tres campos
-  // en null.
   static async configurarPerfilInicial(usuarioId, nombreComercial, descripcionNegocio, zonaEntrega, direccionPartida = null, latitud = null, longitud = null) {
   const resultado = await pool.query(
     'INSERT INTO distribuidor (usuario_id, nombre_comercial, descripcion_negocio, zona_entrega, direccion_partida, latitud, longitud, perfil_configurado) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *',
@@ -38,7 +33,7 @@ class Distribuidor {
 }
 
 async editarPerfil(nombreComercial, descripcionNegocio, zonaEntrega) {
-  if (!nombreComercial) throw new Error('El nombre comercial no puede quedar vacío.')
+  if (!nombreComercial) throw Object.assign(new Error('El nombre comercial no puede quedar vacío.'), { status: 400 })
 
   await pool.query(
     'UPDATE distribuidor SET nombre_comercial = $1, descripcion_negocio = $2, zona_entrega = $3 WHERE id = $4',
@@ -72,6 +67,14 @@ static async obtenerPorUsuarioId(usuarioId) {
   const resultado = await pool.query('SELECT * FROM distribuidor WHERE usuario_id = $1', [usuarioId])
   if (resultado.rows.length === 0) return null
   return new Distribuidor(resultado.rows[0])
+}
+
+static async requerirPorUsuarioId(usuarioId) {
+  const distribuidor = await Distribuidor.obtenerPorUsuarioId(usuarioId)
+  if (!distribuidor) {
+    throw Object.assign(new Error('No tenés un perfil de distribuidor configurado.'), { status: 404 })
+  }
+  return distribuidor
 }
 }
 

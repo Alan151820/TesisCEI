@@ -1,6 +1,3 @@
--- El archivo está en UTF-8. Forzar el encoding del cliente evita que una
--- importación desde una terminal Windows (cuyo default es WIN1252) corrompa
--- los caracteres acentuados (tildes, ñ) por doble codificación.
 SET client_encoding = 'UTF8';
 
 CREATE TYPE codigo_verificacion_proposito AS ENUM (
@@ -17,8 +14,6 @@ CREATE TABLE usuario (
   cuenta_verificada BOOLEAN NOT NULL DEFAULT FALSE,
   consentimiento_datos_otorgado BOOLEAN NOT NULL DEFAULT FALSE,
   fecha_creacion TIMESTAMP NOT NULL DEFAULT NOW(),
-  -- RNF-010 (Ley 18.331): ninguna cuenta puede terminar de crearse sin
-  -- el consentimiento otorgado.
   CONSTRAINT usuario_consentimiento_otorgado CHECK (consentimiento_datos_otorgado = true)
 );
 
@@ -31,11 +26,6 @@ CREATE TABLE codigo_verificacion (
   usado BOOLEAN NOT NULL DEFAULT FALSE,
   fecha_creacion TIMESTAMP NOT NULL DEFAULT NOW()
 );
-
--- RF-014: Carga de producto nuevo
--- RF-012: Modo distribuidor
--- RF-042: dirección de partida del depósito (latitud/longitud)
--- RF-049: logo del distribuidor
 
 CREATE TABLE distribuidor (
   id SERIAL PRIMARY KEY,
@@ -52,9 +42,6 @@ CREATE TABLE distribuidor (
 );
 
 CREATE TYPE producto_estado AS ENUM ('publicado', 'pausado');
--- RF-014: modelo "todo por unidad" — reemplaza al modelo anterior
--- (empaquetado/fraccionable, con unidad_base_interna/incremento_venta/
--- metrica_visualizacion), que ya no está vigente.
 CREATE TYPE producto_magnitud_unidad AS ENUM ('kg', 'g', 'ml', 'l', 'cm', 'm');
 
 CREATE TABLE categoria (
@@ -91,7 +78,6 @@ CREATE TABLE producto (
   magnitud_unidad producto_magnitud_unidad
 );
 
--- RF-015: Registro de precio por volumen
 CREATE TABLE precio_volumen (
   id SERIAL PRIMARY KEY,
   producto_id INTEGER NOT NULL REFERENCES producto(id),
@@ -101,13 +87,9 @@ CREATE TABLE precio_volumen (
   CONSTRAINT precio_venta_positivo CHECK (precio_venta > 0),
   CONSTRAINT cantidad_minima_positiva CHECK (cantidad_minima > 0),
   CONSTRAINT precio_costo_no_negativo CHECK (precio_costo IS NULL OR precio_costo >= 0),
-  -- RF-015: no puede haber dos precios por volumen con la misma cantidad
-  -- mínima para el mismo producto (incluida la cantidad mínima 1, el precio base).
   CONSTRAINT precio_volumen_producto_cantidad_unica UNIQUE (producto_id, cantidad_minima)
 );
 
--- RF-008: Confirmación de pedido
--- RF-069: 'cancelado' — cancelación de pedido por el comprador
 CREATE TYPE pedido_estado AS ENUM ('pendiente', 'aceptado', 'en_camino', 'entregado', 'rechazado', 'cancelado');
 
 CREATE TABLE pedido (
@@ -132,7 +114,6 @@ CREATE TABLE pedido_item (
   precio_venta_congelado DECIMAL NOT NULL
 );
 
--- RF-043 a RF-067: planificación y gestión de repartos
 CREATE TYPE plan_reparto_estado AS ENUM ('sin_empezar', 'en_curso', 'finalizado');
 
 CREATE TABLE plan_reparto (
@@ -140,9 +121,6 @@ CREATE TABLE plan_reparto (
   distribuidor_id INTEGER NOT NULL REFERENCES distribuidor(id),
   estado plan_reparto_estado NOT NULL DEFAULT 'sin_empezar',
   fecha_creacion TIMESTAMP NOT NULL DEFAULT NOW(),
-  -- RF-071: último punto reportado por el celular del distribuidor
-  -- mientras el reparto está "en_curso". No se guarda historial, solo el
-  -- último punto conocido.
   ultima_latitud DECIMAL,
   ultima_longitud DECIMAL,
   ultima_ubicacion_fecha TIMESTAMP
@@ -159,12 +137,8 @@ CREATE TABLE parada_reparto (
   motivo VARCHAR
 );
 
--- Un mismo pedido no puede tener más de una parada activa (estado distinto
--- de 'omitido') a la vez: evita que quede en dos planes de reparto en curso
--- al mismo tiempo.
 CREATE UNIQUE INDEX parada_reparto_pedido_id_activo_key ON parada_reparto (pedido_id) WHERE (estado_parada <> 'omitido');
 
--- RF-024: Notificación de pedido entrante al distribuidor
 CREATE TYPE notificacion_tipo AS ENUM ('cambio_estado_pedido', 'pedido_entrante', 'stock_bajo');
 
 CREATE TABLE notificacion (

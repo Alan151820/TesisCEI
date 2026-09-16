@@ -1,4 +1,6 @@
 import * as pedidosServicio from '../services/pedidos.servicio.js'
+import { esIdValido } from '../middleware/validaciones.js'
+
 
 async function confirmarPedido(req, res, next) {
   const { direccionEntrega, latitud, longitud, items } = req.body
@@ -8,16 +10,19 @@ async function confirmarPedido(req, res, next) {
     return res.status(400).json({ error: 'Debés ingresar una dirección de entrega para continuar.' })
   }
 
-  // RF-008: todo pedido confirmado queda con coordenadas registradas (por el
-  // mapa o por geocodificación de la dirección de respaldo). Si la
-  // confirmación llega sin coordenadas válidas, no se procesa — mismo
-  // criterio que el chequeo de dirección de arriba (RF-008 [E2]).
   if (latitud == null || longitud == null || !Number.isFinite(Number(latitud)) || !Number.isFinite(Number(longitud))) {
     return res.status(400).json({ error: 'El pedido debe incluir la ubicación de la dirección de entrega.' })
   }
 
   if (!Array.isArray(items) || items.length === 0) {
     return res.status(400).json({ error: 'El carrito debe contener al menos un producto.' })
+  }
+
+  for (const item of items) {
+    const cantidad = Number(item?.cantidad)
+    if (!Number.isInteger(cantidad) || cantidad < 1) {
+      return res.status(400).json({ error: 'La cantidad de cada producto debe ser un número entero mayor o igual a 1.' })
+    }
   }
 
   try {
@@ -60,6 +65,9 @@ async function pedidosDisponiblesReparto(req, res, next) {
 
 async function detalleComprador(req, res, next) {
   const pedidoId = Number(req.params.id)
+  if (!esIdValido(pedidoId)) {
+    return res.status(404).json({ error: 'Pedido no encontrado.' })
+  }
   try {
     const pedido = await pedidosServicio.obtenerDetalleComprador(pedidoId, req.usuario.id)
     res.json(pedido)
@@ -70,6 +78,9 @@ async function detalleComprador(req, res, next) {
 
 async function detalleDistribuidor(req, res, next) {
   const pedidoId = Number(req.params.id)
+  if (!esIdValido(pedidoId)) {
+    return res.status(404).json({ error: 'Pedido no encontrado.' })
+  }
   try {
     const pedido = await pedidosServicio.obtenerDetalleDistribuidor(pedidoId, req.usuario.id)
     res.json(pedido)
@@ -80,6 +91,9 @@ async function detalleDistribuidor(req, res, next) {
 
 async function aceptarPedido(req, res, next) {
   const pedidoId = Number(req.params.id)
+  if (!esIdValido(pedidoId)) {
+    return res.status(404).json({ error: 'Pedido no encontrado.' })
+  }
   try {
     const resultado = await pedidosServicio.aceptarPedido(pedidoId, req.usuario.id)
     res.json(resultado)
@@ -91,6 +105,10 @@ async function aceptarPedido(req, res, next) {
 async function rechazarPedido(req, res, next) {
   const pedidoId = Number(req.params.id)
   const { motivo } = req.body
+
+  if (!esIdValido(pedidoId)) {
+    return res.status(404).json({ error: 'Pedido no encontrado.' })
+  }
 
   if (!motivo || !motivo.trim()) {
     return res.status(400).json({ error: 'Ingresá un motivo de rechazo antes de confirmar.' })
@@ -106,6 +124,9 @@ async function rechazarPedido(req, res, next) {
 
 async function avanzarEstado(req, res, next) {
   const pedidoId = Number(req.params.id)
+  if (!esIdValido(pedidoId)) {
+    return res.status(404).json({ error: 'Pedido no encontrado.' })
+  }
   try {
     const resultado = await pedidosServicio.avanzarEstado(pedidoId, req.usuario.id)
     res.json(resultado)
@@ -114,9 +135,11 @@ async function avanzarEstado(req, res, next) {
   }
 }
 
-// RF-069
 async function cancelarPedido(req, res, next) {
   const pedidoId = Number(req.params.id)
+  if (!esIdValido(pedidoId)) {
+    return res.status(404).json({ error: 'Pedido no encontrado.' })
+  }
   try {
     const resultado = await pedidosServicio.cancelarPedido(pedidoId, req.usuario.id)
     res.json(resultado)
