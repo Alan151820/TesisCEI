@@ -180,7 +180,7 @@
   position: fixed;
   inset: 0;
   z-index: 2000;
-  background: rgba(0, 0, 0, 0.45);
+  background: color-mix(in oklch, var(--color-texto) 45%, transparent);
   display: flex;
 }
 
