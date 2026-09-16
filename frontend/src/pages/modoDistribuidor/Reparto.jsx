@@ -19,7 +19,7 @@ import './Inicio.css'
 import './MisPedidos.css'
 import './Reparto.css'
 
-const COLUMNAS = ['Reparto', 'Fecha', 'Estado', 'Progreso', '']
+const COLUMNAS = ['Reparto', 'Fecha', { label: 'Estado', className: 'reparto-celda--centro' }, 'Progreso', '']
 const GRID = '80px 120px 120px 1fr 100px'
 
 function formatearFecha(isoString) {
@@ -141,7 +141,7 @@ function Reparto() {
                 >
                   <div className="reparto-celda">#{plan.id}</div>
                   <div className="reparto-celda">{formatearFecha(plan.fechaCreacion)}</div>
-                  <div className="reparto-celda"><EstadoBadge estado={plan.estado} /></div>
+                  <div className="reparto-celda reparto-celda--centro"><EstadoBadge estado={plan.estado} /></div>
                   <div className="reparto-celda">
                     <div className="reparto-progreso">
                       <div className="reparto-progreso-barra">

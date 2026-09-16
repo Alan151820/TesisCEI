@@ -5,6 +5,11 @@
   align-items: center;
 }
 
+.reparto-celda--centro {
+  justify-content: center;
+  text-align: center;
+}
+
 .reparto-pie {
   display: flex;
   align-items: center;

@@ -10,7 +10,7 @@ import EsqueletoFilas from '../../components/ui/EsqueletoFilas'
 import EstadoLista from '../../components/ui/EstadoLista'
 import './Inicio.css'
 
-const COLUMNAS = ['', 'Producto', 'Categoría', 'Stock disp.', 'Stock res.', 'Estado', 'Acciones']
+const COLUMNAS = ['', 'Producto', 'Categoría', 'Stock disp.', 'Stock res.', { label: 'Estado', className: 'panel-tabla-celda--centro' }, 'Acciones']
 const GRID = '52px 1fr 140px 120px 120px 120px 180px'
 
 function Inicio() {
@@ -269,7 +269,7 @@ function Inicio() {
                     {p.stockDisponible === 0 ? 'Sin stock disponible.' : `${p.stockDisponible} u.`}
                   </div>
                   <div className="panel-tabla-celda">{p.stockReservado} u.</div>
-                  <div className="panel-tabla-celda">
+                  <div className="panel-tabla-celda panel-tabla-celda--centro">
                     <span className={`panel-estado-badge ${p.estadoVisibilidad}`}>
                       {p.estadoVisibilidad === 'publicado' ? 'Publicado' : 'Pausado'}
                     </span>

@@ -21,7 +21,7 @@ import './Inicio.css'
 import './MisPedidos.css'
 import './Reparto.css'
 
-const COLUMNAS_PARADAS = ['N°', 'Pedido', 'Comprador', 'Dirección', 'Estado', 'Acciones']
+const COLUMNAS_PARADAS = ['N°', 'Pedido', 'Comprador', 'Dirección', { label: 'Estado', className: 'reparto-celda--centro' }, 'Acciones']
 const GRID_PARADAS = '36px 80px 130px 1fr 90px 320px'
 
 function crearIcono(colorVar, tamano) {
@@ -436,7 +436,7 @@ function DetalleReparto() {
                       <div className="reparto-celda">#{p.pedidoId}</div>
                       <div className="reparto-celda">{p.nombreComprador}</div>
                       <div className="reparto-celda">{p.direccionEntrega}</div>
-                      <div className="reparto-celda"><EstadoBadge estado={p.estadoParada} /></div>
+                      <div className="reparto-celda reparto-celda--centro"><EstadoBadge estado={p.estadoParada} /></div>
                       <div className="reparto-celda reparto-celda-acciones">
                         {p.latitud != null && p.longitud != null && (
                           <button

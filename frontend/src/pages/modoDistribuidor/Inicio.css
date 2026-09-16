@@ -438,6 +438,11 @@
   align-items: center;
 }
 
+.panel-tabla-celda--centro {
+  justify-content: center;
+  text-align: center;
+}
+
 .panel-tabla-celda.stock-cero {
   color: var(--color-error);
 }

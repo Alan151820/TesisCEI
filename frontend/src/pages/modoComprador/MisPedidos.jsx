@@ -19,7 +19,11 @@ import './InicioComprador.css'
 import './MisPedidos.css'
 import Marca from '../../components/Marca'
 
-const COLUMNAS = ['Pedido', 'Fecha', 'Imagen', 'Producto', 'Distribuidor', 'Total', 'Estado']
+const COLUMNAS = [
+  'Pedido', 'Fecha', 'Imagen', 'Producto', 'Distribuidor',
+  { label: 'Total', className: 'mispedidos-celda--derecha' },
+  { label: 'Estado', className: 'mispedidos-celda--centro' },
+]
 const GRID = '70px 100px 72px minmax(200px,1fr) 160px 100px 120px'
 
 function formatearFecha(isoString) {
@@ -124,8 +128,8 @@ function MisPedidos() {
                   <div className="mispedidos-celda mispedidos-celda-col">
                     <div>{p.nombreDistribuidor}</div>
                   </div>
-                  <div className="mispedidos-celda">${Number(p.total).toLocaleString('es-AR')}</div>
-                  <div className="mispedidos-celda">
+                  <div className="mispedidos-celda mispedidos-celda--derecha">${Number(p.total).toLocaleString('es-AR')}</div>
+                  <div className="mispedidos-celda mispedidos-celda--centro">
                     <EstadoBadge estado={p.estado} />
                   </div>
                 </TablaFila>
