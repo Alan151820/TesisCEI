@@ -1,14 +1,29 @@
 import { useState, useEffect } from 'react'
+import { mensajeDeError } from '../../lib/errores'
 import { useNavigate } from 'react-router-dom'
 import api from '../../lib/axios'
 import PanelDistribuidor from '../../components/PanelDistribuidor'
+import TablaHeader from '../../components/ui/TablaHeader'
+import TablaFila from '../../components/ui/TablaFila'
+import Kpi from '../../components/ui/Kpi'
+import TabRow from '../../components/ui/TabRow'
+import Esqueleto from '../../components/ui/Esqueleto'
+import EsqueletoFilas from '../../components/ui/EsqueletoFilas'
+import EstadoLista from '../../components/ui/EstadoLista'
 import './Reportes.css'
 
-// RF-041: períodos disponibles. 'mes' es el default.
+const COLUMNAS_RANKING = ['Producto', 'Unidades']
+const GRID_RANKING = { '--tabla-cols': '1fr 100px' }
+
 const PERIODOS = [
-  { valor: 'dia', label: 'Día' },
-  { valor: 'semana', label: 'Semana' },
-  { valor: 'mes', label: 'Mes' },
+  { valor: 'dia', etiqueta: 'Día' },
+  { valor: 'semana', etiqueta: 'Semana' },
+  { valor: 'mes', etiqueta: 'Mes' },
+]
+
+const SUBNAV_REPORTES = [
+  { valor: '/reportes', etiqueta: 'Rendimiento' },
+  { valor: '/reportes/rentabilidad', etiqueta: 'Rentabilidad' },
 ]
 
 function formatearPesos(valor) {
@@ -29,7 +44,7 @@ function Reportes() {
     api.get('/api/reportes/rendimiento', { params: { periodo } })
       .then(res => setReporte(res.data))
       .catch(err => {
-        setMensaje(err.response?.data?.error || 'No fue posible completar la operación. Intente nuevamente más tarde.')
+        setMensaje(mensajeDeError(err))
       })
       .finally(() => setCargando(false))
   }, [periodo])
@@ -37,16 +52,9 @@ function Reportes() {
   const sinPedidos = reporte && reporte.cantidadPedidosEntregados === 0
 
   return (
-    <PanelDistribuidor tituloMobile="Reportes" activo="/reportes">
-      <div className="reportes-subnav">
-        <span className="reportes-subnav-item activo" onClick={() => navigate('/reportes')}>Rendimiento</span>
-        <span className="reportes-subnav-item" onClick={() => navigate('/reportes/rentabilidad')}>Rentabilidad</span>
-      </div>
+    <PanelDistribuidor activo="/reportes">
+      <TabRow tabs={SUBNAV_REPORTES} activo="/reportes" onCambiar={navigate} className="reportes-subnav" />
 
-      {/* El selector de período va FUERA de .panel-seccion-header: ese
-          contenedor se oculta con display:none a ≤1024px (Inicio.css) y se
-          llevaba consigo los tabs Día/Semana/Mes, dejando al distribuidor
-          fijo en el período por defecto en mobile/tablet (RF-041). */}
       <div className="reportes-encabezado">
         <div className="panel-seccion-header panel-seccion-header--sub">
           <div>
@@ -54,65 +62,70 @@ function Reportes() {
             <p className="panel-subtitulo">Resumen del período seleccionado.</p>
           </div>
         </div>
-        <div className="reportes-periodo-tabs">
-          {PERIODOS.map(p => (
-            <div
-              key={p.valor}
-              className={`reportes-periodo-tab${periodo === p.valor ? ' activo' : ''}`}
-              onClick={() => setPeriodo(p.valor)}
-            >
-              {p.label}
-            </div>
-          ))}
-        </div>
+        <TabRow tabs={PERIODOS} activo={periodo} onCambiar={setPeriodo} className="reportes-periodo-tabs" />
       </div>
 
-      {mensaje && <p className="reportes-vacio">{mensaje}</p>}
+      {mensaje && <EstadoLista variante="error">{mensaje}</EstadoLista>}
 
-      {cargando && !mensaje && <p className="reportes-vacio">Cargando...</p>}
+      {cargando && !mensaje && (
+        <>
+          <div className="kpi-row">
+            <div className="kpi col gap-s"><Esqueleto width="55%" height={13} /><Esqueleto width="45%" height={28} /></div>
+            <div className="kpi col gap-s"><Esqueleto width="55%" height={13} /><Esqueleto width="45%" height={28} /></div>
+          </div>
+          <div className="reportes-tablas">
+            <div className="reportes-tabla-card" style={GRID_RANKING}>
+              <div className="reportes-tabla-titulo">Productos más vendidos</div>
+              <TablaHeader columnas={COLUMNAS_RANKING} className="reportes-tabla-header" />
+              <EsqueletoFilas columnas={COLUMNAS_RANKING.length} filas={3} />
+            </div>
+            <div className="reportes-tabla-card" style={GRID_RANKING}>
+              <div className="reportes-tabla-titulo">Productos menos vendidos</div>
+              <TablaHeader columnas={COLUMNAS_RANKING} className="reportes-tabla-header" />
+              <EsqueletoFilas columnas={COLUMNAS_RANKING.length} filas={3} />
+            </div>
+          </div>
+        </>
+      )}
 
       {!cargando && !mensaje && reporte && (
         <>
-          <div className="reportes-kpis">
-            <div className="reportes-kpi-card">
-              <div className="reportes-kpi-label">Total facturado</div>
-              <div className="reportes-kpi-valor">{formatearPesos(reporte.totalFacturado)}</div>
-            </div>
-            <div className="reportes-kpi-card">
-              <div className="reportes-kpi-label">Pedidos entregados</div>
-              <div className="reportes-kpi-valor">{reporte.cantidadPedidosEntregados}</div>
-            </div>
+          <div className="kpi-row">
+            <Kpi etiqueta="Total facturado" valor={formatearPesos(reporte.totalFacturado)} />
+            <Kpi etiqueta="Pedidos entregados" valor={reporte.cantidadPedidosEntregados} />
           </div>
 
           {sinPedidos ? (
-            <p className="reportes-vacio">No hay pedidos completados en el período seleccionado.</p>
+            <EstadoLista>No hay pedidos completados en el período seleccionado.</EstadoLista>
           ) : (
             <div className="reportes-tablas">
-              <div className="reportes-tabla-card">
+              <div className="reportes-tabla-card" style={GRID_RANKING}>
                 <div className="reportes-tabla-titulo">Productos más vendidos</div>
-                <div className="reportes-tabla-header">
-                  <div>Producto</div>
-                  <div>Unidades</div>
-                </div>
+                <TablaHeader columnas={COLUMNAS_RANKING} className="reportes-tabla-header" />
                 {reporte.productosMasVendidos.map(p => (
-                  <div className="reportes-tabla-fila" key={p.id}>
+                  <TablaFila key={p.id} className="reportes-tabla-fila">
                     <div>{p.nombre}</div>
                     <div>{p.unidadesVendidas}</div>
-                  </div>
+                  </TablaFila>
                 ))}
               </div>
-              <div className="reportes-tabla-card">
+              <div className="reportes-tabla-card" style={GRID_RANKING}>
                 <div className="reportes-tabla-titulo">Productos menos vendidos</div>
-                <div className="reportes-tabla-header">
-                  <div>Producto</div>
-                  <div>Unidades</div>
-                </div>
-                {reporte.productosMenosVendidos.map(p => (
-                  <div className="reportes-tabla-fila" key={p.id}>
-                    <div>{p.nombre}</div>
-                    <div>{p.unidadesVendidas}</div>
+                {reporte.productosMenosVendidos.length === 0 ? (
+                  <div className="reportes-tabla-nota">
+                    Todos los productos vendidos en el período ya figuran en más vendidos.
                   </div>
-                ))}
+                ) : (
+                  <>
+                    <TablaHeader columnas={COLUMNAS_RANKING} className="reportes-tabla-header" />
+                    {reporte.productosMenosVendidos.map(p => (
+                      <TablaFila key={p.id} className="reportes-tabla-fila">
+                        <div>{p.nombre}</div>
+                        <div>{p.unidadesVendidas}</div>
+                      </TablaFila>
+                    ))}
+                  </>
+                )}
               </div>
             </div>
           )}

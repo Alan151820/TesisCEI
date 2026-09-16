@@ -8,7 +8,14 @@ html, body {
 }
 
 body {
-  font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  font-size: var(--fuente-base, 16px);
+}
+
+h1,
+[class*="-marca"],
+[class*="-kpi-valor"] {
+  font-family: 'Space Grotesk', 'Inter', system-ui, sans-serif;
 }
 
 #root {

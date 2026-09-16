@@ -1,0 +1,13 @@
+.grid-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 24px;
+  align-content: start;
+}
+
+@media (max-width: 760px) {
+  .grid-cards {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 16px;
+  }
+}

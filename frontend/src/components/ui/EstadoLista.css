@@ -1,0 +1,23 @@
+.estado-lista {
+  border: 1px dashed var(--color-borde);
+  border-radius: 14px;
+  background: var(--color-superficie);
+  padding: 32px 24px;
+  color: var(--color-texto-suave);
+  font-size: var(--fuente-control);
+  text-align: center;
+}
+
+.estado-lista--error {
+  border-style: solid;
+  border-color: var(--color-error);
+  background: var(--color-error-suave);
+  color: var(--color-sobre-error-suave);
+}
+
+.estado-lista--exito {
+  border-style: solid;
+  border-color: transparent;
+  background: var(--color-exito-suave);
+  color: var(--color-sobre-exito-suave);
+}

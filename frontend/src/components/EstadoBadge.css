@@ -1,21 +1,26 @@
 .estado-badge {
-  font-size: 11px;
-  padding: 3px 8px;
-  border-radius: 3px;
-  background: var(--color-contenedor-superficie-maximo);
-  color: var(--color-sobre-superficie);
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  padding: 3px 12px;
+  border-radius: var(--radio-chip);
+  font-size: 14px;
+  font-weight: 700;
   white-space: nowrap;
+  background: var(--color-superficie);
+  color: var(--color-texto);
+  border: 1px solid var(--color-borde);
 }
 
-.estado-badge--entregado  { background: var(--color-contenedor-exito); color: var(--color-sobre-contenedor-exito); }
-.estado-badge--rechazado  { background: var(--color-contenedor-error); color: var(--color-sobre-contenedor-error); }
-.estado-badge--omitido    { background: var(--color-contenedor-advertencia); color: var(--color-sobre-contenedor-advertencia); }
-.estado-badge--en_camino  { background: var(--color-contenedor-info); color: var(--color-sobre-contenedor-info); }
-.estado-badge--pendiente  { background: var(--color-contenedor-superficie-maximo); color: var(--color-sobre-superficie); }
-.estado-badge--aceptado   { background: var(--color-contenedor-advertencia); color: var(--color-sobre-contenedor-advertencia); }
-.estado-badge--sin_empezar { background: var(--color-contenedor-superficie-maximo); color: var(--color-sobre-superficie); }
-.estado-badge--en_curso    { background: var(--color-contenedor-info); color: var(--color-sobre-contenedor-info); }
-.estado-badge--finalizado  { background: var(--color-contenedor-exito); color: var(--color-sobre-contenedor-exito); }
-.estado-badge--sin_empezar { background: var(--color-contenedor-superficie-maximo); color: var(--color-sobre-superficie); }
-.estado-badge--en_curso    { background: var(--color-contenedor-info); color: var(--color-sobre-contenedor-info); }
-.estado-badge--finalizado  { background: var(--color-contenedor-exito); color: var(--color-sobre-contenedor-exito); }
+.estado-badge--entregado, .estado-badge--finalizado {
+  background: var(--color-exito-suave); color: var(--color-sobre-exito-suave); border-color: transparent;
+}
+.estado-badge--rechazado, .estado-badge--cancelado {
+  background: var(--color-error-suave); color: var(--color-sobre-error-suave); border-color: transparent;
+}
+.estado-badge--omitido, .estado-badge--aceptado {
+  background: var(--color-advertencia-suave); color: var(--color-sobre-advertencia-suave); border-color: transparent;
+}
+.estado-badge--en_camino, .estado-badge--en_curso {
+  background: var(--color-info-suave); color: var(--color-sobre-info-suave); border-color: transparent;
+}

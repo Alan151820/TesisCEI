@@ -1,0 +1,41 @@
+.tabla {
+  overflow-x: auto;
+  overflow-y: hidden;
+  border: 1px solid var(--color-borde);
+  border-radius: 14px;
+  width: 100%;
+}
+
+.tabla-header,
+.tabla-fila {
+  display: grid;
+  grid-template-columns: var(--tabla-cols, 1fr);
+  padding: 14px 16px;
+  align-items: center;
+  gap: 12px;
+  font-size: 15px;
+}
+
+.tabla-header {
+  background: var(--color-superficie);
+  border-bottom: 2px solid var(--color-secundario);
+  font-weight: 700;
+  color: var(--color-texto-suave);
+}
+
+.tabla-fila {
+  color: var(--color-texto);
+  transition: background-color .12s ease;
+}
+
+.tabla-fila + .tabla-fila {
+  border-top: 1px solid var(--color-borde);
+}
+
+.tabla-fila:hover {
+  background: var(--color-superficie);
+}
+
+.tabla-fila--clickeable {
+  cursor: pointer;
+}

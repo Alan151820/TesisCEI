@@ -1,21 +1,32 @@
 import { useState, useEffect } from 'react'
+import { mensajeDeError } from '../../lib/errores'
 import { useNavigate, useLocation } from 'react-router-dom'
 import api from '../../lib/axios'
 import EstadoBadge from '../../components/EstadoBadge'
 import PanelDistribuidor from '../../components/PanelDistribuidor'
+import Tabla from '../../components/ui/Tabla'
+import TablaHeader from '../../components/ui/TablaHeader'
+import TablaFila from '../../components/ui/TablaFila'
+import Boton from '../../components/ui/Boton'
+import Campo from '../../components/ui/Campo'
+import Modal from '../../components/ui/Modal'
+import ModalHeader from '../../components/ui/ModalHeader'
+import ModalBody from '../../components/ui/ModalBody'
+import ModalFooter from '../../components/ui/ModalFooter'
+import EsqueletoFilas from '../../components/ui/EsqueletoFilas'
+import EstadoLista from '../../components/ui/EstadoLista'
 import './Inicio.css'
 import './MisPedidos.css'
 import './Reparto.css'
+
+const COLUMNAS = ['Reparto', 'Fecha', { label: 'Estado', className: 'reparto-celda--centro' }, 'Progreso', '']
+const GRID = '80px 120px 120px 1fr 100px'
 
 function formatearFecha(isoString) {
   const d = new Date(isoString)
   return d.toLocaleDateString('es-AR', { day: 'numeric', month: 'short', year: 'numeric' })
 }
 
-// RF-063: panel único de repartos — punto de entrada a toda la gestión de
-// reparto. Lista todos los repartos del distribuidor en cualquier estado,
-// deja entrar a cualquiera (RF-045, todavía no construido) y crear uno
-// nuevo (RF-043, en /reparto/nuevo).
 function Reparto() {
   const navigate = useNavigate()
   const location = useLocation()
@@ -27,10 +38,8 @@ function Reparto() {
   const [eliminandoId, setEliminandoId] = useState(null)
   const [errorEliminar, setErrorEliminar] = useState('')
   const [mensajeEliminado, setMensajeEliminado] = useState(location.state?.mensaje || '')
+  const [planEliminar, setPlanEliminar] = useState(null)
 
-  // RF-067: cerrar en bloque las paradas restantes de un reparto "En
-  // curso" — es lo que dispara la cruz del panel para un reparto en
-  // progreso, en vez de RF-065 (que solo aplica a "Sin empezar").
   const [planCerrar, setPlanCerrar] = useState(null)
   const [motivoCerrar, setMotivoCerrar] = useState('')
   const [cerrandoEnBloque, setCerrandoEnBloque] = useState(false)
@@ -40,15 +49,12 @@ function Reparto() {
     setCargando(true)
     api.get('/api/reparto/planes')
       .then(res => setPlanes(res.data))
-      .catch(err => setError(err.response?.data?.error || 'No fue posible completar la operación. Intente nuevamente más tarde.'))
+      .catch(err => setError(mensajeDeError(err)))
       .finally(() => setCargando(false))
   }
 
   useEffect(() => { cargarPlanes() }, [])
 
-  // RF-065: elimina un reparto "Sin empezar". Para uno "En curso" la cruz
-  // no borra el registro — abre el modal de cierre en bloque (RF-067),
-  // porque un reparto en progreso no se elimina, se cierra.
   const handleQuitarReparto = (e, plan) => {
     e.stopPropagation()
     if (plan.estado === 'en_curso') {
@@ -60,16 +66,21 @@ function Reparto() {
 
     setErrorEliminar('')
     setMensajeEliminado('')
-    if (!window.confirm(`¿Eliminar el reparto #${plan.id}? Esta acción no se puede deshacer.`)) return
+    setPlanEliminar(plan)
+  }
 
-    setEliminandoId(plan.id)
-    api.delete(`/api/reparto/${plan.id}`)
+  const handleConfirmarEliminar = () => {
+    setEliminandoId(planEliminar.id)
+    api.delete(`/api/reparto/${planEliminar.id}`)
       .then(res => {
         setMensajeEliminado(res.data.mensaje)
         cargarPlanes()
       })
-      .catch(err => setErrorEliminar(err.response?.data?.error || 'No fue posible completar la operación. Intente nuevamente más tarde.'))
-      .finally(() => setEliminandoId(null))
+      .catch(err => setErrorEliminar(mensajeDeError(err)))
+      .finally(() => {
+        setEliminandoId(null)
+        setPlanEliminar(null)
+      })
   }
 
   const handleCerrarEnBloque = async () => {
@@ -85,21 +96,14 @@ function Reparto() {
       setPlanCerrar(null)
       cargarPlanes()
     } catch (err) {
-      setErrorCerrar(err.response?.data?.error || 'No fue posible completar la operación. Intente nuevamente más tarde.')
+      setErrorCerrar(mensajeDeError(err))
     } finally {
       setCerrandoEnBloque(false)
     }
   }
 
   return (
-    <PanelDistribuidor
-      tituloMobile="Reparto"
-      accionMobile={<button className="panel-mobile-nuevo" title="Crear reparto" onClick={() => navigate('/reparto/nuevo')}>+</button>}
-    >
-          {/* El header de escritorio (.panel-seccion-header, con "+ Crear
-              reparto") se oculta a ≤1024px; sin accionMobile no habría forma
-              de crear un reparto en mobile/tablet. El modificador --sub
-              conserva la bajada en mobile (sin el h1 ni el botón). */}
+    <PanelDistribuidor>
           <div className="panel-seccion-header panel-seccion-header--sub">
             <div>
               <h1 className="panel-h1">Panel de repartos</h1>
@@ -111,36 +115,33 @@ function Reparto() {
           </div>
 
           {cargando && (
-            <div className="panel-tabla-vacio">Cargando repartos...</div>
+            <Tabla grid={GRID} className="panel-tabla-reflow">
+              <TablaHeader columnas={COLUMNAS} className="reparto-panel-header" />
+              <EsqueletoFilas columnas={COLUMNAS.length} />
+            </Tabla>
           )}
 
           {!cargando && error && (
-            <div className="panel-tabla-vacio pedidos-error">{error}</div>
+            <EstadoLista variante="error">{error}</EstadoLista>
           )}
 
           {!cargando && !error && planes.length === 0 && (
-            <div className="panel-tabla-vacio">Aún no generaste ningún plan de reparto.</div>
+            <EstadoLista>Aún no generaste ningún plan de reparto.</EstadoLista>
           )}
 
           {!cargando && !error && planes.length > 0 && (
-            <div className="panel-tabla-wrapper">
-              <div className="reparto-panel-header">
-                <div>Reparto</div>
-                <div>Fecha</div>
-                <div>Estado</div>
-                <div>Progreso</div>
-                <div></div>
-              </div>
+            <Tabla grid={GRID} className="panel-tabla-reflow">
+              <TablaHeader columnas={COLUMNAS} className="reparto-panel-header" />
 
               {planes.map(plan => (
-                <div
+                <TablaFila
                   key={plan.id}
-                  className="reparto-panel-fila reparto-panel-fila--clickeable"
+                  className="reparto-panel-fila"
                   onClick={() => navigate(`/reparto/${plan.id}`)}
                 >
                   <div className="reparto-celda">#{plan.id}</div>
                   <div className="reparto-celda">{formatearFecha(plan.fechaCreacion)}</div>
-                  <div className="reparto-celda"><EstadoBadge estado={plan.estado} /></div>
+                  <div className="reparto-celda reparto-celda--centro"><EstadoBadge estado={plan.estado} /></div>
                   <div className="reparto-celda">
                     <div className="reparto-progreso">
                       <div className="reparto-progreso-barra">
@@ -165,9 +166,9 @@ function Reparto() {
                       </button>
                     )}
                   </div>
-                </div>
+                </TablaFila>
               ))}
-            </div>
+            </Tabla>
           )}
 
           {errorEliminar && (
@@ -178,43 +179,47 @@ function Reparto() {
           )}
 
       {planCerrar && (
-        <div className="reparto-modal-overlay" onClick={() => setPlanCerrar(null)}>
-          <div className="reparto-modal" onClick={e => e.stopPropagation()}>
-            <div className="reparto-modal-header">
-              <div className="reparto-modal-titulo">Cerrar reparto #{planCerrar.id}</div>
-              <button type="button" className="reparto-modal-cerrar" onClick={() => setPlanCerrar(null)}>✕</button>
-            </div>
+        <Modal onCerrar={() => setPlanCerrar(null)}>
+          <ModalHeader titulo={`Cerrar reparto #${planCerrar.id}`} onCerrar={() => setPlanCerrar(null)} />
+          <ModalBody>
+            <p className="texto-mudo" style={{ margin: 0 }}>
+              Las paradas pendientes de este reparto se van a marcar como Omitida con el motivo que ingreses acá, y el reparto va a quedar Finalizado.
+            </p>
+            <Campo
+              area
+              rows={4}
+              placeholder="Motivo (por ejemplo: se reprograma para otro día)"
+              value={motivoCerrar}
+              onChange={e => setMotivoCerrar(e.target.value)}
+            />
+            {errorCerrar && (
+              <div className="panel-error-visibilidad">{errorCerrar}</div>
+            )}
+          </ModalBody>
+          <ModalFooter>
+            <Boton variante="outline" onClick={() => setPlanCerrar(null)}>Cancelar</Boton>
+            <Boton variante="peligro" disabled={cerrandoEnBloque} onClick={handleCerrarEnBloque}>
+              {cerrandoEnBloque ? 'Cerrando…' : 'Confirmar cierre'}
+            </Boton>
+          </ModalFooter>
+        </Modal>
+      )}
 
-            <div className="reparto-modal-body">
-              <p className="panel-subtitulo" style={{ marginBottom: 10 }}>
-                Las paradas pendientes de este reparto se van a marcar como Omitida con el motivo que ingreses acá, y el reparto va a quedar Finalizado.
-              </p>
-              <textarea
-                className="reparto-modal-textarea"
-                rows={4}
-                placeholder="Motivo (por ejemplo: se reprograma para otro día)"
-                value={motivoCerrar}
-                onChange={e => setMotivoCerrar(e.target.value)}
-              />
-              {errorCerrar && (
-                <div className="panel-error-visibilidad">{errorCerrar}</div>
-              )}
-            </div>
-
-            <div className="reparto-modal-footer">
-              <button type="button" className="reparto-btn-volver" onClick={() => setPlanCerrar(null)}>Cancelar</button>
-              <button
-                type="button"
-                className="pedidos-accion-btn pedidos-accion-btn--peligro"
-                style={{ width: 'auto' }}
-                disabled={cerrandoEnBloque}
-                onClick={handleCerrarEnBloque}
-              >
-                {cerrandoEnBloque ? 'Cerrando…' : 'Confirmar cierre'}
-              </button>
-            </div>
-          </div>
-        </div>
+      {planEliminar && (
+        <Modal onCerrar={() => setPlanEliminar(null)}>
+          <ModalHeader titulo={`Eliminar reparto #${planEliminar.id}`} onCerrar={() => setPlanEliminar(null)} />
+          <ModalBody>
+            <p className="texto-mudo" style={{ margin: 0 }}>
+              ¿Eliminar el reparto #{planEliminar.id}? Esta acción no se puede deshacer.
+            </p>
+          </ModalBody>
+          <ModalFooter>
+            <Boton variante="outline" onClick={() => setPlanEliminar(null)}>Cancelar</Boton>
+            <Boton variante="peligro" disabled={eliminandoId === planEliminar.id} onClick={handleConfirmarEliminar}>
+              {eliminandoId === planEliminar.id ? 'Eliminando…' : 'Eliminar reparto'}
+            </Boton>
+          </ModalFooter>
+        </Modal>
       )}
     </PanelDistribuidor>
   )

@@ -1,0 +1,67 @@
+.btn {
+  min-height: var(--alto-control);
+  border-radius: var(--radio-control);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 24px;
+  font-size: var(--fuente-control);
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  border: none;
+  box-sizing: border-box;
+  transition: filter .12s ease, background-color .12s ease, color .12s ease, border-color .12s ease, transform .08s ease;
+}
+
+.btn--fill { background: var(--color-primario); color: var(--color-sobre-primario); }
+.btn--outline { background: var(--color-fondo); color: var(--color-texto); border: 2px solid var(--color-borde); }
+.btn--ghost { background: none; color: var(--color-texto-suave); border: 2px solid transparent; }
+.btn--peligro { background: transparent; color: var(--color-error); border: 2px solid var(--color-error); }
+.btn--negro { background: var(--color-texto); color: var(--color-fondo); border: 1px solid var(--color-texto); }
+
+.btn--icono {
+  width: 48px;
+  height: 48px;
+  min-height: 48px;
+  padding: 0;
+  border-radius: 50%;
+  border: none;
+  background: none;
+  color: var(--color-texto);
+  font-size: 20px;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.btn--fill:hover { filter: brightness(0.92); }
+.btn--fill:active { filter: brightness(0.85); transform: scale(0.98); }
+.btn--outline:hover { background: var(--color-superficie); border-color: var(--color-primario); color: var(--color-primario); }
+.btn--outline:active { background: var(--color-borde); transform: scale(0.98); }
+.btn--ghost:hover { background: var(--color-superficie); color: var(--color-texto); }
+.btn--peligro:hover { background: var(--color-error); color: var(--color-sobre-error); }
+.btn--icono:hover { background: var(--color-superficie); }
+.btn--negro:hover { filter: brightness(1.25); }
+
+.btn:disabled { opacity: .5; cursor: not-allowed; }
+.btn:focus-visible { outline: 2px solid var(--color-primario); outline-offset: 2px; }
+
+.badge-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 20px;
+  min-width: 20px;
+  padding: 0 5px;
+  border-radius: 10px;
+  background: var(--color-error);
+  color: var(--color-sobre-error);
+  font-size: 12px;
+  font-weight: 700;
+  position: absolute;
+  top: -2px;
+  right: -2px;
+}

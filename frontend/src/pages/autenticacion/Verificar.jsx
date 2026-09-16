@@ -1,7 +1,19 @@
 import { useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import api from '../../lib/axios'
+import { mensajeDeError } from '../../lib/errores'
+import Hdr from '../../components/Hdr'
+import TabRow from '../../components/ui/TabRow'
+import Tarjeta from '../../components/ui/Tarjeta'
+import Campo from '../../components/ui/Campo'
+import Boton from '../../components/ui/Boton'
 import './Verificar.css'
+import Marca from '../../components/Marca'
+
+const AUTH_TABS = [
+  { valor: 'login', etiqueta: 'Iniciar sesión' },
+  { valor: 'registro', etiqueta: 'Registrarse' },
+]
 
 function Verificar() {
   const [codigo, setCodigo] = useState('')
@@ -25,60 +37,35 @@ function Verificar() {
       window.dispatchEvent(new Event('auth-changed'))
       navigate('/inicioComprador')
     } catch (error) {
-      setMensaje(error.response.data.mensaje)
+      setMensaje(mensajeDeError(error))
     }
   }
 
   return (
     <div className="verificar-pagina">
-      <header className="verificar-encabezado">
-        <span className="verificar-logo">MarketPlace</span>
+      <Hdr logo={<span className="hdr-logo" onClick={() => navigate('/')}><Marca /></span>} buscador>
+        <TabRow tabs={AUTH_TABS} activo="registro" onCambiar={(v) => navigate(v === 'login' ? '/login' : '/registro')} />
+      </Hdr>
 
-        <div className="verificar-buscador">
-          <span className="verificar-buscador-icono">⌕</span>
-          <input
-            className="verificar-buscador-input"
-            type="text"
-            placeholder="Buscar productos…"
-          />
-        </div>
+      <div className="panel-centrado">
+        <Tarjeta as="main" className="auth-card col gap-m">
+          <div className="titulo1">Verificar cuenta</div>
+          <p className="texto-mudo">Ingresá el código que te enviamos al {telefono}</p>
 
-        <div className="verificar-encabezado-derecha">
-          <div className="auth-tabs">
-            <button type="button" className="auth-tab" onClick={() => navigate('/login')}>Iniciar sesión</button>
-            <button type="button" className="auth-tab activo">Registrarse</button>
-          </div>
-        </div>
-      </header>
+          {codigoDev && <p className="texto-mudo">Código de desarrollo: {codigoDev}</p>}
 
-      <main className="verificar-contenido">
-        <div className="verificar-tarjeta">
-          <h1 className="verificar-titulo">Verificar cuenta</h1>
-          <p className="verificar-subtitulo">Ingresá el código que te enviamos al {telefono}</p>
-
-          {codigoDev && <p className="verificar-codigo-dev">Código de desarrollo: {codigoDev}</p>}
-
-          <div className="verificar-campo">
-            <label className="verificar-etiqueta">Código de verificación</label>
-            <input
-              className="verificar-input"
-              placeholder="Código de 6 dígitos"
-              value={codigo}
-              onChange={e => setCodigo(e.target.value)}
-            />
+          <div className="col gap-s">
+            <span className="texto">Código de verificación</span>
+            <Campo placeholder="Código de 6 dígitos" value={codigo} onChange={(e) => setCodigo(e.target.value)} />
           </div>
 
-          <button
-            type="button"
-            className="verificar-boton"
-            onClick={handleVerificar}
-          >
+          <Boton variante="fill" style={{ width: '100%' }} onClick={handleVerificar}>
             Verificar
-          </button>
+          </Boton>
 
-          {mensaje && <p className="verificar-mensaje-error">{mensaje}</p>}
-        </div>
-      </main>
+          {mensaje && <p className="texto" style={{ color: 'var(--color-error)', textAlign: 'center', margin: 0 }}>{mensaje}</p>}
+        </Tarjeta>
+      </div>
     </div>
   )
 }

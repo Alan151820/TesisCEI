@@ -2,9 +2,12 @@ import { useState, useCallback, useEffect, useRef } from 'react'
 import { MapContainer, TileLayer, Marker, useMap, useMapEvents } from 'react-leaflet'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
+import Boton from './ui/Boton'
+import Modal from './ui/Modal'
+import ModalHeader from './ui/ModalHeader'
+import ModalFooter from './ui/ModalFooter'
 import './ModalMapaDireccion.css'
 
-// Fix de íconos de marcador en Vite (leaflet usa require() internamente)
 import markerIconPng from 'leaflet/dist/images/marker-icon.png'
 import markerIcon2xPng from 'leaflet/dist/images/marker-icon-2x.png'
 import markerShadowPng from 'leaflet/dist/images/marker-shadow.png'
@@ -28,7 +31,6 @@ async function fetchDireccion(lat, lng) {
   return data.display_name ?? `${lat.toFixed(5)}, ${lng.toFixed(5)}`
 }
 
-// Componente interno: vuela al centro cuando cambia (necesario porque MapContainer no re-renderiza)
 function ControladorCentro({ centro, zoom }) {
   const map = useMap()
   const primero = useRef(true)
@@ -39,14 +41,11 @@ function ControladorCentro({ centro, zoom }) {
   return null
 }
 
-// Componente interno: captura clicks en el mapa
 function ManejadorClic({ onClic }) {
   useMapEvents({ click: e => onClic(e.latlng.lat, e.latlng.lng) })
   return null
 }
 
-// soloLectura: modo de solo visualización, usado para mostrar la ubicación
-// exacta de un pedido ya confirmado — sin edición, sin click-to-move.
 function ModalMapaDireccion({
   onConfirmar,
   onCerrar,
@@ -107,14 +106,10 @@ function ModalMapaDireccion({
   }
 
   return (
-    <div className="mapa-overlay" onClick={onCerrar}>
-      <div className="mapa-modal" onClick={e => e.stopPropagation()}>
+    <Modal onCerrar={onCerrar} className="mapa-modal">
+      <ModalHeader titulo={soloLectura ? 'Ubicación de entrega' : titulo} onCerrar={onCerrar} />
 
-        <div className="mapa-header">
-          <div className="mapa-titulo">{soloLectura ? 'Ubicación de entrega' : titulo}</div>
-          <button className="mapa-cerrar" onClick={onCerrar}>✕</button>
-        </div>
-
+      <div className="mapa-cuerpo">
         {!soloLectura && (
           <div className="mapa-instruccion">
             {instruccion}
@@ -172,26 +167,24 @@ function ModalMapaDireccion({
         ) : (
           <div className="mapa-direccion-placeholder">Tocá el mapa para seleccionar una ubicación</div>
         )}
-
-        <div className="mapa-footer">
-          {soloLectura ? (
-            <button className="mapa-btn-confirmar" onClick={onCerrar}>Cerrar</button>
-          ) : (
-            <>
-              <button className="mapa-btn-cancelar" onClick={onCerrar}>Cancelar</button>
-              <button
-                className="mapa-btn-confirmar"
-                onClick={handleConfirmar}
-                disabled={!marcador || !direccionTexto || geocodificando}
-              >
-                Confirmar ubicación
-              </button>
-            </>
-          )}
-        </div>
-
       </div>
-    </div>
+
+      <ModalFooter>
+        {soloLectura ? (
+          <Boton onClick={onCerrar}>Cerrar</Boton>
+        ) : (
+          <>
+            <Boton variante="outline" onClick={onCerrar}>Cancelar</Boton>
+            <Boton
+              onClick={handleConfirmar}
+              disabled={!marcador || !direccionTexto || geocodificando}
+            >
+              Confirmar ubicación
+            </Boton>
+          </>
+        )}
+      </ModalFooter>
+    </Modal>
   )
 }
 

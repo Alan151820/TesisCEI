@@ -1,91 +1,10 @@
-/* Contenedor raíz del panel */
-.panel-root {
+.panel-shell {
   display: flex;
   flex-direction: column;
   height: 100vh;
-  font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
   overflow: hidden;
 }
 
-/* Header master — siempre visible */
-.panel-master-header {
-  height: 56px;
-  background: var(--color-contenedor-superficie-minimo);
-  border-bottom: 1px solid var(--color-variante-contorno);
-  display: flex;
-  align-items: center;
-  width: 100%;
-  padding: 0 max(40px, calc((100% - 1280px) / 2));
-  gap: 24px;
-  flex-shrink: 0;
-}
-
-.panel-master-header-marca {
-  font-size: 17px;
-  font-weight: 700;
-  color: var(--color-sobre-superficie);
-  white-space: nowrap;
-  flex-shrink: 0;
-}
-
-.panel-master-header-buscador {
-  flex: 1;
-  height: 36px;
-  background: var(--color-contenedor-superficie-bajo);
-  border: 1px solid var(--color-contorno);
-  border-radius: 4px;
-  display: flex;
-  align-items: center;
-  padding: 0 14px;
-  gap: 8px;
-  cursor: text;
-}
-
-.panel-master-header-buscador-icono {
-  font-size: 13px;
-  color: var(--color-sobre-variante-superficie);
-  flex-shrink: 0;
-}
-
-.panel-master-header-buscador-input {
-  flex: 1;
-  background: none;
-  border: none;
-  outline: none;
-  font-size: 13px;
-  color: var(--color-sobre-superficie);
-  font-family: inherit;
-}
-
-.panel-master-header-buscador-input::placeholder {
-  color: var(--color-sobre-variante-superficie);
-}
-
-.panel-master-header-perfil {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  margin-left: auto;
-}
-
-.panel-header-salir-btn {
-  height: 34px;
-  padding: 0 16px;
-  border: none;
-  border-radius: 6px;
-  background: var(--color-primario);
-  color: var(--color-sobre-primario);
-  font-size: 13px;
-  font-weight: 600;
-  font-family: inherit;
-  cursor: pointer;
-  white-space: nowrap;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* Notificaciones */
 .panel-notif {
   position: relative;
   flex-shrink: 0;
@@ -99,14 +18,14 @@
   font-size: 18px;
   padding: 4px 6px;
   line-height: 1;
-  border-radius: 6px;
+  border-radius: var(--radio-control);
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .panel-notif-btn:hover {
-  background: var(--color-contenedor-superficie);
+  background: var(--color-superficie);
 }
 
 .panel-notif-badge {
@@ -131,8 +50,8 @@
   top: calc(100% + 8px);
   right: 0;
   width: 320px;
-  background: var(--color-contenedor-superficie-minimo);
-  border: 1px solid var(--color-variante-contorno);
+  background: var(--color-fondo);
+  border: 1px solid var(--color-borde);
   border-radius: 6px;
   box-shadow: 0 4px 16px rgba(0,0,0,.12);
   z-index: 100;
@@ -145,7 +64,7 @@
   padding: 20px;
   text-align: center;
   font-size: 13px;
-  color: var(--color-sobre-variante-superficie);
+  color: var(--color-texto-suave);
 }
 
 .panel-notif-item {
@@ -153,7 +72,7 @@
   align-items: flex-start;
   gap: 10px;
   padding: 14px 16px;
-  border-bottom: 1px solid var(--color-variante-contorno);
+  border-bottom: 1px solid var(--color-borde);
   cursor: pointer;
   transition: background .1s;
 }
@@ -163,18 +82,18 @@
 }
 
 .panel-notif-item:hover {
-  background: var(--color-contenedor-superficie-bajo);
+  background: var(--color-superficie);
 }
 
 .panel-notif-item.no-leida {
-  background: var(--color-contenedor-superficie-bajo);
+  background: var(--color-superficie);
 }
 
 .panel-notif-punto {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: var(--color-sobre-superficie);
+  background: var(--color-texto);
   flex-shrink: 0;
   margin-top: 4px;
 }
@@ -186,7 +105,7 @@
 .panel-notif-mensaje {
   font-size: 13px;
   font-weight: 600;
-  color: var(--color-sobre-superficie);
+  color: var(--color-texto);
   line-height: 1.4;
   margin-bottom: 3px;
 }
@@ -197,7 +116,7 @@
 
 .panel-notif-fecha {
   font-size: 11px;
-  color: var(--color-sobre-variante-superficie);
+  color: var(--color-texto-suave);
 }
 
 .panel-layout {
@@ -206,122 +125,96 @@
   overflow: hidden;
 }
 
-/* Sidebar — franja oscura fija (data-tema="oscuro" en el JSX) */
 .panel-sidebar {
-  width: 220px;
-  background: var(--color-contenedor-superficie-minimo);
+  width: 248px;
+  background: var(--color-fondo);
+  border-right: 1px solid var(--color-borde);
   display: flex;
   flex-direction: column;
   flex-shrink: 0;
+  padding: 24px 0;
   height: 100%;
+  box-sizing: border-box;
 }
 
 .panel-sidebar-marca {
-  padding: 18px 20px;
-  border-bottom: 1px solid var(--color-variante-contorno);
-}
-
-.panel-sidebar-titulo {
-  font-size: 16px;
-  font-weight: 700;
-  color: var(--color-sobre-superficie);
-}
-
-.panel-sidebar-subtitulo {
-  font-size: 10px;
-  color: var(--color-sobre-variante-superficie);
-  margin-top: 2px;
+  padding: 0 20px 20px;
+  border-bottom: 1px solid var(--color-borde);
+  margin-bottom: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
 .panel-nav {
   flex: 1;
-  padding: 8px 0;
 }
 
 .panel-nav-item {
-  height: 44px;
-  display: flex;
-  align-items: center;
-  padding: 0 20px;
-  font-size: 13px;
-  color: var(--color-sobre-variante-superficie);
-  border-left: 3px solid transparent;
+  padding: 14px 20px;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-texto-suave);
+  border-radius: 0 24px 24px 0;
+  white-space: nowrap;
   cursor: pointer;
-  transition: background 0.15s;
+  transition: background-color 0.12s ease, color 0.12s ease;
 }
 
-.panel-nav-item:hover {
-  background: var(--color-contenedor-superficie-bajo);
-  color: var(--color-sobre-superficie);
+.panel-nav-item:not(.activo):hover {
+  background: var(--color-superficie);
+  color: var(--color-texto);
 }
 
 .panel-nav-item.activo {
-  color: var(--color-sobre-superficie);
-  background: var(--color-contenedor-superficie-alto);
-  border-left-color: var(--color-sobre-superficie);
+  background: var(--color-secundario);
+  color: var(--color-sobre-secundario);
+  font-weight: 700;
 }
 
-/* Perfil en footer del sidebar */
-.panel-sidebar-footer {
-  border-top: 1px solid var(--color-variante-contorno);
-  padding: 16px 20px 28px;
+.panel-menu-btn {
+  display: none;
 }
 
-.panel-sidebar-usuario {
+.panel-drawer-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  background: color-mix(in oklch, var(--color-texto) 45%, transparent);
   display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 14px;
 }
 
-.panel-avatar-small {
-  width: 38px;
-  height: 38px;
-  background: var(--color-variante-superficie);
-  border-radius: 50%;
+.panel-drawer {
+  width: 280px;
+  max-width: 82vw;
+  height: 100%;
+  background: var(--color-fondo);
   display: flex;
+  flex-direction: column;
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.24);
+  overflow-y: auto;
+}
+
+.panel-drawer .panel-sidebar-marca {
+  flex-direction: row;
   align-items: center;
-  justify-content: center;
-  font-size: 13px;
-  color: var(--color-sobre-variante-superficie);
-  font-weight: 600;
+  justify-content: space-between;
   flex-shrink: 0;
 }
 
-.panel-sidebar-nombre {
-  font-size: 13px;
-  color: var(--color-sobre-superficie);
-  font-weight: 500;
+.panel-drawer .panel-nav {
+  padding: 12px 0;
 }
 
-.panel-sidebar-rol {
-  font-size: 11px;
-  color: var(--color-sobre-variante-superficie);
-  margin-top: 1px;
-}
-
-.panel-sidebar-accion {
-  font-size: 12px;
-  color: var(--color-sobre-variante-superficie);
-  cursor: pointer;
-}
-
-.panel-sidebar-accion:hover {
-  color: var(--color-sobre-superficie);
-}
-
-/* Main */
 .panel-main {
   flex: 1;
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  background: var(--color-variante-superficie);
+  background: var(--color-superficie);
 }
 
-
-/* Contenido */
-.panel-contenido {
+.panel-body {
   flex: 1;
   width: 100%;
   max-width: 1280px;
@@ -347,25 +240,25 @@
 .panel-h1 {
   font-size: 22px;
   font-weight: 700;
-  color: var(--color-sobre-superficie);
+  color: var(--color-texto);
   letter-spacing: -0.5px;
   margin: 0 0 4px 0;
 }
 
 .panel-subtitulo {
   font-size: 13px;
-  color: var(--color-sobre-variante-superficie);
+  color: var(--color-texto-suave);
   margin: 0;
 }
 
 .panel-btn-nuevo {
-  height: 38px;
+  height: var(--alto-control);
   background: var(--color-primario);
   color: var(--color-sobre-primario);
   border: none;
-  border-radius: 4px;
+  border-radius: var(--radio-control);
   padding: 0 16px;
-  font-size: 13px;
+  font-size: var(--fuente-control);
   font-weight: 500;
   cursor: pointer;
   flex-shrink: 0;
@@ -375,12 +268,6 @@
   opacity: 0.9;
 }
 
-/* Filtros — en flex-wrap (no scroll horizontal): con una cantidad
-   variable de chips (categorías del catálogo, rangos de fecha/monto,
-   etc.) el ancho total no se puede prever, así que la fila simplemente
-   se parte en varias líneas cuando no entra. Un contenedor con overflow-x
-   oculto los "esconde" del lado derecho sin ninguna pista visual de que
-   hay más — welcome a que un filtro quede inalcanzable sin querer. */
 .panel-filtros {
   display: flex;
   flex-wrap: wrap;
@@ -391,40 +278,39 @@
 
 .panel-filtro-chip {
   height: 34px;
-  border: 1px solid var(--color-contorno);
+  border: 1px solid var(--color-borde);
   border-radius: 4px;
   padding: 0 12px;
   display: flex;
   align-items: center;
   font-size: 12px;
-  color: var(--color-sobre-variante-superficie);
-  background: var(--color-contenedor-superficie-minimo);
+  color: var(--color-texto-suave);
+  background: var(--color-fondo);
   cursor: pointer;
 }
 
 .panel-filtro-limpiar {
   height: 34px;
-  border: 1px solid var(--color-variante-contorno);
+  border: 1px solid var(--color-borde);
   border-radius: 4px;
   padding: 0 10px;
   display: flex;
   align-items: center;
   font-size: 12px;
-  color: var(--color-sobre-variante-superficie);
-  background: var(--color-contenedor-superficie-minimo);
+  color: var(--color-texto-suave);
+  background: var(--color-fondo);
   cursor: pointer;
 }
 
-/* Descuento total del catálogo — botón al extremo derecho de los filtros */
 .panel-btn-descuento {
-  height: 34px;
-  border: 1px solid var(--color-contorno);
-  border-radius: 4px;
+  height: var(--alto-control);
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radio-control);
   padding: 0 14px;
-  font-size: 12px;
+  font-size: var(--fuente-control);
   font-weight: 500;
-  color: var(--color-sobre-superficie);
-  background: var(--color-contenedor-superficie-minimo);
+  color: var(--color-texto);
+  background: var(--color-fondo);
   cursor: pointer;
   flex-shrink: 0;
   margin-left: auto;
@@ -437,9 +323,9 @@
 }
 
 .panel-descuento-card {
-  background: var(--color-contenedor-superficie-minimo);
-  border: 1px solid var(--color-variante-contorno);
-  border-radius: 6px;
+  background: var(--color-fondo);
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radio-tarjeta);
   padding: 16px;
   margin-bottom: 18px;
 }
@@ -453,26 +339,26 @@
 
 .panel-descuento-input {
   width: 90px;
-  height: 36px;
-  border: 1px solid var(--color-contorno);
-  border-radius: 4px;
+  height: var(--alto-control);
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radio-control);
   padding: 0 10px;
-  font-size: 13px;
+  font-size: var(--fuente-control);
   font-family: inherit;
-  background: var(--color-contenedor-superficie-bajo);
-  color: var(--color-sobre-superficie);
+  background: var(--color-superficie);
+  color: var(--color-texto);
   box-sizing: border-box;
 }
 
 .panel-descuento-ayuda {
   font-size: 12px;
-  color: var(--color-sobre-variante-superficie);
+  color: var(--color-texto-suave);
 }
 
 .panel-descuento-error {
   font-size: 12px;
-  color: var(--color-error);
-  background: var(--color-contenedor-error);
+  color: var(--color-sobre-error-suave);
+  background: var(--color-error-suave);
   border-radius: 4px;
   padding: 8px 10px;
   margin-top: 10px;
@@ -480,8 +366,8 @@
 
 .panel-descuento-ok {
   font-size: 12px;
-  color: var(--color-sobre-contenedor-exito);
-  background: var(--color-contenedor-exito);
+  color: var(--color-sobre-exito-suave);
+  background: var(--color-exito-suave);
   border-radius: 4px;
   padding: 8px 10px;
   margin-top: 10px;
@@ -489,15 +375,15 @@
 
 .panel-descuento-preview {
   margin-top: 14px;
-  border-top: 1px solid var(--color-variante-contorno);
+  border-top: 1px solid var(--color-borde);
   padding-top: 10px;
 }
 
 .panel-descuento-preview-aviso {
   font-size: 12px;
   font-weight: 600;
-  color: var(--color-sobre-contenedor-advertencia);
-  background: var(--color-contenedor-advertencia);
+  color: var(--color-sobre-advertencia-suave);
+  background: var(--color-advertencia-suave);
   border-radius: 4px;
   padding: 8px 10px;
   margin-bottom: 10px;
@@ -513,7 +399,7 @@
 .panel-descuento-preview-header {
   font-size: 11px;
   font-weight: 700;
-  color: var(--color-sobre-variante-superficie);
+  color: var(--color-texto-suave);
   text-transform: uppercase;
   letter-spacing: 0.5px;
   padding: 4px 0;
@@ -521,9 +407,9 @@
 
 .panel-descuento-preview-fila {
   font-size: 13px;
-  color: var(--color-sobre-superficie);
+  color: var(--color-texto);
   padding: 6px 0;
-  border-top: 1px solid var(--color-contenedor-superficie-bajo);
+  border-top: 1px solid var(--color-superficie);
 }
 
 .panel-descuento-preview-nuevo {
@@ -531,62 +417,30 @@
   font-weight: 600;
 }
 
-/* Tabla */
-.panel-tabla-wrapper {
-  background: var(--color-contenedor-superficie-minimo);
-  border: 1px solid var(--color-variante-contorno);
-  border-radius: 6px;
-  overflow-x: auto;
-}
-
-.panel-tabla-header {
-  display: grid;
-  grid-template-columns: 52px 1fr 140px 120px 120px 120px 180px;
-  background: var(--color-contenedor-superficie-bajo);
-  border-bottom: 1px solid var(--color-variante-contorno);
-}
-
-.panel-tabla-header > div {
-  padding: 10px 14px;
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--color-sobre-variante-superficie);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
 .panel-tabla-vacio {
   padding: 40px 24px;
   font-size: 13px;
-  color: var(--color-sobre-variante-superficie);
+  color: var(--color-texto-suave);
   text-align: center;
 }
 
 .panel-tabla-vacio-link {
-  color: var(--color-sobre-superficie);
+  color: var(--color-texto);
   font-weight: 500;
   cursor: pointer;
   text-decoration: underline;
 }
 
-/* Filas de tabla */
-.panel-tabla-fila {
-  display: grid;
-  grid-template-columns: 52px 1fr 140px 120px 120px 120px 180px;
-  border-bottom: 1px solid var(--color-contenedor-superficie-bajo);
-  background: var(--color-contenedor-superficie-minimo);
-}
-
-.panel-tabla-fila:last-child {
-  border-bottom: none;
-}
-
 .panel-tabla-celda {
-  padding: 12px 14px;
   font-size: 13px;
-  color: var(--color-sobre-superficie);
+  color: var(--color-texto);
   display: flex;
   align-items: center;
+}
+
+.panel-tabla-celda--centro {
+  justify-content: center;
+  text-align: center;
 }
 
 .panel-tabla-celda.stock-cero {
@@ -596,13 +450,13 @@
 .panel-producto-foto {
   width: 36px;
   height: 36px;
-  background: var(--color-contenedor-superficie-bajo);
+  background: var(--color-superficie);
   border-radius: 3px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 9px;
-  color: var(--color-sobre-variante-superficie);
+  color: var(--color-texto-suave);
 }
 
 .panel-producto-foto-img {
@@ -619,176 +473,47 @@
 }
 
 .panel-estado-badge.publicado {
-  background: var(--color-contenedor-superficie-maximo);
-  color: var(--color-sobre-superficie);
+  background: var(--color-superficie);
+  color: var(--color-texto);
 }
 
 .panel-estado-badge.pausado {
-  background: var(--color-contenedor-superficie);
-  color: var(--color-sobre-variante-superficie);
+  background: var(--color-superficie);
+  color: var(--color-texto-suave);
 }
 
 .panel-acciones {
   font-size: 12px;
-  color: var(--color-sobre-superficie);
+  color: var(--color-texto);
   cursor: pointer;
   gap: 4px;
 }
 
 .panel-tabla-contador {
   font-size: 12px;
-  color: var(--color-sobre-variante-superficie);
+  color: var(--color-texto-suave);
   margin-top: 10px;
 }
 
 .panel-accion-link {
-  color: var(--color-sobre-superficie);
+  color: var(--color-texto);
   cursor: pointer;
   font-size: 12px;
 }
 
 .panel-accion-link:hover {
-  color: var(--color-sobre-superficie);
+  color: var(--color-texto);
   text-decoration: underline;
 }
 
 .panel-error-visibilidad {
   padding: 6px 14px 8px 66px;
   font-size: 12px;
-  color: var(--color-error);
-  background: var(--color-contenedor-error);
-  border-top: 1px solid var(--color-variante-contorno);
+  color: var(--color-sobre-error-suave);
+  background: var(--color-error-suave);
+  border-top: 1px solid var(--color-borde);
 }
 
-/* Drawer — oculto siempre (solo existe via React conditional). z-index alto
-   a propósito: páginas como DetalleReparto/CrearReparto tienen un mapa de
-   Leaflet en el contenido, y los panes de Leaflet (hasta 700) más sus
-   controles (zoom, etc., 1000) usan z-index propios — si el drawer no les
-   gana a todos, el mapa se pinta encima del cajón de navegación en vez de
-   quedar debajo. */
-.panel-drawer-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.5);
-  z-index: 2000;
-}
-
-.panel-drawer {
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: 260px;
-  max-width: 80vw;
-  background: var(--color-contenedor-superficie-minimo);
-  display: flex;
-  flex-direction: column;
-  overflow-y: auto;
-}
-
-.panel-drawer-top {
-  height: 52px;
-  display: flex;
-  align-items: center;
-  padding: 0 20px;
-  border-bottom: 1px solid var(--color-variante-contorno);
-  flex-shrink: 0;
-  justify-content: space-between;
-}
-
-.panel-drawer-marca {
-  font-size: 15px;
-  font-weight: 700;
-  color: var(--color-sobre-superficie);
-}
-
-.panel-drawer-cerrar-btn {
-  background: none;
-  border: none;
-  color: var(--color-sobre-variante-superficie);
-  font-size: 16px;
-  cursor: pointer;
-  min-width: 44px;
-  min-height: 44px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.panel-drawer-item {
-  height: 48px;
-  display: flex;
-  align-items: center;
-  padding: 0 20px;
-  font-size: 14px;
-  color: var(--color-sobre-variante-superficie);
-  cursor: pointer;
-  border-left: 3px solid transparent;
-}
-
-.panel-drawer-item.activo {
-  color: var(--color-sobre-superficie);
-  background: var(--color-contenedor-superficie-alto);
-  border-left-color: var(--color-sobre-superficie);
-}
-
-.panel-drawer-item:hover {
-  background: var(--color-contenedor-superficie-bajo);
-  color: var(--color-sobre-variante-superficie);
-}
-
-.panel-drawer-sep {
-  height: 1px;
-  background: var(--color-variante-contorno);
-  margin: 4px 0;
-  flex-shrink: 0;
-}
-
-.panel-drawer-modo {
-  background: none;
-  border: none;
-  padding: 0 20px;
-  height: 44px;
-  font-size: 12px;
-  color: var(--color-sobre-variante-superficie);
-  cursor: pointer;
-  text-align: left;
-  width: 100%;
-  font-family: inherit;
-}
-
-.panel-drawer-footer {
-  padding: 12px 20px 28px;
-  border-top: 1px solid var(--color-variante-contorno);
-  margin-top: auto;
-}
-
-.panel-drawer-nombre {
-  font-size: 13px;
-  color: var(--color-sobre-variante-superficie);
-  font-weight: 500;
-}
-
-.panel-drawer-rol {
-  font-size: 11px;
-  color: var(--color-sobre-variante-superficie);
-  margin-top: 2px;
-}
-
-.panel-drawer-logout {
-  background: none;
-  border: none;
-  padding: 0;
-  margin-top: 12px;
-  font-size: 12px;
-  color: var(--color-sobre-variante-superficie);
-  cursor: pointer;
-  text-align: left;
-  font-family: inherit;
-  display: block;
-}
-
-/* Toggle badge mobile */
 .panel-lista-toggle {
   cursor: pointer;
   min-height: 30px;
@@ -797,90 +522,34 @@
   justify-content: center;
 }
 
-.panel-mobile-header { display: none; }
 .panel-lista-fila { display: none; }
 
-/* ── Tablet (≤1024px): el sidebar fijo de 220px + el header con buscador
-   ya no entran cómodos junto al contenido, así que la navegación pasa al
-   mismo drawer/hamburguesa que mobile — un patrón estándar de dashboard
-   (colapsar el sidebar en un cajón a partir de cierto ancho) que no le
-   quita ninguna función, solo la vuelve "a pedido" en vez de fija. El
-   CONTENIDO todavía no cambia acá: sigue siendo la tabla completa de
-   escritorio, con scroll horizontal propio (`.panel-tabla-wrapper`) como
-   red de seguridad en el extremo angosto — nada se oculta ni se resume
-   todavía, es exactamente lo mismo que ve un usuario de escritorio. */
 @media (max-width: 1024px) {
-  .panel-master-header { display: none; }
-  .panel-mobile-header {
-    display: flex;
-    height: 48px;
-    background: var(--color-contenedor-superficie-bajo);
-    align-items: center;
-    padding: 0 16px;
-    gap: 12px;
-    flex-shrink: 0;
-  }
-  .panel-mobile-hamburger { font-size: 18px; color: var(--color-sobre-variante-superficie); cursor: pointer; min-width: 44px; min-height: 44px; display: flex; align-items: center; }
-  .panel-mobile-titulo { font-size: 14px; font-weight: 600; color: var(--color-sobre-superficie); flex: 1; }
-  .panel-mobile-nuevo {
-    background: none;
-    border: none;
-    font-size: 22px;
-    color: var(--color-sobre-variante-superficie);
-    cursor: pointer;
-    padding: 0;
-    min-width: 44px;
-    min-height: 44px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
+  .panel-layout { flex-direction: column; }
 
   .panel-sidebar { display: none; }
-  .panel-contenido { padding: 0 0 20px; overflow-x: hidden; }
-  .panel-seccion-header { display: none; }
+  .panel-menu-btn { display: inline-flex; }
 
-  /* Opt-in: páginas que conservan su línea de contexto (.panel-subtitulo)
-     en mobile, para no perder la orientación que sí está en escritorio.
-     El título ya lo muestra el header compacto (.panel-mobile-titulo), así
-     que acá se oculta el h1 (redundante); y las acciones que la página
-     movió a accionMobile (.panel-btn-nuevo) también se ocultan — no se
-     "des-ocultan" al volver visible el contenedor. */
-  .panel-seccion-header.panel-seccion-header--sub {
-    display: block;
-    margin-bottom: 14px;
-    padding: 0 14px;
-  }
-  .panel-seccion-header--sub .panel-h1,
-  .panel-seccion-header--sub .panel-btn-nuevo {
-    display: none;
-  }
+  .panel-body { padding: 20px 16px; overflow-x: hidden; }
 
-  /* Filtros siempre visibles — sticky dentro del scroll. Siguen en
-     flex-wrap (heredado de la regla base): si no entran en una línea,
-     pasan a la siguiente, nunca se recortan ni se esconden. */
+  .panel-seccion-header { flex-wrap: wrap; gap: 12px; }
+
   .panel-filtros {
     position: sticky;
     top: 0;
     z-index: 5;
-    background: var(--color-variante-superficie);
+    background: var(--color-superficie);
     padding: 10px 14px;
-    margin-bottom: 0;
-    border-bottom: 1px solid var(--color-variante-contorno);
+    margin: 0 -16px 0;
+    border-bottom: 1px solid var(--color-borde);
   }
   .panel-filtro-chip { height: 30px; font-size: 11px; }
   .panel-filtro-limpiar { height: 30px; font-size: 11px; }
   .panel-btn-descuento { height: 30px; font-size: 11px; margin-left: 0; }
 
-  .panel-descuento-card { margin: 0 14px 14px; }
+  .panel-descuento-card { margin: 0 0 14px; }
 }
 
-/* ── Mobile (≤767px): acá sí cambia el contenido — la tabla de columnas
-   fijas deja de tener sentido en una pantalla angosta (obligaría a un
-   scroll horizontal permanente para ver cualquier fila completa), así
-   que se reemplaza por la lista de tarjetas apiladas. Ninguna acción se
-   pierde: cada tarjeta (`.panel-lista-fila`) tiene los mismos datos y
-   los mismos botones que su fila de tabla equivalente. */
 @media (max-width: 767px) {
   .panel-descuento-preview-header { display: none; }
   .panel-descuento-preview-fila {
@@ -888,23 +557,22 @@
     gap: 2px;
     padding: 8px 0;
   }
-  .panel-descuento-preview-fila > div:nth-child(2)::before { content: 'Precio actual: '; color: var(--color-sobre-variante-superficie); }
-  .panel-descuento-preview-fila > div:nth-child(3)::before { content: 'Con descuento: '; color: var(--color-sobre-variante-superficie); }
+  .panel-descuento-preview-fila > div:nth-child(2)::before { content: 'Precio actual: '; color: var(--color-texto-suave); }
+  .panel-descuento-preview-fila > div:nth-child(3)::before { content: 'Con descuento: '; color: var(--color-texto-suave); }
 
-  /* Tabla oculta; lista visible */
-  .panel-tabla-header { display: none; }
-  .panel-tabla-fila { display: none; }
+  .tabla-header.panel-tabla-header { display: none; }
+  .tabla-fila.panel-tabla-fila { display: none; }
+  .tabla.panel-tabla-reflow { border: none; border-radius: 0; }
   .panel-tabla-wrapper { border: none; border-radius: 0; }
   .panel-tabla-vacio { padding: 24px 14px; }
 
-  /* Filas de lista mobile */
   .panel-lista-fila {
     display: flex;
     align-items: center;
     padding: 12px 14px;
     gap: 10px;
-    border-bottom: 1px solid var(--color-contenedor-superficie-bajo);
-    background: var(--color-contenedor-superficie-minimo);
+    border-bottom: 1px solid var(--color-superficie);
+    background: var(--color-fondo);
   }
 
   .panel-lista-foto {
@@ -913,12 +581,12 @@
     border-radius: 4px;
     flex-shrink: 0;
     overflow: hidden;
-    background: var(--color-contenedor-superficie-bajo);
+    background: var(--color-superficie);
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 10px;
-    color: var(--color-sobre-variante-superficie);
+    color: var(--color-texto-suave);
   }
 
   .panel-lista-foto-img {
@@ -939,7 +607,7 @@
   .panel-lista-nombre {
     font-size: 13px;
     font-weight: 500;
-    color: var(--color-sobre-superficie);
+    color: var(--color-texto);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -947,10 +615,9 @@
 
   .panel-lista-stock {
     font-size: 11px;
-    color: var(--color-sobre-variante-superficie);
+    color: var(--color-texto-suave);
   }
 
-  /* Fix 5: columna vertical explícita */
   .panel-lista-derecha {
     display: flex;
     flex-direction: column;
@@ -962,7 +629,7 @@
 
   .panel-lista-editar {
     font-size: 12px;
-    color: var(--color-sobre-superficie);
+    color: var(--color-texto);
     cursor: pointer;
     min-height: 28px;
     display: flex;
@@ -970,7 +637,7 @@
   }
 
   .panel-lista-editar:hover {
-    color: var(--color-sobre-superficie);
+    color: var(--color-texto);
     text-decoration: underline;
   }
 

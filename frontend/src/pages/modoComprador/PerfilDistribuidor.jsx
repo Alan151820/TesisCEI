@@ -1,18 +1,23 @@
 import { useState, useEffect } from 'react'
+import { mensajeDeError } from '../../lib/errores'
 import { useParams, useNavigate } from 'react-router-dom'
 import api from '../../lib/axios'
 import CampanaNotificaciones from '../../components/CampanaNotificaciones'
-import BottomNavComprador from '../../components/BottomNavComprador'
-import { construirTituloProducto } from '../../lib/producto'
+import BottomNav from '../../components/BottomNav'
+import MenuPerfilComprador from '../../components/MenuPerfilComprador'
+import Hdr from '../../components/Hdr'
+import Boton from '../../components/ui/Boton'
+import GridCards from '../../components/ui/GridCards'
+import CardProducto from '../../components/ui/CardProducto'
+import './InicioComprador.css'
 import './PerfilDistribuidor.css'
+import Marca from '../../components/Marca'
 
 function PerfilDistribuidor() {
   const { id } = useParams()
   const navigate = useNavigate()
   const token = localStorage.getItem('token')
-  const nombre = localStorage.getItem('nombre') || ''
   const modoDistribuidorActivo = localStorage.getItem('modoDistribuidorActivo') === 'true'
-  const iniciales = nombre.split(' ').map(p => p[0]).join('').slice(0, 2).toUpperCase()
 
   const [distribuidor, setDistribuidor] = useState(null)
   const [productos, setProductos] = useState([])
@@ -24,7 +29,7 @@ function PerfilDistribuidor() {
         const res = await api.get(`/distribuidor/perfilDistribuidor/${id}`)
         setDistribuidor(res.data)
       } catch (error) {
-        setMensaje(error.response?.data?.mensaje || 'No fue posible completar la operación. Intente nuevamente más tarde.')
+        setMensaje(mensajeDeError(error))
       }
     }
 
@@ -41,14 +46,6 @@ function PerfilDistribuidor() {
     obtenerProductos()
   }, [id])
 
-  const cerrarSesion = () => {
-    localStorage.removeItem('token')
-    localStorage.removeItem('nombre')
-    localStorage.removeItem('telefono')
-    localStorage.removeItem('modoDistribuidorActivo')
-navigate('/catalogo', { replace: true })
-  }
-
   if (mensaje) return <p className="perfildist-mensaje-pagina">{mensaje}</p>
   if (!distribuidor) return <p className="perfildist-mensaje-pagina">Cargando...</p>
 
@@ -57,40 +54,22 @@ navigate('/catalogo', { replace: true })
   return (
     <div className="perfildist-fondo">
 
-      <div className="perfildist-mobile-header">
-        <button type="button" className="perfildist-mobile-volver" onClick={() => window.history.back()}>←</button>
-        <div className="perfildist-mobile-titulo">Perfil del distribuidor</div>
-      </div>
-
-      <header className="perfildist-topbar">
-        <div className="perfildist-marca" onClick={() => navigate('/')}>MarketDist</div>
-        <div className="perfildist-buscador">
-          <span className="perfildist-buscador-icono">⌕</span>
-          <span className="perfildist-buscador-texto">Buscar productos…</span>
-        </div>
-        <div className="perfildist-topbar-acciones">
-          {token ? (
-            <>
-              <span className="perfildist-nav-link" onClick={() => navigate(modoDistribuidorActivo ? '/inicio' : '/configurarPerfil')}>
-                Distribuidora
-              </span>
-              <CampanaNotificaciones rutaDestino="/misPedidos" rutaDetalle="/pedido" />
-              <div className="perfildist-perfil">
-                <div className="perfildist-avatar">{iniciales}</div>
-                <span className="perfildist-nombre-usuario">{nombre}</span>
-              </div>
-              <button className="perfildist-btn-cerrar-sesion" onClick={cerrarSesion}>
-                Cerrar sesión
-              </button>
-            </>
-          ) : (
-            <>
-              <button className="perfildist-btn-login" onClick={() => navigate('/login')}>Iniciar sesión</button>
-              <button className="perfildist-btn-registro" onClick={() => navigate('/registro')}>Registrarse</button>
-            </>
-          )}
-        </div>
-      </header>
+      <Hdr logo={<span className="hdr-logo" onClick={() => navigate('/')}><Marca /></span>} buscador>
+        {token ? (
+          <>
+            <span className="link" onClick={() => navigate(modoDistribuidorActivo ? '/inicio' : '/configurarPerfil')}>
+              Distribuidora
+            </span>
+            <CampanaNotificaciones rutaDestino="/misPedidos" rutaDetalle="/pedido" />
+            <MenuPerfilComprador />
+          </>
+        ) : (
+          <>
+            <Boton variante="ghost" onClick={() => navigate('/login')}>Iniciar sesión</Boton>
+            <Boton variante="fill" onClick={() => navigate('/registro')}>Registrarse</Boton>
+          </>
+        )}
+      </Hdr>
 
       <div className="perfildist-cabecera">
         <div className="perfildist-logo">
@@ -110,12 +89,8 @@ navigate('/catalogo', { replace: true })
             <div className="perfildist-info-bloque">
               <span className="perfildist-info-label">Calificación</span>
               {distribuidor.calificacionPromedio ? (
-                <div className="perfildist-calificacion">
-                  <span className="perfildist-estrellas">
-                    {[1, 2, 3, 4, 5].map(n => (
-                      <span key={n} className={n <= calificacionRedondeada ? 'perfildist-estrella-llena' : 'perfildist-estrella-vacia'}>★</span>
-                    ))}
-                  </span>
+                <div className="fila gap-s">
+                  <span className="estrellas">{'★'.repeat(calificacionRedondeada)}{'☆'.repeat(5 - calificacionRedondeada)}</span>
                   <span className="perfildist-info-valor">{distribuidor.calificacionPromedio} / 5</span>
                 </div>
               ) : (
@@ -132,24 +107,20 @@ navigate('/catalogo', { replace: true })
         {productos.length === 0 ? (
           <p className="perfildist-catalogo-vacio">Este distribuidor no tiene productos publicados actualmente.</p>
         ) : (
-          <div className="perfildist-grid">
+          <GridCards>
             {productos.map(p => (
-<div key={p.id} className="perfildist-producto-card" onClick={() => navigate(`/producto/${p.id}`, { replace: true })}>                {p.imagenUrl
-                  ? <img src={`http://localhost:3000${p.imagenUrl}`} alt={p.nombre} className="perfildist-producto-img" />
-                  : <div className="perfildist-producto-img-placeholder">[foto]</div>
-                }
-                <div className="perfildist-producto-info">
-                  <div className="perfildist-producto-categoria">{p.categoria}</div>
-                  <h3 className="perfildist-producto-nombre">{construirTituloProducto(p)}</h3>
-                  <p className="perfildist-producto-descripcion">{p.descripcion}</p>
-                </div>
-              </div>
+              <CardProducto
+                key={p.id}
+                producto={p}
+                compacta
+                onClick={() => navigate(`/producto/${p.id}`, { replace: true })}
+              />
             ))}
-          </div>
+          </GridCards>
         )}
       </div>
 
-      {token && <BottomNavComprador />}
+      {token && <BottomNav />}
 
     </div>
   )

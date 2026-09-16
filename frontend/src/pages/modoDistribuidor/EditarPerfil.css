@@ -1,9 +1,6 @@
 .editarperfil-card {
-  background: var(--color-contenedor-superficie-minimo);
-  border: 1px solid var(--color-variante-contorno);
-  border-radius: 6px;
-  padding: 24px;
-  max-width: 640px;
+  width: 100%;
+  max-width: 460px;
   margin: 0 auto;
 }
 
@@ -16,8 +13,8 @@
   width: 84px;
   height: 84px;
   border-radius: 50%;
-  border: 1px dashed var(--color-contorno);
-  background: var(--color-contenedor-superficie-bajo);
+  border: 1px dashed var(--color-borde);
+  background: var(--color-superficie);
   cursor: pointer;
   overflow: hidden;
   display: flex;
@@ -26,8 +23,8 @@
 }
 
 .editarperfil-logo-zona:hover {
-  border-color: var(--color-sobre-variante-superficie);
-  background: var(--color-contenedor-superficie);
+  border-color: var(--color-texto-suave);
+  background: var(--color-superficie);
 }
 
 .editarperfil-logo-preview {
@@ -38,107 +35,13 @@
 
 .editarperfil-logo-texto {
   font-size: 11px;
-  color: var(--color-sobre-variante-superficie);
+  color: var(--color-texto-suave);
   text-align: center;
   padding: 6px;
-}
-
-.editarperfil-campo {
-  margin-bottom: 16px;
-}
-
-.editarperfil-label {
-  display: block;
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--color-sobre-superficie);
-  margin-bottom: 5px;
-}
-
-.editarperfil-input,
-.editarperfil-textarea {
-  width: 100%;
-  border: 1px solid var(--color-contorno);
-  border-radius: 4px;
-  background: var(--color-contenedor-superficie-minimo);
-  font-size: 13px;
-  color: var(--color-sobre-superficie);
-  box-sizing: border-box;
-  font-family: inherit;
-}
-
-.editarperfil-input {
-  height: 38px;
-  padding: 0 12px;
-}
-
-.editarperfil-textarea {
-  height: 80px;
-  padding: 10px 12px;
-  resize: vertical;
-}
-
-.editarperfil-acciones {
-  display: flex;
-  gap: 10px;
-}
-
-.editarperfil-btn-guardar {
-  height: 40px;
-  border-radius: 4px;
-  padding: 0 20px;
-  font-size: 13px;
-  font-weight: 500;
-  cursor: pointer;
-  background: var(--color-primario);
-  color: var(--color-sobre-primario);
-  border: none;
-}
-
-.editarperfil-btn-guardar:hover {
-  opacity: 0.9;
-}
-
-.editarperfil-btn-cancelar {
-  height: 40px;
-  border-radius: 4px;
-  padding: 0 20px;
-  font-size: 13px;
-  font-weight: 500;
-  cursor: pointer;
-  background: var(--color-contenedor-superficie-minimo);
-  color: var(--color-sobre-superficie);
-  border: 1px solid var(--color-contorno);
-}
-
-.editarperfil-btn-cancelar:hover {
-  background: var(--color-contenedor-superficie-bajo);
-}
-
-.editarperfil-mensaje {
-  font-size: 13px;
-  color: var(--color-sobre-superficie);
-  margin: 14px 0 0 0;
-}
-
-.editarperfil-mensaje:empty {
-  margin: 0;
 }
 
 @media (max-width: 768px) {
   .editarperfil-card {
     max-width: 100%;
   }
-
-  .editarperfil-acciones {
-    flex-direction: column;
-  }
-
-  .editarperfil-btn-guardar,
-  .editarperfil-btn-cancelar {
-    width: 100%;
-    height: 44px;
-  }
-
-  .editarperfil-input { height: 44px; }
 }

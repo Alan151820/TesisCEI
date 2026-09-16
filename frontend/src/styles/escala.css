@@ -1,0 +1,11 @@
+:root {
+
+  --alto-control: 52px;
+  --radio-control: 12px;
+
+  --radio-tarjeta: 18px;
+  --radio-chip: 9px;
+
+  --fuente-base: 16px;
+  --fuente-control: 16px;
+}

@@ -1,118 +1,44 @@
 :root {
-  /* ============================================================
-     FUENTES — las DOS únicas variables que se cambian cuando se
-     elige el color real del proyecto.
+  --_fuente-primaria:   oklch(50.97% 0.1263  153.54);
+  --_fuente-secundaria: oklch(26.60% 0.07605 268.60);
+  --_fuente-terciaria:  oklch(71.60% 0.09773  74.03);
 
-     Formato: oklch(lightness% chroma hue)
-       - lightness: 0–100% (qué tan claro u oscuro)
-       - chroma: 0–0.4 aprox. (0 = gris puro, 0.3+ = muy vívido)
-       - hue: 0–360 (el matiz: 0=rojo, 120=verde, 250=azul, etc.)
+  --color-primario:   var(--_fuente-primaria);
+  --color-secundario: var(--_fuente-secundaria);
+  --color-terciario:  var(--_fuente-terciaria);
 
-     Placeholder actual (chroma=0): grises puros, sin tinte.
-     Para activar el sistema completo: cambiar chroma y hue.
-     Ejemplo de azul: --_fuente-primaria: oklch(50% 0.20 250);
-  ============================================================ */
-  --_fuente-primaria:   oklch(52.343% 0.15074 44.56);
-  --_fuente-secundaria: oklch(63.558% 0.21734 36.057);
+  --color-sobre-primario:   oklch(from var(--_fuente-primaria) 100% calc(c * 0.04) h);
+  --color-sobre-secundario: oklch(from var(--_fuente-secundaria) 100% calc(c * 0.04) h);
+  --color-sobre-terciario:  oklch(from var(--_fuente-terciaria) 15%  calc(c * 0.04) h);
 
-  /* Roles de acento primario */
-  --color-primario:                     oklch(from var(--_fuente-primaria) 16% c h);
-  --color-sobre-primario:               oklch(from var(--_fuente-primaria) 100% 0 h);
-  --color-contenedor-primario:          oklch(from var(--_fuente-primaria) 91% calc(c * 0.5) h);
-  --color-sobre-contenedor-primario:    oklch(from var(--_fuente-primaria) 12% calc(c * 0.3) h);
+  --color-secundario-suave:       oklch(from var(--_fuente-secundaria) 91% calc(c * 0.5) h);
+  --color-sobre-secundario-suave: oklch(from var(--_fuente-secundaria) 12% calc(c * 0.3) h);
+  --color-terciario-suave:        oklch(from var(--_fuente-terciaria) 95% calc(c * 0.35) h);
+  --color-sobre-terciario-suave:  oklch(from var(--_fuente-terciaria) 25% calc(c * 0.5) h);
 
-  /* Roles de acento secundario */
-  --color-secundario:                   oklch(from var(--_fuente-secundaria) 45% c h);
-  --color-sobre-secundario:             oklch(from var(--_fuente-secundaria) 100% 0 h);
-  --color-contenedor-secundario:        oklch(from var(--_fuente-secundaria) 91% calc(c * 0.5) h);
-  --color-sobre-contenedor-secundario:  oklch(from var(--_fuente-secundaria) 12% calc(c * 0.3) h);
+  --color-fondo:        oklch(from var(--_fuente-terciaria) 99%  calc(c * 0.06) h);
+  --color-superficie:   oklch(from var(--_fuente-terciaria) 96%  calc(c * 0.14) h);
+  --color-texto:        oklch(from var(--_fuente-secundaria) 18% calc(c * 0.55) h);
+  --color-texto-suave:  oklch(from var(--_fuente-secundaria) 45% calc(c * 0.30) h);
+  --color-borde:        oklch(from var(--_fuente-terciaria) 86%  calc(c * 0.22) h);
 
-  /* Roles de superficie — chromatic neutrals */
-  --color-superficie:                   oklch(from var(--_fuente-primaria) 99% calc(c * 0.06) h);
-  --color-sobre-superficie:             oklch(from var(--_fuente-primaria) 12% calc(c * 0.07) h);
-  --color-superficie-tenue:             oklch(from var(--_fuente-primaria) 88% calc(c * 0.06) h);
-  --color-superficie-brillante:         oklch(from var(--_fuente-primaria) 98% calc(c * 0.05) h);
-  --color-contenedor-superficie-minimo: oklch(from var(--_fuente-primaria) 100% 0 h);
-  --color-contenedor-superficie-bajo:   oklch(from var(--_fuente-primaria) 96% calc(c * 0.05) h);
-  --color-contenedor-superficie:        oklch(from var(--_fuente-primaria) 94% calc(c * 0.06) h);
-  --color-contenedor-superficie-alto:   oklch(from var(--_fuente-primaria) 92% calc(c * 0.06) h);
-  --color-contenedor-superficie-maximo: oklch(from var(--_fuente-primaria) 90% calc(c * 0.07) h);
-  --color-variante-superficie:          oklch(from var(--_fuente-primaria) 88% calc(c * 0.07) h);
-  --color-sobre-variante-superficie:    oklch(from var(--_fuente-primaria) 53% calc(c * 0.08) h);
+  --color-error:              oklch(40% 0.22 25);
+  --color-sobre-error:        oklch(100% 0 25);
+  --color-error-suave:        oklch(91% 0.10 25);
+  --color-sobre-error-suave:  oklch(12% 0.15 25);
 
-  /* Contornos */
-  --color-contorno:                     oklch(from var(--_fuente-primaria) 77% calc(c * 0.12) h);
-  --color-variante-contorno:            oklch(from var(--_fuente-primaria) 85% calc(c * 0.10) h);
+  --color-exito:              oklch(40% 0.15 145);
+  --color-sobre-exito:        oklch(100% 0 145);
+  --color-exito-suave:        oklch(91% 0.08 145);
+  --color-sobre-exito-suave:  oklch(12% 0.12 145);
 
-  /* Error — fijo, independiente del color de marca */
-  --color-error:                    oklch(40% 0.22 25);
-  --color-sobre-error:              oklch(100% 0 25);
-  --color-contenedor-error:         oklch(91% 0.10 25);
-  --color-sobre-contenedor-error:   oklch(12% 0.15 25);
+  --color-info:               oklch(45% 0.15 230);
+  --color-sobre-info:         oklch(100% 0 230);
+  --color-info-suave:         oklch(91% 0.06 230);
+  --color-sobre-info-suave:   oklch(12% 0.10 230);
 
-  /* Éxito — fijo, independiente del color de marca */
-  --color-exito:                    oklch(40% 0.15 145);
-  --color-sobre-exito:              oklch(100% 0 145);
-  --color-contenedor-exito:         oklch(91% 0.08 145);
-  --color-sobre-contenedor-exito:   oklch(12% 0.12 145);
-
-  /* Info — fijo, independiente del color de marca */
-  --color-info:                    oklch(45% 0.15 230);
-  --color-sobre-info:              oklch(100% 0 230);
-  --color-contenedor-info:         oklch(91% 0.06 230);
-  --color-sobre-contenedor-info:   oklch(12% 0.10 230);
-
-  /* Advertencia — fijo, independiente del color de marca */
-  --color-advertencia:                  oklch(50% 0.15 95);
-  --color-sobre-advertencia:            oklch(12% 0 95);
-  --color-contenedor-advertencia:       oklch(91% 0.10 95);
-  --color-sobre-contenedor-advertencia: oklch(12% 0.12 95);
-}
-
-[data-tema="oscuro"] {
-  /* Tema oscuro: mismas fuentes, tonos claros y oscuros invertidos */
-  --color-primario:                     oklch(from var(--_fuente-primaria) 82% c h);
-  --color-sobre-primario:               oklch(from var(--_fuente-primaria) 22% 0 h);
-  --color-contenedor-primario:          oklch(from var(--_fuente-primaria) 35% calc(c * 0.5) h);
-  --color-sobre-contenedor-primario:    oklch(from var(--_fuente-primaria) 91% calc(c * 0.3) h);
-
-  --color-secundario:                   oklch(from var(--_fuente-secundaria) 82% c h);
-  --color-sobre-secundario:             oklch(from var(--_fuente-secundaria) 22% 0 h);
-  --color-contenedor-secundario:        oklch(from var(--_fuente-secundaria) 35% calc(c * 0.5) h);
-  --color-sobre-contenedor-secundario:  oklch(from var(--_fuente-secundaria) 91% calc(c * 0.3) h);
-
-  --color-superficie:                   oklch(from var(--_fuente-primaria) 12% calc(c * 0.07) h);
-  --color-sobre-superficie:             oklch(from var(--_fuente-primaria) 91% calc(c * 0.06) h);
-  --color-superficie-tenue:             oklch(from var(--_fuente-primaria)  7% calc(c * 0.06) h);
-  --color-superficie-brillante:         oklch(from var(--_fuente-primaria) 24% calc(c * 0.07) h);
-  --color-contenedor-superficie-minimo: oklch(from var(--_fuente-primaria)  5% calc(c * 0.05) h);
-  --color-contenedor-superficie-bajo:   oklch(from var(--_fuente-primaria) 12% calc(c * 0.06) h);
-  --color-contenedor-superficie:        oklch(from var(--_fuente-primaria) 14% calc(c * 0.06) h);
-  --color-contenedor-superficie-alto:   oklch(from var(--_fuente-primaria) 18% calc(c * 0.07) h);
-  --color-contenedor-superficie-maximo: oklch(from var(--_fuente-primaria) 21% calc(c * 0.07) h);
-  --color-variante-superficie:          oklch(from var(--_fuente-primaria) 32% calc(c * 0.07) h);
-  --color-sobre-variante-superficie:    oklch(from var(--_fuente-primaria) 80% calc(c * 0.07) h);
-
-  --color-contorno:                     oklch(from var(--_fuente-primaria) 58% calc(c * 0.12) h);
-  --color-variante-contorno:            oklch(from var(--_fuente-primaria) 32% calc(c * 0.10) h);
-
-  --color-error:                    oklch(80% 0.18 25);
-  --color-sobre-error:              oklch(22% 0.18 25);
-  --color-contenedor-error:         oklch(32% 0.20 25);
-  --color-sobre-contenedor-error:   oklch(91% 0.10 25);
-
-  --color-exito:                    oklch(80% 0.15 145);
-  --color-sobre-exito:              oklch(20% 0.15 145);
-  --color-contenedor-exito:         oklch(32% 0.15 145);
-  --color-sobre-contenedor-exito:   oklch(91% 0.08 145);
-
-  --color-info:                    oklch(80% 0.15 230);
-  --color-sobre-info:              oklch(20% 0.15 230);
-  --color-contenedor-info:         oklch(32% 0.12 230);
-  --color-sobre-contenedor-info:   oklch(91% 0.06 230);
-
-  --color-advertencia:                  oklch(85% 0.15 95);
-  --color-sobre-advertencia:            oklch(20% 0 95);
-  --color-contenedor-advertencia:       oklch(32% 0.15 95);
-  --color-sobre-contenedor-advertencia: oklch(91% 0.10 95);
+  --color-advertencia:              oklch(50% 0.15 95);
+  --color-sobre-advertencia:        oklch(12% 0 95);
+  --color-advertencia-suave:        oklch(91% 0.10 95);
+  --color-sobre-advertencia-suave:  oklch(12% 0.12 95);
 }

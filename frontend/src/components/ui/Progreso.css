@@ -1,0 +1,13 @@
+.progreso {
+  height: 10px;
+  border-radius: 6px;
+  background: var(--color-borde);
+  overflow: hidden;
+}
+
+.progreso-relleno {
+  display: block;
+  height: 100%;
+  border-radius: 6px;
+  background: var(--color-secundario);
+}

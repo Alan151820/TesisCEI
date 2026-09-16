@@ -1,7 +1,7 @@
 import { Routes, Route } from 'react-router-dom'
 import { CarritoProvider } from './context/CarritoContext'
-import { TemaProvider } from './context/TemaContext'
 import { RutaProtegida, RutaDistribuidor } from './components/RutaProtegida'
+import MarcaSprite from './components/MarcaSprite'
 import Registro from './pages/autenticacion/Registro'
 import Verificar from './pages/autenticacion/Verificar'
 import Login from './pages/autenticacion/Login'
@@ -33,10 +33,10 @@ import Rentabilidad from './pages/modoDistribuidor/Rentabilidad'
 
 function App() {
   return (
-    <TemaProvider>
+    <>
+      <MarcaSprite />
       <CarritoProvider>
         <Routes>
-          {/* Públicas */}
           <Route path='/registro' element={<Registro />} />
           <Route path='/verificar' element={<Verificar />} />
           <Route path='/login' element={<Login />} />
@@ -50,7 +50,6 @@ function App() {
           <Route path='/' element={<Catalogo />} />
           <Route path='/producto/:id' element={<DetalleProducto />} />
 
-          {/* Protegidas: cualquier usuario con sesión activa */}
           <Route element={<RutaProtegida />}>
             <Route path='/inicioComprador' element={<InicioComprador />} />
             <Route path='/confirmar-pedido' element={<ConfirmacionPedido />} />
@@ -59,7 +58,6 @@ function App() {
             <Route path='/pedido/:id' element={<DetallePedido />} />
           </Route>
 
-          {/* Protegidas: requieren modo distribuidor activo */}
           <Route element={<RutaDistribuidor />}>
             <Route path='/inicio' element={<Inicio />} />
             <Route path='/producto/nuevo' element={<FichaProducto />} />
@@ -75,7 +73,7 @@ function App() {
           </Route>
         </Routes>
       </CarritoProvider>
-    </TemaProvider>
+    </>
   )
 }
 

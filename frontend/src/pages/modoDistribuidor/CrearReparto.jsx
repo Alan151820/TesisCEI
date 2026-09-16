@@ -1,20 +1,22 @@
 import { useState, useEffect, useMemo } from 'react'
+import { mensajeDeError } from '../../lib/errores'
 import { useNavigate } from 'react-router-dom'
 import { MapContainer, TileLayer, Marker, Tooltip, useMap } from 'react-leaflet'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 import api from '../../lib/axios'
 import PanelDistribuidor from '../../components/PanelDistribuidor'
+import Tabla from '../../components/ui/Tabla'
+import TablaHeader from '../../components/ui/TablaHeader'
+import TablaFila from '../../components/ui/TablaFila'
 import './Inicio.css'
 import './MisPedidos.css'
 import './Reparto.css'
 
 const MONTEVIDEO = [-34.9011, -56.1645]
+const COLUMNAS = ['', 'N° Pedido', 'Comprador', 'Dirección de entrega', 'Productos']
+const GRID = '44px 120px 180px 1fr 200px'
 
-// Íconos como círculos de color (CSS var, no PNG): evita el workaround de
-// rutas de imagen de Leaflet en Vite (ver ModalMapaDireccion) y permite que
-// el color siga el sistema de color del proyecto (guía 07), tema
-// claro/oscuro incluido.
 function crearIcono(colorVar, tamano) {
   return L.divIcon({
     className: 'reparto-mapa-icono',
@@ -28,8 +30,6 @@ const ICONO_DEPOSITO = crearIcono('--color-secundario', 18)
 const ICONO_SELECCIONADO = crearIcono('--color-primario', 16)
 const ICONO_DISPONIBLE = crearIcono('--color-sobre-variante-superficie', 10)
 
-// Encuadra el mapa para mostrar todos los puntos disponibles (no cambia con
-// la selección, así el click en un punto no reacomoda la vista).
 function AjustarVista({ puntos }) {
   const map = useMap()
   useEffect(() => {
@@ -43,11 +43,6 @@ function AjustarVista({ puntos }) {
   return null
 }
 
-// RF-043: selección de pedidos con mapa interactivo bidireccional — tildar
-// en la lista agrega/resalta el punto en el mapa, y tocar un punto en el
-// mapa agrega o quita ese pedido de la selección. RF-044 (creación del
-// reparto en sí) sigue con su comportamiento previo: no reordena por
-// distancia acá ni ingresa automáticamente al reparto creado todavía.
 function CrearReparto() {
   const navigate = useNavigate()
 
@@ -78,7 +73,7 @@ function CrearReparto() {
   useEffect(() => {
     api.get('/api/pedidos/disponibles-reparto')
       .then(res => setPedidos(res.data))
-      .catch(err => setError(err.response?.data?.error || 'No fue posible completar la operación. Intente nuevamente más tarde.'))
+      .catch(err => setError(mensajeDeError(err)))
       .finally(() => setCargando(false))
   }, [])
 
@@ -91,8 +86,6 @@ function CrearReparto() {
     })
   }
 
-  // RF-044: al crear el reparto, ingresa automáticamente a su vista de
-  // progreso — ya no se queda en esta pantalla mostrando un mensaje.
   const handleGenerarPlan = async () => {
     setErrorGenerar('')
     setGenerando(true)
@@ -100,7 +93,7 @@ function CrearReparto() {
       const res = await api.post('/api/reparto/generar', { pedidoIds: [...seleccionados] })
       navigate(`/reparto/${res.data.plan.id}`)
     } catch (err) {
-      setErrorGenerar(err.response?.data?.error || 'No fue posible completar la operación. Intente nuevamente más tarde.')
+      setErrorGenerar(mensajeDeError(err))
       setGenerando(false)
     }
   }
@@ -119,12 +112,7 @@ function CrearReparto() {
   }, [pedidosConUbicacion, latitudPartida, longitudPartida])
 
   return (
-    <PanelDistribuidor tituloMobile="Crear reparto" activo="/reparto">
-          {/* .reparto-crear-header: mismo criterio que .reparto-detalle-header
-              (ver Reparto.css) — el "Volver al panel" vive en este
-              .panel-seccion-header, que Inicio.css oculta a ≤1024px; el
-              modificador lo vuelve a mostrar, apilado, para que no
-              desaparezca en tablet/mobile. */}
+    <PanelDistribuidor activo="/reparto">
           <div className="panel-seccion-header reparto-crear-header">
             <div>
               <h1 className="panel-h1">Crear reparto</h1>
@@ -159,20 +147,15 @@ function CrearReparto() {
           {perfilCargado && direccionPartida && !cargando && !error && pedidos.length > 0 && (
             <div className="reparto-crear-layout">
               <div className="reparto-crear-lista">
-                <div className="panel-tabla-wrapper">
-                  <div className="reparto-tabla-header">
-                    <div></div>
-                    <div>N° Pedido</div>
-                    <div>Comprador</div>
-                    <div>Dirección de entrega</div>
-                    <div>Productos</div>
-                  </div>
+                <Tabla grid={GRID} className="panel-tabla-reflow">
+                  <TablaHeader columnas={COLUMNAS} className="reparto-tabla-header" />
 
                   {pedidos.map(p => (
-                    <div key={p.id} className="reparto-tabla-fila">
+                    <TablaFila key={p.id} className="reparto-tabla-fila">
                       <div className="reparto-celda">
                         <input
                           type="checkbox"
+                          className="checkbox"
                           checked={seleccionados.has(p.id)}
                           onChange={() => alternarSeleccion(p.id)}
                         />
@@ -183,26 +166,26 @@ function CrearReparto() {
                       <div className="reparto-celda">
                         {p.items.map(it => `${it.nombreProducto} ×${Number(it.cantidad)}`).join(', ')}
                       </div>
-                    </div>
+                    </TablaFila>
                   ))}
+                </Tabla>
 
-                  <div className="reparto-pie">
-                    <div className="panel-tabla-contador">
-                      {seleccionados.size} pedido{seleccionados.size !== 1 ? 's' : ''} seleccionado{seleccionados.size !== 1 ? 's' : ''} de {pedidos.length} disponible{pedidos.length !== 1 ? 's' : ''}
-                    </div>
-                    <button className="panel-btn-nuevo" onClick={handleGenerarPlan} disabled={seleccionados.size < 2 || generando}>
-                      {generando ? 'Generando…' : `Generar plan de carga (${seleccionados.size} parada${seleccionados.size !== 1 ? 's' : ''})`}
-                    </button>
+                <div className="reparto-pie">
+                  <div className="panel-tabla-contador">
+                    {seleccionados.size} pedido{seleccionados.size !== 1 ? 's' : ''} seleccionado{seleccionados.size !== 1 ? 's' : ''} de {pedidos.length} disponible{pedidos.length !== 1 ? 's' : ''}
                   </div>
-
-                  {seleccionados.size < 2 && (
-                    <div className="panel-error-visibilidad">Seleccioná al menos dos pedidos para generar la planificación.</div>
-                  )}
-
-                  {errorGenerar && (
-                    <div className="panel-error-visibilidad">{errorGenerar}</div>
-                  )}
+                  <button className="panel-btn-nuevo" onClick={handleGenerarPlan} disabled={seleccionados.size < 2 || generando}>
+                    {generando ? 'Generando…' : `Generar plan de carga (${seleccionados.size} parada${seleccionados.size !== 1 ? 's' : ''})`}
+                  </button>
                 </div>
+
+                {seleccionados.size < 2 && (
+                  <div className="panel-error-visibilidad">Seleccioná al menos dos pedidos para generar la planificación.</div>
+                )}
+
+                {errorGenerar && (
+                  <div className="panel-error-visibilidad">{errorGenerar}</div>
+                )}
               </div>
 
               <div className="reparto-crear-mapa-wrapper">

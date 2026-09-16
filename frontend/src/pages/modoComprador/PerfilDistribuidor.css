@@ -2,85 +2,19 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background: var(--color-variante-superficie);
-  font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  background: var(--color-superficie);
 }
 
 .perfildist-mensaje-pagina {
   text-align: center;
   margin-top: 100px;
   font-size: 14px;
-  color: var(--color-sobre-superficie);
-  font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  color: var(--color-texto);
 }
 
-/* Topbar */
-.perfildist-topbar {
-  height: 56px;
-  background: var(--color-contenedor-superficie-minimo);
-  border-bottom: 1px solid var(--color-variante-contorno);
-  display: flex;
-  align-items: center;
-  padding: 0 40px;
-  gap: 24px;
-}
-
-.perfildist-marca {
-  font-size: 17px;
-  font-weight: 700;
-  color: var(--color-sobre-superficie);
-  cursor: pointer;
-  flex-shrink: 0;
-}
-
-.perfildist-buscador {
-  flex: 1;
-  max-width: 560px;
-  height: 36px;
-  background: var(--color-contenedor-superficie-bajo);
-  border: 1px solid var(--color-contorno);
-  border-radius: 4px;
-  display: flex;
-  align-items: center;
-  padding: 0 14px;
-  gap: 8px;
-}
-
-.perfildist-buscador-icono {
-  font-size: 13px;
-  color: var(--color-sobre-variante-superficie);
-}
-
-.perfildist-buscador-texto {
-  font-size: 13px;
-  color: var(--color-sobre-variante-superficie);
-}
-
-.perfildist-topbar-acciones {
-  margin-left: auto;
-  display: flex;
-  align-items: center;
-  gap: 20px;
-}
-
-.perfildist-topbar-link {
-  font-size: 13px;
-  color: var(--color-sobre-variante-superficie);
-}
-
-.perfildist-topbar-registro {
-  background: var(--color-primario);
-  color: var(--color-sobre-primario);
-  padding: 7px 18px;
-  border-radius: 4px;
-  font-size: 13px;
-  font-weight: 500;
-}
-
-/* Cabecera del distribuidor */
 .perfildist-cabecera {
-  background: var(--color-contenedor-superficie-minimo);
-  border-bottom: 1px solid var(--color-variante-contorno);
+  background: var(--color-fondo);
+  border-bottom: 1px solid var(--color-borde);
   padding: 32px 40px;
   display: flex;
   gap: 28px;
@@ -88,11 +22,11 @@
 }
 
 .perfildist-logo {
-  width: 80px;
-  height: 80px;
-  background: var(--color-contenedor-superficie-bajo);
-  border-radius: 4px;
-  border: 1px dashed var(--color-contorno);
+  width: 100px;
+  height: 100px;
+  background: var(--color-superficie);
+  border-radius: 50%;
+  border: 1px dashed var(--color-borde);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -108,7 +42,7 @@
 
 .perfildist-logo-placeholder {
   font-size: 11px;
-  color: var(--color-sobre-variante-superficie);
+  color: var(--color-texto-suave);
 }
 
 .perfildist-datos {
@@ -119,13 +53,13 @@
 .perfildist-nombre {
   font-size: 24px;
   font-weight: 700;
-  color: var(--color-sobre-superficie);
+  color: var(--color-texto);
   margin: 0 0 6px 0;
 }
 
 .perfildist-descripcion {
   font-size: 13px;
-  color: var(--color-sobre-variante-superficie);
+  color: var(--color-texto-suave);
   line-height: 1.5;
   margin: 0 0 10px 0;
 }
@@ -144,7 +78,7 @@
 
 .perfildist-info-label {
   font-size: 11px;
-  color: var(--color-sobre-variante-superficie);
+  color: var(--color-texto-suave);
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.3px;
@@ -152,31 +86,9 @@
 
 .perfildist-info-valor {
   font-size: 13px;
-  color: var(--color-sobre-superficie);
+  color: var(--color-texto);
 }
 
-.perfildist-calificacion {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.perfildist-estrellas {
-  display: flex;
-  gap: 2px;
-}
-
-.perfildist-estrella-llena {
-  color: var(--color-sobre-variante-superficie);
-  font-size: 16px;
-}
-
-.perfildist-estrella-vacia {
-  color: var(--color-variante-contorno);
-  font-size: 16px;
-}
-
-/* Catálogo */
 .perfildist-catalogo {
   flex: 1;
   padding: 28px 40px;
@@ -185,191 +97,16 @@
 .perfildist-catalogo-titulo {
   font-size: 16px;
   font-weight: 700;
-  color: var(--color-sobre-superficie);
+  color: var(--color-texto);
   margin: 0 0 20px 0;
 }
 
 .perfildist-catalogo-vacio {
   font-size: 13px;
-  color: var(--color-sobre-variante-superficie);
+  color: var(--color-texto-suave);
 }
-
-.perfildist-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16px;
-}
-
-.perfildist-producto-card {
-  background: var(--color-contenedor-superficie-minimo);
-  border: 1px solid var(--color-variante-contorno);
-  border-radius: 6px;
-  overflow: hidden;
-  flex: 0 0 calc(25% - 12px);
-  cursor: pointer;
-}
-
-.perfildist-producto-card:hover {
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
-}
-
-.perfildist-producto-img,
-.perfildist-producto-img-placeholder {
-  height: 140px;
-  background: var(--color-contenedor-superficie-bajo);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  object-fit: cover;
-}
-
-.perfildist-producto-img-placeholder {
-  font-size: 11px;
-  color: var(--color-sobre-variante-superficie);
-}
-
-.perfildist-producto-info {
-  padding: 12px 14px;
-}
-
-.perfildist-producto-categoria {
-  font-size: 11px;
-  color: var(--color-sobre-variante-superficie);
-  margin-bottom: 3px;
-}
-
-.perfildist-producto-nombre {
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--color-sobre-superficie);
-  margin: 0 0 4px 0;
-  line-height: 1.3;
-}
-
-.perfildist-producto-descripcion {
-  font-size: 12px;
-  color: var(--color-sobre-variante-superficie);
-  margin: 0;
-  line-height: 1.4;
-}
-
-/* Header autenticado */
-.perfildist-nav-link {
-  font-size: 13px;
-  color: var(--color-sobre-variante-superficie);
-  cursor: pointer;
-  white-space: nowrap;
-  padding: 4px 0;
-  border-bottom: 1px solid transparent;
-}
-
-.perfildist-nav-link:hover {
-  color: var(--color-sobre-superficie);
-  border-bottom-color: var(--color-sobre-superficie);
-}
-
-.perfildist-perfil {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.perfildist-avatar {
-  width: 32px;
-  height: 32px;
-  background: var(--color-contenedor-superficie-alto);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--color-sobre-variante-superficie);
-  flex-shrink: 0;
-}
-
-.perfildist-nombre-usuario {
-  font-size: 13px;
-  color: var(--color-sobre-superficie);
-}
-
-.perfildist-btn-cerrar-sesion {
-  background: none;
-  border: none;
-  font-size: 13px;
-  color: var(--color-sobre-variante-superficie);
-  cursor: pointer;
-  padding: 0;
-  font-family: inherit;
-}
-
-.perfildist-btn-cerrar-sesion:hover {
-  color: var(--color-sobre-superficie);
-}
-
-/* Header no autenticado */
-.perfildist-btn-login {
-  background: none;
-  border: none;
-  font-size: 13px;
-  color: var(--color-sobre-variante-superficie);
-  font-weight: 500;
-  font-family: inherit;
-  cursor: pointer;
-  padding: 7px 18px;
-}
-
-.perfildist-btn-registro {
-  background: var(--color-primario);
-  border: none;
-  color: var(--color-sobre-primario);
-  padding: 7px 18px;
-  border-radius: 4px;
-  font-size: 13px;
-  font-weight: 500;
-  font-family: inherit;
-  cursor: pointer;
-}
-
-.perfildist-mobile-header { display: none; }
 
 @media (max-width: 768px) {
-  /* Header blanco mobile con ← y título */
-  .perfildist-mobile-header {
-    display: flex;
-    height: 48px;
-    background: var(--color-contenedor-superficie-minimo);
-    border-bottom: 1px solid var(--color-variante-contorno);
-    align-items: center;
-    padding: 0 16px;
-    gap: 12px;
-    flex-shrink: 0;
-  }
-  .perfildist-mobile-volver {
-    background: none;
-    border: none;
-    padding: 0;
-    font-family: inherit;
-    font-size: 18px;
-    color: var(--color-sobre-variante-superficie);
-    cursor: pointer;
-    min-width: 44px;
-    min-height: 44px;
-    display: flex;
-    align-items: center;
-  }
-  .perfildist-mobile-titulo {
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--color-sobre-superficie);
-    flex: 1;
-  }
-
-  /* Ocultar topbar completo en mobile */
-  .perfildist-topbar { display: none; }
-
-  /* Cabecera: mantener fila (logo + datos lado a lado) pero compacta */
   .perfildist-cabecera {
     padding: 20px 16px;
     gap: 14px;
@@ -392,6 +129,4 @@
   .perfildist-info-fila { gap: 12px; }
 
   .perfildist-catalogo { padding: 14px 16px; }
-
-  .perfildist-producto-card { flex: 0 0 calc(50% - 8px); }
 }
