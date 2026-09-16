@@ -12,7 +12,6 @@
   color: var(--color-texto);
 }
 
-/* Cabecera del distribuidor */
 .perfildist-cabecera {
   background: var(--color-fondo);
   border-bottom: 1px solid var(--color-borde);
@@ -90,7 +89,6 @@
   color: var(--color-texto);
 }
 
-/* Catálogo */
 .perfildist-catalogo {
   flex: 1;
   padding: 28px 40px;
@@ -109,7 +107,6 @@
 }
 
 @media (max-width: 768px) {
-  /* Cabecera: mantener fila (logo + datos lado a lado) pero compacta */
   .perfildist-cabecera {
     padding: 20px 16px;
     gap: 14px;

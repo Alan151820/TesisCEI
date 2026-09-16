@@ -12,12 +12,6 @@ body {
   font-size: var(--fuente-base, 16px);
 }
 
-/* Space Grotesk para titulares: h1 (titulo de cada pantalla), el logo de
-   marca (todas las variantes "*-marca") y los numeros grandes de KPI en
-   Reportes -- el resto del texto (parrafos, botones, campos) sigue en
-   Inter. Selector por substring para no tener que tocar cada archivo de
-   pagina por separado: cada "marca"/"kpi-valor" ya tiene su propio nombre
-   de clase distinto por pantalla. */
 h1,
 [class*="-marca"],
 [class*="-kpi-valor"] {

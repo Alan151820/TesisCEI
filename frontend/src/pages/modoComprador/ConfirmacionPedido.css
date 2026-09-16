@@ -5,7 +5,6 @@
   background: var(--color-superficie);
 }
 
-/* ── Contenido ── */
 .confirmar-contenido {
   flex: 1;
   padding: 28px 40px 40px;
@@ -20,7 +19,6 @@
   margin-bottom: 20px;
 }
 
-/* ── Layout dos columnas ── */
 .confirmar-layout {
   display: flex;
   gap: 24px;
@@ -37,7 +35,6 @@
   flex-shrink: 0;
 }
 
-/* ── Resumen ── */
 .confirmar-resumen-grupo {
   margin-bottom: 14px;
 }
@@ -54,7 +51,6 @@
   margin-top: 6px;
 }
 
-/* ── Secciones de dirección ── */
 .confirmar-dir-seccion {
   margin-bottom: 4px;
 }
@@ -63,7 +59,6 @@
   margin-top: 8px;
 }
 
-/* Resultado del mapa */
 .confirmar-dir-mapa-resultado {
   display: flex;
   align-items: flex-start;
@@ -91,7 +86,6 @@
 }
 .confirmar-dir-mapa-limpiar:hover { color: var(--color-error); }
 
-/* ── Campos de dirección manual ── */
 .confirmar-dir-campo--amplio { flex: 2; }
 .confirmar-dir-campo--angosto { flex: 0 0 110px; }
 
@@ -108,13 +102,11 @@
   color: var(--color-error);
 }
 
-/* ── Card de acción (derecha) ── */
 .confirmar-card-accion {
   position: sticky;
   top: 20px;
 }
 
-/* Combinada con .link: layout propio nada más, el color/peso los pone .link. */
 .confirmar-btn-volver {
   display: block;
   width: 100%;
@@ -122,7 +114,6 @@
   margin-top: 10px;
 }
 
-/* ── Pantalla de éxito ── */
 .confirmar-exito {
   padding: 40px 24px;
 }
@@ -146,7 +137,6 @@
 .confirmar-exito-label { font-size: 13px; color: var(--color-texto-suave); }
 .confirmar-exito-num { font-size: 14px; font-weight: 700; color: var(--color-texto); }
 
-/* ── Mobile footer fijo ── */
 .confirmar-mobile-footer { display: none; }
 
 @media (max-width: 768px) {

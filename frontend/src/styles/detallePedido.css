@@ -84,9 +84,6 @@
   line-height: 1.2;
 }
 
-/* Nombre de producto dentro de la tabla del pedido: botón real (borde y
-   fondo), no un link de texto — el producto no es una navegación
-   secundaria, es la fila principal de la tabla. */
 .detallepedido-producto-boton {
   background: var(--color-superficie);
   border: 1px solid var(--color-borde);
@@ -118,9 +115,6 @@
 
   .detallepedido-encabezado-tarjeta { flex-direction: column; }
 
-  /* Especificidad de 2 clases a propósito: tienen que ganarle a
-     `.tabla-header/.tabla-fila{grid-template-columns:var(--tabla-cols)}`
-     sin depender del orden de las hojas de estilo en el bundle. */
   .tabla-header.detallepedido-tabla-header { display: none; }
 
   .tabla-fila.detallepedido-tabla-fila {
@@ -137,9 +131,6 @@
     flex-wrap: wrap;
   }
 
-  /* La celda es flex: el ::before es un flex item y su espacio final se
-     descarta, así que "Cantidad:1 u." quedaba pegado. El margen separa la
-     etiqueta del valor. */
   .detallepedido-celda::before { margin-right: 4px; }
 
   .detallepedido-celda:nth-child(2)::before { content: 'Cantidad:'; color: var(--color-texto-suave); }

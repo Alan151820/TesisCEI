@@ -12,7 +12,6 @@
   color: var(--color-texto);
 }
 
-/* Contenido */
 .detalleproducto-contenido {
   flex: 1;
   padding: 24px 40px 40px;
@@ -22,11 +21,6 @@
   margin-bottom: 16px;
 }
 
-/* Fila principal: imagen + info, sin card alrededor (el wireframe solo le
-   pone borde a la caja de "Agregar al carrito", no a todo el bloque).
-   Especificidad de 2 clases a propósito: tiene que ganarle a
-   .fila{align-items:center} sin depender del orden de las hojas de
-   estilo en el bundle. */
 .fila.detalleproducto-fila {
   align-items: flex-start;
 }
@@ -54,8 +48,6 @@
   max-width: 280px;
 }
 
-/* Especificidad de 2 clases a propósito: tienen que ganarle a .btn/.campo
-   sin depender del orden de las hojas de estilo en el bundle. */
 .btn.detalleproducto-stepper-btn {
   width: 44px;
   height: 44px;
@@ -93,7 +85,6 @@
   margin-top: 6px;
 }
 
-/* === MOBILE === */
 @media (max-width: 768px) {
   .detalleproducto-contenido {
     padding: 16px 16px 24px;
@@ -120,7 +111,6 @@
   }
 }
 
-/* --- Rango de precio Desde/Hasta e indicador de stock (comprador) --- */
 .detalleproducto-rango { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; margin: 4px 0 14px; }
 .detalleproducto-rango-desde { font-size: 22px; font-weight: 700; color: var(--color-texto); }
 .detalleproducto-rango-hasta { font-size: 14px; color: var(--color-texto-suave); }

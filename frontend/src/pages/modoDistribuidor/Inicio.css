@@ -1,4 +1,3 @@
-/* Contenedor raíz del panel */
 .panel-shell {
   display: flex;
   flex-direction: column;
@@ -6,7 +5,6 @@
   overflow: hidden;
 }
 
-/* Notificaciones */
 .panel-notif {
   position: relative;
   flex-shrink: 0;
@@ -174,20 +172,10 @@
   font-weight: 700;
 }
 
-/* Botón hamburguesa: vive dentro del Hdr (antes del logo, vía la prop
-   `menuBoton`) y solo se muestra cuando el sidebar fijo deja de entrar.
-   El color ya lo resuelve `.hdr .btn--icono` en Hdr.css. */
 .panel-menu-btn {
   display: none;
 }
 
-/* Cajón de navegación mobile — mismo .panel-nav-item/.panel-sidebar-marca
-   que el sidebar de escritorio, solo que "a pedido" en vez de fijo.
-   z-index alto a propósito: páginas como DetalleReparto/CrearReparto
-   tienen un mapa de Leaflet en el contenido, y los panes de Leaflet
-   (hasta 700) más sus controles (zoom, etc., 1000) usan z-index propios
-   — si el cajón no les gana a todos, el mapa se pinta encima del menú
-   de navegación en vez de quedar debajo. */
 .panel-drawer-overlay {
   position: fixed;
   inset: 0;
@@ -218,7 +206,6 @@
   padding: 12px 0;
 }
 
-/* Main */
 .panel-main {
   flex: 1;
   display: flex;
@@ -227,8 +214,6 @@
   background: var(--color-superficie);
 }
 
-
-/* Contenido */
 .panel-body {
   flex: 1;
   width: 100%;
@@ -283,12 +268,6 @@
   opacity: 0.9;
 }
 
-/* Filtros — en flex-wrap (no scroll horizontal): con una cantidad
-   variable de chips (categorías del catálogo, rangos de fecha/monto,
-   etc.) el ancho total no se puede prever, así que la fila simplemente
-   se parte en varias líneas cuando no entra. Un contenedor con overflow-x
-   oculto los "esconde" del lado derecho sin ninguna pista visual de que
-   hay más — welcome a que un filtro quede inalcanzable sin querer. */
 .panel-filtros {
   display: flex;
   flex-wrap: wrap;
@@ -323,7 +302,6 @@
   cursor: pointer;
 }
 
-/* Descuento total del catálogo — botón al extremo derecho de los filtros */
 .panel-btn-descuento {
   height: var(--alto-control);
   border: 1px solid var(--color-borde);
@@ -531,8 +509,6 @@
   border-top: 1px solid var(--color-borde);
 }
 
-
-/* Toggle badge mobile */
 .panel-lista-toggle {
   cursor: pointer;
   min-height: 30px;
@@ -543,15 +519,6 @@
 
 .panel-lista-fila { display: none; }
 
-/* ── Tablet/mobile (≤1024px): el sidebar fijo deja lugar al botón
-   hamburguesa (dentro del Hdr, vía `menuBoton`) + el cajón de
-   navegación (`.panel-drawer`), con el mismo look claro y los mismos
-   `.panel-nav-item` del sidebar de escritorio — ninguna función se
-   pierde, solo pasa a "a pedido" en vez de fija. El CONTENIDO todavía
-   no cambia acá: sigue siendo la tabla completa de escritorio, con
-   scroll horizontal propio (`.panel-tabla-wrapper`) como red de
-   seguridad en el extremo angosto — nada se oculta ni se resume
-   todavía, es exactamente lo mismo que ve un usuario de escritorio. */
 @media (max-width: 1024px) {
   .panel-layout { flex-direction: column; }
 
@@ -562,9 +529,6 @@
 
   .panel-seccion-header { flex-wrap: wrap; gap: 12px; }
 
-  /* Filtros siempre visibles — sticky dentro del scroll. Siguen en
-     flex-wrap (heredado de la regla base): si no entran en una línea,
-     pasan a la siguiente, nunca se recortan ni se esconden. */
   .panel-filtros {
     position: sticky;
     top: 0;
@@ -576,20 +540,11 @@
   }
   .panel-filtro-chip { height: 30px; font-size: 11px; }
   .panel-filtro-limpiar { height: 30px; font-size: 11px; }
-  /* 11px (no --fuente-control) a proposito: forma fila con los 2 chips de
-     arriba, compactos por diseno para que entren varios filtros en una
-     sola linea en mobile. */
   .panel-btn-descuento { height: 30px; font-size: 11px; margin-left: 0; }
 
   .panel-descuento-card { margin: 0 0 14px; }
 }
 
-/* ── Mobile (≤767px): acá sí cambia el contenido — la tabla de columnas
-   fijas deja de tener sentido en una pantalla angosta (obligaría a un
-   scroll horizontal permanente para ver cualquier fila completa), así
-   que se reemplaza por la lista de tarjetas apiladas. Ninguna acción se
-   pierde: cada tarjeta (`.panel-lista-fila`) tiene los mismos datos y
-   los mismos botones que su fila de tabla equivalente. */
 @media (max-width: 767px) {
   .panel-descuento-preview-header { display: none; }
   .panel-descuento-preview-fila {
@@ -600,17 +555,12 @@
   .panel-descuento-preview-fila > div:nth-child(2)::before { content: 'Precio actual: '; color: var(--color-texto-suave); }
   .panel-descuento-preview-fila > div:nth-child(3)::before { content: 'Con descuento: '; color: var(--color-texto-suave); }
 
-  /* Tabla oculta; lista visible */
-  /* Especificidad de 2 clases a propósito: tienen que ganarle a
-     `.tabla-header/.tabla-fila{display:grid;...}` sin depender del orden
-     de las hojas de estilo en el bundle. */
   .tabla-header.panel-tabla-header { display: none; }
   .tabla-fila.panel-tabla-fila { display: none; }
   .tabla.panel-tabla-reflow { border: none; border-radius: 0; }
   .panel-tabla-wrapper { border: none; border-radius: 0; }
   .panel-tabla-vacio { padding: 24px 14px; }
 
-  /* Filas de lista mobile */
   .panel-lista-fila {
     display: flex;
     align-items: center;
@@ -663,7 +613,6 @@
     color: var(--color-texto-suave);
   }
 
-  /* Fix 5: columna vertical explícita */
   .panel-lista-derecha {
     display: flex;
     flex-direction: column;

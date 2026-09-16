@@ -1,9 +1,3 @@
-/* ============================================================
-   CONTROLES — estilos compartidos para checkbox/radio/toggle
-   nativos. Mismo mecanismo que colors.css/escala.css: clases
-   globales en vez de reimplementar el mismo interruptor por
-   página.
-============================================================ */
 
 .checkbox,
 .radio {

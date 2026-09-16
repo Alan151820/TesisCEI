@@ -5,9 +5,6 @@
   background: var(--color-superficie);
 }
 
-/* Perfil con dropdown — el trigger vive dentro del Hdr (fondo de marca),
-   así que su texto usa el color invertido "sobre-primario" en vez del
-   color de texto normal. */
 .hdr .comprador-nombre { color: var(--color-sobre-primario); }
 .hdr .comprador-perfil-flecha { color: color-mix(in oklch, var(--color-sobre-primario) 80%, transparent); }
 .hdr .comprador-avatar { background: var(--color-fondo); color: var(--color-primario); }
@@ -67,14 +64,10 @@
   min-width: 240px;
 }
 
-/* Ítems que sólo aparecen en el dropdown en mobile. Especificidad de 2
-   clases a propósito: tienen que ganarle a `.desplegable-item{display:flex}`
-   sin depender del orden de las hojas de estilo en el bundle. */
 .desplegable-item.comprador-menu-item--mobile {
   display: none;
 }
 
-/* Contenido */
 .comprador-contenido {
   flex: 1;
   width: 100%;
@@ -101,7 +94,6 @@
   margin: 0;
 }
 
-
 .comprador-contador {
   margin-top: 24px;
   font-size: 12px;
@@ -109,7 +101,6 @@
   text-align: right;
 }
 
-/* Filtros — idéntico al Catálogo */
 .comprador-filtros {
   width: 100%;
   padding: 16px max(40px, calc((100% - 1280px) / 2));
@@ -123,19 +114,15 @@
   min-width: 170px;
 }
 
-/* === MOBILE === */
 @media (max-width: 768px) {
-  /* Ocultar nav-links del header en mobile — van al dropdown */
   .comprador-nav-link {
     display: none;
   }
 
-  /* Ocultar nombre en el trigger, dejar sólo avatar + flecha */
   .comprador-nombre {
     display: none;
   }
 
-  /* Mostrar ítems de Mis pedidos y Distribuidora en el dropdown */
   .desplegable-item.comprador-menu-item--mobile {
     display: flex;
   }

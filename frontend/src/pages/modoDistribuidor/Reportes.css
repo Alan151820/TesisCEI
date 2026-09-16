@@ -2,9 +2,6 @@
   margin-bottom: 20px;
 }
 
-/* Encabezado del dashboard: título (en .panel-seccion-header, que se oculta
-   a ≤1024px) + selector de período. El selector queda como hijo directo de
-   .reportes-encabezado para sobrevivir a ese display:none. */
 .reportes-encabezado {
   display: flex;
   align-items: flex-start;
@@ -23,9 +20,6 @@
   flex-shrink: 0;
 }
 
-/* Mobile/tablet: el título desaparece (.panel-seccion-header); la bajada
-   se conserva vía --sub, apilada sobre el selector de período, que pasa a
-   ocupar el ancho como control segmentado. */
 @media (max-width: 1024px) {
   .reportes-encabezado {
     flex-direction: column;
@@ -37,10 +31,8 @@
   }
 }
 
-
 .kpi-row { margin-bottom: 24px; }
 
-/* Tablas de ranking (más / menos vendidos) */
 .reportes-tablas {
   display: flex;
   gap: 16px;
@@ -64,8 +56,6 @@
   color: var(--color-texto);
 }
 
-/* RF-035: "menos vendidos" queda vacía cuando todos los productos vendidos
-   ya están en "más vendidos" (<= LIMITE productos en el período). */
 .reportes-tabla-nota {
   padding: 18px;
   font-size: 13px;
@@ -77,10 +67,6 @@
   font-size: 13px;
 }
 
-/* Tabla de rentabilidad — RF-040. Igual criterio que el resto del panel
-   (Inicio.css/Reparto.css/MisPedidos.css): grid de columnas fijas con
-   scroll horizontal propio como red de seguridad en tablet/mobile, en
-   vez de perder columnas. */
 .reportes-rentabilidad-header,
 .reportes-rentabilidad-fila {
   min-width: 700px;

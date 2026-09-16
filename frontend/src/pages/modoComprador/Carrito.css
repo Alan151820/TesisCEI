@@ -5,7 +5,6 @@
   background: var(--color-superficie);
 }
 
-/* Contenido */
 .carrito-contenido {
   flex: 1;
   padding: 32px 40px 100px;
@@ -15,14 +14,12 @@
   box-sizing: border-box;
 }
 
-/* Layout lista + resumen */
 .carrito-layout {
   display: flex;
   gap: 32px;
   align-items: flex-start;
 }
 
-/* Lista */
 .carrito-lista {
   flex: 1;
   display: flex;
@@ -30,7 +27,6 @@
   gap: 20px;
 }
 
-/* Item dentro del grupo por distribuidor */
 .carrito-item {
   padding-bottom: 16px;
   border-bottom: 1px solid var(--color-borde);
@@ -45,8 +41,6 @@
   flex-shrink: 0;
 }
 
-/* Especificidad de 2 clases a propósito: tienen que ganarle a .btn sin
-   depender del orden de las hojas de estilo en el bundle. */
 .btn.carrito-item-btn {
   width: 44px;
   height: 44px;
@@ -65,7 +59,6 @@
 
 .carrito-vaciar-btn { align-self: flex-start; }
 
-/* Resumen */
 .carrito-resumen {
   width: 260px;
   flex-shrink: 0;

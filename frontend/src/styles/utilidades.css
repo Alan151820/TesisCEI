@@ -1,10 +1,3 @@
-/* ============================================================
-   UTILIDADES — clases de layout y tipografía genéricas que se
-   repiten en todas las pantallas (fila/columna flex, espaciado,
-   texto mudo, links, separadores). Mismo mecanismo que
-   colors.css/escala.css: un lugar central en vez de reinventar
-   el mismo wrapper de layout por página.
-============================================================ */
 
 .fila { display: flex; align-items: center; flex-wrap: wrap; min-width: 0; }
 .col { display: flex; flex-direction: column; min-width: 0; }
@@ -86,9 +79,6 @@
   .p-l { padding: 24px 16px; }
 }
 
-/* Botón de carrito del header: en páginas con bottom-nav mobile, el
-   carrito ya tiene ícono propio ahí, así que el del header se oculta
-   para no duplicar la acción. */
 @media (max-width: 768px) {
   .hdr-btn-carrito { display: none; }
 }

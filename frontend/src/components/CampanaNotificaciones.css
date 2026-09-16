@@ -1,7 +1,3 @@
-/* En mobile la campana vive en un header angosto (comprador y distribuidor):
-   un dropdown anclado al ícono se sale del borde izquierdo. Se despega del
-   ícono y se fija a los bordes del viewport, sin depender de dónde quede
-   la campana en el header. */
 @media (max-width: 768px) {
   .campana .desplegable {
     position: fixed;

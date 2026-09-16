@@ -21,12 +21,6 @@
   .detallepedido-main { padding: 16px; }
 }
 
-/* RF-069: el comprador cancela su propio pedido. Reutiliza los colores
-   de .pedidos-accion-btn (mismo botón que ya usa el lado distribuidor
-   para sus acciones), pero sin el panel "Acciones" que lo rodeaba antes
-   (a pedido del usuario) — así que acá, suelto en la tarjeta, se le pisa
-   el tamaño de "fila de lista" (ancho 100%, texto a la izquierda) por
-   uno de botón estándar: ancho según su contenido, texto centrado. */
 .detallepedido-tarjeta > .pedidos-accion-btn {
   margin-top: 16px;
   width: auto;

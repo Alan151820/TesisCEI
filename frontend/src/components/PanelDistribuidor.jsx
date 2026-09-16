@@ -23,8 +23,6 @@ function cerrarSesionDistribuidor(navigate) {
   navigate('/login')
 }
 
-// Misma lista de navegación para el sidebar de escritorio y el cajón
-// mobile: una sola fuente de verdad para los links y el estado "activo".
 function NavItems({ rutaActiva, onNavegar }) {
   const navigate = useNavigate()
   return NAV_ITEMS.map(item => (

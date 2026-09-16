@@ -59,7 +59,6 @@
   flex-wrap: wrap;
 }
 
-/* Reinversión de color para primitivos anidados dentro del header (fondo de marca) */
 .hdr .btn--icono { color: var(--color-sobre-primario); }
 .hdr .btn--ghost { color: var(--color-sobre-primario); border-color: color-mix(in oklch, var(--color-sobre-primario) 45%, transparent); }
 .hdr .btn--fill { background: var(--color-fondo); color: var(--color-primario); }

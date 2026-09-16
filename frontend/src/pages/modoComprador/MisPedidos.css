@@ -5,7 +5,6 @@
   background: var(--color-superficie);
 }
 
-/* ── Main ── */
 .mispedidos-main {
   flex: 1;
   padding: 28px 40px;
@@ -118,13 +117,8 @@
   color: var(--color-texto);
 }
 
-/* ── Cards mobile (ocultas en desktop) ── */
 .mispedidos-cards { display: none; }
 
-
-/* ═══════════════════════════════════════
-   MOBILE  (≤ 768px)
-   ═══════════════════════════════════════ */
 @media (max-width: 768px) {
 
   .mispedidos-main {
@@ -135,7 +129,6 @@
   .mispedidos-titulo  { font-size: 18px; }
   .mispedidos-subtitulo { font-size: 12px; }
 
-  /* Ocultar tabla, mostrar cards */
   .mispedidos-tabla { display: none; }
 
   .mispedidos-cards {

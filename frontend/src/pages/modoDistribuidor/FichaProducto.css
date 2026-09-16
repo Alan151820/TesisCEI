@@ -191,8 +191,6 @@
   gap: 8px;
 }
 
-/* :first-child (no clase extra) para no pisar el ancho fijo de
-   .ficha-input-cantidad, el otro hijo de esta fila. */
 .ficha-nombre-fila > .campo:first-child {
   flex: 1;
 }
@@ -248,7 +246,6 @@
   margin-top: 8px;
 }
 
-/* Sidebar */
 .ficha-card-estado {
   padding: 16px;
   margin-bottom: 0;
@@ -275,7 +272,6 @@
   line-height: 1.4;
 }
 
-/* Sección precios por volumen */
 .ficha-precios-header {
   display: flex;
   align-items: center;
@@ -355,7 +351,6 @@
   line-height: 1.4;
 }
 
-/* Vista confirmación producto guardado */
 .ficha-card-ok {
   display: flex;
   align-items: center;
@@ -375,9 +370,6 @@
   color: var(--color-sobre-exito-suave);
 }
 
-/* Header real (logo + "Volver a mis productos") solo en desktop/tablet,
-   igual que el wireframe; en mobile lo reemplaza la barra compacta de
-   abajo con flecha + título, más cómoda para pantallas chicas. */
 @media (max-width: 768px) {
   .ficha-hdr-desktop { display: none; }
 }
@@ -462,7 +454,6 @@
   flex-shrink: 0;
 }
 
-/* --- Modelo "todo por unidad": marca, peso/longitud, tramos, descuento total --- */
 .ficha-magnitud { display: flex; gap: 8px; }
 .ficha-magnitud-valor { flex: 1; min-width: 0; }
 .ficha-magnitud-unidad { width: 84px; flex: 0 0 auto; }
