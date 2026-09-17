@@ -18,13 +18,8 @@ function Catalogo() {
 
   const [productos, setProductos] = useState([])
   const [cargando, setCargando] = useState(true)
+  const token = localStorage.getItem('token')
   const { agregarProducto, totalItems } = useCarrito()
-  const [categorias, setCategorias] = useState([])
-  const [busqueda, setBusqueda] = useState('')
-  const [filtroCategoria, setFiltroCategoria] = useState('')
-  const [filtroDistribuidor, setFiltroDistribuidor] = useState('')
-  const [filtroPrecioMin, setFiltroPrecioMin] = useState('')
-  const [filtroPrecioMax, setFiltroPrecioMax] = useState('')
 
   useEffect(() => {
     cargarProductos()
@@ -70,24 +65,29 @@ function Catalogo() {
   return (
     <div className="catalogo-layout">
 
-      <Hdr
-        logo={<span className="hdr-logo" onClick={() => navigate('/')}><Marca /></span>}
-        buscador
-        buscadorValor={busqueda}
-        onBuscadorChange={(valor) => { setBusqueda(valor); aplicarFiltros({ nombre: valor }) }}
-      >
-        <Boton variante="icono" className="hdr-btn-carrito" badge={totalItems} onClick={() => navigate('/carrito')} aria-label="Carrito">🛒</Boton>
-        <Boton variante="ghost" className="catalogo-btn-auth" onClick={() => navigate('/login')}>Iniciar sesión</Boton>
-        <Boton variante="fill" className="catalogo-btn-auth" onClick={() => navigate('/registro')}>Registrarse</Boton>
-      </Hdr>
+      <header className="catalogo-header">
+        <div className="catalogo-header-marca">MarketDist</div>
+        <div className="catalogo-header-buscador">
+          <span className="catalogo-header-buscador-icono">⌕</span>
+          <input
+            className="catalogo-header-buscador-input"
+            type="text"
+            placeholder="Buscar productos…"
+            value={busqueda}
+            onChange={e => { setBusqueda(e.target.value); aplicarFiltros({ nombre: e.target.value }) }}
+          />
+        </div>
+        <div className="catalogo-header-acciones">
+          <button className="catalogo-btn-carrito" onClick={() => navigate('/carrito')}>
+            🛒{totalItems > 0 && <span className="catalogo-carrito-badge">{totalItems}</span>}
+          </button>
+          <button className="catalogo-btn-login" onClick={() => navigate('/login')}>Iniciar sesión</button>
+          <button className="catalogo-btn-registro" onClick={() => navigate('/registro')}>Registrarse</button>
+        </div>
+      </header>
 
-      <div className="fila gap-m p-m catalogo-filtros">
-        <Campo
-          as="select"
-          className="catalogo-filtro-campo"
-          value={filtroCategoria}
-          onChange={e => { setFiltroCategoria(e.target.value); aplicarFiltros({ categoria: e.target.value }) }}
-        >
+      <div className="catalogo-filtros">
+        <select value={filtroCategoria} onChange={e => { setFiltroCategoria(e.target.value); aplicarFiltros({ categoria: e.target.value }) }}>
           <option value=''>Categoría</option>
           {categorias.map(c => <option key={c.id} value={c.nombre}>{c.nombre}</option>)}
         </Campo>

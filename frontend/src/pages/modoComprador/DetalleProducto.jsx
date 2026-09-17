@@ -75,23 +75,38 @@ function DetalleProducto() {
   return (
     <div className="detalleproducto-layout">
 
-      <Hdr logo={<span className="hdr-logo" onClick={() => navigate('/')}><Marca /></span>} buscador>
-        <Boton variante="icono" className="hdr-btn-carrito" badge={totalItems} onClick={() => navigate('/carrito')} aria-label="Carrito">🛒</Boton>
-        {token ? (
-          <>
-            <span className="link" onClick={() => navigate(modoDistribuidorActivo ? '/inicio' : '/configurarPerfil')}>
-              Distribuidora
-            </span>
-            <CampanaNotificaciones rutaDestino="/misPedidos" rutaDetalle="/pedido" />
-            <MenuPerfilComprador />
-          </>
-        ) : (
-          <>
-            <Boton variante="ghost" onClick={() => navigate('/login')}>Iniciar sesión</Boton>
-            <Boton variante="fill" onClick={() => navigate('/registro')}>Registrarse</Boton>
-          </>
-        )}
-      </Hdr>
+      <header className={token ? 'detalleproducto-header-autenticado' : 'detalleproducto-header'}>
+        <div className="detalleproducto-header-marca" onClick={() => navigate('/')}>MarketDist</div>
+        <div className="detalleproducto-header-buscador">
+          <span className="detalleproducto-header-buscador-icono">🔍</span>
+          <span className="detalleproducto-header-buscador-texto">Buscar productos…</span>
+        </div>
+        <div className={token ? 'detalleproducto-acciones-auth' : 'detalleproducto-header-acciones'}>
+          <button className="detalleproducto-btn-carrito" onClick={() => navigate('/carrito')}>
+            🛒{totalItems > 0 && <span className="detalleproducto-carrito-badge">{totalItems}</span>}
+          </button>
+          {token ? (
+            <>
+              <span className="detalleproducto-nav-link" onClick={() => navigate(modoDistribuidorActivo ? '/inicio' : '/configurarPerfil')}>
+                Distribuidora
+              </span>
+              <CampanaNotificaciones rutaDestino="/misPedidos" rutaDetalle="/pedido" />
+              <div className="detalleproducto-perfil">
+                <div className="detalleproducto-avatar">{iniciales}</div>
+                <span className="detalleproducto-nombre-usuario">{nombre}</span>
+              </div>
+              <button className="detalleproducto-btn-cerrar-sesion" onClick={cerrarSesion}>
+                Cerrar sesión
+              </button>
+            </>
+          ) : (
+            <>
+              <button className="detalleproducto-btn-login" onClick={() => navigate('/login')}>Iniciar sesión</button>
+              <button className="detalleproducto-btn-registro" onClick={() => navigate('/registro')}>Registrarse</button>
+            </>
+          )}
+        </div>
+      </header>
 
       <div className="detalleproducto-contenido">
         <Boton variante="ghost" onClick={() => navigate(-1)} style={{ marginBottom: 8 }}>← Volver</Boton>

@@ -59,8 +59,10 @@ export function CarritoProvider({ children }) {
         imagenUrl: producto.imagenUrl,
         distribuidorId: producto.distribuidorId,
         nombreDistribuidor: producto.nombreDistribuidor,
-        tarifas: producto.tarifas || [],
-        cantidad,
+        precioMinimo: producto.precioMinimo,
+        precioVolumenId: producto.precioVolumenId || null,
+        precioVenta: producto.tarifaSeleccionada?.precioVenta || producto.precioMinimo,
+        cantidad: producto.cantidad || cantidad,
       }]
     })
   }
