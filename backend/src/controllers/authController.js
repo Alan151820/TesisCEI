@@ -1,13 +1,19 @@
 import Usuario from '../models/usuario.js'
 
-// RNF-010 (Ley 18.331): validación de forma antes de tocar el servicio —
-// la garantía real es la constraint CHECK de la tabla usuario, esto es
-// solo para devolver un mensaje rápido sin llegar a golpear la base.
+const RE_TELEFONO_UY = /^\+5989\d{7}$/
+const LARGO_MIN_CONTRASENA = 8
+
 const registro = async (req, res) => {
   try {
     const { nombre, telefono, contrasena, consentimientoDatosOtorgado } = req.body
     if (!consentimientoDatosOtorgado) {
       return res.status(400).json({ mensaje: 'Debés aceptar el tratamiento de datos personales para continuar.' })
+    }
+    if (!RE_TELEFONO_UY.test(telefono || '')) {
+      return res.status(400).json({ mensaje: 'Ingresá un número de celular uruguayo válido.' })
+    }
+    if (!contrasena || contrasena.length < LARGO_MIN_CONTRASENA) {
+      return res.status(400).json({ mensaje: 'La contraseña debe tener al menos 8 caracteres.' })
     }
     const codigo = await Usuario.registrarCuenta(nombre, telefono, contrasena, consentimientoDatosOtorgado)
     res.json({ mensaje: 'Código enviado por SMS. Ingresalo para activar tu cuenta.', codigo_dev: codigo })
@@ -59,6 +65,9 @@ const verificarRecuperacion = async (req, res) => {
 const nuevaContrasena = async (req, res) => {
   try {
     const { telefono, contrasena } = req.body
+    if (!contrasena || contrasena.length < LARGO_MIN_CONTRASENA) {
+      return res.status(400).json({ mensaje: 'La contraseña debe tener al menos 8 caracteres.' })
+    }
     await Usuario.restablecerContrasena(telefono, contrasena)
     res.json({ mensaje: 'Contraseña actualizada correctamente. Ya podés iniciar sesión.' })
   } catch (error) {

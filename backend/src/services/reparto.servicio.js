@@ -3,10 +3,7 @@ import Pedido from '../models/Pedido.js'
 import PlanReparto from '../models/PlanReparto.js'
 
 async function generarPlanCarga(usuarioId, pedidoIds) {
-  const distribuidor = await Distribuidor.obtenerPorUsuarioId(usuarioId)
-  if (!distribuidor) {
-    throw Object.assign(new Error('No tenés un perfil de distribuidor configurado.'), { status: 404 })
-  }
+  const distribuidor = await Distribuidor.requerirPorUsuarioId(usuarioId)
 
   if (distribuidor.latitud == null || distribuidor.longitud == null) {
     throw Object.assign(new Error('Registrá la dirección de partida del depósito antes de generar el plan.'), { status: 400 })
@@ -24,19 +21,13 @@ async function generarPlanCarga(usuarioId, pedidoIds) {
 }
 
 async function obtenerPlanes(usuarioId) {
-  const distribuidor = await Distribuidor.obtenerPorUsuarioId(usuarioId)
-  if (!distribuidor) {
-    throw Object.assign(new Error('No tenés un perfil de distribuidor configurado.'), { status: 404 })
-  }
+  const distribuidor = await Distribuidor.requerirPorUsuarioId(usuarioId)
 
   return PlanReparto.listarPorDistribuidor(distribuidor.id)
 }
 
 async function obtenerDetalle(usuarioId, planId) {
-  const distribuidor = await Distribuidor.obtenerPorUsuarioId(usuarioId)
-  if (!distribuidor) {
-    throw Object.assign(new Error('No tenés un perfil de distribuidor configurado.'), { status: 404 })
-  }
+  const distribuidor = await Distribuidor.requerirPorUsuarioId(usuarioId)
 
   const detalle = await PlanReparto.obtenerDetalle(planId, distribuidor.id)
   if (!detalle) {
@@ -46,10 +37,7 @@ async function obtenerDetalle(usuarioId, planId) {
 }
 
 async function editarPedidos(usuarioId, planId, pedidoIds) {
-  const distribuidor = await Distribuidor.obtenerPorUsuarioId(usuarioId)
-  if (!distribuidor) {
-    throw Object.assign(new Error('No tenés un perfil de distribuidor configurado.'), { status: 404 })
-  }
+  const distribuidor = await Distribuidor.requerirPorUsuarioId(usuarioId)
 
   if (distribuidor.latitud == null || distribuidor.longitud == null) {
     throw Object.assign(new Error('Registrá la dirección de partida del depósito antes de generar el plan.'), { status: 400 })
@@ -67,10 +55,7 @@ async function editarPedidos(usuarioId, planId, pedidoIds) {
 }
 
 async function eliminarReparto(usuarioId, planId) {
-  const distribuidor = await Distribuidor.obtenerPorUsuarioId(usuarioId)
-  if (!distribuidor) {
-    throw Object.assign(new Error('No tenés un perfil de distribuidor configurado.'), { status: 404 })
-  }
+  const distribuidor = await Distribuidor.requerirPorUsuarioId(usuarioId)
 
   const resultado = await PlanReparto.eliminar(planId, distribuidor.id)
   if (resultado === 'no_encontrado') {
@@ -83,12 +68,12 @@ async function eliminarReparto(usuarioId, planId) {
 }
 
 async function iniciarReparto(usuarioId, planId) {
-  const distribuidor = await Distribuidor.obtenerPorUsuarioId(usuarioId)
-  if (!distribuidor) {
-    throw Object.assign(new Error('No tenés un perfil de distribuidor configurado.'), { status: 404 })
-  }
+  const distribuidor = await Distribuidor.requerirPorUsuarioId(usuarioId)
 
   const plan = await PlanReparto.iniciar(planId, distribuidor.id, distribuidor.nombreComercial)
+  if (plan === 'sin_paradas') {
+    throw Object.assign(new Error('El reparto no tiene paradas para iniciar. Agregá pedidos al plan.'), { status: 409 })
+  }
   if (!plan) {
     throw Object.assign(new Error('El reparto no existe o ya no está en estado "Sin empezar".'), { status: 404 })
   }
@@ -96,10 +81,7 @@ async function iniciarReparto(usuarioId, planId) {
 }
 
 async function cerrarEnBloque(usuarioId, planId, motivo) {
-  const distribuidor = await Distribuidor.obtenerPorUsuarioId(usuarioId)
-  if (!distribuidor) {
-    throw Object.assign(new Error('No tenés un perfil de distribuidor configurado.'), { status: 404 })
-  }
+  const distribuidor = await Distribuidor.requerirPorUsuarioId(usuarioId)
 
   if (!motivo || !motivo.trim()) {
     throw Object.assign(new Error('Ingresá un motivo antes de confirmar.'), { status: 400 })
@@ -113,10 +95,7 @@ async function cerrarEnBloque(usuarioId, planId, motivo) {
 }
 
 async function marcarParada(usuarioId, planId, paradaId, accion, motivo) {
-  const distribuidor = await Distribuidor.obtenerPorUsuarioId(usuarioId)
-  if (!distribuidor) {
-    throw Object.assign(new Error('No tenés un perfil de distribuidor configurado.'), { status: 404 })
-  }
+  const distribuidor = await Distribuidor.requerirPorUsuarioId(usuarioId)
 
   if ((accion === 'omitido' || accion === 'rechazado') && (!motivo || !motivo.trim())) {
     throw Object.assign(new Error('Ingresá un motivo antes de confirmar.'), { status: 400 })
@@ -137,12 +116,8 @@ async function marcarParada(usuarioId, planId, paradaId, accion, motivo) {
   return { mensaje: 'La parada quedó marcada correctamente.' }
 }
 
-// RF-071
 async function actualizarUbicacion(usuarioId, planId, latitud, longitud) {
-  const distribuidor = await Distribuidor.obtenerPorUsuarioId(usuarioId)
-  if (!distribuidor) {
-    throw Object.assign(new Error('No tenés un perfil de distribuidor configurado.'), { status: 404 })
-  }
+  const distribuidor = await Distribuidor.requerirPorUsuarioId(usuarioId)
 
   const actualizado = await PlanReparto.actualizarUbicacion(planId, distribuidor.id, latitud, longitud)
   if (!actualizado) {

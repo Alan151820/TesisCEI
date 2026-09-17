@@ -25,43 +25,25 @@ class Producto {
 
   static validarDatosCreacion(nombre, marca, precioBase, stockInicial) {
     if (!nombre || nombre.trim() === '') {
-      const error = new Error()
-      error.status = 400
-      error.mensaje = 'El nombre del producto es obligatorio.'
-      throw error
+      throw Object.assign(new Error('El nombre del producto es obligatorio.'), { status: 400 })
     }
     if (!marca || marca.trim() === '') {
-      const error = new Error()
-      error.status = 400
-      error.mensaje = 'La marca del producto es obligatoria.'
-      throw error
+      throw Object.assign(new Error('La marca del producto es obligatoria.'), { status: 400 })
     }
     if (!precioBase || precioBase <= 0) {
-      const error = new Error()
-      error.status = 400
-      error.mensaje = 'El precio de venta debe ser mayor a cero.'
-      throw error
+      throw Object.assign(new Error('El precio de venta debe ser mayor a cero.'), { status: 400 })
     }
     if (stockInicial < 0) {
-      const error = new Error()
-      error.status = 400
-      error.mensaje = 'El stock inicial no puede ser negativo.'
-      throw error
+      throw Object.assign(new Error('El stock inicial no puede ser negativo.'), { status: 400 })
     }
   }
 
   static validarEdicion(nombre, marca) {
     if (!nombre || nombre.trim() === '') {
-      const error = new Error()
-      error.status = 400
-      error.mensaje = 'El nombre del producto es obligatorio.'
-      throw error
+      throw Object.assign(new Error('El nombre del producto es obligatorio.'), { status: 400 })
     }
     if (!marca || marca.trim() === '') {
-      const error = new Error()
-      error.status = 400
-      error.mensaje = 'La marca del producto es obligatoria.'
-      throw error
+      throw Object.assign(new Error('La marca del producto es obligatoria.'), { status: 400 })
     }
   }
 
@@ -107,12 +89,17 @@ class Producto {
   }
 
   static async listarPorDistribuidor(usuarioId, filtros = {}) {
-    const { categoria, visibilidad, stock } = filtros
+    const { nombre, categoria, visibilidad, stock } = filtros
 
     let condiciones = ['d.usuario_id = $1', 'p.habilitado = true']
     let params = [usuarioId]
     let contador = 2
 
+    if (nombre) {
+      condiciones.push(`p.nombre ILIKE $${contador}`)
+      params.push(`%${nombre.replace(/[\\%_]/g, m => `\\${m}`)}%`)
+      contador++
+    }
     if (categoria) {
       condiciones.push(`c.nombre = $${contador}`)
       params.push(categoria)
@@ -224,10 +211,7 @@ class Producto {
 
   async editar({ nombre, marca, descripcion, imagenUrl, categoriaId, magnitudValor, magnitudUnidad, stockTotal }) {
     if (stockTotal !== undefined && stockTotal < this.stockReservado) {
-      const error = new Error()
-      error.status = 422
-      error.mensaje = 'No es posible reducir el stock por debajo de las unidades reservadas en pedidos activos.'
-      throw error
+      throw Object.assign(new Error('No es posible reducir el stock por debajo de las unidades reservadas en pedidos activos.'), { status: 422 })
     }
 
     const res = await pool.query(
@@ -259,10 +243,7 @@ class Producto {
     if (nuevoEstado === 'publicado') {
       const precios = await PrecioVolumen.listarPorProducto(this.id)
       if (precios.length === 0) {
-        const error = new Error()
-        error.status = 422
-        error.mensaje = 'El producto necesita al menos un precio por volumen para poder ser publicado.'
-        throw error
+        throw Object.assign(new Error('El producto necesita al menos un precio por volumen para poder ser publicado.'), { status: 422 })
       }
     }
 

@@ -92,13 +92,6 @@ class Pedido {
     }
   }
 
-  // RF-029/RF-051: panel único de pedidos del distribuidor, en cualquier
-  // estado (ya no hay pestañas separadas "Activos"/"Historial"). Orden:
-  // Pendiente (necesita acción) → Aceptado → En camino (todavía activos) →
-  // Rechazado → Cancelado → Entregado (terminales, confirmado con el
-  // usuario), y dentro de cada grupo, de más reciente a más antiguo.
-  // Cancelado (RF-069) se agrupa junto a Rechazado: ambos son terminales
-  // "no exitosos" que ya no requieren acción del distribuidor.
   static async listarHistorialDistribuidor(usuarioId) {
     const res = await pool.query(
       `SELECT
@@ -246,10 +239,6 @@ class Pedido {
     return res.rows[0]
   }
 
-  // RF-043: pedidos elegibles para incluir en una planificación de reparto:
-  // "Aceptado" (con dirección de entrega registrada — siempre, desde que
-  // confirmar el pedido exige coordenadas, RF-008), del distribuidor, que
-  // todavía no están en un plan de reparto no finalizado.
   static async listarDisponiblesRepartoDistribuidor(usuarioId, planIdIncluir = null) {
     const res = await pool.query(
       `SELECT
@@ -299,8 +288,6 @@ class Pedido {
     return pedido
   }
 
-  // RF-069: fetch-y-scope simétrico a obtenerPropioDistribuidor, pero
-  // verificando que el pedido pertenezca al comprador que pide cancelarlo.
   static async obtenerPropioComprador(pedidoId, compradorId, cliente = pool) {
     const res = await cliente.query(
       `SELECT p.*, d.nombre_comercial AS nombre_distribuidor
@@ -384,7 +371,7 @@ class Pedido {
     }
 
     if (this.estado === 'pendiente' && !MOTIVOS_RECHAZO_PENDIENTE.includes(motivo)) {
-      throw Object.assign(new Error('Ingresá un motivo de rechazo antes de confirmar.'), { status: 400 })
+      throw Object.assign(new Error('Seleccioná un motivo de rechazo de la lista.'), { status: 400 })
     }
 
     const cliente = await pool.connect()
@@ -463,17 +450,6 @@ class Pedido {
     }
   }
 
-  // RF-069: el comprador cancela su propio pedido mientras esté en
-  // "Pendiente" o "Aceptado" (no más allá: una vez "En camino" el reparto
-  // ya salió, confirmado con el usuario). A diferencia de rechazar()
-  // (RF-024, acción del distribuidor), no exige un motivo: es la
-  // propia decisión del comprador sobre su propio pedido, no tiene que
-  // justificarse ante nadie (confirmado con el usuario). Libera el stock
-  // reservado únicamente si venía de "aceptado" — si todavía estaba
-  // "pendiente" nunca se reservó stock (solo aceptar() reserva, arriba).
-  // Notifica al distribuidor: única notificación de este archivo en esa
-  // dirección, por eso no usa notificarCambioEstado/mensajeCambioEstado
-  // (ambos redactados para el sentido distribuidor → comprador).
   async cancelar() {
     if (this.estado !== 'pendiente' && this.estado !== 'aceptado') {
       throw Object.assign(new Error('Solo se pueden cancelar pedidos en estado Pendiente o Aceptado.'), { status: 409 })
@@ -497,9 +473,6 @@ class Pedido {
         }
       }
 
-      // Si el pedido ya estaba en un plan de reparto "sin_empezar" (RF-043),
-      // esa parada queda huérfana al cancelar — se borra acá mismo, en la
-      // misma transacción, para que el reparto no la arrastre.
       await cliente.query(
         `DELETE FROM parada_reparto
          WHERE pedido_id = $1
@@ -536,11 +509,6 @@ class Pedido {
   }
 }
 
-// RF-064/066/046: el módulo de reparto (PlanReparto) necesita redactar el
-// mismo texto de notificación que ya usa Pedido para sus propias
-// transiciones de estado, para que el comprador reciba el mismo mensaje
-// sin importar si el cambio lo disparó Pedido directamente o una acción
-// sobre el reparto que lo contiene.
 Pedido.mensajeCambioEstado = mensajeCambioEstado
 
 export default Pedido

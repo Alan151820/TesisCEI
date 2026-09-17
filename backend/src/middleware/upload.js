@@ -20,7 +20,7 @@ const upload = multer({
     if (permitidos.includes(file.mimetype)) {
       cb(null, true)
     } else {
-      cb(new Error('Solo se permiten imágenes (JPG, PNG, WebP).'))
+      cb(Object.assign(new Error('Solo se permiten imágenes (JPG, PNG, WebP).'), { status: 400 }))
     }
   },
 })

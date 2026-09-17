@@ -27,8 +27,6 @@ async function crearProducto(req, res, next) {
     return res.status(400).json({ error: 'Debés seleccionar una categoría.' })
   }
 
-  // Los tramos adicionales (RF-015) viajan como JSON dentro del FormData
-  // (junto con la imagen), no como un array nativo.
   let tramos = []
   if (preciosAdicionales) {
     try {
@@ -56,9 +54,6 @@ async function crearProducto(req, res, next) {
     })
     res.status(201).json({ mensaje: 'Producto creado correctamente.', producto, precios })
   } catch (error) {
-    if (error.status) {
-      return res.status(error.status).json({ error: error.mensaje })
-    }
     next(error)
   }
 }
@@ -66,6 +61,7 @@ async function crearProducto(req, res, next) {
 async function listarProductos(req, res, next) {
   try {
     const filtros = {
+      nombre: req.query.nombre || null,
       categoria: req.query.categoria || null,
       visibilidad: req.query.visibilidad || null,
       stock: req.query.stock || null
@@ -88,7 +84,6 @@ async function aplicarDescuentoTotal(req, res, next) {
     )
     res.status(200).json({ mensaje: `Descuento aplicado a ${resultado.productosAfectados} producto${resultado.productosAfectados !== 1 ? 's' : ''}.`, ...resultado })
   } catch (error) {
-    if (error.status) return res.status(error.status).json({ error: error.mensaje })
     next(error)
   }
 }
@@ -100,7 +95,6 @@ async function cambiarVisibilidad(req, res, next) {
     const producto = await productosServicio.cambiarVisibilidad(productoId, req.usuario.id, nuevoEstado)
     res.status(200).json({ mensaje: `Producto ${nuevoEstado} correctamente.`, producto })
   } catch (error) {
-    if (error.status) return res.status(error.status).json({ error: error.mensaje })
     next(error)
   }
 }
@@ -111,7 +105,6 @@ async function obtenerProducto(req, res, next) {
     const producto = await productosServicio.obtenerProducto(productoId, req.usuario.id)
     res.status(200).json(producto)
   } catch (error) {
-    if (error.status) return res.status(error.status).json({ error: error.mensaje })
     next(error)
   }
 }
@@ -128,7 +121,6 @@ async function editarProducto(req, res, next) {
     const producto = await productosServicio.editarProducto(productoId, req.usuario.id, datos)
     res.status(200).json({ mensaje: 'Producto actualizado correctamente.', producto })
   } catch (error) {
-    if (error.status) return res.status(error.status).json({ error: error.mensaje })
     next(error)
   }
 }
@@ -139,7 +131,6 @@ async function eliminarProducto(req, res, next) {
     const resultado = await productosServicio.eliminarOdeshabilitar(productoId, req.usuario.id)
     res.status(200).json(resultado)
   } catch (error) {
-    if (error.status) return res.status(error.status).json({ error: error.mensaje })
     next(error)
   }
 }
@@ -147,14 +138,13 @@ async function eliminarProducto(req, res, next) {
 async function configurarUmbral(req, res, next) {
   const productoId = Number(req.params.id)
   const valor = Number(req.body.valor)
-  if (isNaN(valor)) {
-    return res.status(400).json({ error: 'El umbral mínimo no puede ser negativo.' })
+  if (!Number.isInteger(valor) || valor < 0) {
+    return res.status(400).json({ error: 'El umbral mínimo debe ser un número entero mayor o igual a cero.' })
   }
   try {
     const producto = await productosServicio.configurarUmbralMinimo(productoId, req.usuario.id, valor)
     res.status(200).json({ mensaje: 'Umbral configurado correctamente.', producto })
   } catch (error) {
-    if (error.status) return res.status(error.status).json({ error: error.mensaje })
     next(error)
   }
 }

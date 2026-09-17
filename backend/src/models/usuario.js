@@ -24,10 +24,6 @@ class Usuario {
     return new Usuario(resultado.rows[0])
   }
 
-  // El registro pendiente de verificación se guarda en la base (fila usuario
-  // con cuenta_verificada = false + un codigo_verificacion 'activacion_cuenta'),
-  // igual que recuperación — no en memoria del proceso, que se pierde en cada
-  // reinicio y no funciona con más de una instancia.
   static async registrarCuenta(nombre, telefono, contrasena, consentimientoDatosOtorgado) {
     const existente = await pool.query(
       'SELECT id, cuenta_verificada FROM usuario WHERE telefono = $1',
@@ -41,9 +37,6 @@ class Usuario {
     let usuarioId
 
     if (existente.rows.length > 0) {
-      // Ya hay un registro de este teléfono pendiente de verificación
-      // (RF-009 [E3]): se reenvía el código. Se actualizan los datos por si
-      // el usuario volvió a completar el formulario con algo distinto.
       usuarioId = existente.rows[0].id
       await pool.query(
         'UPDATE usuario SET nombre_completo = $1, contrasena_hash = $2, consentimiento_datos_otorgado = $3 WHERE id = $4',
@@ -57,8 +50,6 @@ class Usuario {
         )
         usuarioId = nuevo.rows[0].id
       } catch (error) {
-        // Carrera: otro registro insertó este mismo teléfono entre el SELECT
-        // y el INSERT. La garantía real es el UNIQUE de usuario.telefono.
         if (error.code === '23505') {
           throw new Error('El número de teléfono ya está registrado. Iniciá sesión o recuperá tu contraseña.')
         }
@@ -127,10 +118,6 @@ class Usuario {
   }
 
   static async solicitarRecuperacionContrasena(telefono) {
-    // Solo cuentas verificadas (RF-011: "comprador con cuenta activa"). Un
-    // registro pendiente de verificación responde igual que un teléfono
-    // desconocido — desde que el pendiente vive en esta misma tabla (A3),
-    // este filtro es necesario para no exponerlo a la recuperación.
     const resultado = await pool.query(
       'SELECT id FROM usuario WHERE telefono = $1 AND cuenta_verificada = true',
       [telefono]
@@ -186,11 +173,6 @@ class Usuario {
     try {
       await cliente.query('BEGIN')
 
-      // RF-011: la contraseña solo se cambia si antes se verificó un código de
-      // recuperación vigente (verificarCodigoRecuperacion lo dejó usado=true).
-      // Sin este chequeo, una llamada directa al endpoint cambiaría la clave
-      // de cualquier cuenta con solo el teléfono. FOR UPDATE evita que dos
-      // requests concurrentes reusen la misma verificación.
       const res = await cliente.query(
         `SELECT * FROM codigo_verificacion
          WHERE usuario_id = $1 AND proposito = 'recuperacion_password' AND usado = true
@@ -204,7 +186,6 @@ class Usuario {
 
       await cliente.query('UPDATE usuario SET contrasena_hash = $1 WHERE id = $2', [contrasenaHash, usuarioId])
 
-      // RF-011 paso 6: el código de recuperación queda inválido tras el cambio.
       await cliente.query(
         `DELETE FROM codigo_verificacion WHERE usuario_id = $1 AND proposito = 'recuperacion_password'`,
         [usuarioId]

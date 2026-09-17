@@ -1,4 +1,5 @@
 import * as notificacionesServicio from '../services/notificaciones.servicio.js'
+import { esIdValido } from '../middleware/validaciones.js'
 
 async function listar(req, res, next) {
   try {
@@ -10,9 +11,12 @@ async function listar(req, res, next) {
 }
 
 async function marcarLeida(req, res, next) {
-  const { id } = req.params
+  const id = Number(req.params.id)
+  if (!esIdValido(id)) {
+    return res.json({ ok: true })
+  }
   try {
-    await notificacionesServicio.marcarComoLeida(Number(id), req.usuario.id)
+    await notificacionesServicio.marcarComoLeida(id, req.usuario.id)
     res.json({ ok: true })
   } catch (error) {
     next(error)

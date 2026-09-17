@@ -5,14 +5,8 @@ async function confirmarPedido(compradorId, direccionEntrega, latitud, longitud,
   return Pedido.confirmarDesdeCarrito(compradorId, direccionEntrega, latitud, longitud, items)
 }
 
-// RNF-005: sin perfil de distribuidor no hay panel de pedidos que consultar
-// — antes devolvía [] a cualquier usuario autenticado, mismo criterio que
-// ya usa reparto.servicio.js en todos sus métodos.
 async function obtenerHistorialDistribuidor(usuarioId) {
-  const distribuidor = await Distribuidor.obtenerPorUsuarioId(usuarioId)
-  if (!distribuidor) {
-    throw Object.assign(new Error('No tenés un perfil de distribuidor configurado.'), { status: 404 })
-  }
+  await Distribuidor.requerirPorUsuarioId(usuarioId)
   return Pedido.listarHistorialDistribuidor(usuarioId)
 }
 
@@ -20,8 +14,6 @@ async function obtenerHistorialComprador(compradorId) {
   return Pedido.listarHistorialComprador(compradorId)
 }
 
-// planId (RF-064): al editar un reparto existente, incluye también sus
-// propios pedidos pendientes en la lista de disponibles.
 async function obtenerPedidosDisponiblesReparto(usuarioId, planId) {
   return Pedido.listarDisponiblesRepartoDistribuidor(usuarioId, planId)
 }
@@ -65,7 +57,6 @@ async function avanzarEstado(pedidoId, distribuidorUsuarioId) {
   return pedido.avanzarEstado()
 }
 
-// RF-069
 async function cancelarPedido(pedidoId, compradorId) {
   const pedido = await Pedido.obtenerPropioComprador(pedidoId, compradorId)
   if (!pedido) {

@@ -27,10 +27,7 @@ async function crearProducto(usuarioId, datos) {
 
   const distribuidor = await Distribuidor.obtenerPorUsuarioId(usuarioId)
   if (!distribuidor) {
-    const error = new Error()
-    error.status = 403
-    error.mensaje = 'No tenés un perfil de distribuidor activo.'
-    throw error
+    throw Object.assign(new Error('No tenés un perfil de distribuidor activo.'), { status: 403 })
   }
 
   const { producto, precios } = await Producto.crear(distribuidor.id, datos)
@@ -45,11 +42,6 @@ async function crearProducto(usuarioId, datos) {
   }
 }
 
-// RNF-005: sin perfil de distribuidor, no hay catálogo propio que listar —
-// antes devolvía [] silenciosamente a cualquier usuario autenticado. El
-// controller de esta ruta no revisa error.status como sí lo hace el de
-// crearProducto — usa Object.assign para que next(error) lo resuelva bien
-// contra el middleware global de app.js (lee error.message, no .mensaje).
 async function listarProductos(usuarioId, filtros = {}) {
   const distribuidor = await Distribuidor.obtenerPorUsuarioId(usuarioId)
   if (!distribuidor) {
@@ -58,22 +50,12 @@ async function listarProductos(usuarioId, filtros = {}) {
   return Producto.listarPorDistribuidor(usuarioId, filtros)
 }
 
-// Descuento total del catálogo, aplicado desde el panel "Mis productos" a
-// todos los productos que coincidan con los filtros vigentes en la lista
-// (reemplaza al descuento por producto individual que vivía en la ficha de
-// edición, confirmado con el usuario).
 async function aplicarDescuentoTotal(usuarioId, filtros, porcentaje) {
   if (!porcentaje || porcentaje <= 0) {
-    const e = new Error()
-    e.status = 400
-    e.mensaje = 'Ingresá un porcentaje de descuento mayor a cero.'
-    throw e
+    throw Object.assign(new Error('Ingresá un porcentaje de descuento mayor a cero.'), { status: 400 })
   }
   if (porcentaje >= 100) {
-    const e = new Error()
-    e.status = 400
-    e.mensaje = 'El descuento total debe ser menor a 100%.'
-    throw e
+    throw Object.assign(new Error('El descuento total debe ser menor a 100%.'), { status: 400 })
   }
 
   const productosAfectados = await PrecioVolumen.aplicarDescuentoMasivo(usuarioId, filtros, porcentaje)
@@ -83,18 +65,12 @@ async function aplicarDescuentoTotal(usuarioId, filtros, porcentaje) {
 async function cambiarVisibilidad(productoId, usuarioId, nuevoEstado) {
   const estadosValidos = ['publicado', 'pausado']
   if (!estadosValidos.includes(nuevoEstado)) {
-    const error = new Error()
-    error.status = 400
-    error.mensaje = 'Estado de visibilidad inválido.'
-    throw error
+    throw Object.assign(new Error('Estado de visibilidad inválido.'), { status: 400 })
   }
 
   const producto = await Producto.obtenerPropio(productoId, usuarioId)
   if (!producto) {
-    const error = new Error()
-    error.status = 404
-    error.mensaje = 'Producto no encontrado.'
-    throw error
+    throw Object.assign(new Error('Producto no encontrado.'), { status: 404 })
   }
 
   return producto.cambiarVisibilidad(nuevoEstado)
@@ -103,10 +79,7 @@ async function cambiarVisibilidad(productoId, usuarioId, nuevoEstado) {
 async function obtenerProducto(productoId, usuarioId) {
   const producto = await Producto.obtenerPropio(productoId, usuarioId)
   if (!producto) {
-    const error = new Error()
-    error.status = 404
-    error.mensaje = 'Producto no encontrado.'
-    throw error
+    throw Object.assign(new Error('Producto no encontrado.'), { status: 404 })
   }
   return {
     id: producto.id,
@@ -131,10 +104,7 @@ async function editarProducto(productoId, usuarioId, datos) {
 
   const producto = await Producto.obtenerPropio(productoId, usuarioId)
   if (!producto) {
-    const error = new Error()
-    error.status = 404
-    error.mensaje = 'Producto no encontrado.'
-    throw error
+    throw Object.assign(new Error('Producto no encontrado.'), { status: 404 })
   }
 
   const stockAntes = producto.stockTotal
@@ -169,28 +139,19 @@ async function editarProducto(productoId, usuarioId, datos) {
 async function eliminarOdeshabilitar(productoId, usuarioId) {
   const producto = await Producto.obtenerPropio(productoId, usuarioId)
   if (!producto) {
-    const error = new Error()
-    error.status = 404
-    error.mensaje = 'Producto no encontrado.'
-    throw error
+    throw Object.assign(new Error('Producto no encontrado.'), { status: 404 })
   }
   return producto.eliminarOdeshabilitar()
 }
 
 async function configurarUmbralMinimo(productoId, usuarioId, valor) {
   if (valor < 0) {
-    const error = new Error()
-    error.status = 400
-    error.mensaje = 'El umbral mínimo no puede ser negativo.'
-    throw error
+    throw Object.assign(new Error('El umbral mínimo no puede ser negativo.'), { status: 400 })
   }
 
   const producto = await Producto.obtenerPropio(productoId, usuarioId)
   if (!producto) {
-    const error = new Error()
-    error.status = 404
-    error.mensaje = 'Producto no encontrado.'
-    throw error
+    throw Object.assign(new Error('Producto no encontrado.'), { status: 404 })
   }
 
   return producto.configurarUmbralMinimo(valor)
