@@ -6,8 +6,6 @@ import CodigoVerificacion from './CodigoVerificacion.js'
 
 const client = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN)
 
-const registrosPendientes = []
-
 class Usuario {
   constructor(data) {
     this.id = data.id
@@ -26,17 +24,51 @@ class Usuario {
     return new Usuario(resultado.rows[0])
   }
 
-  static async registrarCuenta(nombre, telefono, contrasena) {
-    const existente = await pool.query('SELECT id FROM usuario WHERE telefono = $1', [telefono])
-    if (existente.rows.length > 0) {
+  // El registro pendiente de verificación se guarda en la base (fila usuario
+  // con cuenta_verificada = false + un codigo_verificacion 'activacion_cuenta'),
+  // igual que recuperación — no en memoria del proceso, que se pierde en cada
+  // reinicio y no funciona con más de una instancia.
+  static async registrarCuenta(nombre, telefono, contrasena, consentimientoDatosOtorgado) {
+    const existente = await pool.query(
+      'SELECT id, cuenta_verificada FROM usuario WHERE telefono = $1',
+      [telefono]
+    )
+    if (existente.rows.length > 0 && existente.rows[0].cuenta_verificada) {
       throw new Error('El número de teléfono ya está registrado. Iniciá sesión o recuperá tu contraseña.')
+    }
+
+    const contrasenaHash = await bcrypt.hash(contrasena, 10)
+    let usuarioId
+
+    if (existente.rows.length > 0) {
+      // Ya hay un registro de este teléfono pendiente de verificación
+      // (RF-009 [E3]): se reenvía el código. Se actualizan los datos por si
+      // el usuario volvió a completar el formulario con algo distinto.
+      usuarioId = existente.rows[0].id
+      await pool.query(
+        'UPDATE usuario SET nombre_completo = $1, contrasena_hash = $2, consentimiento_datos_otorgado = $3 WHERE id = $4',
+        [nombre, contrasenaHash, consentimientoDatosOtorgado, usuarioId]
+      )
+    } else {
+      try {
+        const nuevo = await pool.query(
+          'INSERT INTO usuario (nombre_completo, telefono, contrasena_hash, cuenta_verificada, consentimiento_datos_otorgado) VALUES ($1, $2, $3, false, $4) RETURNING id',
+          [nombre, telefono, contrasenaHash, consentimientoDatosOtorgado]
+        )
+        usuarioId = nuevo.rows[0].id
+      } catch (error) {
+        // Carrera: otro registro insertó este mismo teléfono entre el SELECT
+        // y el INSERT. La garantía real es el UNIQUE de usuario.telefono.
+        if (error.code === '23505') {
+          throw new Error('El número de teléfono ya está registrado. Iniciá sesión o recuperá tu contraseña.')
+        }
+        throw error
+      }
     }
 
     const codigo = CodigoVerificacion.generarCodigo()
     const expiracion = CodigoVerificacion.calcularExpiracion()
-    const contrasenaHash = await bcrypt.hash(contrasena, 10)
-
-    registrosPendientes.push({ nombre, telefono, contrasenaHash, codigo, expiracion })
+    await CodigoVerificacion.crear(usuarioId, codigo, 'activacion_cuenta', expiracion)
 
     try {
       await client.messages.create({
@@ -52,21 +84,18 @@ class Usuario {
   }
 
   static async verificarCodigoActivacion(telefono, codigo) {
-    const pendiente = registrosPendientes.find(r => r.telefono === telefono && r.codigo === codigo)
-
-    if (!pendiente) throw new Error('El código ingresado no es válido. Intentá de nuevo.')
-    if (new Date() > pendiente.expiracion) throw new Error('El código expiró. Solicitá uno nuevo.')
-
-    const resultado = await pool.query(
-      'INSERT INTO usuario (nombre_completo, telefono, contrasena_hash, cuenta_verificada, consentimiento_datos_otorgado) VALUES ($1, $2, $3, $4, $5) RETURNING *',
-      [pendiente.nombre, pendiente.telefono, pendiente.contrasenaHash, true, true]
-    )
-
-    await CodigoVerificacion.crear(resultado.rows[0].id, pendiente.codigo, 'activacion_cuenta', pendiente.expiracion, true)
-
-    registrosPendientes.splice(registrosPendientes.indexOf(pendiente), 1)
+    const resultado = await pool.query('SELECT * FROM usuario WHERE telefono = $1', [telefono])
+    if (resultado.rows.length === 0) throw new Error('El código ingresado no es válido. Intentá de nuevo.')
 
     const usuario = new Usuario(resultado.rows[0])
+
+    const registro = await CodigoVerificacion.buscarVigente(usuario.id, codigo, 'activacion_cuenta')
+    if (!registro) throw new Error('El código ingresado no es válido. Intentá de nuevo.')
+    if (registro.haVencido()) throw new Error('El código expiró. Solicitá uno nuevo.')
+
+    await registro.marcarComoUsado()
+    await pool.query('UPDATE usuario SET cuenta_verificada = true WHERE id = $1', [usuario.id])
+    usuario.cuentaVerificada = true
 
     const token = jwt.sign(
       { id: usuario.id, nombre: usuario.nombreCompleto },
@@ -98,7 +127,14 @@ class Usuario {
   }
 
   static async solicitarRecuperacionContrasena(telefono) {
-    const resultado = await pool.query('SELECT id FROM usuario WHERE telefono = $1', [telefono])
+    // Solo cuentas verificadas (RF-011: "comprador con cuenta activa"). Un
+    // registro pendiente de verificación responde igual que un teléfono
+    // desconocido — desde que el pendiente vive en esta misma tabla (A3),
+    // este filtro es necesario para no exponerlo a la recuperación.
+    const resultado = await pool.query(
+      'SELECT id FROM usuario WHERE telefono = $1 AND cuenta_verificada = true',
+      [telefono]
+    )
     if (resultado.rows.length === 0) throw new Error('No encontramos una cuenta con ese número de teléfono.')
 
     const codigo = CodigoVerificacion.generarCodigo()
@@ -120,7 +156,10 @@ class Usuario {
   }
 
   static async verificarCodigoRecuperacion(telefono, codigo) {
-    const usuario = await pool.query('SELECT id FROM usuario WHERE telefono = $1', [telefono])
+    const usuario = await pool.query(
+      'SELECT id FROM usuario WHERE telefono = $1 AND cuenta_verificada = true',
+      [telefono]
+    )
     if (usuario.rows.length === 0) throw new Error('No encontramos una cuenta con ese número de teléfono.')
 
     const registro = await CodigoVerificacion.buscarVigente(usuario.rows[0].id, codigo, 'recuperacion_password')
@@ -134,9 +173,51 @@ class Usuario {
   }
 
   static async restablecerContrasena(telefono, contrasena) {
+    const usuario = await pool.query(
+      'SELECT id FROM usuario WHERE telefono = $1 AND cuenta_verificada = true',
+      [telefono]
+    )
+    if (usuario.rows.length === 0) throw new Error('No encontramos una cuenta con ese número de teléfono.')
+    const usuarioId = usuario.rows[0].id
+
     const contrasenaHash = await bcrypt.hash(contrasena, 10)
-    await pool.query('UPDATE usuario SET contrasena_hash = $1 WHERE telefono = $2', [contrasenaHash, telefono])
-    return true
+
+    const cliente = await pool.connect()
+    try {
+      await cliente.query('BEGIN')
+
+      // RF-011: la contraseña solo se cambia si antes se verificó un código de
+      // recuperación vigente (verificarCodigoRecuperacion lo dejó usado=true).
+      // Sin este chequeo, una llamada directa al endpoint cambiaría la clave
+      // de cualquier cuenta con solo el teléfono. FOR UPDATE evita que dos
+      // requests concurrentes reusen la misma verificación.
+      const res = await cliente.query(
+        `SELECT * FROM codigo_verificacion
+         WHERE usuario_id = $1 AND proposito = 'recuperacion_password' AND usado = true
+         ORDER BY fecha_creacion DESC LIMIT 1 FOR UPDATE`,
+        [usuarioId]
+      )
+      const registro = res.rows.length ? new CodigoVerificacion(res.rows[0]) : null
+      if (!registro || registro.haVencido()) {
+        throw new Error('Verificá el código de recuperación antes de cambiar la contraseña.')
+      }
+
+      await cliente.query('UPDATE usuario SET contrasena_hash = $1 WHERE id = $2', [contrasenaHash, usuarioId])
+
+      // RF-011 paso 6: el código de recuperación queda inválido tras el cambio.
+      await cliente.query(
+        `DELETE FROM codigo_verificacion WHERE usuario_id = $1 AND proposito = 'recuperacion_password'`,
+        [usuarioId]
+      )
+
+      await cliente.query('COMMIT')
+      return true
+    } catch (error) {
+      await cliente.query('ROLLBACK')
+      throw error
+    } finally {
+      cliente.release()
+    }
   }
 
   async activarModoDistribuidor() {

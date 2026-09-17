@@ -8,6 +8,14 @@ async function confirmarPedido(req, res, next) {
     return res.status(400).json({ error: 'Debés ingresar una dirección de entrega para continuar.' })
   }
 
+  // RF-008: todo pedido confirmado queda con coordenadas registradas (por el
+  // mapa o por geocodificación de la dirección de respaldo). Si la
+  // confirmación llega sin coordenadas válidas, no se procesa — mismo
+  // criterio que el chequeo de dirección de arriba (RF-008 [E2]).
+  if (latitud == null || longitud == null || !Number.isFinite(Number(latitud)) || !Number.isFinite(Number(longitud))) {
+    return res.status(400).json({ error: 'El pedido debe incluir la ubicación de la dirección de entrega.' })
+  }
+
   if (!Array.isArray(items) || items.length === 0) {
     return res.status(400).json({ error: 'El carrito debe contener al menos un producto.' })
   }
@@ -106,51 +114,6 @@ async function avanzarEstado(req, res, next) {
   }
 }
 
-// RF-025
-async function proponerSustituto(req, res, next) {
-  const pedidoId = Number(req.params.id)
-  const pedidoItemId = Number(req.params.itemId)
-  const { productoSustitutoId } = req.body
-
-  if (!productoSustitutoId) {
-    return res.status(400).json({ error: 'Seleccioná un producto sustituto antes de enviar la propuesta.' })
-  }
-
-  try {
-    const propuesta = await pedidosServicio.proponerSustituto(pedidoId, req.usuario.id, pedidoItemId, Number(productoSustitutoId))
-    res.status(201).json(propuesta)
-  } catch (error) {
-    next(error)
-  }
-}
-
-// RF-026: el comprador elige la cantidad del sustituto al aceptar.
-async function aceptarSustitucion(req, res, next) {
-  const propuestaId = Number(req.params.propuestaId)
-  const { cantidad } = req.body
-
-  if (!cantidad || !Number.isInteger(Number(cantidad)) || Number(cantidad) <= 0) {
-    return res.status(400).json({ error: 'Ingresá la cantidad del producto sustituto antes de aceptar la propuesta.' })
-  }
-
-  try {
-    const resultado = await pedidosServicio.responderSustitucion(propuestaId, req.usuario.id, 'aceptar', Number(cantidad))
-    res.json(resultado)
-  } catch (error) {
-    next(error)
-  }
-}
-
-async function rechazarSustitucion(req, res, next) {
-  const propuestaId = Number(req.params.propuestaId)
-  try {
-    const resultado = await pedidosServicio.responderSustitucion(propuestaId, req.usuario.id, 'rechazar')
-    res.json(resultado)
-  } catch (error) {
-    next(error)
-  }
-}
-
 // RF-069
 async function cancelarPedido(req, res, next) {
   const pedidoId = Number(req.params.id)
@@ -162,4 +125,4 @@ async function cancelarPedido(req, res, next) {
   }
 }
 
-export { confirmarPedido, historialDistribuidor, historialComprador, pedidosDisponiblesReparto, detalleComprador, detalleDistribuidor, aceptarPedido, rechazarPedido, avanzarEstado, cancelarPedido, proponerSustituto, aceptarSustitucion, rechazarSustitucion }
+export { confirmarPedido, historialDistribuidor, historialComprador, pedidosDisponiblesReparto, detalleComprador, detalleDistribuidor, aceptarPedido, rechazarPedido, avanzarEstado, cancelarPedido }

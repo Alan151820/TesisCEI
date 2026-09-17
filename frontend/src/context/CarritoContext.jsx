@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useEffect } from 'react'
+import { decodificarToken } from '../lib/auth'
 
 const CarritoContext = createContext(null)
 
@@ -8,7 +9,7 @@ function getUserKey() {
   const token = localStorage.getItem('token')
   if (!token) return 'guest'
   try {
-    const { id } = JSON.parse(atob(token.split('.')[1]))
+    const { id } = decodificarToken(token)
     return String(id)
   } catch {
     return 'guest'

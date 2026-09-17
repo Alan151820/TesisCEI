@@ -2,7 +2,6 @@ import pool from '../config/db.js'
 import Notificacion from './Notificacion.js'
 import Producto from './Producto.js'
 import PedidoItem from './PedidoItem.js'
-import PropuestaSustitucion from './PropuestaSustitucion.js'
 
 const MOTIVOS_RECHAZO_PENDIENTE = [
   'Sin stock del producto solicitado',
@@ -314,63 +313,6 @@ class Pedido {
     const pedido = new Pedido(res.rows[0])
     pedido.nombreDistribuidor = res.rows[0].nombre_distribuidor
     return pedido
-  }
-
-  // RF-025: el distribuidor propone un producto de su propio catálogo para
-  // sustituir un ítem de un pedido "Pendiente". Solo el producto — la
-  // cantidad y el precio los define el comprador al responder (RF-026, ver
-  // PropuestaSustitucion.aceptar), porque es él quien decide cuánto necesita
-  // del sustituto (confirmado con el usuario). No modifica pedido_item ni el
-  // estado del pedido (queda "Pendiente" hasta que el comprador responda) —
-  // solo registra la propuesta y notifica al comprador.
-  async proponerSustituto(pedidoItemId, productoSustitutoId) {
-    if (this.estado !== 'pendiente') {
-      throw Object.assign(new Error('Solo se puede proponer sustitución en pedidos en estado Pendiente.'), { status: 409 })
-    }
-
-    const cliente = await pool.connect()
-    try {
-      await cliente.query('BEGIN')
-
-      const itemRes = await cliente.query(
-        `SELECT id FROM pedido_item WHERE id = $1 AND pedido_id = $2`,
-        [pedidoItemId, this.id]
-      )
-      if (itemRes.rows.length === 0) {
-        throw Object.assign(new Error('El ítem no pertenece a este pedido.'), { status: 404 })
-      }
-
-      const productoRes = await cliente.query(
-        `SELECT id FROM producto WHERE id = $1 AND distribuidor_id = $2`,
-        [productoSustitutoId, this.distribuidorId]
-      )
-      if (productoRes.rows.length === 0) {
-        throw Object.assign(new Error('El producto sustituto debe pertenecer a tu catálogo.'), { status: 400 })
-      }
-
-      const existente = await PropuestaSustitucion.obtenerPendientePorPedidoItem(pedidoItemId, cliente)
-      if (existente) {
-        throw Object.assign(new Error('Ya existe una propuesta de sustitución pendiente para este ítem.'), { status: 409 })
-      }
-
-      const propuesta = await PropuestaSustitucion.crear(pedidoItemId, productoSustitutoId, cliente)
-
-      await Notificacion.crear(
-        this.compradorId,
-        'propuesta_sustitucion',
-        `El distribuidor te propuso un producto sustituto para uno de los artículos de tu pedido #${this.id}.`,
-        this.id,
-        cliente
-      )
-
-      await cliente.query('COMMIT')
-      return propuesta
-    } catch (error) {
-      await cliente.query('ROLLBACK')
-      throw error
-    } finally {
-      cliente.release()
-    }
   }
 
   construirTextoWhatsapp(items) {

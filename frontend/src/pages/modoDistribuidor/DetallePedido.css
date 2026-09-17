@@ -1,17 +1,5 @@
 @import '../../styles/detallePedido.css';
 
-.detallepedido-tabla-header--dist,
-.detallepedido-tabla-fila--dist {
-  grid-template-columns: 1fr 100px 120px 120px 110px;
-}
-
-/* RF-025: panel de vista previa de la propuesta de sustitución, sin
-   cantidad ni precio — el comprador todavía no los definió (RF-026). */
-.detallepedido-tabla-header--sust,
-.detallepedido-tabla-fila--sust {
-  grid-template-columns: 1fr 1fr 110px;
-}
-
 .detallepedido-stock-cero {
   color: var(--color-error);
   font-weight: 600;
@@ -19,7 +7,7 @@
 
 .detallepedido-pie-tarjeta {
   padding: 14px 0 0;
-  border-top: 1px solid var(--color-variante-contorno);
+  border-top: 1px solid var(--color-borde);
   margin-top: 14px;
   display: flex;
   justify-content: flex-start;
@@ -27,8 +15,8 @@
 
 .detallepedido-acciones-panel {
   margin-top: 16px;
-  background: var(--color-contenedor-superficie-minimo);
-  border: 1px solid var(--color-variante-contorno);
+  background: var(--color-fondo);
+  border: 1px solid var(--color-borde);
   border-radius: 6px;
   padding: 16px;
   display: flex;
@@ -49,7 +37,7 @@
 .detallepedido-acciones-titulo {
   font-size: 12px;
   font-weight: 600;
-  color: var(--color-sobre-variante-superficie);
+  color: var(--color-texto-suave);
   text-transform: uppercase;
   letter-spacing: 0.5px;
   margin-bottom: 4px;
@@ -57,24 +45,9 @@
 
 .detallepedido-sin-acciones {
   font-size: 12px;
-  color: var(--color-sobre-variante-superficie);
+  color: var(--color-texto-suave);
 }
 
 @media (max-width: 768px) {
-  .detallepedido-tabla-header--dist { display: none; }
-
-  .detallepedido-tabla-fila--dist {
-    grid-template-columns: 1fr;
-  }
-
-  .detallepedido-celda:nth-child(5)::before { content: 'Stock disponible: '; color: var(--color-sobre-variante-superficie); }
-
-  .detallepedido-tabla-header--sust { display: none; }
-
-  .detallepedido-tabla-fila--sust {
-    grid-template-columns: 1fr;
-  }
-
-  .detallepedido-tabla-fila--sust .detallepedido-celda:nth-child(2)::before { content: 'Sustituto propuesto: '; color: var(--color-sobre-variante-superficie); }
-  .detallepedido-tabla-fila--sust .detallepedido-celda:nth-child(3)::before { content: 'Stock disponible: '; color: var(--color-sobre-variante-superficie); }
+  .detallepedido-celda:nth-child(5)::before { content: 'Stock disponible:'; color: var(--color-texto-suave); }
 }

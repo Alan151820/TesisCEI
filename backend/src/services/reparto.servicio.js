@@ -131,6 +131,9 @@ async function marcarParada(usuarioId, planId, paradaId, accion, motivo) {
   if (resultado === 'parada_no_valida') {
     throw Object.assign(new Error('La parada no existe o ya fue marcada.'), { status: 404 })
   }
+  if (resultado === 'pedido_no_valido') {
+    throw Object.assign(new Error('El pedido de esta parada ya no está en camino. Actualizá la página para ver su estado actual.'), { status: 409 })
+  }
   return { mensaje: 'La parada quedó marcada correctamente.' }
 }
 

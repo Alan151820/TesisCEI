@@ -16,7 +16,10 @@ CREATE TABLE usuario (
   modo_distribuidor_activo BOOLEAN NOT NULL DEFAULT FALSE,
   cuenta_verificada BOOLEAN NOT NULL DEFAULT FALSE,
   consentimiento_datos_otorgado BOOLEAN NOT NULL DEFAULT FALSE,
-  fecha_creacion TIMESTAMP NOT NULL DEFAULT NOW()
+  fecha_creacion TIMESTAMP NOT NULL DEFAULT NOW(),
+  -- RNF-010 (Ley 18.331): ninguna cuenta puede terminar de crearse sin
+  -- el consentimiento otorgado.
+  CONSTRAINT usuario_consentimiento_otorgado CHECK (consentimiento_datos_otorgado = true)
 );
 
 CREATE TABLE codigo_verificacion (
@@ -97,7 +100,10 @@ CREATE TABLE precio_volumen (
   precio_costo DECIMAL,
   CONSTRAINT precio_venta_positivo CHECK (precio_venta > 0),
   CONSTRAINT cantidad_minima_positiva CHECK (cantidad_minima > 0),
-  CONSTRAINT precio_costo_no_negativo CHECK (precio_costo IS NULL OR precio_costo >= 0)
+  CONSTRAINT precio_costo_no_negativo CHECK (precio_costo IS NULL OR precio_costo >= 0),
+  -- RF-015: no puede haber dos precios por volumen con la misma cantidad
+  -- mínima para el mismo producto (incluida la cantidad mínima 1, el precio base).
+  CONSTRAINT precio_volumen_producto_cantidad_unica UNIQUE (producto_id, cantidad_minima)
 );
 
 -- RF-008: Confirmación de pedido
@@ -124,23 +130,6 @@ CREATE TABLE pedido_item (
   precio_volumen_id INTEGER NOT NULL REFERENCES precio_volumen(id),
   cantidad DECIMAL NOT NULL,
   precio_venta_congelado DECIMAL NOT NULL
-);
-
--- RF-025/RF-026: propuesta de sustitución de producto
-CREATE TYPE propuesta_sustitucion_estado AS ENUM ('pendiente', 'aceptada', 'rechazada');
-
-CREATE TABLE propuesta_sustitucion (
-  id SERIAL PRIMARY KEY,
-  pedido_item_id INTEGER NOT NULL REFERENCES pedido_item(id),
-  producto_sustituto_id INTEGER NOT NULL REFERENCES producto(id),
-  estado propuesta_sustitucion_estado NOT NULL DEFAULT 'pendiente',
-  fecha_creacion TIMESTAMP NOT NULL DEFAULT NOW(),
-  -- cantidad/precio_volumen_id/precio_venta_congelado quedan NULL hasta que
-  -- el comprador acepta la propuesta y elige la cantidad (RF-026) — recién
-  -- ahí se congela el precio, igual que pedido_item.precio_venta_congelado.
-  cantidad DECIMAL,
-  precio_volumen_id INTEGER REFERENCES precio_volumen(id),
-  precio_venta_congelado DECIMAL
 );
 
 -- RF-043 a RF-067: planificación y gestión de repartos
@@ -176,8 +165,7 @@ CREATE TABLE parada_reparto (
 CREATE UNIQUE INDEX parada_reparto_pedido_id_activo_key ON parada_reparto (pedido_id) WHERE (estado_parada <> 'omitido');
 
 -- RF-024: Notificación de pedido entrante al distribuidor
--- RF-025/RF-026: 'propuesta_sustitucion' / 'sustitucion_respondida'
-CREATE TYPE notificacion_tipo AS ENUM ('cambio_estado_pedido', 'pedido_entrante', 'stock_bajo', 'propuesta_sustitucion', 'sustitucion_respondida');
+CREATE TYPE notificacion_tipo AS ENUM ('cambio_estado_pedido', 'pedido_entrante', 'stock_bajo');
 
 CREATE TABLE notificacion (
   id SERIAL PRIMARY KEY,

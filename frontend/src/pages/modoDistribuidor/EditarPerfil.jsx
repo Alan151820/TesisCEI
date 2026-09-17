@@ -1,9 +1,12 @@
 import { useState, useEffect } from 'react'
+import { mensajeDeError } from '../../lib/errores'
 import { useNavigate } from 'react-router-dom'
 import api from '../../lib/axios'
-import { tokenValido } from '../../lib/auth'
 import CampoUbicacionMapa from '../../components/CampoUbicacionMapa'
 import PanelDistribuidor from '../../components/PanelDistribuidor'
+import Tarjeta from '../../components/ui/Tarjeta'
+import Campo from '../../components/ui/Campo'
+import Boton from '../../components/ui/Boton'
 import './Inicio.css'
 import './EditarPerfil.css'
 
@@ -16,10 +19,7 @@ function EditarPerfil() {
   const [mensaje, setMensaje] = useState('')
   const [guardando, setGuardando] = useState(false)
   const navigate = useNavigate()
-  useEffect(() => { if (!tokenValido()) navigate('/login') }, [navigate])
 
-  // RF-042: dirección de partida del depósito. Se guarda junto con el resto
-  // del perfil (RF-049) en una única acción de "Guardar cambios".
   const [direccionPartida, setDireccionPartida] = useState('')
   const [latitudPartida, setLatitudPartida] = useState(null)
   const [longitudPartida, setLongitudPartida] = useState(null)
@@ -74,22 +74,22 @@ function EditarPerfil() {
 
       setMensaje('Perfil actualizado correctamente.')
     } catch (error) {
-      setMensaje(error.response?.data?.mensaje || 'No fue posible completar la operación. Intente nuevamente más tarde.')
+      setMensaje(mensajeDeError(error))
     } finally {
       setGuardando(false)
     }
   }
 
   return (
-    <PanelDistribuidor tituloMobile="Editar perfil">
-          <div className="panel-seccion-header">
+    <PanelDistribuidor>
+          <div className="panel-seccion-header panel-seccion-header--sub">
             <div>
               <h1 className="panel-h1">Editar perfil</h1>
               <p className="panel-subtitulo">Actualizá los datos de tu distribuidora visibles para los compradores.</p>
             </div>
           </div>
 
-          <div className="editarperfil-card">
+          <Tarjeta className="col gap-m editarperfil-card">
 
             <div className="editarperfil-logo-fila">
               <div className="editarperfil-logo-zona" onClick={() => document.getElementById('input-logo').click()}>
@@ -107,34 +107,19 @@ function EditarPerfil() {
               />
             </div>
 
-            <div className="editarperfil-campo">
-              <label className="editarperfil-label">Nombre comercial</label>
-              <input
-                className="editarperfil-input"
-                placeholder='Nombre comercial *'
-                value={nombreComercial}
-                onChange={e => setNombreComercial(e.target.value)}
-              />
+            <div className="col gap-s">
+              <span className="texto">Nombre comercial</span>
+              <Campo placeholder='Nombre comercial *' value={nombreComercial} onChange={e => setNombreComercial(e.target.value)} />
             </div>
 
-            <div className="editarperfil-campo">
-              <label className="editarperfil-label">Descripción</label>
-              <textarea
-                className="editarperfil-textarea"
-                placeholder='Descripción del negocio'
-                value={descripcionNegocio}
-                onChange={e => setDescripcionNegocio(e.target.value)}
-              />
+            <div className="col gap-s">
+              <span className="texto">Descripción</span>
+              <Campo area placeholder='Descripción del negocio' value={descripcionNegocio} onChange={e => setDescripcionNegocio(e.target.value)} />
             </div>
 
-            <div className="editarperfil-campo">
-              <label className="editarperfil-label">Zona de entrega</label>
-              <input
-                className="editarperfil-input"
-                placeholder='Zona de entrega'
-                value={zonaEntrega}
-                onChange={e => setZonaEntrega(e.target.value)}
-              />
+            <div className="col gap-s">
+              <span className="texto">Zona de entrega</span>
+              <Campo placeholder='Zona de entrega' value={zonaEntrega} onChange={e => setZonaEntrega(e.target.value)} />
             </div>
 
             <CampoUbicacionMapa
@@ -147,16 +132,16 @@ function EditarPerfil() {
               }}
             />
 
-            <div className="editarperfil-acciones">
-              <button className="editarperfil-btn-guardar" onClick={handleGuardar} disabled={guardando}>
+            <div className="fila gap-m">
+              <Boton onClick={handleGuardar} disabled={guardando}>
                 {guardando ? 'Guardando…' : 'Guardar cambios'}
-              </button>
-              <button className="editarperfil-btn-cancelar" onClick={() => navigate('/inicio')}>Volver al panel</button>
+              </Boton>
+              <Boton variante="outline" onClick={() => navigate('/inicio')}>Volver al panel</Boton>
             </div>
 
-            <p className="editarperfil-mensaje">{mensaje}</p>
+            {mensaje && <p className="texto" style={{ margin: 0 }}>{mensaje}</p>}
 
-          </div>
+          </Tarjeta>
 
     </PanelDistribuidor>
   )

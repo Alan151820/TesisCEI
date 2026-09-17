@@ -1,0 +1,11 @@
+.privacidad-pagina {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--color-superficie);
+}
+
+.privacidad-tarjeta {
+  width: 100%;
+  max-width: 680px;
+}

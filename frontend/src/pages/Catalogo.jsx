@@ -1,12 +1,23 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useCarrito } from '../context/CarritoContext'
+import BottomNav from '../components/BottomNav'
+import Hdr from '../components/Hdr'
+import Boton from '../components/ui/Boton'
+import Campo from '../components/ui/Campo'
+import GridCards from '../components/ui/GridCards'
+import CardProducto from '../components/ui/CardProducto'
+import EsqueletoTarjetas from '../components/ui/EsqueletoTarjetas'
+import EstadoLista from '../components/ui/EstadoLista'
 import api from '../lib/axios'
-import { construirTituloProducto } from '../lib/producto'
 import './Catalogo.css'
+import Marca from '../components/Marca'
 
 function Catalogo() {
   const navigate = useNavigate()
+
+  const [productos, setProductos] = useState([])
+  const [cargando, setCargando] = useState(true)
   const token = localStorage.getItem('token')
   const { agregarProducto, totalItems } = useCarrito()
 
@@ -79,73 +90,56 @@ function Catalogo() {
         <select value={filtroCategoria} onChange={e => { setFiltroCategoria(e.target.value); aplicarFiltros({ categoria: e.target.value }) }}>
           <option value=''>Categoría</option>
           {categorias.map(c => <option key={c.id} value={c.nombre}>{c.nombre}</option>)}
-        </select>
+        </Campo>
 
-        <input
+        <Campo
+          className="catalogo-filtro-campo"
           type="text"
           placeholder="Distribuidor"
           value={filtroDistribuidor}
           onChange={e => { setFiltroDistribuidor(e.target.value); aplicarFiltros({ distribuidor: e.target.value }) }}
         />
 
-        <input
+        <Campo
+          className="catalogo-filtro-campo"
           type="number"
           placeholder="Precio mínimo"
           value={filtroPrecioMin}
           onChange={e => { setFiltroPrecioMin(e.target.value); aplicarFiltros({ precioMinimo: e.target.value }) }}
         />
 
-        <input
+        <Campo
+          className="catalogo-filtro-campo"
           type="number"
           placeholder="Precio máximo"
           value={filtroPrecioMax}
           onChange={e => { setFiltroPrecioMax(e.target.value); aplicarFiltros({ precioMaximo: e.target.value }) }}
         />
 
-        {hayFiltros && <button onClick={limpiarFiltros}>Limpiar filtros</button>}
+        {hayFiltros && <button type="button" className="link" onClick={limpiarFiltros}>Limpiar filtros</button>}
       </div>
 
       <div className="catalogo-contenido">
-        {cargando && <div className="catalogo-vacio">Cargando productos...</div>}
+        {cargando && <GridCards><EsqueletoTarjetas /></GridCards>}
 
         {!cargando && productos.length === 0 && (
-          <div className="catalogo-vacio">
+          <EstadoLista>
             {hayFiltros ? 'No se encontraron productos con los filtros aplicados.' : 'No hay productos disponibles en este momento.'}
-          </div>
+          </EstadoLista>
         )}
 
         {!cargando && productos.length > 0 && (
           <>
-            <div className="catalogo-grilla">
+            <GridCards>
               {productos.map(p => (
-                <div key={p.id} className="catalogo-tarjeta" onClick={() => navigate(`/producto/${p.id}`)}>
-                  {p.imagenUrl
-                    ? <img src={`http://localhost:3000${p.imagenUrl}`} alt={p.nombre} className="catalogo-tarjeta-imagen" />
-                    : <div className="catalogo-tarjeta-imagen-placeholder">Sin imagen</div>
-                  }
-                  <div className="catalogo-tarjeta-cuerpo">
-                    <div className="catalogo-tarjeta-categoria">{p.categoria}</div>
-                    <div className="catalogo-tarjeta-nombre">{construirTituloProducto(p)}</div>
-                    {p.descripcion && <div className="catalogo-tarjeta-descripcion">{p.descripcion}</div>}
-                    <div className="catalogo-tarjeta-pie">
-                      <div className="catalogo-tarjeta-distribuidor">{p.nombreDistribuidor}</div>
-                      <div className="catalogo-tarjeta-precio">
-                        <div>Desde ${Number(p.precioMinimo).toLocaleString('es-AR')}</div>
-                        {Number(p.precioBase) > Number(p.precioMinimo) && (
-                          <div className="catalogo-tarjeta-precio-hasta">Hasta ${Number(p.precioBase).toLocaleString('es-AR')}</div>
-                        )}
-                      </div>
-                    </div>
-                    <button
-                      className="catalogo-tarjeta-agregar"
-                      onClick={() => agregarProducto(p)}
-                    >
-                      + Agregar
-                    </button>
-                  </div>
-                </div>
+                <CardProducto
+                  key={p.id}
+                  producto={p}
+                  onClick={() => navigate(`/producto/${p.id}`)}
+                  onAgregar={agregarProducto}
+                />
               ))}
-            </div>
+            </GridCards>
             <div className="catalogo-contador">
               {productos.length} producto{productos.length !== 1 ? 's' : ''} disponible{productos.length !== 1 ? 's' : ''}
             </div>
@@ -153,29 +147,7 @@ function Catalogo() {
         )}
       </div>
 
-      <nav className="catalogo-bottom-nav">
-        <div className="catalogo-bottom-item activo">
-          <span className="catalogo-bottom-icono">◻</span>
-          <span className="catalogo-bottom-label">Catálogo</span>
-        </div>
-        <div className="catalogo-bottom-item catalogo-bottom-carrito" onClick={() => navigate('/carrito')}>
-          <span className="catalogo-bottom-icono">
-            🛒{totalItems > 0 && <span className="catalogo-bottom-badge">{totalItems}</span>}
-          </span>
-          <span className="catalogo-bottom-label">Carrito</span>
-        </div>
-        {token ? (
-          <div className="catalogo-bottom-item" onClick={() => navigate('/inicio')}>
-            <span className="catalogo-bottom-icono">⊞</span>
-            <span className="catalogo-bottom-label">Panel</span>
-          </div>
-        ) : (
-          <div className="catalogo-bottom-item" onClick={() => navigate('/login')}>
-            <span className="catalogo-bottom-icono">○</span>
-            <span className="catalogo-bottom-label">Cuenta</span>
-          </div>
-        )}
-      </nav>
+      <BottomNav variante="publico" />
 
     </div>
   )

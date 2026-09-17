@@ -399,8 +399,12 @@ class PlanReparto {
         return null
       }
 
+      // RF-046 (mismo criterio que marcarParada): solo revive a "Aceptado"
+      // los pedidos que sigan "En camino" — uno de ellos pudo haberse
+      // rechazado por otro camino (panel de pedidos) entre que se generó
+      // la lista de paradas pendientes de arriba y este UPDATE.
       await cliente.query(
-        `UPDATE pedido SET estado = 'aceptado' WHERE id = ANY($1)`,
+        `UPDATE pedido SET estado = 'aceptado' WHERE id = ANY($1) AND estado = 'en_camino'`,
         [resPendientes.rows.map(r => r.pedido_id)]
       )
 
@@ -435,7 +439,11 @@ class PlanReparto {
   // transiciones que notifican (RF-027). Devuelve 'plan_no_valido' si el
   // reparto no existe o no está "en_curso", 'parada_no_valida' si la parada
   // no existe, no pertenece a este plan o ya fue marcada (no se puede
-  // desmarcar), o 'marcado' si se aplicó.
+  // desmarcar), 'pedido_no_valido' si el pedido de la parada ya no está "En
+  // camino" (se rechazó o se avanzó a "Entregado" por otro camino — panel
+  // de pedidos — desde que se inició el reparto: marcar la parada acá
+  // encima duplicaría el movimiento de stock o resucitaría un pedido ya
+  // rechazado), o 'marcado' si se aplicó.
   static async marcarParada(planId, distribuidorId, paradaId, accion, motivo, nombreDistribuidor) {
     const cliente = await pool.connect()
     try {
@@ -460,12 +468,17 @@ class PlanReparto {
       }
       const parada = resParada.rows[0]
 
+      const resPedido = await cliente.query(
+        `SELECT id, comprador_id AS "compradorId" FROM pedido WHERE id = $1 AND estado = 'en_camino' FOR UPDATE`,
+        [parada.pedido_id]
+      )
+      if (resPedido.rows.length === 0) {
+        await cliente.query('ROLLBACK')
+        return 'pedido_no_valido'
+      }
+      const pedido = resPedido.rows[0]
+
       if (accion === 'entregado' || accion === 'rechazado') {
-        const resPedido = await cliente.query(
-          `SELECT id, comprador_id AS "compradorId" FROM pedido WHERE id = $1`,
-          [parada.pedido_id]
-        )
-        const pedido = resPedido.rows[0]
         const items = (await cliente.query(
           `SELECT producto_id AS "productoId", cantidad FROM pedido_item WHERE pedido_id = $1`,
           [pedido.id]
@@ -500,7 +513,7 @@ class PlanReparto {
           Pedido.mensajeCambioEstado(nombreDistribuidor, accion, motivo), pedido.id, cliente
         )
       } else if (accion === 'omitido') {
-        await cliente.query(`UPDATE pedido SET estado = 'aceptado' WHERE id = $1`, [parada.pedido_id])
+        await cliente.query(`UPDATE pedido SET estado = 'aceptado' WHERE id = $1`, [pedido.id])
       }
 
       await cliente.query(

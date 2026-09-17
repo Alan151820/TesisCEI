@@ -1,15 +1,27 @@
 import { useState, useEffect } from 'react'
+import { mensajeDeError } from '../../lib/errores'
 import { useNavigate } from 'react-router-dom'
 import api from '../../lib/axios'
-import { tokenValido } from '../../lib/auth'
 import ModalMapaDireccion from '../../components/ModalMapaDireccion'
 import EstadoBadge from '../../components/EstadoBadge'
 import PanelDistribuidor from '../../components/PanelDistribuidor'
+import Tabla from '../../components/ui/Tabla'
+import TablaHeader from '../../components/ui/TablaHeader'
+import TablaFila from '../../components/ui/TablaFila'
+import EsqueletoFilas from '../../components/ui/EsqueletoFilas'
+import EstadoLista from '../../components/ui/EstadoLista'
 import { ETIQUETA_ESTADO } from '../../lib/pedido'
 import './Inicio.css'
 import './MisPedidos.css'
 
 const ESTADOS_PEDIDO = ['pendiente', 'aceptado', 'en_camino', 'rechazado', 'cancelado', 'entregado']
+const COLUMNAS = [
+  'Pedido', 'Fecha', 'Comprador', 'Productos',
+  { label: 'Total', className: 'pedidos-celda--derecha' },
+  { label: 'Estado', className: 'pedidos-celda--centro' },
+  '',
+]
+const GRID = '80px 100px 150px 1fr 100px 110px 180px'
 
 function formatearFecha(isoString) {
   const d = new Date(isoString)
@@ -18,7 +30,7 @@ function formatearFecha(isoString) {
 
 function FilaPedido({ pedido: p, onVerUbicacion, navigate }) {
   return (
-    <div className="pedidos-tabla-fila pedidos-fila-clickeable" onClick={() => navigate(`/pedidos/${p.id}`)}>
+    <TablaFila className="pedidos-tabla-fila" onClick={() => navigate(`/pedidos/${p.id}`)}>
       <div className="pedidos-celda pedidos-numero">#{p.id}</div>
       <div className="pedidos-celda">{formatearFecha(p.fechaCreacion)}</div>
       <div className="pedidos-celda">{p.nombreComprador}</div>
@@ -55,23 +67,18 @@ function FilaPedido({ pedido: p, onVerUbicacion, navigate }) {
           </button>
         </div>
       </div>
-    </div>
+    </TablaFila>
   )
 }
 
 function MisPedidos() {
   const navigate = useNavigate()
 
-  // RF-029/RF-051: un único panel con todos los pedidos, en cualquier
-  // estado — ya no hay pestañas separadas "Activos"/"Historial". El orden
-  // (Pendiente, Aceptado, el resto) lo arma el backend.
   const [pedidos, setPedidos] = useState([])
   const [cargando, setCargando] = useState(true)
   const [error, setError] = useState(null)
   const [pedidoMapa, setPedidoMapa] = useState(null)
 
-  // Filtros: se aplican en el navegador sobre el panel único ya cargado —
-  // no hay paginación de por medio, no vale la pena ir y volver al server.
   const [filtroCliente, setFiltroCliente] = useState('')
   const [filtroEstado, setFiltroEstado] = useState('')
   const [filtroFechaDesde, setFiltroFechaDesde] = useState('')
@@ -101,20 +108,16 @@ function MisPedidos() {
     return true
   })
 
-  useEffect(() => { if (!tokenValido()) navigate('/login') }, [navigate])
-
   useEffect(() => {
     api.get('/api/pedidos/historial')
       .then(res => setPedidos(res.data))
-      .catch(err => setError(err.response?.data?.error || 'No fue posible completar la operación. Intente nuevamente más tarde.'))
+      .catch(err => setError(mensajeDeError(err)))
       .finally(() => setCargando(false))
   }, [])
 
   return (
-    <PanelDistribuidor tituloMobile="Pedidos">
-            <div className="panel-contenido-centrado">
-
-            <div className="panel-seccion-header">
+    <PanelDistribuidor>
+            <div className="panel-seccion-header panel-seccion-header--sub">
               <div>
                 <h1 className="panel-h1">Pedidos</h1>
                 <p className="panel-subtitulo">
@@ -185,45 +188,39 @@ function MisPedidos() {
             )}
 
             {cargando && (
-              <div className="panel-tabla-vacio">Cargando pedidos...</div>
+              <Tabla grid={GRID}>
+                <TablaHeader columnas={COLUMNAS} className="pedidos-tabla-header" />
+                <EsqueletoFilas columnas={COLUMNAS.length} />
+              </Tabla>
             )}
 
             {!cargando && error && (
-              <div className="panel-tabla-vacio pedidos-error">{error}</div>
+              <EstadoLista variante="error">{error}</EstadoLista>
             )}
 
             {!cargando && !error && pedidos.length === 0 && (
-              <div className="panel-tabla-vacio">Aún no recibiste pedidos.</div>
+              <EstadoLista>Aún no recibiste pedidos.</EstadoLista>
             )}
 
             {!cargando && !error && pedidos.length > 0 && pedidosFiltrados.length === 0 && (
-              <div className="panel-tabla-vacio">No hay pedidos que coincidan con los filtros aplicados.</div>
+              <EstadoLista>No hay pedidos que coincidan con los filtros aplicados.</EstadoLista>
             )}
 
             {!cargando && !error && pedidosFiltrados.length > 0 && (
-              <div className="panel-tabla-wrapper">
-                <div className="pedidos-tabla-header">
-                  <div>Pedido</div>
-                  <div>Fecha</div>
-                  <div>Comprador</div>
-                  <div>Productos</div>
-                  <div className="pedidos-celda--derecha">Total</div>
-                  <div className="pedidos-celda--centro">Estado</div>
-                  <div></div>
-                </div>
-
-                {pedidosFiltrados.map(p => (
-                  <FilaPedido key={p.id} pedido={p} onVerUbicacion={setPedidoMapa} navigate={navigate} />
-                ))}
+              <>
+                <Tabla grid={GRID}>
+                  <TablaHeader columnas={COLUMNAS} className="pedidos-tabla-header" />
+                  {pedidosFiltrados.map(p => (
+                    <FilaPedido key={p.id} pedido={p} onVerUbicacion={setPedidoMapa} navigate={navigate} />
+                  ))}
+                </Tabla>
 
                 <div className="panel-tabla-contador">
                   {pedidosFiltrados.length} pedido{pedidosFiltrados.length !== 1 ? 's' : ''}
                   {hayFiltros ? ` de ${pedidos.length} en total` : ' en total'}
                 </div>
-              </div>
+              </>
             )}
-
-            </div>
 
       {pedidoMapa && (
         <ModalMapaDireccion

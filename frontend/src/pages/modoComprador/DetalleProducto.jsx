@@ -1,19 +1,31 @@
 import { useState, useEffect } from 'react'
+import { mensajeDeError } from '../../lib/errores'
 import { useParams, useNavigate } from 'react-router-dom'
 import api from '../../lib/axios'
 import { useCarrito } from '../../context/CarritoContext'
+import { precioAplicable } from '../../lib/precios'
 import CampanaNotificaciones from '../../components/CampanaNotificaciones'
-import BottomNavComprador from '../../components/BottomNavComprador'
+import BottomNav from '../../components/BottomNav'
+import MenuPerfilComprador from '../../components/MenuPerfilComprador'
+import Hdr from '../../components/Hdr'
+import Boton from '../../components/ui/Boton'
+import Campo from '../../components/ui/Campo'
+import Tarjeta from '../../components/ui/Tarjeta'
+import Tabla from '../../components/ui/Tabla'
+import TablaHeader from '../../components/ui/TablaHeader'
+import TablaFila from '../../components/ui/TablaFila'
+import Miga from '../../components/ui/Miga'
+import EstadoLista from '../../components/ui/EstadoLista'
 import { construirTituloProducto } from '../../lib/producto'
+import './InicioComprador.css'
 import './DetalleProducto.css'
+import Marca from '../../components/Marca'
 
 function DetalleProducto() {
   const { id } = useParams()
   const navigate = useNavigate()
   const token = localStorage.getItem('token')
-  const nombre = localStorage.getItem('nombre') || ''
   const modoDistribuidorActivo = localStorage.getItem('modoDistribuidorActivo') === 'true'
-  const iniciales = nombre.split(' ').map(p => p[0]).join('').slice(0, 2).toUpperCase()
   const [producto, setProducto] = useState(null)
   const [mensaje, setMensaje] = useState('')
   const [cantidad, setCantidad] = useState(1)
@@ -26,17 +38,9 @@ function DetalleProducto() {
         setCantidad(1)
       })
       .catch(err => {
-        setMensaje(err.response?.data?.mensaje || 'No fue posible completar la operación. Intente nuevamente más tarde.')
+        setMensaje(mensajeDeError(err))
       })
   }, [id])
-
-  const cerrarSesion = () => {
-    localStorage.removeItem('token')
-    localStorage.removeItem('nombre')
-    localStorage.removeItem('telefono')
-    localStorage.removeItem('modoDistribuidorActivo')
-    navigate('/catalogo', { replace: true })
-  }
 
   const decrementar = () => {
     setCantidad(prev => Math.max(1, (Number(prev) || 1) - 1))
@@ -105,31 +109,28 @@ function DetalleProducto() {
       </header>
 
       <div className="detalleproducto-contenido">
-        <button className="detalleproducto-volver" onClick={() => navigate(-1)}>← Volver</button>
+        <Boton variante="ghost" onClick={() => navigate(-1)} style={{ marginBottom: 8 }}>← Volver</Boton>
+        <Miga items={[{ etiqueta: 'Catálogo' }, { etiqueta: producto.categoria }, { etiqueta: producto.nombre }]} className="detalleproducto-breadcrumb" />
 
-        <div className="detalleproducto-breadcrumb">
-          Catálogo / {producto.categoria} / <span>{producto.nombre}</span>
-        </div>
-
-        <div className="detalleproducto-tarjeta">
+        <div className="fila gap-l detalleproducto-fila">
           {producto.imagenUrl
             ? <img src={`http://localhost:3000${producto.imagenUrl}`} alt={producto.nombre} className="detalleproducto-imagen" />
-            : <div className="detalleproducto-imagen-placeholder">[foto de producto]</div>
+            : <div className="placeholder-img detalleproducto-imagen">imagen</div>
           }
 
-          <div className="detalleproducto-info">
-            <div className="detalleproducto-info-categoria">
+          <div className="col gap-s flex1">
+            <span className="texto-mudo">
               {producto.categoria} ·{' '}
               <button
-                className="detalleproducto-info-distribuidor"
+                className="link"
                 onClick={() => navigate(`/perfilDistribuidor/${producto.distribuidorId}`, { replace: true })}
               >
                 {producto.nombreDistribuidor}
               </button>
-            </div>
+            </span>
 
-            <h1 className="detalleproducto-nombre">{titulo}</h1>
-            <p className="detalleproducto-descripcion">{producto.descripcion}</p>
+            <div className="titulo1">{titulo}</div>
+            <p className="texto detalleproducto-descripcion">{producto.descripcion}</p>
 
             {producto.tarifas.length > 0 && (
               <div className="detalleproducto-rango">
@@ -143,35 +144,35 @@ function DetalleProducto() {
               <div className="detalleproducto-sin-stock">Sin stock disponible</div>
             )}
 
-            <h2 className="detalleproducto-tarifas-titulo">Precios por volumen</h2>
+            <div className="titulo1">Precios por volumen</div>
             {producto.tarifas.length === 0 ? (
-              <p className="detalleproducto-tarifas-vacio">Este producto no tiene tarifas disponibles actualmente.</p>
+              <EstadoLista className="detalleproducto-tarifas-tabla">Este producto no tiene tarifas disponibles actualmente.</EstadoLista>
             ) : (
-              <table className="detalleproducto-tarifas-tabla">
-                <thead>
-                  <tr>
-                    <th>Cantidad mínima</th>
-                    <th>Precio unitario</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {producto.tarifas.map((t, i) => (
-                    <tr key={i}>
-                      <td>{t.cantidadMinima} u.</td>
-                      <td>${Number(t.precioVenta).toLocaleString('es-AR')}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+              <Tabla grid="1fr 1fr" className="detalleproducto-tarifas-tabla">
+                <TablaHeader columnas={['Cantidad mínima', 'Precio unitario']} />
+                {producto.tarifas.map((t, i) => (
+                  <TablaFila key={i}>
+                    <div>{t.cantidadMinima} u.</div>
+                    <div>${Number(t.precioVenta).toLocaleString('es-AR')}</div>
+                  </TablaFila>
+                ))}
+              </Tabla>
             )}
 
-            <div className="detalleproducto-carrito-caja">
-              <div className="detalleproducto-carrito-titulo">Agregar al carrito</div>
+            <Tarjeta className="col gap-s detalleproducto-carrito-caja">
+              <div className="titulo1">Agregar al carrito</div>
               {producto.tarifas.length > 0 && (
-                <div className="detalleproducto-carrito-cantidad-fila">
-                  <div className="detalleproducto-carrito-stepper">
-                    <button className="detalleproducto-stepper-btn" onClick={decrementar}>−</button>
-                    <input
+                <>
+                  <div className="fila gap-s">
+                    <Boton
+                      variante="outline"
+                      className="detalleproducto-stepper-btn"
+                      onClick={decrementar}
+                      aria-label="Restar unidad"
+                    >
+                      −
+                    </Boton>
+                    <Campo
                       type="number"
                       className="detalleproducto-stepper-valor"
                       min="1"
@@ -179,32 +180,37 @@ function DetalleProducto() {
                       onChange={handleCantidadChange}
                       onBlur={handleCantidadBlur}
                     />
-                    <button className="detalleproducto-stepper-btn" onClick={incrementar}>+</button>
+                    <Boton
+                      variante="outline"
+                      className="detalleproducto-stepper-btn"
+                      onClick={incrementar}
+                      aria-label="Sumar unidad"
+                    >
+                      +
+                    </Boton>
+                    <span className="texto-mudo">unidades</span>
                   </div>
                   <div className="detalleproducto-carrito-cantidad-info">
-                    unidades · <strong>${Number(producto.tarifas[0].precioVenta).toLocaleString('es-AR')} c/u</strong>
+                    ${precioAplicable(producto.tarifas, cantidad).toLocaleString('es-AR')} c/u
                   </div>
-                </div>
+                </>
               )}
               {token ? (
-                <button
-                  className="detalleproducto-carrito-boton"
-                  onClick={() => agregarProducto({ ...producto, precioMinimo }, Number(cantidad) || 1)}
-                >
+                <Boton onClick={() => agregarProducto(producto, Number(cantidad) || 1)}>
                   Agregar al carrito
-                </button>
+                </Boton>
               ) : (
                 <>
-                  <button className="detalleproducto-carrito-boton" disabled>Agregar al carrito</button>
+                  <Boton disabled>Agregar al carrito</Boton>
                   <div className="detalleproducto-carrito-nota">Iniciá sesión para comprar</div>
                 </>
               )}
-            </div>
+            </Tarjeta>
           </div>
         </div>
       </div>
 
-      {token && <BottomNavComprador />}
+      {token && <BottomNav />}
 
     </div>
   )

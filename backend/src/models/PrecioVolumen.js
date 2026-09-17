@@ -57,12 +57,26 @@ class PrecioVolumen {
   }
 
   static async crear(productoId, cantidadMinima, precioVenta, precioCosto, cliente = pool) {
-    const res = await cliente.query(
-      `INSERT INTO precio_volumen (producto_id, cantidad_minima, precio_venta, precio_costo)
-       VALUES ($1, $2, $3, $4) RETURNING *`,
-      [productoId, cantidadMinima, precioVenta, precioCosto ?? null]
-    )
-    return new PrecioVolumen(res.rows[0])
+    try {
+      const res = await cliente.query(
+        `INSERT INTO precio_volumen (producto_id, cantidad_minima, precio_venta, precio_costo)
+         VALUES ($1, $2, $3, $4) RETURNING *`,
+        [productoId, cantidadMinima, precioVenta, precioCosto ?? null]
+      )
+      return new PrecioVolumen(res.rows[0])
+    } catch (error) {
+      // RF-015: "Ya existe un precio con esa cantidad mínima." — la garantía
+      // real es la constraint UNIQUE (producto_id, cantidad_minima) de la
+      // base (código 23505), no una verificación previa en JS que dejaría
+      // una ventana de carrera entre el SELECT y el INSERT.
+      if (error.code === '23505') {
+        const e = new Error()
+        e.status = 400
+        e.mensaje = 'Ya existe un precio con esa cantidad mínima.'
+        throw e
+      }
+      throw error
+    }
   }
 
   static async actualizarPrecioCostoBase(productoId, precioCosto) {
@@ -73,11 +87,25 @@ class PrecioVolumen {
   }
 
   async editar(cantidadMinima, precioVenta, precioCosto) {
-    const res = await pool.query(
-      `UPDATE precio_volumen SET cantidad_minima = $1, precio_venta = $2, precio_costo = $3
-       WHERE id = $4 AND producto_id = $5 RETURNING *`,
-      [cantidadMinima, precioVenta, precioCosto ?? null, this.id, this.productoId]
-    )
+    let res
+    try {
+      res = await pool.query(
+        `UPDATE precio_volumen SET cantidad_minima = $1, precio_venta = $2, precio_costo = $3
+         WHERE id = $4 AND producto_id = $5 RETURNING *`,
+        [cantidadMinima, precioVenta, precioCosto ?? null, this.id, this.productoId]
+      )
+    } catch (error) {
+      // RF-015: mismo criterio que crear() — incluye el caso de mover este
+      // tramo a una cantidad_minima que ya usa otro precio del producto
+      // (por ejemplo, a 1, chocando con el precio base).
+      if (error.code === '23505') {
+        const e = new Error()
+        e.status = 400
+        e.mensaje = 'Ya existe un precio con esa cantidad mínima.'
+        throw e
+      }
+      throw error
+    }
     if (res.rows.length === 0) {
       const e = new Error()
       e.status = 404

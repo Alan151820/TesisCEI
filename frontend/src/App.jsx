@@ -1,6 +1,7 @@
 import { Routes, Route } from 'react-router-dom'
 import { CarritoProvider } from './context/CarritoContext'
-import { TemaProvider } from './context/TemaContext'
+import { RutaProtegida, RutaDistribuidor } from './components/RutaProtegida'
+import MarcaSprite from './components/MarcaSprite'
 import Registro from './pages/autenticacion/Registro'
 import Verificar from './pages/autenticacion/Verificar'
 import Login from './pages/autenticacion/Login'
@@ -22,17 +23,18 @@ import Reparto from './pages/modoDistribuidor/Reparto'
 import CrearReparto from './pages/modoDistribuidor/CrearReparto'
 import DetalleReparto from './pages/modoDistribuidor/DetalleReparto'
 import Catalogo from './pages/Catalogo'
+import Privacidad from './pages/Privacidad'
 import DetalleProducto from './pages/modoComprador/DetalleProducto'
 import DetallePedido from './pages/modoComprador/DetallePedido'
 import DetallePedidoDistribuidor from './pages/modoDistribuidor/DetallePedido'
-import ProponerSustituto from './pages/modoDistribuidor/ProponerSustituto'
 import Reportes from './pages/modoDistribuidor/Reportes'
 import Rentabilidad from './pages/modoDistribuidor/Rentabilidad'
 
 
 function App() {
   return (
-    <TemaProvider>
+    <>
+      <MarcaSprite />
       <CarritoProvider>
         <Routes>
           <Route path='/registro' element={<Registro />} />
@@ -41,31 +43,37 @@ function App() {
           <Route path='/recuperarContrasena' element={<RecuperarContrasena />} />
           <Route path='/verificarRecuperacion' element={<VerificarRecuperacion />} />
           <Route path='/nuevaContrasena' element={<NuevaContrasena />} />
-          <Route path='/inicio' element={<Inicio />} />
-          <Route path='/producto/nuevo' element={<FichaProducto />} />
-          <Route path='/producto/editar/:id' element={<EditarProducto />} />
-          <Route path='/inicioComprador' element={<InicioComprador />} />
           <Route path='/perfilDistribuidor/:id' element={<PerfilDistribuidor />} />
           <Route path='/carrito' element={<Carrito />} />
-          <Route path='/confirmar-pedido' element={<ConfirmacionPedido />} />
-          <Route path='/configurarPerfil' element={<ConfigurarPerfil />} />
-          <Route path='/editarPerfil' element={<EditarPerfil />} />
-          <Route path='/pedidos' element={<MisPedidos />} />
-          <Route path='/reparto' element={<Reparto />} />
-          <Route path='/reparto/nuevo' element={<CrearReparto />} />
-          <Route path='/reparto/:id' element={<DetalleReparto />} />
-          <Route path='/pedidos/:id' element={<DetallePedidoDistribuidor />} />
-          <Route path='/pedidos/:id/sustituir' element={<ProponerSustituto />} />
-          <Route path='/reportes' element={<Reportes />} />
-          <Route path='/reportes/rentabilidad' element={<Rentabilidad />} />
-          <Route path='/misPedidos' element={<MisPedidosComprador />} />
-          <Route path='/pedido/:id' element={<DetallePedido />} />
+          <Route path='/privacidad' element={<Privacidad />} />
           <Route path='/catalogo' element={<Catalogo />} />
           <Route path='/' element={<Catalogo />} />
           <Route path='/producto/:id' element={<DetalleProducto />} />
+
+          <Route element={<RutaProtegida />}>
+            <Route path='/inicioComprador' element={<InicioComprador />} />
+            <Route path='/confirmar-pedido' element={<ConfirmacionPedido />} />
+            <Route path='/configurarPerfil' element={<ConfigurarPerfil />} />
+            <Route path='/misPedidos' element={<MisPedidosComprador />} />
+            <Route path='/pedido/:id' element={<DetallePedido />} />
+          </Route>
+
+          <Route element={<RutaDistribuidor />}>
+            <Route path='/inicio' element={<Inicio />} />
+            <Route path='/producto/nuevo' element={<FichaProducto />} />
+            <Route path='/producto/editar/:id' element={<EditarProducto />} />
+            <Route path='/editarPerfil' element={<EditarPerfil />} />
+            <Route path='/pedidos' element={<MisPedidos />} />
+            <Route path='/pedidos/:id' element={<DetallePedidoDistribuidor />} />
+            <Route path='/reparto' element={<Reparto />} />
+            <Route path='/reparto/nuevo' element={<CrearReparto />} />
+            <Route path='/reparto/:id' element={<DetalleReparto />} />
+            <Route path='/reportes' element={<Reportes />} />
+            <Route path='/reportes/rentabilidad' element={<Rentabilidad />} />
+          </Route>
         </Routes>
       </CarritoProvider>
-    </TemaProvider>
+    </>
   )
 }
 

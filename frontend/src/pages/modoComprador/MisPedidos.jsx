@@ -1,14 +1,30 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
+import { mensajeDeError } from '../../lib/errores'
 import { useNavigate } from 'react-router-dom'
 import api from '../../lib/axios'
-import { tokenValido, rutaInicio } from '../../lib/auth'
+import { rutaInicio } from '../../lib/auth'
 import { useCarrito } from '../../context/CarritoContext'
 import CampanaNotificaciones from '../../components/CampanaNotificaciones'
-import BottomNavComprador from '../../components/BottomNavComprador'
+import BottomNav from '../../components/BottomNav'
 import EstadoBadge from '../../components/EstadoBadge'
-import ToggleTema from '../../components/ToggleTema'
+import MenuPerfilComprador from '../../components/MenuPerfilComprador'
+import Hdr from '../../components/Hdr'
+import Boton from '../../components/ui/Boton'
+import Tabla from '../../components/ui/Tabla'
+import TablaHeader from '../../components/ui/TablaHeader'
+import TablaFila from '../../components/ui/TablaFila'
+import EsqueletoFilas from '../../components/ui/EsqueletoFilas'
+import EstadoLista from '../../components/ui/EstadoLista'
 import './InicioComprador.css'
 import './MisPedidos.css'
+import Marca from '../../components/Marca'
+
+const COLUMNAS = [
+  'Pedido', 'Fecha', 'Imagen', 'Producto', 'Distribuidor',
+  { label: 'Total', className: 'mispedidos-celda--derecha' },
+  { label: 'Estado', className: 'mispedidos-celda--centro' },
+]
+const GRID = '70px 100px 72px minmax(200px,1fr) 160px 100px 120px'
 
 function formatearFecha(isoString) {
   const d = new Date(isoString)
@@ -17,23 +33,8 @@ function formatearFecha(isoString) {
 
 function MisPedidos() {
   const navigate = useNavigate()
-  const nombre = localStorage.getItem('nombre') || ''
-  const iniciales = nombre.split(' ').map(p => p[0]).join('').slice(0, 2).toUpperCase()
   const modoDistribuidorActivo = localStorage.getItem('modoDistribuidorActivo') === 'true'
   const { totalItems } = useCarrito()
-  const [menuPerfil, setMenuPerfil] = useState(false)
-  const perfilRef = useRef(null)
-
-  useEffect(() => {
-    if (!tokenValido()) navigate('/login')
-  }, [navigate])
-
-  useEffect(() => {
-    if (!menuPerfil) return
-    const cerrar = (e) => { if (!perfilRef.current?.contains(e.target)) setMenuPerfil(false) }
-    document.addEventListener('mousedown', cerrar)
-    return () => document.removeEventListener('mousedown', cerrar)
-  }, [menuPerfil])
 
   const [pedidos, setPedidos] = useState([])
   const [cargando, setCargando] = useState(true)
@@ -42,54 +43,22 @@ function MisPedidos() {
   useEffect(() => {
     api.get('/api/pedidos/mis-pedidos')
       .then(res => setPedidos(res.data))
-      .catch(err => setError(err.response?.data?.error || 'No fue posible completar la operación. Intente nuevamente más tarde.'))
+      .catch(err => setError(mensajeDeError(err)))
       .finally(() => setCargando(false))
   }, [])
 
-  const handleCerrarSesion = () => {
-    localStorage.removeItem('token')
-    localStorage.removeItem('nombre')
-    localStorage.removeItem('telefono')
-    localStorage.removeItem('modoDistribuidorActivo')
-    window.dispatchEvent(new Event('auth-changed'))
-    navigate('/catalogo')
-  }
 
   return (
     <div className="mispedidos-pagina">
 
-      <header className="comprador-encabezado">
-        <div className="comprador-logo" onClick={() => navigate(rutaInicio())}>MarketDist</div>
-        <div className="comprador-buscador">
-          <span className="comprador-buscador-icono">⌕</span>
-          <input className="comprador-buscador-input" type="text" placeholder="Buscar productos…" />
-        </div>
-        <div className="comprador-acciones">
-          <span className="comprador-nav-link" onClick={() => navigate('/misPedidos')}>Mis pedidos</span>
-          <span className="comprador-nav-link" onClick={() => navigate(modoDistribuidorActivo ? '/inicio' : '/configurarPerfil')}>Distribuidora</span>
-          <CampanaNotificaciones rutaDestino="/misPedidos" rutaDetalle="/pedido" />
-          <button className="comprador-btn-carrito" onClick={() => navigate('/carrito')}>
-            🛒{totalItems > 0 && <span className="comprador-carrito-badge">{totalItems}</span>}
-          </button>
-          <div className="comprador-perfil-wrapper" ref={perfilRef}>
-            <button className="comprador-perfil-trigger" onClick={() => setMenuPerfil(v => !v)}>
-              <div className="comprador-avatar">{iniciales}</div>
-              <span className="comprador-nombre">{nombre}</span>
-              <span className="comprador-perfil-flecha">{menuPerfil ? '▴' : '▾'}</span>
-            </button>
-            {menuPerfil && (
-              <div className="comprador-menu-desplegable">
-                <div className="comprador-menu-item comprador-menu-item--mobile" onClick={() => { setMenuPerfil(false); navigate('/misPedidos') }}>Mis pedidos</div>
-                <div className="comprador-menu-item comprador-menu-item--mobile" onClick={() => { setMenuPerfil(false); navigate(modoDistribuidorActivo ? '/inicio' : '/configurarPerfil') }}>Distribuidora</div>
-                <ToggleTema />
-                <div className="comprador-menu-item" onClick={handleCerrarSesion}>Cerrar sesión</div>
-              </div>
-            )}
-          </div>
-        </div>
-      </header>
+      <Hdr logo={<span className="hdr-logo" onClick={() => navigate(rutaInicio())}><Marca /></span>} buscador>
+        <span className="link comprador-nav-link" onClick={() => navigate('/misPedidos')}>Mis pedidos</span>
+        <span className="link comprador-nav-link" onClick={() => navigate(modoDistribuidorActivo ? '/inicio' : '/configurarPerfil')}>Distribuidora</span>
+        <CampanaNotificaciones rutaDestino="/misPedidos" rutaDetalle="/pedido" />
+        <Boton variante="icono" className="hdr-btn-carrito" badge={totalItems} onClick={() => navigate('/carrito')} aria-label="Carrito">🛒</Boton>
+        <MenuPerfilComprador />
+      </Hdr>
 
-      {/* Contenido */}
       <main className="mispedidos-main">
 
         <div className="mispedidos-encabezado">
@@ -98,32 +67,26 @@ function MisPedidos() {
         </div>
 
         {cargando && (
-          <div className="mispedidos-vacio">Cargando pedidos...</div>
+          <Tabla grid={GRID}>
+            <TablaHeader columnas={COLUMNAS} />
+            <EsqueletoFilas columnas={COLUMNAS.length} />
+          </Tabla>
         )}
 
         {!cargando && error && (
-          <div className="mispedidos-vacio mispedidos-error">{error}</div>
+          <EstadoLista variante="error">{error}</EstadoLista>
         )}
 
         {!cargando && !error && pedidos.length === 0 && (
-          <div className="mispedidos-vacio">Aún no realizaste pedidos.</div>
+          <EstadoLista>Aún no realizaste pedidos.</EstadoLista>
         )}
 
         {!cargando && !error && pedidos.length > 0 && (
           <>
-            {/* Tabla desktop */}
-            <div className="mispedidos-tabla">
-              <div className="mispedidos-tabla-header">
-                <div>Pedido</div>
-                <div>Fecha</div>
-                <div>Imagen</div>
-                <div>Producto</div>
-                <div>Distribuidor</div>
-                <div>Total</div>
-                <div>Estado</div>
-              </div>
+            <Tabla className="mispedidos-tabla" grid={GRID}>
+              <TablaHeader columnas={COLUMNAS} />
               {pedidos.map(p => (
-                <div key={p.id} className="mispedidos-tabla-fila mispedidos-fila-clickeable" onClick={() => navigate(`/pedido/${p.id}`)}>
+                <TablaFila key={p.id} onClick={() => navigate(`/pedido/${p.id}`)}>
                   <div className="mispedidos-celda mispedidos-celda-id">#{p.id}</div>
                   <div className="mispedidos-celda">{formatearFecha(p.fechaCreacion)}</div>
                   <div className="mispedidos-celda mispedidos-celda-col">
@@ -165,15 +128,14 @@ function MisPedidos() {
                   <div className="mispedidos-celda mispedidos-celda-col">
                     <div>{p.nombreDistribuidor}</div>
                   </div>
-                  <div className="mispedidos-celda">${Number(p.total).toLocaleString('es-AR')}</div>
-                  <div className="mispedidos-celda">
+                  <div className="mispedidos-celda mispedidos-celda--derecha">${Number(p.total).toLocaleString('es-AR')}</div>
+                  <div className="mispedidos-celda mispedidos-celda--centro">
                     <EstadoBadge estado={p.estado} />
                   </div>
-                </div>
+                </TablaFila>
               ))}
-            </div>
+            </Tabla>
 
-            {/* Cards mobile */}
             <div className="mispedidos-cards">
               {pedidos.map(p => (
                 <div key={p.id} className="mispedidos-card mispedidos-fila-clickeable" onClick={() => navigate(`/pedido/${p.id}`)}>
@@ -232,8 +194,7 @@ function MisPedidos() {
 
       </main>
 
-      {/* Bottom nav mobile */}
-      <BottomNavComprador />
+      <BottomNav />
 
     </div>
   )

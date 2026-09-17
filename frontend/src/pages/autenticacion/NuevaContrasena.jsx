@@ -1,7 +1,16 @@
 import { useState } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import api from '../../lib/axios'
+import { mensajeDeError } from '../../lib/errores'
+import Hdr from '../../components/Hdr'
+import Tarjeta from '../../components/ui/Tarjeta'
+import Campo from '../../components/ui/Campo'
+import Boton from '../../components/ui/Boton'
+import Stepper from '../../components/ui/Stepper'
 import './NuevaContrasena.css'
+import Marca from '../../components/Marca'
+
+const PASOS = ['Teléfono', 'Código SMS', 'Nueva contraseña']
 
 function NuevaContrasena() {
   const [contrasena, setContrasena] = useState('')
@@ -21,69 +30,48 @@ function NuevaContrasena() {
       setMensaje(res.data.mensaje)
       navigate('/login')
     } catch (error) {
-      setMensaje(error.response.data.mensaje)
+      setMensaje(mensajeDeError(error))
     }
   }
 
   return (
     <div className="nuevacontrasena-pagina">
-      <header className="nuevacontrasena-encabezado">
-        <span className="nuevacontrasena-logo">MarketPlace</span>
-      </header>
+      <Hdr logo={<span className="hdr-logo" onClick={() => navigate('/')}><Marca /></span>} />
 
-      <main className="nuevacontrasena-contenido">
-        <div className="nuevacontrasena-tarjeta">
-          <h1 className="nuevacontrasena-titulo">Nueva contraseña</h1>
-          <p className="nuevacontrasena-subtitulo">Elegí una nueva contraseña para tu cuenta.</p>
+      <div className="panel-centrado">
+        <Tarjeta as="main" className="auth-card col gap-m">
+          <div className="titulo1">Nueva contraseña</div>
+          <p className="texto-mudo">Elegí una nueva contraseña para tu cuenta.</p>
 
-          <div className="nuevacontrasena-stepper">
-            <div className="nuevacontrasena-paso nuevacontrasena-paso-activo">
-              <span className="nuevacontrasena-paso-numero">1</span>
-              <span className="nuevacontrasena-paso-texto">Teléfono</span>
-            </div>
-            <div className="nuevacontrasena-paso nuevacontrasena-paso-activo">
-              <span className="nuevacontrasena-paso-numero">2</span>
-              <span className="nuevacontrasena-paso-texto">Código SMS</span>
-            </div>
-            <div className="nuevacontrasena-paso nuevacontrasena-paso-activo">
-              <span className="nuevacontrasena-paso-numero">3</span>
-              <span className="nuevacontrasena-paso-texto">Nueva contraseña</span>
-            </div>
-          </div>
+          <Stepper pasos={PASOS} pasoActivo={3} />
 
-          <div className="nuevacontrasena-campo">
-            <label className="nuevacontrasena-etiqueta">Nueva contraseña</label>
-            <input
-              className="nuevacontrasena-input"
+          <div className="col gap-s">
+            <span className="texto">Nueva contraseña</span>
+            <Campo
               type="password"
               placeholder="Nueva contraseña"
               value={contrasena}
-              onChange={e => setContrasena(e.target.value)}
+              onChange={(e) => setContrasena(e.target.value)}
             />
           </div>
 
-          <div className="nuevacontrasena-campo">
-            <label className="nuevacontrasena-etiqueta">Confirmar contraseña</label>
-            <input
-              className="nuevacontrasena-input"
+          <div className="col gap-s">
+            <span className="texto">Confirmar contraseña</span>
+            <Campo
               type="password"
               placeholder="Confirmar contraseña"
               value={confirmar}
-              onChange={e => setConfirmar(e.target.value)}
+              onChange={(e) => setConfirmar(e.target.value)}
             />
           </div>
 
-          <button
-            type="button"
-            className="nuevacontrasena-boton"
-            onClick={handleNuevaContrasena}
-          >
+          <Boton variante="fill" style={{ width: '100%' }} onClick={handleNuevaContrasena}>
             Guardar
-          </button>
+          </Boton>
 
-          {mensaje && <p className="nuevacontrasena-mensaje-error">{mensaje}</p>}
-        </div>
-      </main>
+          {mensaje && <p className="texto" style={{ color: 'var(--color-error)', textAlign: 'center', margin: 0 }}>{mensaje}</p>}
+        </Tarjeta>
+      </div>
     </div>
   )
 }

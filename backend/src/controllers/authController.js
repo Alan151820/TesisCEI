@@ -1,9 +1,15 @@
 import Usuario from '../models/usuario.js'
 
+// RNF-010 (Ley 18.331): validación de forma antes de tocar el servicio —
+// la garantía real es la constraint CHECK de la tabla usuario, esto es
+// solo para devolver un mensaje rápido sin llegar a golpear la base.
 const registro = async (req, res) => {
   try {
-    const { nombre, telefono, contrasena } = req.body
-    const codigo = await Usuario.registrarCuenta(nombre, telefono, contrasena)
+    const { nombre, telefono, contrasena, consentimientoDatosOtorgado } = req.body
+    if (!consentimientoDatosOtorgado) {
+      return res.status(400).json({ mensaje: 'Debés aceptar el tratamiento de datos personales para continuar.' })
+    }
+    const codigo = await Usuario.registrarCuenta(nombre, telefono, contrasena, consentimientoDatosOtorgado)
     res.json({ mensaje: 'Código enviado por SMS. Ingresalo para activar tu cuenta.', codigo_dev: codigo })
   } catch (error) {
     res.status(400).json({ mensaje: error.message })

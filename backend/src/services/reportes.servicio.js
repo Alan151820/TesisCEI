@@ -1,6 +1,7 @@
 import Pedido from '../models/Pedido.js'
 import Producto from '../models/Producto.js'
 import PrecioVolumen from '../models/PrecioVolumen.js'
+import Distribuidor from '../models/Distribuidor.js'
 
 const LIMITE_RANKING_PRODUCTOS = 5
 
@@ -31,7 +32,14 @@ function calcularRangoPeriodo(periodo) {
 
 // RF-039/RF-041: KPIs de rendimiento (total facturado, pedidos entregados) y
 // ranking de productos más/menos vendidos, del período elegido.
+// RNF-005: sin perfil de distribuidor no hay reportes que calcular — antes
+// devolvía todo en cero a cualquier usuario autenticado.
 async function generarReporteRendimiento(usuarioDistribuidorId, periodo) {
+  const distribuidor = await Distribuidor.obtenerPorUsuarioId(usuarioDistribuidorId)
+  if (!distribuidor) {
+    throw Object.assign(new Error('No tenés un perfil de distribuidor configurado.'), { status: 404 })
+  }
+
   const { inicio, fin } = calcularRangoPeriodo(periodo)
 
   const { totalFacturado, cantidadPedidosEntregados } =
@@ -50,6 +58,10 @@ async function generarReporteRendimiento(usuarioDistribuidorId, periodo) {
 
 // RF-040: rentabilidad por tramo de precio por volumen.
 async function calcularRentabilidadPorPrecioVolumen(usuarioDistribuidorId) {
+  const distribuidor = await Distribuidor.obtenerPorUsuarioId(usuarioDistribuidorId)
+  if (!distribuidor) {
+    throw Object.assign(new Error('No tenés un perfil de distribuidor configurado.'), { status: 404 })
+  }
   return PrecioVolumen.listarConRentabilidadPorDistribuidor(usuarioDistribuidorId)
 }
 

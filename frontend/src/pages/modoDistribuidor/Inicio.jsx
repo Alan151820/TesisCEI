@@ -1,9 +1,17 @@
 import { useState, useEffect } from 'react'
+import { mensajeDeError } from '../../lib/errores'
 import { useNavigate } from 'react-router-dom'
 import api from '../../lib/axios'
-import { tokenValido } from '../../lib/auth'
 import PanelDistribuidor from '../../components/PanelDistribuidor'
+import Tabla from '../../components/ui/Tabla'
+import TablaHeader from '../../components/ui/TablaHeader'
+import TablaFila from '../../components/ui/TablaFila'
+import EsqueletoFilas from '../../components/ui/EsqueletoFilas'
+import EstadoLista from '../../components/ui/EstadoLista'
 import './Inicio.css'
+
+const COLUMNAS = ['', 'Producto', 'Categoría', 'Stock disp.', 'Stock res.', { label: 'Estado', className: 'panel-tabla-celda--centro' }, 'Acciones']
+const GRID = '52px 1fr 140px 120px 120px 120px 180px'
 
 function Inicio() {
   const navigate = useNavigate()
@@ -12,24 +20,22 @@ function Inicio() {
   const [cargando, setCargando] = useState(true)
   const [errorVisibilidad, setErrorVisibilidad] = useState({})
   const [categorias, setCategorias] = useState([])
+  const [busqueda, setBusqueda] = useState('')
   const [filtroCategoria, setFiltroCategoria] = useState('')
   const [filtroVisibilidad, setFiltroVisibilidad] = useState('')
   const [filtroStock, setFiltroStock] = useState('')
 
-  // --- Descuento total del catálogo (reemplaza al descuento por producto
-  // individual que vivía en la ficha de edición) ---
   const [descuentoAbierto, setDescuentoAbierto] = useState(false)
   const [descuentoPct, setDescuentoPct] = useState('')
   const [aplicandoDescuento, setAplicandoDescuento] = useState(false)
   const [errorDescuento, setErrorDescuento] = useState('')
   const [mensajeDescuento, setMensajeDescuento] = useState('')
 
-  useEffect(() => { if (!tokenValido()) navigate('/login') }, [navigate])
-
-  const cargarProductos = async (categoria = '', visibilidad = '', stock = '') => {
+  const cargarProductos = async (nombre = '', categoria = '', visibilidad = '', stock = '') => {
     setCargando(true)
     try {
       const params = {}
+      if (nombre) params.nombre = nombre
       if (categoria) params.categoria = categoria
       if (visibilidad) params.visibilidad = visibilidad
       if (stock) params.stock = stock
@@ -49,22 +55,28 @@ function Inicio() {
       .catch(() => {})
   }, [])
 
+  const handleBuscar = (valor) => {
+    setBusqueda(valor)
+    cargarProductos(valor, filtroCategoria, filtroVisibilidad, filtroStock)
+  }
+
   const filtrarPorCategoria = (e) => {
     setFiltroCategoria(e.target.value)
-    cargarProductos(e.target.value, filtroVisibilidad, filtroStock)
+    cargarProductos(busqueda, e.target.value, filtroVisibilidad, filtroStock)
   }
 
   const filtrarPorVisibilidad = (e) => {
     setFiltroVisibilidad(e.target.value)
-    cargarProductos(filtroCategoria, e.target.value, filtroStock)
+    cargarProductos(busqueda, filtroCategoria, e.target.value, filtroStock)
   }
 
   const filtrarPorStock = (e) => {
     setFiltroStock(e.target.value)
-    cargarProductos(filtroCategoria, filtroVisibilidad, e.target.value)
+    cargarProductos(busqueda, filtroCategoria, filtroVisibilidad, e.target.value)
   }
 
   const limpiarFiltros = () => {
+    setBusqueda('')
     setFiltroCategoria('')
     setFiltroVisibilidad('')
     setFiltroStock('')
@@ -85,7 +97,7 @@ function Inicio() {
         )
       )
     } catch (err) {
-      const mensaje = err.response?.data?.error || 'No fue posible completar la operación. Intente nuevamente más tarde.'
+      const mensaje = mensajeDeError(err)
       setErrorVisibilidad(prev => ({ ...prev, [productoId]: mensaje }))
     }
   }
@@ -97,9 +109,6 @@ function Inicio() {
     setMensajeDescuento('')
   }
 
-  // El descuento se aplica a los mismos productos que se ven en pantalla
-  // (respeta categoría/visibilidad/stock filtrados) — mismo criterio de
-  // filtrado que usa la lista, resuelto en el backend en una sola consulta.
   const handleAplicarDescuento = async () => {
     setErrorDescuento('')
     setMensajeDescuento('')
@@ -122,9 +131,9 @@ function Inicio() {
       })
       setMensajeDescuento(res.data.mensaje)
       setDescuentoPct('')
-      await cargarProductos(filtroCategoria, filtroVisibilidad, filtroStock)
+      await cargarProductos(busqueda, filtroCategoria, filtroVisibilidad, filtroStock)
     } catch (err) {
-      setErrorDescuento(err.response?.data?.error || 'No fue posible completar la operación. Intente nuevamente más tarde.')
+      setErrorDescuento(mensajeDeError(err))
     } finally {
       setAplicandoDescuento(false)
     }
@@ -136,10 +145,10 @@ function Inicio() {
 
   return (
     <PanelDistribuidor
-      tituloMobile="Mis productos"
-      accionMobile={<button className="panel-mobile-nuevo" onClick={() => navigate('/producto/nuevo')}>+</button>}
+      buscadorValor={busqueda}
+      onBuscadorChange={handleBuscar}
     >
-          <div className="panel-seccion-header">
+          <div className="panel-seccion-header panel-seccion-header--sub">
             <div>
               <h1 className="panel-h1">Mis productos</h1>
               <p className="panel-subtitulo">Gestioná el catálogo de tu distribuidora.</p>
@@ -192,7 +201,7 @@ function Inicio() {
                   onChange={e => setDescuentoPct(e.target.value)}
                 />
                 <span className="panel-descuento-ayuda">
-                  % sobre {productos.length} producto{productos.length !== 1 ? 's' : ''} {filtroCategoria || filtroVisibilidad || filtroStock ? 'filtrado' + (productos.length !== 1 ? 's' : '') : 'del catálogo'}
+                  % sobre {productos.length} producto{productos.length !== 1 ? 's' : ''} {busqueda || filtroCategoria || filtroVisibilidad || filtroStock ? 'filtrado' + (productos.length !== 1 ? 's' : '') : 'del catálogo'}
                 </span>
                 <button className="panel-btn-nuevo" onClick={handleAplicarDescuento} disabled={aplicandoDescuento}>
                   {aplicandoDescuento ? 'Aplicando…' : 'Aplicar'}
@@ -226,36 +235,28 @@ function Inicio() {
             </div>
           )}
 
-          <div className="panel-tabla-wrapper">
-            <div className="panel-tabla-header">
-              <div></div>
-              <div>Producto</div>
-              <div>Categoría</div>
-              <div>Stock disp.</div>
-              <div>Stock res.</div>
-              <div>Estado</div>
-              <div>Acciones</div>
-            </div>
+          <Tabla grid={GRID} className="panel-tabla-reflow">
+            <TablaHeader columnas={COLUMNAS} className="panel-tabla-header" />
 
             {cargando && (
-              <div className="panel-tabla-vacio">Cargando productos...</div>
+              <EsqueletoFilas columnas={COLUMNAS.length} />
             )}
 
             {!cargando && productos.length === 0 && (
-              <div className="panel-tabla-vacio">
-                {filtroCategoria || filtroVisibilidad || filtroStock
+              <EstadoLista>
+                {busqueda || filtroCategoria || filtroVisibilidad || filtroStock
                   ? 'No hay productos que coincidan con los filtros aplicados.'
                   : <>Aún no tenés productos. Creá el primero con el botón{' '}
                     <span className="panel-tabla-vacio-link" onClick={() => navigate('/producto/nuevo')}>
                       + Nuevo producto
                     </span>.</>
                 }
-              </div>
+              </EstadoLista>
             )}
 
             {!cargando && productos.map(p => (
               <div key={p.id}>
-                <div className="panel-tabla-fila">
+                <TablaFila className="panel-tabla-fila">
                   <div className="panel-tabla-celda">
                     {p.imagenUrl
                       ? <img src={`http://localhost:3000${p.imagenUrl}`} alt={p.nombre} className="panel-producto-foto-img" />
@@ -268,7 +269,7 @@ function Inicio() {
                     {p.stockDisponible === 0 ? 'Sin stock disponible.' : `${p.stockDisponible} u.`}
                   </div>
                   <div className="panel-tabla-celda">{p.stockReservado} u.</div>
-                  <div className="panel-tabla-celda">
+                  <div className="panel-tabla-celda panel-tabla-celda--centro">
                     <span className={`panel-estado-badge ${p.estadoVisibilidad}`}>
                       {p.estadoVisibilidad === 'publicado' ? 'Publicado' : 'Pausado'}
                     </span>
@@ -282,7 +283,7 @@ function Inicio() {
                     {' · '}
                     <span className="panel-accion-link" onClick={() => navigate(`/producto/editar/${p.id}`)}>Editar</span>
                   </div>
-                </div>
+                </TablaFila>
 
                 <div className="panel-lista-fila">
                   <div className="panel-lista-foto">
@@ -314,7 +315,7 @@ function Inicio() {
                 )}
               </div>
             ))}
-          </div>
+          </Tabla>
 
           {!cargando && productos.length > 0 && (
             <div className="panel-tabla-contador">

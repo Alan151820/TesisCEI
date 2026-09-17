@@ -45,7 +45,16 @@ async function crearProducto(usuarioId, datos) {
   }
 }
 
+// RNF-005: sin perfil de distribuidor, no hay catálogo propio que listar —
+// antes devolvía [] silenciosamente a cualquier usuario autenticado. El
+// controller de esta ruta no revisa error.status como sí lo hace el de
+// crearProducto — usa Object.assign para que next(error) lo resuelva bien
+// contra el middleware global de app.js (lee error.message, no .mensaje).
 async function listarProductos(usuarioId, filtros = {}) {
+  const distribuidor = await Distribuidor.obtenerPorUsuarioId(usuarioId)
+  if (!distribuidor) {
+    throw Object.assign(new Error('No tenés un perfil de distribuidor activo.'), { status: 403 })
+  }
   return Producto.listarPorDistribuidor(usuarioId, filtros)
 }
 
