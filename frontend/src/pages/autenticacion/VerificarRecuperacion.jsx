@@ -1,7 +1,16 @@
 import { useState } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import api from '../../lib/axios'
+import { mensajeDeError } from '../../lib/errores'
+import Hdr from '../../components/Hdr'
+import Tarjeta from '../../components/ui/Tarjeta'
+import Campo from '../../components/ui/Campo'
+import Boton from '../../components/ui/Boton'
+import Stepper from '../../components/ui/Stepper'
 import './VerificarRecuperacion.css'
+import Marca from '../../components/Marca'
+
+const PASOS = ['Teléfono', 'Código SMS', 'Nueva contraseña']
 
 function VerificarRecuperacion() {
   const [codigo, setCodigo] = useState('')
@@ -17,59 +26,35 @@ function VerificarRecuperacion() {
       setMensaje(res.data.mensaje)
       navigate('/nuevaContrasena', { state: { telefono } })
     } catch (error) {
-      setMensaje(error.response.data.mensaje)
+      setMensaje(mensajeDeError(error))
     }
   }
 
   return (
     <div className="verificarrecuperacion-pagina">
-      <header className="verificarrecuperacion-encabezado">
-        <span className="verificarrecuperacion-logo">MarketPlace</span>
-      </header>
+      <Hdr logo={<span className="hdr-logo" onClick={() => navigate('/')}><Marca /></span>} />
 
-      <main className="verificarrecuperacion-contenido">
-        <div className="verificarrecuperacion-tarjeta">
-          <h1 className="verificarrecuperacion-titulo">Verificar código</h1>
-          <p className="verificarrecuperacion-subtitulo">Ingresá el código que te enviamos al {telefono}</p>
+      <div className="panel-centrado">
+        <Tarjeta as="main" className="auth-card col gap-m">
+          <div className="titulo1">Verificar código</div>
+          <p className="texto-mudo">Ingresá el código que te enviamos al {telefono}</p>
 
-          <div className="verificarrecuperacion-stepper">
-            <div className="verificarrecuperacion-paso verificarrecuperacion-paso-activo">
-              <span className="verificarrecuperacion-paso-numero">1</span>
-              <span className="verificarrecuperacion-paso-texto">Teléfono</span>
-            </div>
-            <div className="verificarrecuperacion-paso verificarrecuperacion-paso-activo">
-              <span className="verificarrecuperacion-paso-numero">2</span>
-              <span className="verificarrecuperacion-paso-texto">Código SMS</span>
-            </div>
-            <div className="verificarrecuperacion-paso">
-              <span className="verificarrecuperacion-paso-numero">3</span>
-              <span className="verificarrecuperacion-paso-texto">Nueva contraseña</span>
-            </div>
+          <Stepper pasos={PASOS} pasoActivo={2} />
+
+          {codigoDev && <p className="texto-mudo">Código de desarrollo: {codigoDev}</p>}
+
+          <div className="col gap-s">
+            <span className="texto">Código de verificación</span>
+            <Campo placeholder="Código de 6 dígitos" value={codigo} onChange={(e) => setCodigo(e.target.value)} />
           </div>
 
-          {codigoDev && <p className="verificarrecuperacion-codigo-dev">Código de desarrollo: {codigoDev}</p>}
-
-          <div className="verificarrecuperacion-campo">
-            <label className="verificarrecuperacion-etiqueta">Código de verificación</label>
-            <input
-              className="verificarrecuperacion-input"
-              placeholder="Código de 6 dígitos"
-              value={codigo}
-              onChange={e => setCodigo(e.target.value)}
-            />
-          </div>
-
-          <button
-            type="button"
-            className="verificarrecuperacion-boton"
-            onClick={handleVerificar}
-          >
+          <Boton variante="fill" style={{ width: '100%' }} onClick={handleVerificar}>
             Verificar
-          </button>
+          </Boton>
 
-          {mensaje && <p className="verificarrecuperacion-mensaje-error">{mensaje}</p>}
-        </div>
-      </main>
+          {mensaje && <p className="texto" style={{ color: 'var(--color-error)', textAlign: 'center', margin: 0 }}>{mensaje}</p>}
+        </Tarjeta>
+      </div>
     </div>
   )
 }

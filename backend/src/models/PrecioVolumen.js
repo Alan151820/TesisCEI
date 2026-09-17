@@ -120,6 +120,10 @@ class PrecioVolumen {
     return { tipoResultado: 'ELIMINADO', mensaje: 'El precio por volumen fue eliminado correctamente.' }
   }
 
+  // RF-040: rentabilidad de este precio por volumen. Solo disponible si
+  // precioCosto está registrado (no es null) — si no lo está, se devuelve
+  // tienePrecioCostoRegistrado: false y las diferencias en null, para que la
+  // capa de presentación muestre el indicador "—" en lugar de calcular.
   calcularRentabilidad() {
     const precioVenta = Number(this.precioVenta)
     const tienePrecioCostoRegistrado = this.precioCosto !== null && this.precioCosto !== undefined
@@ -139,6 +143,8 @@ class PrecioVolumen {
     }
   }
 
+  // RF-040: rentabilidad de cada precio por volumen de los productos
+  // habilitados del distribuidor (mismo filtro que Producto.listarPorDistribuidor).
   static async listarConRentabilidadPorDistribuidor(usuarioDistribuidorId) {
     const res = await pool.query(
       `SELECT pv.id, pv.producto_id, pv.cantidad_minima, pv.precio_venta, pv.precio_costo,
@@ -156,6 +162,22 @@ class PrecioVolumen {
     }))
   }
 
+  static async aplicarDescuentoTotal(productoId, porcentaje) {
+    const factor = 1 - porcentaje / 100
+    await pool.query(
+      `UPDATE precio_volumen SET precio_venta = ROUND((precio_venta * $1)::numeric, 2)
+       WHERE producto_id = $2`,
+      [factor, productoId]
+    )
+  }
+
+  // Descuento total del catálogo (panel "Mis productos"): aplica el mismo
+  // descuento a TODOS los tramos de TODOS los productos del distribuidor
+  // que coincidan con los filtros de la lista (categoría/visibilidad/stock
+  // — mismo criterio que Producto.listarPorDistribuidor), en una sola
+  // consulta. Reemplaza al descuento por producto individual que existía
+  // antes en la ficha de edición (confirmado con el usuario). Devuelve la
+  // cantidad de productos distintos afectados, para el mensaje de éxito.
   static async aplicarDescuentoMasivo(usuarioId, filtros, porcentaje) {
     const { categoria, visibilidad, stock } = filtros
     const factor = 1 - porcentaje / 100

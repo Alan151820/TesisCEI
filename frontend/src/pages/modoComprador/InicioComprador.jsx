@@ -1,29 +1,25 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import api from '../../lib/axios'
 import { rutaInicio } from '../../lib/auth'
 import { useCarrito } from '../../context/CarritoContext'
 import CampanaNotificaciones from '../../components/CampanaNotificaciones'
-import BottomNavComprador from '../../components/BottomNavComprador'
-import ToggleTema from '../../components/ToggleTema'
-import { construirTituloProducto } from '../../lib/producto'
+import BottomNav from '../../components/BottomNav'
+import MenuPerfilComprador from '../../components/MenuPerfilComprador'
+import Hdr from '../../components/Hdr'
+import Boton from '../../components/ui/Boton'
+import Campo from '../../components/ui/Campo'
+import GridCards from '../../components/ui/GridCards'
+import CardProducto from '../../components/ui/CardProducto'
+import EsqueletoTarjetas from '../../components/ui/EsqueletoTarjetas'
+import EstadoLista from '../../components/ui/EstadoLista'
 import './InicioComprador.css'
+import Marca from '../../components/Marca'
 
 function InicioComprador() {
   const navigate = useNavigate()
-  const nombre = localStorage.getItem('nombre') || ''
   const modoDistribuidorActivo = localStorage.getItem('modoDistribuidorActivo') === 'true'
-  const iniciales = nombre.split(' ').map(p => p[0]).join('').slice(0, 2).toUpperCase()
   const { agregarProducto, totalItems } = useCarrito()
-  const [menuPerfil, setMenuPerfil] = useState(false)
-  const perfilRef = useRef(null)
-
-  useEffect(() => {
-    if (!menuPerfil) return
-    const cerrar = (e) => { if (!perfilRef.current?.contains(e.target)) setMenuPerfil(false) }
-    document.addEventListener('mousedown', cerrar)
-    return () => document.removeEventListener('mousedown', cerrar)
-  }, [menuPerfil])
 
   const [productos, setProductos] = useState([])
   const [cargando, setCargando] = useState(true)
@@ -75,127 +71,82 @@ function InicioComprador() {
 
   const hayFiltros = busqueda || filtroCategoria || filtroDistribuidor || filtroPrecioMin || filtroPrecioMax
 
-  const handleCerrarSesion = () => {
-    localStorage.removeItem('token')
-    localStorage.removeItem('nombre')
-    localStorage.removeItem('telefono')
-    localStorage.removeItem('modoDistribuidorActivo')
-    window.dispatchEvent(new Event('auth-changed'))
-    navigate('/catalogo')
-  }
-
   return (
     <div className="comprador-layout">
 
-      <header className="comprador-encabezado">
-        <div className="comprador-logo" onClick={() => navigate(rutaInicio())}>MarketDist</div>
-        <div className="comprador-buscador">
-          <span className="comprador-buscador-icono">⌕</span>
-          <input
-            className="comprador-buscador-input"
-            type="text"
-            placeholder="Buscar productos…"
-            value={busqueda}
-            onChange={e => { setBusqueda(e.target.value); aplicarFiltros({ nombre: e.target.value }) }}
-          />
-        </div>
-        <div className="comprador-acciones">
-          <span className="comprador-nav-link" onClick={() => navigate('/misPedidos')}>Mis pedidos</span>
-          <span className="comprador-nav-link" onClick={() => navigate(modoDistribuidorActivo ? '/inicio' : '/configurarPerfil')}>Distribuidora</span>
-          <CampanaNotificaciones rutaDestino="/misPedidos" rutaDetalle="/pedido" />
-          <button className="comprador-btn-carrito" onClick={() => navigate('/carrito')}>
-            🛒{totalItems > 0 && <span className="comprador-carrito-badge">{totalItems}</span>}
-          </button>
-          <div className="comprador-perfil-wrapper" ref={perfilRef}>
-            <button className="comprador-perfil-trigger" onClick={() => setMenuPerfil(v => !v)}>
-              <div className="comprador-avatar">{iniciales}</div>
-              <span className="comprador-nombre">{nombre}</span>
-              <span className="comprador-perfil-flecha">{menuPerfil ? '▴' : '▾'}</span>
-            </button>
-            {menuPerfil && (
-              <div className="comprador-menu-desplegable">
-                <div className="comprador-menu-item comprador-menu-item--mobile" onClick={() => { setMenuPerfil(false); navigate('/misPedidos') }}>Mis pedidos</div>
-                <div className="comprador-menu-item comprador-menu-item--mobile" onClick={() => { setMenuPerfil(false); navigate(modoDistribuidorActivo ? '/inicio' : '/configurarPerfil') }}>Distribuidora</div>
-                <ToggleTema />
-                <div className="comprador-menu-item" onClick={handleCerrarSesion}>Cerrar sesión</div>
-              </div>
-            )}
-          </div>
-        </div>
-      </header>
+      <Hdr
+        logo={<span className="hdr-logo" onClick={() => navigate(rutaInicio())}><Marca /></span>}
+        buscador
+        buscadorValor={busqueda}
+        onBuscadorChange={(valor) => { setBusqueda(valor); aplicarFiltros({ nombre: valor }) }}
+      >
+        <span className="link comprador-nav-link" onClick={() => navigate('/misPedidos')}>Mis pedidos</span>
+        <span className="link comprador-nav-link" onClick={() => navigate(modoDistribuidorActivo ? '/inicio' : '/configurarPerfil')}>Distribuidora</span>
+        <CampanaNotificaciones rutaDestino="/misPedidos" rutaDetalle="/pedido" />
+        <Boton variante="icono" className="hdr-btn-carrito" badge={totalItems} onClick={() => navigate('/carrito')} aria-label="Carrito">🛒</Boton>
+        <MenuPerfilComprador />
+      </Hdr>
 
-      <div className="comprador-filtros">
-        <select value={filtroCategoria} onChange={e => { setFiltroCategoria(e.target.value); aplicarFiltros({ categoria: e.target.value }) }}>
+      <div className="fila gap-m comprador-filtros">
+        <Campo
+          as="select"
+          className="comprador-filtro-campo"
+          value={filtroCategoria}
+          onChange={e => { setFiltroCategoria(e.target.value); aplicarFiltros({ categoria: e.target.value }) }}
+        >
           <option value=''>Categoría</option>
           {categorias.map(c => <option key={c.id} value={c.nombre}>{c.nombre}</option>)}
-        </select>
+        </Campo>
 
-        <input
+        <Campo
+          className="comprador-filtro-campo"
           type="text"
           placeholder="Distribuidor"
           value={filtroDistribuidor}
           onChange={e => { setFiltroDistribuidor(e.target.value); aplicarFiltros({ distribuidor: e.target.value }) }}
         />
 
-        <input
+        <Campo
+          className="comprador-filtro-campo"
           type="number"
           placeholder="Precio mínimo"
           value={filtroPrecioMin}
           onChange={e => { setFiltroPrecioMin(e.target.value); aplicarFiltros({ precioMinimo: e.target.value }) }}
         />
 
-        <input
+        <Campo
+          className="comprador-filtro-campo"
           type="number"
           placeholder="Precio máximo"
           value={filtroPrecioMax}
           onChange={e => { setFiltroPrecioMax(e.target.value); aplicarFiltros({ precioMaximo: e.target.value }) }}
         />
 
-        {hayFiltros && <button onClick={limpiarFiltros}>Limpiar filtros</button>}
+        {hayFiltros && <button type="button" className="link" onClick={limpiarFiltros}>Limpiar filtros</button>}
       </div>
 
       <main className="comprador-contenido">
 
-        {cargando && <div className="comprador-vacio">Cargando productos...</div>}
+        {cargando && <GridCards><EsqueletoTarjetas /></GridCards>}
 
         {!cargando && productos.length === 0 && (
-          <div className="comprador-vacio">
+          <EstadoLista>
             {hayFiltros ? 'No se encontraron productos con los filtros aplicados.' : 'No hay productos disponibles en este momento.'}
-          </div>
+          </EstadoLista>
         )}
 
         {!cargando && productos.length > 0 && (
           <>
-            <div className="comprador-grilla">
+            <GridCards>
               {productos.map(p => (
-                <div key={p.id} className="comprador-tarjeta" onClick={() => navigate(`/producto/${p.id}`)}>
-                  {p.imagenUrl
-                    ? <img src={`http://localhost:3000${p.imagenUrl}`} alt={p.nombre} className="comprador-tarjeta-imagen" />
-                    : <div className="comprador-tarjeta-imagen-placeholder">Sin imagen</div>
-                  }
-                  <div className="comprador-tarjeta-cuerpo">
-                    <div className="comprador-tarjeta-categoria">{p.categoria}</div>
-                    <div className="comprador-tarjeta-nombre">{construirTituloProducto(p)}</div>
-                    {p.descripcion && <div className="comprador-tarjeta-descripcion">{p.descripcion}</div>}
-                    <div className="comprador-tarjeta-pie">
-                      <div className="comprador-tarjeta-distribuidor">{p.nombreDistribuidor}</div>
-                      <div className="comprador-tarjeta-precio">
-                        <div>Desde ${Number(p.precioMinimo).toLocaleString('es-AR')}</div>
-                        {Number(p.precioBase) > Number(p.precioMinimo) && (
-                          <div className="comprador-tarjeta-precio-hasta">Hasta ${Number(p.precioBase).toLocaleString('es-AR')}</div>
-                        )}
-                      </div>
-                    </div>
-                    <button
-                      className="comprador-tarjeta-agregar"
-                      onClick={e => { e.stopPropagation(); agregarProducto(p) }}
-                    >
-                      + Agregar
-                    </button>
-                  </div>
-                </div>
+                <CardProducto
+                  key={p.id}
+                  producto={p}
+                  onClick={() => navigate(`/producto/${p.id}`)}
+                  onAgregar={agregarProducto}
+                />
               ))}
-            </div>
+            </GridCards>
             <div className="comprador-contador">
               {productos.length} producto{productos.length !== 1 ? 's' : ''} disponible{productos.length !== 1 ? 's' : ''}
             </div>
@@ -204,7 +155,7 @@ function InicioComprador() {
 
       </main>
 
-      <BottomNavComprador />
+      <BottomNav />
 
     </div>
   )

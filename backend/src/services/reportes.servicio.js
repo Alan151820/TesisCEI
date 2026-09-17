@@ -17,6 +17,10 @@ async function calcularRangoPeriodo(periodo) {
   return { inicio: rows[0].inicio, fin: rows[0].fin }
 }
 
+// RF-039/RF-041: KPIs de rendimiento (total facturado, pedidos entregados) y
+// ranking de productos más/menos vendidos, del período elegido.
+// RNF-005: sin perfil de distribuidor no hay reportes que calcular — antes
+// devolvía todo en cero a cualquier usuario autenticado.
 async function generarReporteRendimiento(usuarioDistribuidorId, periodo) {
   await Distribuidor.requerirPorUsuarioId(usuarioDistribuidorId)
 
@@ -43,6 +47,7 @@ async function generarReporteRendimiento(usuarioDistribuidorId, periodo) {
   }
 }
 
+// RF-040: rentabilidad por tramo de precio por volumen.
 async function calcularRentabilidadPorPrecioVolumen(usuarioDistribuidorId) {
   await Distribuidor.requerirPorUsuarioId(usuarioDistribuidorId)
   return PrecioVolumen.listarConRentabilidadPorDistribuidor(usuarioDistribuidorId)

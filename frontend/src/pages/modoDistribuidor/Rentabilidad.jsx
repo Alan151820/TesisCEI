@@ -1,8 +1,22 @@
 import { useState, useEffect } from 'react'
+import { mensajeDeError } from '../../lib/errores'
 import { useNavigate } from 'react-router-dom'
 import api from '../../lib/axios'
 import PanelDistribuidor from '../../components/PanelDistribuidor'
+import Tabla from '../../components/ui/Tabla'
+import TablaHeader from '../../components/ui/TablaHeader'
+import TablaFila from '../../components/ui/TablaFila'
+import TabRow from '../../components/ui/TabRow'
+import EsqueletoFilas from '../../components/ui/EsqueletoFilas'
+import EstadoLista from '../../components/ui/EstadoLista'
 import './Reportes.css'
+
+const COLUMNAS = ['Producto', 'Cant. mín.', 'Precio venta', 'Precio costo', 'Diferencia $', 'Diferencia %']
+const GRID = '200px 100px 130px 130px 120px 120px'
+const SUBNAV_REPORTES = [
+  { valor: '/reportes', etiqueta: 'Rendimiento' },
+  { valor: '/reportes/rentabilidad', etiqueta: 'Rentabilidad' },
+]
 
 function formatearPesos(valor) {
   return `$${Number(valor).toLocaleString('es-AR')}`
@@ -19,17 +33,14 @@ function Rentabilidad() {
     api.get('/api/reportes/rentabilidad')
       .then(res => setLista(res.data))
       .catch(err => {
-        setMensaje(err.response?.data?.error || 'No fue posible completar la operación. Intente nuevamente más tarde.')
+        setMensaje(mensajeDeError(err))
       })
       .finally(() => setCargando(false))
   }, [])
 
   return (
-    <PanelDistribuidor tituloMobile="Reportes" activo="/reportes">
-      <div className="reportes-subnav">
-        <span className="reportes-subnav-item" onClick={() => navigate('/reportes')}>Rendimiento</span>
-        <span className="reportes-subnav-item activo" onClick={() => navigate('/reportes/rentabilidad')}>Rentabilidad</span>
-      </div>
+    <PanelDistribuidor activo="/reportes">
+      <TabRow tabs={SUBNAV_REPORTES} activo="/reportes/rentabilidad" onCambiar={navigate} className="reportes-subnav" />
 
       <div className="panel-seccion-header panel-seccion-header--sub">
         <div>
@@ -38,25 +49,24 @@ function Rentabilidad() {
         </div>
       </div>
 
-      {mensaje && <p className="reportes-vacio">{mensaje}</p>}
-      {cargando && !mensaje && <p className="reportes-vacio">Cargando...</p>}
+      {mensaje && <EstadoLista variante="error">{mensaje}</EstadoLista>}
+
+      {cargando && !mensaje && (
+        <Tabla grid={GRID} className="reportes-rentabilidad-wrapper">
+          <TablaHeader columnas={COLUMNAS} className="reportes-rentabilidad-header" />
+          <EsqueletoFilas columnas={COLUMNAS.length} />
+        </Tabla>
+      )}
 
       {!cargando && !mensaje && lista.length === 0 && (
-        <p className="reportes-vacio">Todavía no tenés precios por volumen registrados.</p>
+        <EstadoLista>Todavía no tenés precios por volumen registrados.</EstadoLista>
       )}
 
       {!cargando && !mensaje && lista.length > 0 && (
-        <div className="reportes-rentabilidad-wrapper">
-          <div className="reportes-rentabilidad-header">
-            <div>Producto</div>
-            <div>Cant. mín.</div>
-            <div>Precio venta</div>
-            <div>Precio costo</div>
-            <div>Diferencia $</div>
-            <div>Diferencia %</div>
-          </div>
+        <Tabla grid={GRID} className="reportes-rentabilidad-wrapper">
+          <TablaHeader columnas={COLUMNAS} className="reportes-rentabilidad-header" />
           {lista.map(r => (
-            <div className="reportes-rentabilidad-fila" key={r.precioVolumenId}>
+            <TablaFila key={r.precioVolumenId} className="reportes-rentabilidad-fila">
               <div>{r.productoNombre}</div>
               <div>{r.cantidadMinima} u.</div>
               <div>{formatearPesos(r.precioVenta)}</div>
@@ -73,9 +83,9 @@ function Rentabilidad() {
                   <div>—</div>
                 </>
               )}
-            </div>
+            </TablaFila>
           ))}
-        </div>
+        </Tabla>
       )}
     </PanelDistribuidor>
   )

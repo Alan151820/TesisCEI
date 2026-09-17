@@ -1,13 +1,27 @@
 import { useState, useEffect } from 'react'
+import { mensajeDeError } from '../../lib/errores'
 import { useNavigate, useParams } from 'react-router-dom'
 import api from '../../lib/axios'
 import ModalMapaDireccion from '../../components/ModalMapaDireccion'
 import EstadoBadge from '../../components/EstadoBadge'
 import PanelDistribuidor from '../../components/PanelDistribuidor'
+import Tabla from '../../components/ui/Tabla'
+import TablaHeader from '../../components/ui/TablaHeader'
+import TablaFila from '../../components/ui/TablaFila'
+import Miga from '../../components/ui/Miga'
+import Boton from '../../components/ui/Boton'
+import Campo from '../../components/ui/Campo'
+import Modal from '../../components/ui/Modal'
+import ModalHeader from '../../components/ui/ModalHeader'
+import ModalBody from '../../components/ui/ModalBody'
+import ModalFooter from '../../components/ui/ModalFooter'
 import { ETIQUETA_ESTADO } from '../../lib/pedido'
 import './Inicio.css'
 import './MisPedidos.css'
 import './DetallePedido.css'
+
+const COLUMNAS = ['Producto', 'Cantidad', 'Precio unit.', 'Subtotal', 'Stock disp.']
+const GRID = '1fr 100px 120px 120px 110px'
 
 const MOTIVOS_RECHAZO_PENDIENTE = [
   'Sin stock del producto solicitado',
@@ -41,15 +55,11 @@ function DetallePedido() {
   useEffect(() => {
     api.get(`/api/pedidos/${id}/detalle`)
       .then(res => setPedido(res.data))
-      .catch(err => setError(err.response?.data?.error || 'No fue posible completar la operación. Intente nuevamente más tarde.'))
+      .catch(err => setError(mensajeDeError(err)))
       .finally(() => setCargando(false))
   }, [id])
 
   const handleAceptar = async () => {
-    // RF-023: al aceptar hay que abrir WhatsApp con el mensaje pre-redactado.
-    // La ventana se abre AHORA, dentro del gesto del click — un window.open
-    // después del await se bloquea porque ya no hay activación del usuario.
-    // Si el navegador igual bloquea el popup, queda el enlace visible abajo.
     const ventanaWhatsapp = window.open('', '_blank')
     setProcesando(true)
     setErrorAccion(null)
@@ -60,7 +70,7 @@ function DetallePedido() {
       if (ventanaWhatsapp) ventanaWhatsapp.location.href = res.data.deepLink
     } catch (err) {
       if (ventanaWhatsapp) ventanaWhatsapp.close()
-      setErrorAccion(err.response?.data?.error || 'No fue posible completar la operación. Intente nuevamente más tarde.')
+      setErrorAccion(mensajeDeError(err))
     } finally {
       setProcesando(false)
     }
@@ -73,7 +83,7 @@ function DetallePedido() {
       const res = await api.patch(`/api/pedidos/${id}/avanzar`)
       setPedido(prev => ({ ...prev, estado: res.data.estado }))
     } catch (err) {
-      setErrorAccion(err.response?.data?.error || 'No fue posible completar la operación. Intente nuevamente más tarde.')
+      setErrorAccion(mensajeDeError(err))
     } finally {
       setProcesando(false)
     }
@@ -104,23 +114,19 @@ function DetallePedido() {
       setPedido(prev => ({ ...prev, estado: 'rechazado', motivoRechazo: motivo }))
       cerrarModalRechazo()
     } catch (err) {
-      setErrorRechazo(err.response?.data?.error || 'No fue posible completar la operación. Intente nuevamente más tarde.')
+      setErrorRechazo(mensajeDeError(err))
     } finally {
       setRechazando(false)
     }
   }
 
   return (
-    <PanelDistribuidor tituloMobile={`Pedido #${id}`} activo="/pedidos">
+    <PanelDistribuidor activo="/pedidos">
             <div className="panel-contenido-centrado">
 
-            <div className="detallepedido-migas">
-              <div className="detallepedido-migas-ruta">
-                <span className="detallepedido-miga-link" onClick={() => navigate('/pedidos')}>Pedidos activos</span>
-                <span className="detallepedido-miga-separador">›</span>
-                <span className="detallepedido-miga-actual">Pedido #{id}</span>
-              </div>
-              <button type="button" className="detallepedido-btn-volver" onClick={() => navigate('/pedidos')}>Volver</button>
+            <div className="fila" style={{ justifyContent: 'space-between', marginBottom: 20 }}>
+              <Miga items={[{ etiqueta: 'Pedidos activos', to: '/pedidos' }, { etiqueta: `Pedido #${id}` }]} />
+              <Boton variante="outline" onClick={() => navigate('/pedidos')}>Volver</Boton>
             </div>
 
             {cargando && <div className="detallepedido-vacio">Cargando pedido...</div>}
@@ -147,16 +153,10 @@ function DetallePedido() {
                     <div className="detallepedido-motivo">Motivo del rechazo: {pedido.motivoRechazo}</div>
                   )}
 
-                  <div className="detallepedido-tabla">
-                    <div className="detallepedido-tabla-header detallepedido-tabla-header--dist">
-                      <div>Producto</div>
-                      <div>Cantidad</div>
-                      <div>Precio unit.</div>
-                      <div>Subtotal</div>
-                      <div>Stock disp.</div>
-                    </div>
+                  <Tabla className="detallepedido-tabla" grid={GRID}>
+                    <TablaHeader columnas={COLUMNAS} className="detallepedido-tabla-header" />
                     {pedido.items.map((item, i) => (
-                      <div key={i} className="detallepedido-tabla-fila detallepedido-tabla-fila--dist">
+                      <TablaFila key={i} className="detallepedido-tabla-fila">
                         <div className="detallepedido-celda detallepedido-celda-producto">
                           {item.imagenUrl
                             ? <img src={`http://localhost:3000${item.imagenUrl}`} alt={item.nombreProducto} className="detallepedido-thumb" />
@@ -168,11 +168,11 @@ function DetallePedido() {
                         <div className="detallepedido-celda">${Number(item.precioVentaCongelado).toLocaleString('es-AR')}</div>
                         <div className="detallepedido-celda">${(Number(item.cantidad) * Number(item.precioVentaCongelado)).toLocaleString('es-AR')}</div>
                         <div className={`detallepedido-celda${Number(item.stockDisponible) === 0 ? ' detallepedido-stock-cero' : ''}`}>{item.stockDisponible} u.</div>
-                      </div>
+                      </TablaFila>
                     ))}
-                    <div className="detallepedido-total">
-                      Total: ${Number(pedido.total).toLocaleString('es-AR')}
-                    </div>
+                  </Tabla>
+                  <div className="fila" style={{ justifyContent: 'flex-end', marginTop: 10 }}>
+                    <span className="texto" style={{ fontWeight: 700 }}>Total: ${Number(pedido.total).toLocaleString('es-AR')}</span>
                   </div>
 
                   {pedido.latitud && pedido.longitud && (
@@ -266,14 +266,14 @@ function DetallePedido() {
       )}
 
       {modalRechazo && (
-        <div className="rechazo-overlay" onClick={cerrarModalRechazo}>
-          <div className="rechazo-modal" onClick={e => e.stopPropagation()}>
-            <div className="rechazo-titulo">Rechazar pedido #{id}</div>
-            <div className="rechazo-subtitulo">
+        <Modal onCerrar={cerrarModalRechazo}>
+          <ModalHeader titulo={`Rechazar pedido #${id}`} onCerrar={cerrarModalRechazo} />
+          <ModalBody>
+            <p className="texto-mudo" style={{ margin: 0 }}>
               {pedido?.estado === 'pendiente'
                 ? 'Seleccioná el motivo del rechazo.'
                 : 'Ingresá el motivo del rechazo ocurrido durante la entrega.'}
-            </div>
+            </p>
 
             {pedido?.estado === 'pendiente' ? (
               <div className="rechazo-motivos">
@@ -291,8 +291,8 @@ function DetallePedido() {
                 ))}
               </div>
             ) : (
-              <textarea
-                className="rechazo-textarea"
+              <Campo
+                area
                 rows={4}
                 placeholder="Describí la situación ocurrida durante la entrega."
                 value={motivoRechazo}
@@ -301,25 +301,14 @@ function DetallePedido() {
             )}
 
             {errorRechazo && <div className="rechazo-error">{errorRechazo}</div>}
-
-            <div className="rechazo-acciones">
-              <button
-                className="pedidos-accion-btn pedidos-accion-btn--peligro rechazo-btn"
-                disabled={rechazando}
-                onClick={handleConfirmarRechazo}
-              >
-                {rechazando ? 'Confirmando...' : 'Confirmar rechazo'}
-              </button>
-              <button
-                className="pedidos-accion-btn rechazo-btn"
-                disabled={rechazando}
-                onClick={cerrarModalRechazo}
-              >
-                Cancelar
-              </button>
-            </div>
-          </div>
-        </div>
+          </ModalBody>
+          <ModalFooter>
+            <Boton variante="outline" disabled={rechazando} onClick={cerrarModalRechazo}>Cancelar</Boton>
+            <Boton variante="peligro" disabled={rechazando} onClick={handleConfirmarRechazo}>
+              {rechazando ? 'Confirmando...' : 'Confirmar rechazo'}
+            </Boton>
+          </ModalFooter>
+        </Modal>
       )}
     </PanelDistribuidor>
   )

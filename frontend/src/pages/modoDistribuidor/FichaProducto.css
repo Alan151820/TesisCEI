@@ -1,31 +1,20 @@
 .ficha-fondo {
-  background: var(--color-variante-superficie);
+  background: var(--color-superficie);
   min-height: 100vh;
-  padding: 28px 32px;
-  font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  display: flex;
+  flex-direction: column;
 }
 
 .ficha-contenedor {
   max-width: 1200px;
+  width: 100%;
   margin: 0 auto;
+  padding: 28px 32px;
+  box-sizing: border-box;
 }
 
 .ficha-breadcrumb {
-  display: flex;
-  align-items: center;
-  gap: 8px;
   margin-bottom: 20px;
-  font-size: 13px;
-  color: var(--color-sobre-superficie);
-}
-
-.ficha-breadcrumb-link {
-  color: var(--color-sobre-variante-superficie);
-  cursor: pointer;
-}
-
-.ficha-breadcrumb-sep {
-  color: var(--color-variante-contorno);
 }
 
 .ficha-layout {
@@ -48,17 +37,13 @@
 }
 
 .ficha-card {
-  background: var(--color-contenedor-superficie-minimo);
-  border: 1px solid var(--color-variante-contorno);
-  border-radius: 6px;
-  padding: 24px;
   margin-bottom: 16px;
 }
 
 .ficha-card-titulo {
   font-size: 15px;
   font-weight: 700;
-  color: var(--color-sobre-superficie);
+  color: var(--color-texto);
   margin-bottom: 16px;
 }
 
@@ -72,19 +57,19 @@
   width: 110px;
   height: 110px;
   flex-shrink: 0;
-  border: 1px dashed var(--color-contorno);
+  border: 1px dashed var(--color-borde);
   border-radius: 4px;
   cursor: pointer;
   overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--color-contenedor-superficie-bajo);
+  background: var(--color-superficie);
 }
 
 .ficha-imagen-zona:hover {
-  border-color: var(--color-sobre-variante-superficie);
-  background: var(--color-contenedor-superficie);
+  border-color: var(--color-texto-suave);
+  background: var(--color-superficie);
 }
 
 .ficha-imagen-preview {
@@ -95,7 +80,7 @@
 
 .ficha-imagen-texto {
   font-size: 12px;
-  color: var(--color-sobre-variante-superficie);
+  color: var(--color-texto-suave);
   text-align: center;
   padding: 8px;
 }
@@ -108,22 +93,22 @@
   gap: 6px;
   align-items: center;
   justify-content: center;
-  background: var(--color-contenedor-superficie-bajo);
-  border: 1px dashed var(--color-contorno);
+  background: var(--color-superficie);
+  border: 1px dashed var(--color-borde);
   border-radius: 4px;
   padding: 8px;
   font-size: 11px;
-  color: var(--color-sobre-variante-superficie);
+  color: var(--color-texto-suave);
   text-align: center;
 }
 
 .ficha-input-url {
   width: 100%;
-  font-size: 10px;
-  border: 1px solid var(--color-contorno);
-  border-radius: 3px;
+  font-size: var(--fuente-control);
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radio-control);
   padding: 3px 5px;
-  background: var(--color-contenedor-superficie-minimo);
+  background: var(--color-fondo);
   box-sizing: border-box;
 }
 
@@ -161,7 +146,7 @@
   display: block;
   font-size: 12px;
   font-weight: 600;
-  color: var(--color-sobre-superficie);
+  color: var(--color-texto);
   margin-bottom: 5px;
 }
 
@@ -184,7 +169,7 @@
 .ficha-checkbox-ayuda {
   font-size: 11px;
   font-weight: 400;
-  color: var(--color-sobre-variante-superficie);
+  color: var(--color-texto-suave);
 }
 
 .ficha-checkbox-label {
@@ -193,7 +178,7 @@
   gap: 6px;
   font-size: 12px;
   font-weight: 600;
-  color: var(--color-sobre-superficie);
+  color: var(--color-texto);
   cursor: pointer;
 }
 
@@ -206,7 +191,7 @@
   gap: 8px;
 }
 
-.ficha-nombre-fila .ficha-input {
+.ficha-nombre-fila > .campo:first-child {
   flex: 1;
 }
 
@@ -219,42 +204,14 @@
   color: var(--color-error);
 }
 
-.ficha-input,
-.ficha-select {
-  width: 100%;
-  height: 38px;
-  border: 1px solid var(--color-contorno);
-  border-radius: 4px;
-  background: var(--color-contenedor-superficie-minimo);
-  padding: 0 12px;
-  font-size: 13px;
-  color: var(--color-sobre-superficie);
-  box-sizing: border-box;
-  font-family: inherit;
-}
-
 .ficha-input-angosto {
   max-width: 160px;
 }
 
 .ficha-input-solo-lectura {
-  background: var(--color-contenedor-superficie-bajo);
-  color: var(--color-sobre-variante-superficie);
+  background: var(--color-superficie);
+  color: var(--color-texto-suave);
   cursor: default;
-}
-
-.ficha-textarea {
-  width: 100%;
-  height: 60px;
-  border: 1px solid var(--color-contorno);
-  border-radius: 4px;
-  background: var(--color-contenedor-superficie-minimo);
-  padding: 8px 12px;
-  font-size: 13px;
-  color: var(--color-sobre-superficie);
-  resize: vertical;
-  box-sizing: border-box;
-  font-family: inherit;
 }
 
 .ficha-radio-grupo {
@@ -269,27 +226,26 @@
   align-items: center;
   gap: 6px;
   font-size: 13px;
-  color: var(--color-sobre-superficie);
+  color: var(--color-texto);
   cursor: pointer;
 }
 
 .ficha-ayuda {
   display: block;
   font-size: 11px;
-  color: var(--color-sobre-variante-superficie);
+  color: var(--color-texto-suave);
   margin-top: 3px;
 }
 
 .ficha-error {
-  background: var(--color-contenedor-error);
-  color: var(--color-error);
+  background: var(--color-error-suave);
+  color: var(--color-sobre-error-suave);
   border-radius: 4px;
   padding: 10px 12px;
   font-size: 13px;
   margin-top: 8px;
 }
 
-/* Sidebar */
 .ficha-card-estado {
   padding: 16px;
   margin-bottom: 0;
@@ -298,7 +254,7 @@
 .ficha-sidebar-titulo {
   font-size: 12px;
   font-weight: 600;
-  color: var(--color-sobre-variante-superficie);
+  color: var(--color-texto-suave);
   text-transform: uppercase;
   letter-spacing: 0.5px;
   margin-bottom: 10px;
@@ -306,54 +262,16 @@
 
 .ficha-estado-texto {
   font-size: 13px;
-  color: var(--color-sobre-superficie);
+  color: var(--color-texto);
   margin-bottom: 6px;
 }
 
 .ficha-estado-nota {
   font-size: 11px;
-  color: var(--color-sobre-variante-superficie);
+  color: var(--color-texto-suave);
   line-height: 1.4;
 }
 
-.ficha-btn-guardar {
-  width: 100%;
-  height: 40px;
-  background: var(--color-primario);
-  color: var(--color-sobre-primario);
-  border: none;
-  border-radius: 4px;
-  font-size: 13px;
-  font-weight: 500;
-  font-family: inherit;
-  cursor: pointer;
-  margin-bottom: 8px;
-}
-
-.ficha-btn-guardar:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-.ficha-btn-cancelar {
-  width: 100%;
-  height: 40px;
-  background: var(--color-contenedor-superficie-minimo);
-  color: var(--color-sobre-superficie);
-  border: 1px solid var(--color-contorno);
-  border-radius: 4px;
-  font-size: 13px;
-  font-weight: 500;
-  font-family: inherit;
-  cursor: pointer;
-}
-
-.ficha-btn-cancelar:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-/* Sección precios por volumen */
 .ficha-precios-header {
   display: flex;
   align-items: center;
@@ -365,19 +283,8 @@
   margin-bottom: 0;
 }
 
-.ficha-btn-agregar-precio {
-  background: none;
-  border: 1px solid var(--color-primario);
-  color: var(--color-primario);
-  border-radius: 4px;
-  padding: 6px 14px;
-  font-size: 13px;
-  font-family: inherit;
-  cursor: pointer;
-}
-
 .ficha-precios-tabla {
-  border: 1px solid var(--color-variante-contorno);
+  border: 1px solid var(--color-borde);
   border-radius: 4px;
   overflow: hidden;
   margin-bottom: 12px;
@@ -386,11 +293,11 @@
 .ficha-precios-thead {
   display: grid;
   grid-template-columns: 0.8fr 1fr 1fr 40px;
-  background: var(--color-contenedor-superficie-bajo);
+  background: var(--color-superficie);
   padding: 8px 12px;
   font-size: 11px;
   font-weight: 700;
-  color: var(--color-sobre-variante-superficie);
+  color: var(--color-texto-suave);
   text-transform: uppercase;
   letter-spacing: 0.4px;
   gap: 8px;
@@ -400,9 +307,9 @@
   display: grid;
   grid-template-columns: 0.8fr 1fr 1fr 40px;
   padding: 10px 12px;
-  border-top: 1px solid var(--color-variante-contorno);
+  border-top: 1px solid var(--color-borde);
   font-size: 13px;
-  color: var(--color-sobre-superficie);
+  color: var(--color-texto);
   gap: 8px;
   align-items: center;
 }
@@ -410,12 +317,12 @@
 .ficha-precios-vacio {
   padding: 16px 12px;
   font-size: 13px;
-  color: var(--color-sobre-variante-superficie);
-  border-top: 1px solid var(--color-variante-contorno);
+  color: var(--color-texto-suave);
+  border-top: 1px solid var(--color-borde);
 }
 
 .ficha-precio-eliminar {
-  color: var(--color-variante-contorno);
+  color: var(--color-borde);
   cursor: pointer;
   font-size: 14px;
 }
@@ -425,8 +332,8 @@
 }
 
 .ficha-form-precio {
-  background: var(--color-contenedor-superficie-bajo);
-  border: 1px solid var(--color-variante-contorno);
+  background: var(--color-superficie);
+  border: 1px solid var(--color-borde);
   border-radius: 4px;
   padding: 16px;
   margin-bottom: 12px;
@@ -438,25 +345,18 @@
   margin-top: 12px;
 }
 
-.ficha-form-precio-acciones .ficha-btn-guardar,
-.ficha-form-precio-acciones .ficha-btn-cancelar {
-  width: auto;
-  padding: 0 20px;
-}
-
 .ficha-precios-nota {
   font-size: 11px;
-  color: var(--color-sobre-variante-superficie);
+  color: var(--color-texto-suave);
   line-height: 1.4;
 }
 
-/* Vista confirmación producto guardado */
 .ficha-card-ok {
   display: flex;
   align-items: center;
   gap: 10px;
   padding: 14px 20px;
-  background: var(--color-contenedor-exito);
+  background: var(--color-exito-suave);
   border-color: var(--color-exito);
 }
 
@@ -467,49 +367,52 @@
 
 .ficha-ok-texto {
   font-size: 14px;
-  color: var(--color-sobre-contenedor-exito);
+  color: var(--color-sobre-exito-suave);
 }
 
-.ficha-mobile-header { display: none; }
+@media (max-width: 768px) {
+  .ficha-hdr-desktop { display: none; }
+}
+
+.ficha-mobile-header {
+  display: none;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  height: 48px;
+  background: var(--color-superficie);
+  align-items: center;
+  padding: 0 16px;
+  gap: 12px;
+  flex-shrink: 0;
+}
+.ficha-mobile-volver {
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: inherit;
+  font-size: 18px;
+  color: var(--color-texto-suave);
+  cursor: pointer;
+  min-width: 44px;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+}
+.ficha-mobile-titulo {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-texto);
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 
 @media (max-width: 768px) {
-  /* Mobile header oscuro */
-  .ficha-mobile-header {
-    display: flex;
-    height: 48px;
-    background: var(--color-contenedor-superficie-bajo);
-    align-items: center;
-    padding: 0 16px;
-    gap: 12px;
-    flex-shrink: 0;
-  }
-  .ficha-mobile-volver {
-    background: none;
-    border: none;
-    padding: 0;
-    font-family: inherit;
-    font-size: 18px;
-    color: var(--color-sobre-variante-superficie);
-    cursor: pointer;
-    min-width: 44px;
-    min-height: 44px;
-    display: flex;
-    align-items: center;
-  }
-  .ficha-mobile-titulo {
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--color-sobre-superficie);
-    flex: 1;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
+  .ficha-mobile-header { display: flex; }
 
-  /* Ocultar breadcrumb en mobile (reemplazado por header) */
-  .ficha-breadcrumb { display: none; }
-
-  .ficha-fondo { padding: 16px; }
+  .ficha-contenedor { padding: 16px; }
   .ficha-layout { flex-direction: column; }
   .ficha-sidebar { width: 100%; }
   .ficha-fila-top { flex-direction: column; }
@@ -522,12 +425,6 @@
 
   .ficha-fila-dos,
   .ficha-fila-tres { flex-direction: column; }
-
-  /* Touch targets mínimos 44px */
-  .ficha-input,
-  .ficha-select { height: 44px; }
-  .ficha-btn-guardar,
-  .ficha-btn-cancelar { height: 44px; }
 }
 
 .ficha-preview-bloque { display: flex; flex-direction: column; gap: 8px; }
@@ -536,8 +433,8 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
-  background: var(--color-contenedor-primario);
-  color: var(--color-sobre-contenedor-primario);
+  background: var(--color-info-suave);
+  color: var(--color-sobre-info-suave);
   border-radius: 4px;
   padding: 12px 14px;
   font-size: 12px;
@@ -557,11 +454,10 @@
   flex-shrink: 0;
 }
 
-/* --- Modelo "todo por unidad": marca, peso/longitud, tramos, descuento total --- */
 .ficha-magnitud { display: flex; gap: 8px; }
-.ficha-magnitud .ficha-input { flex: 1; min-width: 0; }
-.ficha-magnitud .ficha-select { width: 84px; flex: 0 0 auto; }
-.ficha-ayuda-inline { font-size: 12px; font-weight: 400; color: var(--color-sobre-variante-superficie); margin-left: 6px; }
+.ficha-magnitud-valor { flex: 1; min-width: 0; }
+.ficha-magnitud-unidad { width: 84px; flex: 0 0 auto; }
+.ficha-ayuda-inline { font-size: 12px; font-weight: 400; color: var(--color-texto-suave); margin-left: 6px; }
 .ficha-cant-mas { color: var(--color-primario); font-weight: 700; margin-right: 1px; }
 .ficha-tramo-desc { color: var(--color-primario); font-weight: 700; font-size: 12px; margin-left: 8px; }
 .ficha-descuento-fila { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }

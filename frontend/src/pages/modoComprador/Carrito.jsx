@@ -1,38 +1,23 @@
-import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useCarrito } from '../../context/CarritoContext'
 import { rutaInicio } from '../../lib/auth'
+import { precioAplicable } from '../../lib/precios'
 import CampanaNotificaciones from '../../components/CampanaNotificaciones'
-import BottomNavComprador from '../../components/BottomNavComprador'
-import ToggleTema from '../../components/ToggleTema'
+import BottomNav from '../../components/BottomNav'
+import MenuPerfilComprador from '../../components/MenuPerfilComprador'
+import Hdr from '../../components/Hdr'
+import Boton from '../../components/ui/Boton'
+import Tarjeta from '../../components/ui/Tarjeta'
+import EstadoLista from '../../components/ui/EstadoLista'
 import './InicioComprador.css'
 import './Carrito.css'
+import Marca from '../../components/Marca'
 
 function Carrito() {
   const navigate = useNavigate()
   const { items, modificarCantidad, eliminarProducto, vaciar, totalItems } = useCarrito()
   const token = localStorage.getItem('token')
-  const nombre = localStorage.getItem('nombre') || ''
   const modoDistribuidorActivo = localStorage.getItem('modoDistribuidorActivo') === 'true'
-  const iniciales = nombre.split(' ').map(p => p[0]).join('').slice(0, 2).toUpperCase()
-  const [menuPerfil, setMenuPerfil] = useState(false)
-  const perfilRef = useRef(null)
-
-  useEffect(() => {
-    if (!menuPerfil) return
-    const cerrar = (e) => { if (!perfilRef.current?.contains(e.target)) setMenuPerfil(false) }
-    document.addEventListener('mousedown', cerrar)
-    return () => document.removeEventListener('mousedown', cerrar)
-  }, [menuPerfil])
-
-  const handleCerrarSesion = () => {
-    localStorage.removeItem('token')
-    localStorage.removeItem('nombre')
-    localStorage.removeItem('telefono')
-    localStorage.removeItem('modoDistribuidorActivo')
-    window.dispatchEvent(new Event('auth-changed'))
-    navigate('/catalogo')
-  }
 
   const porDistribuidor = items.reduce((acc, item) => {
     const key = item.distribuidorId
@@ -41,117 +26,98 @@ function Carrito() {
     return acc
   }, {})
 
-  const subtotalTotal = items.reduce((acc, i) => acc + Number(i.precioMinimo) * i.cantidad, 0)
+  const subtotalTotal = items.reduce((acc, i) => acc + (precioAplicable(i.tarifas, i.cantidad) || 0) * i.cantidad, 0)
 
   return (
     <div className="carrito-pagina">
 
-      <header className="comprador-encabezado">
-        <div className="comprador-logo" onClick={() => navigate(rutaInicio())}>MarketDist</div>
-        <div className="comprador-buscador">
-          <span className="comprador-buscador-icono">⌕</span>
-          <input className="comprador-buscador-input" type="text" placeholder="Buscar productos…" />
-        </div>
-        <div className="comprador-acciones">
-          {token ? (
-            <>
-              <span className="comprador-nav-link" onClick={() => navigate('/misPedidos')}>Mis pedidos</span>
-              <span className="comprador-nav-link" onClick={() => navigate(modoDistribuidorActivo ? '/inicio' : '/configurarPerfil')}>Distribuidora</span>
-              <CampanaNotificaciones rutaDestino="/misPedidos" rutaDetalle="/pedido" />
-              <button className="comprador-btn-carrito" onClick={() => navigate('/carrito')}>
-                🛒{totalItems > 0 && <span className="comprador-carrito-badge">{totalItems}</span>}
-              </button>
-              <div className="comprador-perfil-wrapper" ref={perfilRef}>
-                <button className="comprador-perfil-trigger" onClick={() => setMenuPerfil(v => !v)}>
-                  <div className="comprador-avatar">{iniciales}</div>
-                  <span className="comprador-nombre">{nombre}</span>
-                  <span className="comprador-perfil-flecha">{menuPerfil ? '▴' : '▾'}</span>
-                </button>
-                {menuPerfil && (
-                  <div className="comprador-menu-desplegable">
-                    <div className="comprador-menu-item comprador-menu-item--mobile" onClick={() => { setMenuPerfil(false); navigate('/misPedidos') }}>Mis pedidos</div>
-                    <div className="comprador-menu-item comprador-menu-item--mobile" onClick={() => { setMenuPerfil(false); navigate(modoDistribuidorActivo ? '/inicio' : '/configurarPerfil') }}>Distribuidora</div>
-                    <ToggleTema />
-                    <div className="comprador-menu-item" onClick={handleCerrarSesion}>Cerrar sesión</div>
-                  </div>
-                )}
-              </div>
-            </>
-          ) : (
-            <>
-              <button className="comprador-btn-carrito" onClick={() => navigate('/carrito')}>
-                🛒{totalItems > 0 && <span className="comprador-carrito-badge">{totalItems}</span>}
-              </button>
-              <button className="catalogo-btn-login" onClick={() => navigate('/login')}>Iniciar sesión</button>
-              <button className="catalogo-btn-registro" onClick={() => navigate('/registro')}>Registrarse</button>
-            </>
-          )}
-        </div>
-      </header>
+      <Hdr logo={<span className="hdr-logo" onClick={() => navigate(rutaInicio())}><Marca /></span>} buscador>
+        {token ? (
+          <>
+            <span className="link comprador-nav-link" onClick={() => navigate('/misPedidos')}>Mis pedidos</span>
+            <span className="link comprador-nav-link" onClick={() => navigate(modoDistribuidorActivo ? '/inicio' : '/configurarPerfil')}>Distribuidora</span>
+            <CampanaNotificaciones rutaDestino="/misPedidos" rutaDetalle="/pedido" />
+            <Boton variante="icono" className="hdr-btn-carrito" badge={totalItems} onClick={() => navigate('/carrito')} aria-label="Carrito">🛒</Boton>
+            <MenuPerfilComprador />
+          </>
+        ) : (
+          <>
+            <Boton variante="icono" className="hdr-btn-carrito" badge={totalItems} onClick={() => navigate('/carrito')} aria-label="Carrito">🛒</Boton>
+            <Boton variante="ghost" onClick={() => navigate('/login')}>Iniciar sesión</Boton>
+            <Boton variante="fill" onClick={() => navigate('/registro')}>Registrarse</Boton>
+          </>
+        )}
+      </Hdr>
 
       <div className="carrito-contenido">
 
         {items.length === 0 ? (
-          <div className="carrito-vacio">
-            <div className="carrito-vacio-icono">🛒</div>
-            <div className="carrito-vacio-titulo">Tu carrito está vacío</div>
-            <div className="carrito-vacio-subtitulo">Explorá el catálogo y agregá productos.</div>
-            <button className="carrito-vacio-btn" onClick={() => navigate(rutaInicio())}>Ver catálogo</button>
-          </div>
+          <EstadoLista className="col gap-m" style={{ alignItems: 'center' }}>
+            <span style={{ fontSize: 36 }}>🛒</span>
+            <span className="texto" style={{ fontWeight: 700 }}>Tu carrito está vacío</span>
+            <span>Explorá el catálogo y agregá productos.</span>
+            <Boton onClick={() => navigate(rutaInicio())}>Ver catálogo</Boton>
+          </EstadoLista>
         ) : (
           <div className="carrito-layout">
             <div className="carrito-lista">
               {Object.entries(porDistribuidor).map(([distId, grupo]) => (
-                <div key={distId} className="carrito-grupo">
-                  <div className="carrito-grupo-header">{grupo.nombreDistribuidor}</div>
+                <Tarjeta key={distId} className="col gap-s carrito-grupo">
+                  <div className="texto-mudo">{grupo.nombreDistribuidor}</div>
                   {grupo.items.map(item => (
-                    <div key={item.id} className="carrito-item">
-                      <div className="carrito-item-foto">
-                        {item.imagenUrl
-                          ? <img src={`http://localhost:3000${item.imagenUrl}`} alt={item.nombre} className="carrito-item-img" />
-                          : <div className="carrito-item-img-placeholder">—</div>
-                        }
+                    <div key={item.id} className="fila gap-m carrito-item">
+                      {item.imagenUrl
+                        ? <img src={`http://localhost:3000${item.imagenUrl}`} alt={item.nombre} className="carrito-item-img" />
+                        : <div className="placeholder-img carrito-item-img">—</div>
+                      }
+                      <div className="col flex1">
+                        <span className="texto">{item.nombre}</span>
+                        <span className="texto-mudo">Precio est. ${(precioAplicable(item.tarifas, item.cantidad) || 0).toLocaleString('es-AR')} c/u</span>
                       </div>
-                      <div className="carrito-item-info">
-                        <div className="carrito-item-nombre">{item.nombre}</div>
-                        <div className="carrito-item-precio">
-                          Precio est. ${Number(item.precioMinimo).toLocaleString('es-AR')} c/u
-                        </div>
-                      </div>
-                      <div className="carrito-item-controles">
-                        <button
+                      <div className="fila gap-s">
+                        <Boton
+                          variante="outline"
                           className="carrito-item-btn"
                           onClick={() => modificarCantidad(item.id, item.cantidad - 1)}
-                        >−</button>
+                          aria-label="Restar unidad"
+                        >
+                          −
+                        </Boton>
                         <span className="carrito-item-cantidad">{item.cantidad}</span>
-                        <button
+                        <Boton
+                          variante="outline"
                           className="carrito-item-btn"
                           onClick={() => modificarCantidad(item.id, item.cantidad + 1)}
-                        >+</button>
+                          aria-label="Sumar unidad"
+                        >
+                          +
+                        </Boton>
                       </div>
-                      <button
-                        className="carrito-item-eliminar"
+                      <Boton
+                        variante="icono"
                         onClick={() => eliminarProducto(item.id)}
-                      >✕</button>
+                        aria-label="Eliminar producto"
+                      >
+                        ✕
+                      </Boton>
                     </div>
                   ))}
-                </div>
+                </Tarjeta>
               ))}
 
-              <button className="carrito-vaciar-btn" onClick={vaciar}>Vaciar carrito</button>
+              <Boton variante="outline" className="carrito-vaciar-btn" onClick={vaciar}>Vaciar carrito</Boton>
             </div>
 
-            <div className="carrito-resumen">
-              <div className="carrito-resumen-titulo">Resumen</div>
-              <div className="carrito-resumen-fila">
-                <span>Productos ({totalItems})</span>
-                <span>${subtotalTotal.toLocaleString('es-AR')}</span>
+            <Tarjeta className="col gap-s carrito-resumen">
+              <div className="titulo1">Resumen</div>
+              <div className="fila" style={{ justifyContent: 'space-between' }}>
+                <span className="texto">Productos ({totalItems})</span>
+                <span className="texto">${subtotalTotal.toLocaleString('es-AR')}</span>
               </div>
-              <div className="carrito-resumen-nota">
+              <p className="texto-mudo" style={{ margin: 0 }}>
                 * Los precios son estimados según el precio mínimo publicado. El total final depende del volumen y condiciones del distribuidor.
-              </div>
-              <button
-                className="carrito-resumen-btn"
+              </p>
+              <Boton
                 onClick={() => {
                   if (!localStorage.getItem('token')) {
                     navigate('/login')
@@ -161,14 +127,14 @@ function Carrito() {
                 }}
               >
                 Confirmar pedido
-              </button>
-            </div>
+              </Boton>
+            </Tarjeta>
           </div>
         )}
 
       </div>
 
-      <BottomNavComprador />
+      <BottomNav />
 
     </div>
   )

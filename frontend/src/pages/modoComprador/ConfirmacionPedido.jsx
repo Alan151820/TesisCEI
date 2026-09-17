@@ -1,10 +1,18 @@
 import { useState } from 'react'
+import { mensajeDeError } from '../../lib/errores'
 import { useNavigate } from 'react-router-dom'
 import api from '../../lib/axios'
 import { rutaInicio } from '../../lib/auth'
 import { useCarrito } from '../../context/CarritoContext'
+import { precioAplicable } from '../../lib/precios'
 import ModalMapaDireccion from '../../components/ModalMapaDireccion'
+import Hdr from '../../components/Hdr'
+import Boton from '../../components/ui/Boton'
+import Campo from '../../components/ui/Campo'
+import Tarjeta from '../../components/ui/Tarjeta'
+import EstadoLista from '../../components/ui/EstadoLista'
 import './ConfirmacionPedido.css'
+import Marca from '../../components/Marca'
 
 const DEPARTAMENTOS = [
   'Artigas', 'Canelones', 'Cerro Largo', 'Colonia', 'Durazno',
@@ -40,26 +48,6 @@ function paramsNominatim({ calle, numero, ciudad, departamento }) {
   return params
 }
 
-// RF-008: el mapa es el método principal; esto solo se usa para geocodificar
-// la dirección estructurada cuando el comprador usa el formulario de
-// respaldo, para que ese pedido también quede con coordenadas.
-// Búsqueda estructurada de Nominatim: cada campo del formulario (calle,
-// ciudad, departamento) va en su propio parámetro, en vez de concatenar
-// todo en una sola cadena de texto libre — Nominatim compara cada uno
-// contra su nivel real en la base de OSM (calle, ciudad, departamento),
-// más preciso que dejarle adivinar cómo separar una cadena compuesta.
-// Sigue siendo una sola consulta al confirmar el pedido, nunca
-// autocompletado mientras se escribe (la política de uso gratuito de
-// Nominatim lo prohíbe expresamente).
-//
-// Si no hay resultado CON el departamento indicado, se reintenta la
-// búsqueda sin esa restricción, solo para poder avisarle al comprador
-// cuál parece ser el departamento correcto (usando address.state de la
-// respuesta) — nunca para geocodificar "a ciegas" en un departamento
-// distinto al que eligió. Es una validación posible gracias a que
-// Nominatim exige que el departamento indicado coincida con la calle:
-// si no coincide, la búsqueda estructurada devuelve vacío en vez de
-// ignorar el dato (verificado contra la API real antes de escribir esto).
 async function geocodificarDireccion(campos) {
   try {
     const res = await fetch(`https://nominatim.openstreetmap.org/search?${paramsNominatim(campos)}`, { headers: { 'User-Agent': 'TesisCEI-Marketplace/1.0' } })
@@ -73,11 +61,6 @@ async function geocodificarDireccion(campos) {
 
   if (!campos.departamento) return null
 
-  // Espera antes del segundo intento para no disparar dos consultas casi
-  // juntas contra un servicio público con límite de 1 request/segundo —
-  // sin esto, un departamento mal elegido podía frenarse en silencio en
-  // vez de mostrar el aviso, si el segundo intento llegaba a violar ese
-  // límite.
   await new Promise(r => setTimeout(r, 1100))
 
   try {
@@ -99,11 +82,9 @@ function ConfirmacionPedido() {
   const navigate = useNavigate()
   const { items, vaciar, totalItems } = useCarrito()
 
-  // Dirección vía mapa (método principal)
   const [dirMapa, setDirMapa] = useState(null)
   const [mapaAbierto, setMapaAbierto] = useState(false)
 
-  // Dirección manual: solo como respaldo cuando el mapa no se puede usar
   const [mostrarManual, setMostrarManual] = useState(false)
   const [departamento, setDepartamento] = useState('')
   const [ciudad, setCiudad] = useState('')
@@ -123,16 +104,10 @@ function ConfirmacionPedido() {
     return acc
   }, {})
 
-  const totalEstimado = items.reduce((acc, i) => acc + Number(i.precioMinimo) * i.cantidad, 0)
+  const totalEstimado = items.reduce((acc, i) => acc + (precioAplicable(i.tarifas, i.cantidad) || 0) * i.cantidad, 0)
 
   const camposManualCompletos = departamento && ciudad.trim() && calle.trim() && numero.trim()
 
-  // En Montevideo, departamento y ciudad son casi siempre el mismo valor
-  // (a diferencia de los otros 18 departamentos, donde "Ciudad/Localidad"
-  // sigue siendo necesario para distinguir, por ejemplo, Pando de Las
-  // Piedras dentro de Canelones) — precargarlo ahorra escribirlo dos
-  // veces, sin sacar el campo. Nunca pisa un valor que el comprador ya
-  // haya escrito.
   const handleDepartamentoChange = (valor) => {
     setDepartamento(valor)
     if (valor === 'Montevideo' && !ciudad.trim()) {
@@ -172,10 +147,6 @@ function ConfirmacionPedido() {
           setEnviando(false)
           return
         }
-        // RF-008: todo pedido confirmado tiene que quedar con coordenadas. Si
-        // la geocodificación de respaldo no las pudo obtener (sin resultado o
-        // falla de red), no se confirma el pedido — se le ofrece al comprador
-        // corregir la dirección o usar el mapa.
         if (!geocodificada || !Number.isFinite(geocodificada.lat) || !Number.isFinite(geocodificada.lng)) {
           setError('No pudimos ubicar la dirección ingresada. Revisá los datos o seleccioná el punto en el mapa.')
           setEnviando(false)
@@ -198,7 +169,7 @@ function ConfirmacionPedido() {
       vaciar()
       setPedidosConfirmados(res.data.pedidos)
     } catch (err) {
-      setError(err.response?.data?.error || 'No fue posible completar la operación. Intente nuevamente más tarde.')
+      setError(mensajeDeError(err))
     } finally {
       setEnviando(false)
     }
@@ -209,20 +180,16 @@ function ConfirmacionPedido() {
   if (pedidosConfirmados) {
     return (
       <div className="confirmar-pagina">
-        <div className="confirmar-mobile-header">
-          <div className="confirmar-mobile-titulo">Pedido confirmado</div>
-        </div>
-        <header className="confirmar-topbar">
-          <div className="confirmar-topbar-marca" onClick={() => navigate(rutaInicio())}>MarketDist</div>
-          <div className="confirmar-topbar-titulo">Pedido confirmado</div>
-        </header>
+        <Hdr logo={<span className="hdr-logo" onClick={() => navigate(rutaInicio())}><Marca /></span>}>
+          <span className="titulo1">Pedido confirmado</span>
+        </Hdr>
         <div className="confirmar-contenido">
-          <div className="confirmar-exito">
-            <div className="confirmar-exito-icono">✓</div>
-            <div className="confirmar-exito-titulo">¡Pedido confirmado!</div>
-            <div className="confirmar-exito-subtitulo">
+          <EstadoLista variante="exito" className="col gap-s confirmar-exito" style={{ alignItems: 'center' }}>
+            <span style={{ fontSize: 36 }}>✓</span>
+            <span className="texto" style={{ fontWeight: 700 }}>¡Pedido confirmado!</span>
+            <span>
               Se generaron {pedidosConfirmados.length} sub-pedido{pedidosConfirmados.length !== 1 ? 's' : ''} independiente{pedidosConfirmados.length !== 1 ? 's' : ''}.
-            </div>
+            </span>
             <div className="confirmar-exito-lista">
               {pedidosConfirmados.map((p, i) => (
                 <div key={p.pedidoId} className="confirmar-exito-item">
@@ -231,10 +198,10 @@ function ConfirmacionPedido() {
                 </div>
               ))}
             </div>
-            <button className="confirmar-exito-btn" onClick={() => navigate(rutaInicio())}>
+            <Boton onClick={() => navigate(rutaInicio())}>
               Volver al catálogo
-            </button>
-          </div>
+            </Boton>
+          </EstadoLista>
         </div>
       </div>
     )
@@ -243,16 +210,11 @@ function ConfirmacionPedido() {
   if (totalItems === 0) {
     return (
       <div className="confirmar-pagina">
-        <div className="confirmar-mobile-header">
-          <button type="button" className="confirmar-mobile-volver" onClick={() => navigate(-1)}>←</button>
-          <div className="confirmar-mobile-titulo">Confirmar pedido</div>
-        </div>
-        <header className="confirmar-topbar">
-          <div className="confirmar-topbar-marca" onClick={() => navigate(rutaInicio())}>MarketDist</div>
-          <div className="confirmar-topbar-titulo">Confirmar pedido</div>
-        </header>
+        <Hdr logo={<span className="hdr-logo" onClick={() => navigate(rutaInicio())}><Marca /></span>}>
+          <span className="titulo1">Confirmar pedido</span>
+        </Hdr>
         <div className="confirmar-contenido">
-          <div className="confirmar-vacio">El carrito está vacío. No hay pedido para confirmar.</div>
+          <EstadoLista>El carrito está vacío. No hay pedido para confirmar.</EstadoLista>
         </div>
       </div>
     )
@@ -268,16 +230,10 @@ function ConfirmacionPedido() {
         />
       )}
 
-      <div className="confirmar-mobile-header">
-        <button type="button" className="confirmar-mobile-volver" onClick={() => navigate('/carrito')}>←</button>
-        <div className="confirmar-mobile-titulo">Confirmar pedido</div>
-      </div>
-
-      <header className="confirmar-topbar">
-        <div className="confirmar-topbar-marca" onClick={() => navigate(rutaInicio())}>MarketDist</div>
-        <div className="confirmar-topbar-titulo">Confirmar pedido</div>
-        <button type="button" className="confirmar-topbar-link" onClick={() => navigate('/carrito')}>← Volver al carrito</button>
-      </header>
+      <Hdr logo={<span className="hdr-logo" onClick={() => navigate(rutaInicio())}><Marca /></span>}>
+        <span className="titulo1">Confirmar pedido</span>
+        <button type="button" className="link" onClick={() => navigate('/carrito')}>← Volver al carrito</button>
+      </Hdr>
 
       <div className="confirmar-contenido">
         <div className="confirmar-descripcion">
@@ -288,43 +244,41 @@ function ConfirmacionPedido() {
 
           <div className="confirmar-izquierda">
 
-            {/* Resumen */}
-            <div className="confirmar-card">
-              <div className="confirmar-card-titulo">Resumen del pedido</div>
+            <Tarjeta className="col gap-s">
+              <div className="titulo1">Resumen del pedido</div>
               {Object.entries(porDistribuidor).map(([distId, grupo]) => {
-                const subtotal = grupo.items.reduce((acc, i) => acc + Number(i.precioMinimo) * i.cantidad, 0)
+                const subtotal = grupo.items.reduce((acc, i) => acc + (precioAplicable(i.tarifas, i.cantidad) || 0) * i.cantidad, 0)
                 return (
                   <div key={distId} className="confirmar-resumen-grupo">
-                    <div className="confirmar-resumen-dist">{grupo.nombreDistribuidor}</div>
+                    <div className="texto-mudo">{grupo.nombreDistribuidor}</div>
                     {grupo.items.map(item => (
-                      <div key={item.id} className="confirmar-resumen-fila">
-                        <span>{item.nombre} × {item.cantidad}</span>
-                        <span>${(Number(item.precioMinimo) * item.cantidad).toLocaleString('es-AR')}</span>
+                      <div key={item.id} className="fila confirmar-resumen-fila" style={{ justifyContent: 'space-between' }}>
+                        <span className="texto">{item.nombre} × {item.cantidad}</span>
+                        <span className="texto">${((precioAplicable(item.tarifas, item.cantidad) || 0) * item.cantidad).toLocaleString('es-AR')}</span>
                       </div>
                     ))}
-                    <div className="confirmar-resumen-subtotal">
+                    <div className="fila confirmar-resumen-subtotal" style={{ justifyContent: 'space-between' }}>
                       <span>Subtotal</span>
                       <span>${subtotal.toLocaleString('es-AR')}</span>
                     </div>
                   </div>
                 )
               })}
-              <div className="confirmar-resumen-total">
-                <span>Total estimado</span>
-                <span>${totalEstimado.toLocaleString('es-AR')}</span>
+              <hr className="separador" />
+              <div className="fila" style={{ justifyContent: 'space-between' }}>
+                <span className="texto">Total estimado</span>
+                <span className="texto">${totalEstimado.toLocaleString('es-AR')}</span>
               </div>
-            </div>
+            </Tarjeta>
 
-            {/* Dirección */}
-            <div className="confirmar-card">
-              <div className="confirmar-card-titulo">Dirección de entrega</div>
+            <Tarjeta className="col gap-m">
+              <div className="titulo1">Dirección de entrega</div>
 
-              {/* Opción mapa */}
-              <div className="confirmar-dir-seccion">
-                <div className="confirmar-dir-seccion-titulo">Seleccionar en el mapa</div>
-                <div className="confirmar-dir-seccion-desc">
+              <div className="col gap-s confirmar-dir-seccion">
+                <div className="titulo1">Seleccionar en el mapa</div>
+                <p className="texto-mudo" style={{ margin: 0 }}>
                   Indicá el punto exacto de entrega arrastrando el pin.
-                </div>
+                </p>
 
                 {dirMapa && (
                   <div className="confirmar-dir-mapa-resultado">
@@ -338,37 +292,32 @@ function ConfirmacionPedido() {
                   </div>
                 )}
 
-                <button
-                  className={`confirmar-btn-mapa${dirMapa ? ' confirmar-btn-mapa--secundario' : ''}`}
-                  onClick={() => setMapaAbierto(true)}
-                >
+                <Boton variante="outline" onClick={() => setMapaAbierto(true)}>
                   {dirMapa ? '✏️ Cambiar ubicación en mapa' : '📍 Abrir mapa para seleccionar'}
-                </button>
+                </Boton>
 
                 {!dirMapa && !mostrarManual && (
-                  <div className="confirmar-dir-fallback-link" onClick={() => setMostrarManual(true)}>
+                  <button type="button" className="link confirmar-dir-fallback-link" onClick={() => setMostrarManual(true)}>
                     ¿No podés usar el mapa? Completá la dirección manualmente
-                  </div>
+                  </button>
                 )}
               </div>
 
-              {/* Opción manual: solo como respaldo, cuando el mapa no se puede usar */}
               {!dirMapa && mostrarManual && (
-              <div className="confirmar-dir-seccion">
-                <div className="confirmar-dir-fallback-link" onClick={() => setMostrarManual(false)}>
+              <div className="col gap-s confirmar-dir-seccion">
+                <button type="button" className="link confirmar-dir-fallback-link" onClick={() => setMostrarManual(false)}>
                   ← Usar el mapa en su lugar
-                </div>
+                </button>
 
                 <div className="confirmar-dir-campos">
 
-                  {/* Fila 1: Departamento + Ciudad */}
-                  <div className="confirmar-dir-fila">
-                    <div className="confirmar-dir-campo">
-                      <label className="confirmar-label">
+                  <div className="fila gap-m confirmar-dir-fila">
+                    <div className="col gap-s flex1 confirmar-dir-campo">
+                      <span className="texto">
                         Departamento <span className="confirmar-requerido">*</span>
-                      </label>
-                      <select
-                        className="confirmar-input confirmar-select"
+                      </span>
+                      <Campo
+                        as="select"
                         value={departamento}
                         onChange={e => handleDepartamentoChange(e.target.value)}
                       >
@@ -376,14 +325,13 @@ function ConfirmacionPedido() {
                         {DEPARTAMENTOS.map(d => (
                           <option key={d} value={d}>{d}</option>
                         ))}
-                      </select>
+                      </Campo>
                     </div>
-                    <div className="confirmar-dir-campo">
-                      <label className="confirmar-label">
+                    <div className="col gap-s flex1 confirmar-dir-campo">
+                      <span className="texto">
                         Ciudad / Localidad <span className="confirmar-requerido">*</span>
-                      </label>
-                      <input
-                        className="confirmar-input"
+                      </span>
+                      <Campo
                         type="text"
                         placeholder="Ej: Montevideo"
                         value={ciudad}
@@ -392,26 +340,23 @@ function ConfirmacionPedido() {
                     </div>
                   </div>
 
-                  {/* Fila 2: Calle + Número */}
-                  <div className="confirmar-dir-fila">
-                    <div className="confirmar-dir-campo confirmar-dir-campo--amplio">
-                      <label className="confirmar-label">
+                  <div className="fila gap-m confirmar-dir-fila">
+                    <div className="col gap-s confirmar-dir-campo confirmar-dir-campo--amplio">
+                      <span className="texto">
                         Calle <span className="confirmar-requerido">*</span>
-                      </label>
-                      <input
-                        className="confirmar-input"
+                      </span>
+                      <Campo
                         type="text"
                         placeholder="Ej: Av. 18 de Julio"
                         value={calle}
                         onChange={e => setCalle(e.target.value)}
                       />
                     </div>
-                    <div className="confirmar-dir-campo confirmar-dir-campo--angosto">
-                      <label className="confirmar-label">
+                    <div className="col gap-s confirmar-dir-campo confirmar-dir-campo--angosto">
+                      <span className="texto">
                         Número <span className="confirmar-requerido">*</span>
-                      </label>
-                      <input
-                        className="confirmar-input"
+                      </span>
+                      <Campo
                         type="text"
                         placeholder="Ej: 1234"
                         value={numero}
@@ -420,22 +365,19 @@ function ConfirmacionPedido() {
                     </div>
                   </div>
 
-                  {/* Fila 3: Esquina + Apto */}
-                  <div className="confirmar-dir-fila">
-                    <div className="confirmar-dir-campo">
-                      <label className="confirmar-label">Esquina / Entre calles</label>
-                      <input
-                        className="confirmar-input"
+                  <div className="fila gap-m confirmar-dir-fila">
+                    <div className="col gap-s flex1 confirmar-dir-campo">
+                      <span className="texto">Esquina / Entre calles</span>
+                      <Campo
                         type="text"
                         placeholder="Ej: Ejido"
                         value={esquina}
                         onChange={e => setEsquina(e.target.value)}
                       />
                     </div>
-                    <div className="confirmar-dir-campo">
-                      <label className="confirmar-label">Apartamento / Piso / Oficina</label>
-                      <input
-                        className="confirmar-input"
+                    <div className="col gap-s flex1 confirmar-dir-campo">
+                      <span className="texto">Apartamento / Piso / Oficina</span>
+                      <Campo
                         type="text"
                         placeholder="Ej: Apto 3B"
                         value={apto}
@@ -453,15 +395,14 @@ function ConfirmacionPedido() {
               )}
 
               {error && <div className="confirmar-error">{error}</div>}
-            </div>
+            </Tarjeta>
 
           </div>
 
-          {/* Panel derecho */}
           <div className="confirmar-derecha">
-            <div className="confirmar-card confirmar-card-accion">
-              <div className="confirmar-card-titulo">Tu pedido generará</div>
-              <div className="confirmar-accion-desc">
+            <Tarjeta className="col gap-s confirmar-card-accion">
+              <div className="titulo1">Tu pedido generará</div>
+              <p className="texto" style={{ margin: 0 }}>
                 Se crearán{' '}
                 <strong>
                   {Object.keys(porDistribuidor).length} sub-pedido
@@ -469,36 +410,33 @@ function ConfirmacionPedido() {
                   {Object.keys(porDistribuidor).length !== 1 ? 's' : ''}
                 </strong>
                 , uno por cada distribuidor. Cada uno quedará en estado <strong>Pendiente</strong>.
-              </div>
-              <button
-                className="confirmar-btn"
+              </p>
+              <Boton
                 onClick={handleConfirmar}
                 disabled={enviando || !puedeConfirmar}
               >
                 {enviando ? 'Confirmando...' : 'Confirmar pedido'}
-              </button>
-              <button type="button" className="confirmar-btn-volver" onClick={() => navigate('/carrito')}>
+              </Boton>
+              <button type="button" className="link confirmar-btn-volver" onClick={() => navigate('/carrito')}>
                 ← Volver al carrito
               </button>
-            </div>
+            </Tarjeta>
           </div>
 
         </div>
       </div>
 
-      {/* Footer mobile */}
       <div className="confirmar-mobile-footer">
         <div className="confirmar-mobile-footer-info">
           Se crearán {Object.keys(porDistribuidor).length} sub-pedido
           {Object.keys(porDistribuidor).length !== 1 ? 's' : ''}
         </div>
-        <button
-          className="confirmar-btn"
+        <Boton
           onClick={handleConfirmar}
           disabled={enviando || !puedeConfirmar}
         >
           {enviando ? 'Confirmando...' : 'Confirmar pedido'}
-        </button>
+        </Boton>
         {error && <div className="confirmar-error confirmar-error-mobile">{error}</div>}
       </div>
 

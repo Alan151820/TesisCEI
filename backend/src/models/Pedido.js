@@ -158,6 +158,10 @@ class Pedido {
     return res.rows
   }
 
+  // RF-039: total facturado y cantidad de pedidos entregados, del
+  // distribuidor, dentro de [fechaInicio, fechaFin). Se filtra por
+  // fecha_entregado (no fecha_creacion) porque un pedido creado en un
+  // período y entregado en otro debe contar en el período de su entrega.
   static async calcularTotalesEntregados(usuarioDistribuidorId, fechaInicio, fechaFin) {
     const res = await pool.query(
       `SELECT

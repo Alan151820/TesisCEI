@@ -1,13 +1,22 @@
 import { useState, useEffect } from 'react'
+import { mensajeDeError } from '../../lib/errores'
 import { useNavigate } from 'react-router-dom'
 import api from '../../lib/axios'
 import TarjetaProductoPreview from '../../components/TarjetaProductoPreview'
+import FormularioTramoPrecio from '../../components/FormularioTramoPrecio'
+import Hdr from '../../components/Hdr'
+import Tarjeta from '../../components/ui/Tarjeta'
+import Campo from '../../components/ui/Campo'
+import Boton from '../../components/ui/Boton'
+import Miga from '../../components/ui/Miga'
+import { convertirAWebP } from '../../lib/imagenProducto'
+import { totalDesdeDescuento, descuentoDesdeTotal, precioUnitario } from '../../lib/tramoPrecio'
 import './FichaProducto.css'
+import Marca from '../../components/Marca'
 
 function FichaProducto() {
   const navigate = useNavigate()
 
-  // --- Estado del producto ---
   const [categorias, setCategorias] = useState([])
   const [nombre, setNombre] = useState('')
   const [incluyeCantidad, setIncluyeCantidad] = useState(false)
@@ -25,8 +34,6 @@ function FichaProducto() {
   const [errorProducto, setErrorProducto] = useState('')
   const [cargandoProducto, setCargandoProducto] = useState(false)
 
-  // --- Precios por volumen: tramos adicionales, solo en memoria hasta
-  // guardar el producto. Se crean todos juntos en el mismo POST. ---
   const [tramosAdicionales, setTramosAdicionales] = useState([])
   const [mostrarFormPrecio, setMostrarFormPrecio] = useState(false)
   const [cantidadMinima, setCantidadMinima] = useState('')
@@ -34,12 +41,9 @@ function FichaProducto() {
   const [descuentoPct, setDescuentoPct] = useState('')
   const [errorPrecio, setErrorPrecio] = useState('')
 
-  // --- Descuento total: se aplica localmente sobre el precio base y los
-  // tramos adicionales todavía no guardados. ---
   const [descuentoTotal, setDescuentoTotal] = useState('')
   const [errorDescuento, setErrorDescuento] = useState('')
 
-  // --- Nombre comercial propio, para la previsualización de la tarjeta ---
   const [nombreDistribuidor, setNombreDistribuidor] = useState('')
 
   useEffect(() => {
@@ -51,32 +55,6 @@ function FichaProducto() {
       .catch(() => {})
   }, [])
 
-  const convertirAWebP = (archivo) =>
-    new Promise((resolve) => {
-      const img = new Image()
-      const url = URL.createObjectURL(archivo)
-      img.onload = () => {
-        const MAX = 900
-        let ancho = img.width
-        let alto = img.height
-        if (ancho > MAX) {
-          alto = Math.round((alto * MAX) / ancho)
-          ancho = MAX
-        }
-        const canvas = document.createElement('canvas')
-        canvas.width = ancho
-        canvas.height = alto
-        canvas.getContext('2d').drawImage(img, 0, 0, ancho, alto)
-        URL.revokeObjectURL(url)
-        canvas.toBlob(
-          (blob) => resolve(new File([blob], 'imagen.webp', { type: 'image/webp' })),
-          'image/webp',
-          0.85
-        )
-      }
-      img.src = url
-    })
-
   const handleImagenChange = async (e) => {
     const archivo = e.target.files[0]
     if (!archivo) return
@@ -85,9 +63,6 @@ function FichaProducto() {
     setImagenPreview(URL.createObjectURL(convertido))
   }
 
-  // El tramo se carga como precio total para la cantidad mínima (más fácil
-  // de pensar para packs/bultos); internamente se guarda como precio por
-  // unidad, que es lo que el resto del sistema espera (RF-015).
   const handleAgregarPrecio = () => {
     setErrorPrecio('')
     const cant = Number(cantidadMinima)
@@ -118,21 +93,14 @@ function FichaProducto() {
     setTramosAdicionales(prev => prev.filter(t => t.idLocal !== idLocal))
   }
 
-  // --- Vínculo bidireccional entre % de descuento y precio total del tramo,
-  // ambos relativos al precio base (cantidad 1). Cambiar cualquiera de los
-  // tres (cantidad, %, total) recalcula el que falte. ---
   const handleChangeCantidadMinima = (value) => {
     setCantidadMinima(value)
     const cant = Number(value)
     if (!precioBase || !cant) return
     if (descuentoPct !== '') {
-      const pct = Number(descuentoPct)
-      const total = Number(precioBase) * (1 - pct / 100) * cant
-      setPrecioVenta(total.toFixed(2))
+      setPrecioVenta(totalDesdeDescuento(precioBase, cant, descuentoPct))
     } else if (precioVenta !== '') {
-      const precioPorUnidad = Number(precioVenta) / cant
-      const pct = Number(precioBase) > 0 ? Math.round((1 - precioPorUnidad / Number(precioBase)) * 100) : 0
-      setDescuentoPct(String(pct))
+      setDescuentoPct(String(descuentoDesdeTotal(precioBase, cant, precioVenta)))
     }
   }
 
@@ -140,28 +108,18 @@ function FichaProducto() {
     setDescuentoPct(value)
     const cant = Number(cantidadMinima)
     if (value === '' || !precioBase || !cant) return
-    const pct = Number(value)
-    const precioPorUnidad = Number(precioBase) * (1 - pct / 100)
-    setPrecioVenta((precioPorUnidad * cant).toFixed(2))
+    setPrecioVenta(totalDesdeDescuento(precioBase, cant, value))
   }
 
   const handleChangePrecioVenta = (value) => {
     setPrecioVenta(value)
     const cant = Number(cantidadMinima)
     if (value === '' || !precioBase || !cant) return
-    const precioPorUnidad = Number(value) / cant
-    const pct = Number(precioBase) > 0 ? Math.round((1 - precioPorUnidad / Number(precioBase)) * 100) : 0
-    setDescuentoPct(String(pct))
+    setDescuentoPct(String(descuentoDesdeTotal(precioBase, cant, value)))
   }
 
-  const precioPorUnidadCalc = (cantidadMinima && precioVenta && Number(cantidadMinima) > 0)
-    ? Number(precioVenta) / Number(cantidadMinima)
-    : null
+  const precioPorUnidadCalc = precioUnitario(precioVenta, cantidadMinima)
 
-  // RF-015: se aplica al guardar (nunca en vivo mientras se escribe), y
-  // transforma los precios ya cargados en la pantalla — igual que antes,
-  // solo que ahora esos precios todavía viven en el navegador, no en el
-  // servidor.
   const handleAplicarDescuento = () => {
     setErrorDescuento('')
     const porcentaje = Number(descuentoTotal)
@@ -202,14 +160,12 @@ function FichaProducto() {
       await api.post('/api/productos', formData)
       navigate('/inicio')
     } catch (err) {
-      setErrorProducto(err.response?.data?.error || 'No fue posible completar la operación. Intente nuevamente más tarde.')
+      setErrorProducto(mensajeDeError(err))
     } finally {
       setCargandoProducto(false)
     }
   }
 
-  // Vista previa unificada: precio base (fila fija, cantidad 1) + tramos
-  // adicionales cargados hasta ahora, ordenados por cantidad mínima.
   const preciosPreview = [
     ...(precioBase ? [{ idLocal: 'base', cantidadMinima: 1, precioVenta: Number(precioBase), precioCosto: null, esBase: true }] : []),
     ...tramosAdicionales,
@@ -217,13 +173,10 @@ function FichaProducto() {
 
   const precioBaseRef = precioBase ? Number(precioBase) : null
 
-  // La cantidad (ej. "x6") es solo una ayuda para armar el nombre — no se
-  // guarda como campo aparte, se agrega directamente al texto del nombre.
   const nombreEfectivo = incluyeCantidad && cantidadNombre
     ? `${nombre.trim()} x${cantidadNombre}`
     : nombre
 
-  // --- Datos para la previsualización de la tarjeta del catálogo ---
   const categoriaNombre = categorias.find(c => String(c.id) === String(categoriaId))?.nombre
   const precioMinimoPreview = preciosPreview.length > 0
     ? Math.min(...preciosPreview.map(p => Number(p.precioVenta)))
@@ -231,22 +184,21 @@ function FichaProducto() {
 
   return (
     <div className="ficha-fondo">
-      <div className="ficha-mobile-header" data-tema="oscuro">
+      <Hdr className="ficha-hdr-desktop" logo={<span className="hdr-logo" onClick={() => navigate('/inicio')}><Marca /></span>}>
+        <span className="link" onClick={() => navigate('/inicio')}>← Volver a mis productos</span>
+      </Hdr>
+      <div className="ficha-mobile-header">
         <button type="button" className="ficha-mobile-volver" onClick={() => navigate('/inicio')}>←</button>
         <div className="ficha-mobile-titulo">Nuevo producto</div>
       </div>
       <div className="ficha-contenedor">
 
-        <div className="ficha-breadcrumb">
-          <span className="ficha-breadcrumb-link" onClick={() => navigate('/inicio')}>Mis productos</span>
-          <span className="ficha-breadcrumb-sep">›</span>
-          <span>Nuevo producto</span>
-        </div>
+        <Miga className="ficha-breadcrumb" items={[{ etiqueta: 'Mis productos', to: '/inicio' }, { etiqueta: 'Nuevo producto' }]} />
 
         <div className="ficha-layout">
           <div className="ficha-columna-principal">
 
-            <div className="ficha-card">
+            <Tarjeta className="ficha-card">
               <div className="ficha-card-titulo">Datos del producto</div>
 
               <div className="ficha-info-box">
@@ -296,17 +248,16 @@ function FichaProducto() {
                       </div>
                     </div>
                     <div className="ficha-nombre-fila">
-                      <input
+                      <Campo
                         type="text"
-                        className="ficha-input"
                         value={nombre}
                         onChange={e => setNombre(e.target.value)}
                         placeholder="Ej: Gaseosa"
                       />
                       {incluyeCantidad && (
-                        <input
+                        <Campo
                           type="number"
-                          className="ficha-input ficha-input-cantidad"
+                          className="ficha-input-cantidad"
                           min="1"
                           step="1"
                           placeholder="Ej: 6"
@@ -320,9 +271,8 @@ function FichaProducto() {
 
                   <div className="ficha-campo">
                     <label className="ficha-label">Marca <span className="ficha-requerido">*</span></label>
-                    <input
+                    <Campo
                       type="text"
-                      className="ficha-input"
                       value={marca}
                       onChange={e => setMarca(e.target.value)}
                       placeholder="Ej: Coca Cola"
@@ -335,16 +285,16 @@ function FichaProducto() {
                 <div className="ficha-campo">
                   <label className="ficha-label">Contenido / Longitud <span className="ficha-ayuda-inline">opcional</span></label>
                   <div className="ficha-magnitud">
-                    <input
+                    <Campo
                       type="number"
-                      className="ficha-input"
+                      className="ficha-magnitud-valor"
                       min="0"
                       step="0.01"
                       placeholder="Ej: 1.5"
                       value={magnitudValor}
                       onChange={e => setMagnitudValor(e.target.value)}
                     />
-                    <select className="ficha-select" value={magnitudUnidad} onChange={e => setMagnitudUnidad(e.target.value)}>
+                    <Campo as="select" className="ficha-magnitud-unidad" value={magnitudUnidad} onChange={e => setMagnitudUnidad(e.target.value)}>
                       <option value="">—</option>
                       <option value="kg">kg</option>
                       <option value="g">g</option>
@@ -352,32 +302,31 @@ function FichaProducto() {
                       <option value="l">L</option>
                       <option value="cm">cm</option>
                       <option value="m">m</option>
-                    </select>
+                    </Campo>
                   </div>
                   <span className="ficha-ayuda">Solo arma el título. No afecta precio ni stock.</span>
                 </div>
 
                 <div className="ficha-campo">
                   <label className="ficha-label">Categoría <span className="ficha-requerido">*</span></label>
-                  <select className="ficha-select" value={categoriaId} onChange={e => setCategoriaId(e.target.value)}>
+                  <Campo as="select" value={categoriaId} onChange={e => setCategoriaId(e.target.value)}>
                     <option value="">Seleccioná una categoría</option>
                     {categorias.map(cat => (
                       <option key={cat.id} value={cat.id}>{cat.nombre}</option>
                     ))}
-                  </select>
+                  </Campo>
                 </div>
               </div>
 
               <div className="ficha-campo">
                 <label className="ficha-label">Descripción</label>
-                <textarea className="ficha-textarea" value={descripcion} onChange={e => setDescripcion(e.target.value)} placeholder="Descripción del producto" />
+                <Campo area value={descripcion} onChange={e => setDescripcion(e.target.value)} placeholder="Descripción del producto" />
               </div>
 
               <div className="ficha-campo">
                 <label className="ficha-label">Precio <span className="ficha-requerido">*</span></label>
-                <input
+                <Campo
                   type="number"
-                  className="ficha-input"
                   min="0.01"
                   step="0.01"
                   placeholder="Ej: 9000"
@@ -389,29 +338,27 @@ function FichaProducto() {
               <div className="ficha-fila-dos">
                 <div className="ficha-campo">
                   <label className="ficha-label">Stock inicial <span className="ficha-requerido">*</span></label>
-                  <input type="number" className="ficha-input ficha-input-angosto" min="0" value={stockInicial} onChange={e => setStockInicial(e.target.value)} placeholder="0" />
+                  <Campo type="number" className="ficha-input-angosto" min="0" value={stockInicial} onChange={e => setStockInicial(e.target.value)} placeholder="0" />
                   <span className="ficha-ayuda">Cantidad de este producto que tenés disponible para vender.</span>
                 </div>
                 <div className="ficha-campo">
                   <label className="ficha-label">Precio de costo <span className="ficha-ayuda-inline">opcional</span></label>
-                  <input type="number" className="ficha-input ficha-input-angosto" min="0" step="0.01" placeholder="Opcional" value={precioCosto} onChange={e => setPrecioCosto(e.target.value)} />
+                  <Campo type="number" className="ficha-input-angosto" min="0" step="0.01" placeholder="Opcional" value={precioCosto} onChange={e => setPrecioCosto(e.target.value)} />
                   <span className="ficha-ayuda">Lo que te cuesta a vos este producto.</span>
                 </div>
               </div>
-            </div>
+            </Tarjeta>
 
-            {/* Sección precios por volumen */}
-            <div className="ficha-card">
+            <Tarjeta className="ficha-card">
               <div className="ficha-precios-header">
                 <div className="ficha-card-titulo">Precios por volumen</div>
                 {!mostrarFormPrecio && (
-                  <button className="ficha-btn-agregar-precio" onClick={() => setMostrarFormPrecio(true)}>
+                  <Boton variante="outline" onClick={() => setMostrarFormPrecio(true)}>
                     + Agregar tramo
-                  </button>
+                  </Boton>
                 )}
               </div>
 
-              {/* Tabla de precios (vista previa, todavía no guardada) */}
               {preciosPreview.length > 0 && (
                 <div className="ficha-precios-tabla">
                   <div className="ficha-precios-thead">
@@ -446,83 +393,33 @@ function FichaProducto() {
                 </div>
               )}
 
-              {/* Formulario inline para agregar precio */}
               {mostrarFormPrecio && (
-                <div className="ficha-form-precio">
-                  <div className="ficha-fila-tres">
-                    <div className="ficha-campo">
-                      <label className="ficha-label">Cantidad (desde) <span className="ficha-requerido">*</span></label>
-                      <input
-                        type="number"
-                        className="ficha-input"
-                        min="1"
-                        step="1"
-                        placeholder="Ej: 10"
-                        value={cantidadMinima}
-                        onChange={e => handleChangeCantidadMinima(e.target.value)}
-                      />
-                      <span className="ficha-ayuda">Aplica a partir de esa cantidad de unidades.</span>
-                    </div>
-                    <div className="ficha-campo">
-                      <label className="ficha-label">Descuento %</label>
-                      <input
-                        type="number"
-                        className="ficha-input"
-                        min="0"
-                        max="99"
-                        step="1"
-                        placeholder="Ej: 12"
-                        value={descuentoPct}
-                        onChange={e => handleChangeDescuentoPct(e.target.value)}
-                      />
-                      <span className="ficha-ayuda">Sobre el precio base.</span>
-                    </div>
-                    <div className="ficha-campo">
-                      <label className="ficha-label">Precio total <span className="ficha-requerido">*</span></label>
-                      <input
-                        type="number"
-                        className="ficha-input"
-                        min="0.01"
-                        step="0.01"
-                        placeholder="Ej: 8100.00"
-                        value={precioVenta}
-                        onChange={e => handleChangePrecioVenta(e.target.value)}
-                      />
-                    </div>
-                  </div>
-                  <div className="ficha-campo">
-                    <label className="ficha-label">Precio por unidad</label>
-                    <input
-                      type="text"
-                      className="ficha-input ficha-input-solo-lectura ficha-input-angosto"
-                      readOnly
-                      value={precioPorUnidadCalc != null ? `$${precioPorUnidadCalc.toFixed(2)}` : '—'}
-                    />
-                  </div>
-                  {errorPrecio && <div className="ficha-error">{errorPrecio}</div>}
-                  <div className="ficha-form-precio-acciones">
-                    <button className="ficha-btn-guardar" onClick={handleAgregarPrecio}>
-                      Agregar tramo
-                    </button>
-                    <button className="ficha-btn-cancelar" onClick={() => { setMostrarFormPrecio(false); setErrorPrecio(''); setDescuentoPct('') }}>
-                      Cancelar
-                    </button>
-                  </div>
-                </div>
+                <FormularioTramoPrecio
+                  cantidadMinima={cantidadMinima}
+                  descuentoPct={descuentoPct}
+                  precioVenta={precioVenta}
+                  precioPorUnidadCalc={precioPorUnidadCalc}
+                  onCantidad={handleChangeCantidadMinima}
+                  onDescuento={handleChangeDescuentoPct}
+                  onPrecio={handleChangePrecioVenta}
+                  onGuardar={handleAgregarPrecio}
+                  onCancelar={() => { setMostrarFormPrecio(false); setErrorPrecio(''); setDescuentoPct('') }}
+                  textoGuardar="Agregar tramo"
+                  error={errorPrecio}
+                />
               )}
 
               <div className="ficha-precios-nota">
                 La cantidad de cada tramo se cuenta en la misma unidad que cargaste como producto: si cargaste un pack, la cantidad se mide en packs; si cargaste una unidad individual, se mide en unidades individuales.
               </div>
-            </div>
+            </Tarjeta>
 
-            {/* Descuento total */}
-            <div className="ficha-card">
+            <Tarjeta className="ficha-card">
               <div className="ficha-card-titulo">Descuento total</div>
               <div className="ficha-descuento-fila">
-                <input
+                <Campo
                   type="number"
-                  className="ficha-input ficha-input-angosto"
+                  className="ficha-input-angosto"
                   min="0"
                   max="99"
                   placeholder="0"
@@ -530,32 +427,32 @@ function FichaProducto() {
                   onChange={e => setDescuentoTotal(e.target.value)}
                 />
                 <span className="ficha-ayuda-inline">% sobre todos los precios</span>
-                <button className="ficha-btn-guardar" onClick={handleAplicarDescuento}>
+                <Boton onClick={handleAplicarDescuento}>
                   Aplicar
-                </button>
+                </Boton>
               </div>
               {errorDescuento && <div className="ficha-error">{errorDescuento}</div>}
               <span className="ficha-ayuda">Al aplicar, baja ese porcentaje en el precio base y en todos los tramos cargados hasta ahora. Se guarda todo junto al guardar el producto.</span>
-            </div>
+            </Tarjeta>
 
             {errorProducto && <div className="ficha-error">{errorProducto}</div>}
 
           </div>
 
           <div className="ficha-sidebar">
-            <div className="ficha-card ficha-card-estado">
+            <Tarjeta className="ficha-card ficha-card-estado">
               <div className="ficha-sidebar-titulo">Estado</div>
               <div className="ficha-estado-texto">Pausado</div>
               <span className="ficha-estado-nota">El producto se crea pausado. Publicalo una vez que tenga precios.</span>
-            </div>
-            <div className="ficha-card">
-              <button className="ficha-btn-guardar" onClick={handleGuardarProducto} disabled={cargandoProducto}>
+            </Tarjeta>
+            <Tarjeta className="ficha-card col gap-s">
+              <Boton onClick={handleGuardarProducto} disabled={cargandoProducto}>
                 {cargandoProducto ? 'Guardando…' : 'Guardar producto'}
-              </button>
-              <button className="ficha-btn-cancelar" onClick={() => navigate('/inicio')} disabled={cargandoProducto}>
-               Cancelar
-              </button>
-            </div>
+              </Boton>
+              <Boton variante="outline" onClick={() => navigate('/inicio')} disabled={cargandoProducto}>
+                Cancelar
+              </Boton>
+            </Tarjeta>
 
             <div className="ficha-preview-bloque">
               <div className="ficha-sidebar-titulo">Así se va a ver en el catálogo</div>

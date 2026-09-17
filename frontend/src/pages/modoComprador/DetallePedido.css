@@ -4,8 +4,7 @@
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  background: var(--color-variante-superficie);
-  font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  background: var(--color-superficie);
 }
 
 .detallepedido-main {
@@ -22,16 +21,10 @@
   .detallepedido-main { padding: 16px; }
 }
 
-/* RF-069: el comprador cancela su propio pedido. Reutiliza los colores
-   de .pedidos-accion-btn (mismo botón que ya usa el lado distribuidor
-   para sus acciones), pero sin el panel "Acciones" que lo rodeaba antes
-   (a pedido del usuario) — así que acá, suelto en la tarjeta, se le pisa
-   el tamaño de "fila de lista" (ancho 100%, texto a la izquierda) por
-   uno de botón estándar: ancho según su contenido, texto centrado. */
 .detallepedido-tarjeta > .pedidos-accion-btn {
   margin-top: 16px;
   width: auto;
-  height: 36px;
+  height: var(--alto-control);
   padding: 0 20px;
   text-align: center;
   display: inline-flex;
@@ -40,19 +33,19 @@
 }
 
 .pedidos-accion-btn {
-  font-size: 12px;
+  font-size: var(--fuente-control);
   padding: 5px 10px;
-  border-radius: 4px;
-  border: 1px solid var(--color-contorno);
-  background: var(--color-contenedor-superficie-bajo);
-  color: var(--color-sobre-superficie);
+  border-radius: var(--radio-control);
+  border: 1px solid var(--color-borde);
+  background: var(--color-superficie);
+  color: var(--color-texto);
   cursor: pointer;
   text-align: left;
   width: 100%;
 }
 
 .pedidos-accion-btn:hover {
-  background: var(--color-contenedor-superficie);
+  background: var(--color-superficie);
 }
 
 .pedidos-accion-btn--peligro {
@@ -62,15 +55,15 @@
 }
 
 .pedidos-accion-btn--peligro:hover {
-  background: var(--color-contenedor-error);
-  color: var(--color-sobre-contenedor-error);
+  background: var(--color-error-suave);
+  color: var(--color-sobre-error-suave);
 }
 
 .pedidos-error-accion {
   font-size: 12px;
-  color: var(--color-error);
-  background: var(--color-contenedor-error);
+  color: var(--color-sobre-error-suave);
+  background: var(--color-error-suave);
   padding: 6px 14px;
-  border: 1px solid var(--color-variante-contorno);
+  border: 1px solid var(--color-borde);
   border-top: none;
 }

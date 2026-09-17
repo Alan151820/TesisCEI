@@ -1,0 +1,11 @@
+.esqueleto {
+  display: block;
+  background: var(--color-borde);
+  border-radius: 8px;
+  animation: esqueleto-pulso 1.4s ease-in-out infinite;
+}
+
+@keyframes esqueleto-pulso {
+  0%, 100% { opacity: .45; }
+  50% { opacity: .9; }
+}

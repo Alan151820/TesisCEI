@@ -6,7 +6,7 @@
   display: block;
   font-size: 12px;
   font-weight: 600;
-  color: var(--color-sobre-superficie);
+  color: var(--color-texto);
   margin-bottom: 5px;
 }
 
@@ -18,38 +18,38 @@
 .campo-ubicacion-mapa-input {
   flex: 1;
   min-width: 0;
-  height: 38px;
+  height: var(--alto-control);
   padding: 0 12px;
-  border: 1px solid var(--color-contorno);
-  border-radius: 4px;
-  background: var(--color-contenedor-superficie-minimo);
-  font-size: 13px;
-  color: var(--color-sobre-superficie);
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radio-control);
+  background: var(--color-fondo);
+  font-size: var(--fuente-control);
+  color: var(--color-texto);
   box-sizing: border-box;
   font-family: inherit;
 }
 
 .campo-ubicacion-mapa-input::placeholder {
-  color: var(--color-sobre-variante-superficie);
+  color: var(--color-texto-suave);
 }
 
 .campo-ubicacion-mapa-boton {
-  height: 38px;
+  height: var(--alto-control);
   flex-shrink: 0;
-  border-radius: 4px;
+  border-radius: var(--radio-control);
   padding: 0 16px;
-  font-size: 13px;
+  font-size: var(--fuente-control);
   font-weight: 500;
   cursor: pointer;
-  background: var(--color-contenedor-superficie-minimo);
-  color: var(--color-sobre-superficie);
-  border: 1px solid var(--color-contorno);
+  background: var(--color-fondo);
+  color: var(--color-texto);
+  border: 1px solid var(--color-borde);
   font-family: inherit;
   white-space: nowrap;
 }
 
 .campo-ubicacion-mapa-boton:hover {
-  background: var(--color-contenedor-superficie-bajo);
+  background: var(--color-superficie);
 }
 
 @media (max-width: 600px) {
@@ -60,6 +60,6 @@
 
   .campo-ubicacion-mapa-input,
   .campo-ubicacion-mapa-boton {
-    height: 44px;
+    height: var(--alto-control);
   }
 }
