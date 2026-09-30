@@ -38,7 +38,7 @@ function Registro() {
         consentimientoDatosOtorgado: consentimientoAceptado
       })
       setMensaje(res.data.mensaje)
-      navigate('/verificar', { state: { telefono, nombre, codigoDev: res.data.codigo_dev } })
+      navigate('/verificar', { state: { telefono, nombre } })
     } catch (error) {
       setMensaje(mensajeDeError(error))
     }

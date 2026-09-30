@@ -28,10 +28,6 @@
 }
 
 @media (max-width: 768px) {
-  .catalogo-btn-auth {
-    display: none;
-  }
-
   .catalogo-contenido {
     padding: 12px 14px 80px;
   }

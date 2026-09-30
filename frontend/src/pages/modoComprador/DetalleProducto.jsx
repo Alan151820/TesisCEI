@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { mensajeDeError } from '../../lib/errores'
 import { useParams, useNavigate } from 'react-router-dom'
 import api from '../../lib/axios'
+import { rutaInicio } from '../../lib/auth'
 import { useCarrito } from '../../context/CarritoContext'
 import { precioAplicable } from '../../lib/precios'
 import CampanaNotificaciones from '../../components/CampanaNotificaciones'
@@ -75,38 +76,23 @@ function DetalleProducto() {
   return (
     <div className="detalleproducto-layout">
 
-      <header className={token ? 'detalleproducto-header-autenticado' : 'detalleproducto-header'}>
-        <div className="detalleproducto-header-marca" onClick={() => navigate('/')}>MarketDist</div>
-        <div className="detalleproducto-header-buscador">
-          <span className="detalleproducto-header-buscador-icono">🔍</span>
-          <span className="detalleproducto-header-buscador-texto">Buscar productos…</span>
-        </div>
-        <div className={token ? 'detalleproducto-acciones-auth' : 'detalleproducto-header-acciones'}>
-          <button className="detalleproducto-btn-carrito" onClick={() => navigate('/carrito')}>
-            🛒{totalItems > 0 && <span className="detalleproducto-carrito-badge">{totalItems}</span>}
-          </button>
-          {token ? (
-            <>
-              <span className="detalleproducto-nav-link" onClick={() => navigate(modoDistribuidorActivo ? '/inicio' : '/configurarPerfil')}>
-                Distribuidora
-              </span>
-              <CampanaNotificaciones rutaDestino="/misPedidos" rutaDetalle="/pedido" />
-              <div className="detalleproducto-perfil">
-                <div className="detalleproducto-avatar">{iniciales}</div>
-                <span className="detalleproducto-nombre-usuario">{nombre}</span>
-              </div>
-              <button className="detalleproducto-btn-cerrar-sesion" onClick={cerrarSesion}>
-                Cerrar sesión
-              </button>
-            </>
-          ) : (
-            <>
-              <button className="detalleproducto-btn-login" onClick={() => navigate('/login')}>Iniciar sesión</button>
-              <button className="detalleproducto-btn-registro" onClick={() => navigate('/registro')}>Registrarse</button>
-            </>
-          )}
-        </div>
-      </header>
+      <Hdr logo={<span className="hdr-logo" onClick={() => navigate(rutaInicio())}><Marca /></span>} buscador>
+        {token ? (
+          <>
+            <span className="link comprador-nav-link" onClick={() => navigate('/misPedidos')}>Mis pedidos</span>
+            <span className="link comprador-nav-link" onClick={() => navigate(modoDistribuidorActivo ? '/inicio' : '/configurarPerfil')}>Distribuidora</span>
+            <CampanaNotificaciones rutaDestino="/misPedidos" rutaDetalle="/pedido" />
+            <Boton variante="icono" className="hdr-btn-carrito" badge={totalItems} onClick={() => navigate('/carrito')} aria-label="Carrito">🛒</Boton>
+            <MenuPerfilComprador />
+          </>
+        ) : (
+          <>
+            <Boton variante="icono" className="hdr-btn-carrito" badge={totalItems} onClick={() => navigate('/carrito')} aria-label="Carrito">🛒</Boton>
+            <Boton variante="ghost" onClick={() => navigate('/login')}>Iniciar sesión</Boton>
+            <Boton variante="fill" onClick={() => navigate('/registro')}>Registrarse</Boton>
+          </>
+        )}
+      </Hdr>
 
       <div className="detalleproducto-contenido">
         <Boton variante="ghost" onClick={() => navigate(-1)} style={{ marginBottom: 8 }}>← Volver</Boton>

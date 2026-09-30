@@ -19,7 +19,13 @@ function getUserKey() {
 function cargarDesdeStorage(key) {
   try {
     const raw = localStorage.getItem(`${STORAGE_PREFIX}_${key}`)
-    return raw ? JSON.parse(raw) : []
+    const items = raw ? JSON.parse(raw) : []
+    // Ítems guardados antes de que el carrito persistiera `tarifas`: se usa su precio de referencia.
+    return items.map(i =>
+      i.tarifas?.length || !i.precioVenta
+        ? i
+        : { ...i, tarifas: [{ cantidadMinima: 1, precioVenta: i.precioVenta }] }
+    )
   } catch {
     return []
   }
@@ -62,6 +68,7 @@ export function CarritoProvider({ children }) {
         precioMinimo: producto.precioMinimo,
         precioVolumenId: producto.precioVolumenId || null,
         precioVenta: producto.tarifaSeleccionada?.precioVenta || producto.precioMinimo,
+        tarifas: producto.tarifas || [],
         cantidad: producto.cantidad || cantidad,
       }]
     })

@@ -60,6 +60,7 @@ class Usuario {
     const codigo = CodigoVerificacion.generarCodigo()
     const expiracion = CodigoVerificacion.calcularExpiracion()
     await CodigoVerificacion.crear(usuarioId, codigo, 'activacion_cuenta', expiracion)
+    console.log(`[DEV] Código de verificación para ${telefono}: ${codigo}`)
 
     try {
       await client.messages.create({
@@ -70,8 +71,6 @@ class Usuario {
     } catch (twilioError) {
       console.log('SMS no enviado:', twilioError.message)
     }
-
-    return codigo
   }
 
   static async verificarCodigoActivacion(telefono, codigo) {
@@ -128,6 +127,7 @@ class Usuario {
     const expiracion = CodigoVerificacion.calcularExpiracion()
 
     await CodigoVerificacion.crear(resultado.rows[0].id, codigo, 'recuperacion_password', expiracion)
+    console.log(`[DEV] Código de recuperación para ${telefono}: ${codigo}`)
 
     try {
       await client.messages.create({
@@ -138,8 +138,6 @@ class Usuario {
     } catch (twilioError) {
       console.log('SMS no enviado:', twilioError.message)
     }
-
-    return codigo
   }
 
   static async verificarCodigoRecuperacion(telefono, codigo) {

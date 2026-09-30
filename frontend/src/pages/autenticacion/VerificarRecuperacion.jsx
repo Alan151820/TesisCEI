@@ -18,7 +18,6 @@ function VerificarRecuperacion() {
   const navigate = useNavigate()
   const location = useLocation()
   const telefono = location.state?.telefono
-  const codigoDev = location.state?.codigoDev
 
   const handleVerificar = async () => {
     try {
@@ -40,8 +39,6 @@ function VerificarRecuperacion() {
           <p className="texto-mudo">Ingresá el código que te enviamos al {telefono}</p>
 
           <Stepper pasos={PASOS} pasoActivo={2} />
-
-          {codigoDev && <p className="texto-mudo">Código de desarrollo: {codigoDev}</p>}
 
           <div className="col gap-s">
             <span className="texto">Código de verificación</span>
