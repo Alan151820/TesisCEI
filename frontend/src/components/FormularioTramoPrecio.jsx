@@ -6,9 +6,11 @@ function FormularioTramoPrecio({
   descuentoPct,
   precioVenta,
   precioPorUnidadCalc,
+  precioCosto,
   onCantidad,
   onDescuento,
   onPrecio,
+  onCosto,
   onGuardar,
   onCancelar,
   textoGuardar,
@@ -55,14 +57,29 @@ function FormularioTramoPrecio({
           />
         </div>
       </div>
-      <div className="ficha-campo">
-        <label className="ficha-label">Precio por unidad</label>
-        <Campo
-          type="text"
-          className="ficha-input-solo-lectura ficha-input-angosto"
-          readOnly
-          value={precioPorUnidadCalc != null ? `$${precioPorUnidadCalc.toFixed(2)}` : '—'}
-        />
+      <div className="ficha-fila-dos">
+        <div className="ficha-campo">
+          <label className="ficha-label">Precio por unidad</label>
+          <Campo
+            type="text"
+            className="ficha-input-solo-lectura ficha-input-angosto"
+            readOnly
+            value={precioPorUnidadCalc != null ? `$${precioPorUnidadCalc.toFixed(2)}` : '—'}
+          />
+        </div>
+        <div className="ficha-campo">
+          <label className="ficha-label">Costo por unidad <span className="ficha-ayuda-inline">opcional</span></label>
+          <Campo
+            type="number"
+            className="ficha-input-angosto"
+            min="0"
+            step="0.01"
+            placeholder="Opcional"
+            value={precioCosto}
+            onChange={e => onCosto(e.target.value)}
+          />
+          <span className="ficha-ayuda">Lo que te cuesta a vos cada unidad.</span>
+        </div>
       </div>
       {error && <div className="ficha-error">{error}</div>}
       <div className="ficha-form-precio-acciones">

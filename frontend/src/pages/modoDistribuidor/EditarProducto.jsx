@@ -52,6 +52,7 @@ function EditarProducto() {
   const [cantidadMinima, setCantidadMinima] = useState('')
   const [precioVenta, setPrecioVenta] = useState('')
   const [descuentoPct, setDescuentoPct] = useState('')
+  const [costoTramo, setCostoTramo] = useState('')
   const [errorPrecio, setErrorPrecio] = useState('')
   const [cargandoPrecio, setCargandoPrecio] = useState(false)
 
@@ -135,12 +136,13 @@ function EditarProducto() {
       const precioPorUnidad = Number(precioVenta) / Number(cantidadMinima)
       const res = await api.post(
         `/api/productos/${id}/precios`,
-        { cantidadMinima, precioVenta: precioPorUnidad }
+        { cantidadMinima, precioVenta: precioPorUnidad, precioCosto: costoTramo }
       )
       setPrecios(prev => [...prev, res.data.precio])
       setCantidadMinima('')
       setPrecioVenta('')
       setDescuentoPct('')
+      setCostoTramo('')
       setMostrarFormPrecio(false)
     } catch (err) {
       setErrorPrecio(mensajeDeError(err))
@@ -156,13 +158,15 @@ function EditarProducto() {
       const precioPorUnidad = Number(precioVenta) / Number(cantidadMinima)
       const res = await api.put(
         `/api/productos/${id}/precios/${precioId}`,
-        { cantidadMinima, precioVenta: precioPorUnidad }
+        { cantidadMinima, precioVenta: precioPorUnidad, precioCosto: costoTramo }
       )
       setPrecios(prev => prev.map(p => p.id === precioId ? res.data.precio : p))
+      if (Number(res.data.precio.cantidadMinima) === 1) setPrecioCosto(res.data.precio.precioCosto ?? '')
       setEditandoPrecioId(null)
       setCantidadMinima('')
       setPrecioVenta('')
       setDescuentoPct('')
+      setCostoTramo('')
     } catch (err) {
       setErrorPrecio(mensajeDeError(err))
     } finally {
@@ -231,6 +235,7 @@ function EditarProducto() {
     const total = Number(p.precioVenta) * Number(p.cantidadMinima)
     setPrecioVenta(total.toFixed(2))
     setDescuentoPct(String(descuentoDesdeTotal(precioBaseRef, p.cantidadMinima, total)))
+    setCostoTramo(p.precioCosto ?? '')
     setMostrarFormPrecio(false)
     setErrorPrecio('')
   }
@@ -240,6 +245,7 @@ function EditarProducto() {
     setCantidadMinima('')
     setPrecioVenta('')
     setDescuentoPct('')
+    setCostoTramo('')
     setErrorPrecio('')
   }
 
@@ -460,9 +466,11 @@ function EditarProducto() {
                           descuentoPct={descuentoPct}
                           precioVenta={precioVenta}
                           precioPorUnidadCalc={precioPorUnidadCalc}
+                          precioCosto={costoTramo}
                           onCantidad={handleChangeCantidadMinima}
                           onDescuento={handleChangeDescuentoPct}
                           onPrecio={handleChangePrecioVenta}
+                          onCosto={setCostoTramo}
                           onGuardar={() => handleEditarPrecio(p.id)}
                           onCancelar={cancelarEdicionPrecio}
                           textoGuardar="Guardar cambios"
@@ -496,11 +504,13 @@ function EditarProducto() {
                   descuentoPct={descuentoPct}
                   precioVenta={precioVenta}
                   precioPorUnidadCalc={precioPorUnidadCalc}
+                  precioCosto={costoTramo}
                   onCantidad={handleChangeCantidadMinima}
                   onDescuento={handleChangeDescuentoPct}
                   onPrecio={handleChangePrecioVenta}
+                  onCosto={setCostoTramo}
                   onGuardar={handleAgregarPrecio}
-                  onCancelar={() => { setMostrarFormPrecio(false); setErrorPrecio(''); setDescuentoPct('') }}
+                  onCancelar={() => { setMostrarFormPrecio(false); setErrorPrecio(''); setDescuentoPct(''); setCostoTramo('') }}
                   textoGuardar="Guardar tramo"
                   error={errorPrecio}
                   cargando={cargandoPrecio}
