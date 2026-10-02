@@ -14,6 +14,7 @@ CREATE TABLE usuario (
   cuenta_verificada BOOLEAN NOT NULL DEFAULT FALSE,
   consentimiento_datos_otorgado BOOLEAN NOT NULL DEFAULT FALSE,
   fecha_creacion TIMESTAMP NOT NULL DEFAULT NOW(),
+  sesion_valida_desde TIMESTAMP,
   CONSTRAINT usuario_consentimiento_otorgado CHECK (consentimiento_datos_otorgado = true)
 );
 
