@@ -85,4 +85,14 @@ const activarModoDistribuidor = async (req, res) => {
   }
 }
 
-export { registro, verificar, login, recuperarContrasena, verificarRecuperacion, nuevaContrasena, activarModoDistribuidor }
+const cerrarSesion = async (req, res, next) => {
+  try {
+    const usuario = await Usuario.obtenerPorId(req.usuario.id)
+    await usuario.cerrarSesion()
+    res.json({ mensaje: 'Sesión cerrada correctamente.' })
+  } catch (error) {
+    next(error)
+  }
+}
+
+export { registro, verificar, login, recuperarContrasena, verificarRecuperacion, nuevaContrasena, activarModoDistribuidor, cerrarSesion }

@@ -46,21 +46,4 @@ async function eliminarPrecio(productoId, precioId, usuarioId) {
   return precio.eliminar()
 }
 
-async function aplicarDescuentoTotal(productoId, usuarioId, porcentaje) {
-  await verificarProductoDelDistribuidor(productoId, usuarioId)
-
-  if (!porcentaje || porcentaje <= 0) {
-    return PrecioVolumen.listarPorProducto(productoId)
-  }
-  if (porcentaje >= 100) {
-    const e = new Error()
-    e.status = 400
-    e.mensaje = 'El descuento total debe ser menor a 100%.'
-    throw e
-  }
-
-  await PrecioVolumen.aplicarDescuentoTotal(productoId, porcentaje)
-  return PrecioVolumen.listarPorProducto(productoId)
-}
-
-export { validarDatos, listarPrecios, registrarPrecio, editarPrecio, eliminarPrecio, aplicarDescuentoTotal }
+export { validarDatos, listarPrecios, registrarPrecio, editarPrecio, eliminarPrecio }

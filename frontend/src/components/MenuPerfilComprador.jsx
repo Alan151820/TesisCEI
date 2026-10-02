@@ -1,5 +1,7 @@
 import { useNavigate } from 'react-router-dom'
 import { cerrarSesion } from '../lib/auth'
+import api from '../lib/axios'
+import { mensajeDeError } from '../lib/errores'
 import useDesplegable from '../hooks/useDesplegable'
 import Avatar from './ui/Avatar'
 
@@ -11,9 +13,16 @@ function MenuPerfilComprador() {
   const modoDistribuidorActivo = localStorage.getItem('modoDistribuidorActivo') === 'true'
   const rutaDistribuidora = modoDistribuidorActivo ? '/inicio' : '/configurarPerfil'
 
-  const handleCerrarSesion = () => {
+  const handleCerrarSesion = async () => {
+    try {
+      await api.post('/auth/cerrarSesion')
+    } catch (err) {
+      // un 401 ya lo resuelve el interceptor de axios (cierra la sesión local y va al login)
+      if (err.response?.status !== 401) alert(mensajeDeError(err))
+      return
+    }
     cerrarSesion()
-    navigate('/catalogo')
+    navigate('/login')
   }
 
   return (
