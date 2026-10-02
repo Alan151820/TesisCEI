@@ -18,13 +18,14 @@ function Catalogo() {
 
   const [productos, setProductos] = useState([])
   const [cargando, setCargando] = useState(true)
-  const { agregarProducto, totalItems } = useCarrito()
   const [categorias, setCategorias] = useState([])
   const [busqueda, setBusqueda] = useState('')
   const [filtroCategoria, setFiltroCategoria] = useState('')
   const [filtroDistribuidor, setFiltroDistribuidor] = useState('')
   const [filtroPrecioMin, setFiltroPrecioMin] = useState('')
   const [filtroPrecioMax, setFiltroPrecioMax] = useState('')
+
+  const { agregarProducto, totalItems } = useCarrito()
 
   useEffect(() => {
     cargarProductos()
@@ -71,17 +72,17 @@ function Catalogo() {
     <div className="catalogo-layout">
 
       <Hdr
-        logo={<span className="hdr-logo" onClick={() => navigate('/')}><Marca /></span>}
+        logo={<span className="hdr-logo" onClick={() => navigate('/catalogo')}><Marca /></span>}
         buscador
         buscadorValor={busqueda}
         onBuscadorChange={(valor) => { setBusqueda(valor); aplicarFiltros({ nombre: valor }) }}
       >
         <Boton variante="icono" className="hdr-btn-carrito" badge={totalItems} onClick={() => navigate('/carrito')} aria-label="Carrito">🛒</Boton>
-        <Boton variante="ghost" className="catalogo-btn-auth" onClick={() => navigate('/login')}>Iniciar sesión</Boton>
-        <Boton variante="fill" className="catalogo-btn-auth" onClick={() => navigate('/registro')}>Registrarse</Boton>
+        <Boton variante="ghost" onClick={() => navigate('/login')}>Iniciar sesión</Boton>
+        <Boton variante="fill" onClick={() => navigate('/registro')}>Registrarse</Boton>
       </Hdr>
 
-      <div className="fila gap-m p-m catalogo-filtros">
+      <div className="fila gap-m catalogo-filtros">
         <Campo
           as="select"
           className="catalogo-filtro-campo"

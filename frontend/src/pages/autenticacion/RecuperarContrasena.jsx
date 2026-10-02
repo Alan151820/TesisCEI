@@ -23,7 +23,7 @@ function RecuperarContrasena() {
     try {
       const res = await api.post('/auth/recuperarContrasena', { telefono })
       setMensaje(res.data.mensaje)
-      navigate('/verificarRecuperacion', { state: { telefono, codigoDev: res.data.codigo_dev } })
+      navigate('/verificarRecuperacion', { state: { telefono } })
     } catch (error) {
       setMensaje(mensajeDeError(error))
     }

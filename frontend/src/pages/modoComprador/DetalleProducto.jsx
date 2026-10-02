@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { mensajeDeError } from '../../lib/errores'
 import { useParams, useNavigate } from 'react-router-dom'
 import api from '../../lib/axios'
+import { rutaInicio } from '../../lib/auth'
 import { useCarrito } from '../../context/CarritoContext'
 import { precioAplicable } from '../../lib/precios'
 import CampanaNotificaciones from '../../components/CampanaNotificaciones'
@@ -75,18 +76,18 @@ function DetalleProducto() {
   return (
     <div className="detalleproducto-layout">
 
-      <Hdr logo={<span className="hdr-logo" onClick={() => navigate('/')}><Marca /></span>} buscador>
-        <Boton variante="icono" className="hdr-btn-carrito" badge={totalItems} onClick={() => navigate('/carrito')} aria-label="Carrito">🛒</Boton>
+      <Hdr logo={<span className="hdr-logo" onClick={() => navigate(rutaInicio())}><Marca /></span>} buscador>
         {token ? (
           <>
-            <span className="link" onClick={() => navigate(modoDistribuidorActivo ? '/inicio' : '/configurarPerfil')}>
-              Distribuidora
-            </span>
+            <span className="link comprador-nav-link" onClick={() => navigate('/misPedidos')}>Mis pedidos</span>
+            <span className="link comprador-nav-link" onClick={() => navigate(modoDistribuidorActivo ? '/inicio' : '/configurarPerfil')}>Distribuidora</span>
             <CampanaNotificaciones rutaDestino="/misPedidos" rutaDetalle="/pedido" />
+            <Boton variante="icono" className="hdr-btn-carrito" badge={totalItems} onClick={() => navigate('/carrito')} aria-label="Carrito">🛒</Boton>
             <MenuPerfilComprador />
           </>
         ) : (
           <>
+            <Boton variante="icono" className="hdr-btn-carrito" badge={totalItems} onClick={() => navigate('/carrito')} aria-label="Carrito">🛒</Boton>
             <Boton variante="ghost" onClick={() => navigate('/login')}>Iniciar sesión</Boton>
             <Boton variante="fill" onClick={() => navigate('/registro')}>Registrarse</Boton>
           </>
