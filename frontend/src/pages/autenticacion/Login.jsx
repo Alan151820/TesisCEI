@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { formatearTelefonoUy } from '../../lib/telefono'
 import { mensajeDeError } from '../../lib/errores'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import api from '../../lib/axios'
 import Hdr from '../../components/Hdr'
 import TabRow from '../../components/ui/TabRow'
@@ -21,6 +21,8 @@ function Login() {
   const [contrasena, setContrasena] = useState('')
   const [mensaje, setMensaje] = useState('')
   const navigate = useNavigate()
+  const location = useLocation()
+  const mensajeExito = location.state?.mensajeExito
 
   const handleLogin = async () => {
     const telefono = formatearTelefonoUy(telefonoInput)
@@ -50,6 +52,8 @@ function Login() {
         <Tarjeta as="main" className="auth-card col gap-m">
           <div className="titulo1">Iniciar sesión</div>
           <p className="texto-mudo">Usá tu número de teléfono y contraseña.</p>
+
+          {mensajeExito && !mensaje && <p className="texto" style={{ color: 'var(--color-exito)', textAlign: 'center', margin: 0 }}>{mensajeExito}</p>}
 
           <div className="col gap-s">
             <span className="texto">Teléfono</span>

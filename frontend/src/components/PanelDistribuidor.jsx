@@ -7,6 +7,8 @@ import Avatar from './ui/Avatar'
 import Marca from './Marca'
 import useDesplegable from '../hooks/useDesplegable'
 import { cerrarSesion } from '../lib/auth'
+import api from '../lib/axios'
+import { mensajeDeError } from '../lib/errores'
 import '../pages/modoComprador/InicioComprador.css'
 import '../pages/modoDistribuidor/Inicio.css'
 
@@ -18,7 +20,14 @@ const NAV_ITEMS = [
   { label: 'Editar perfil', ruta: '/editarPerfil' },
 ]
 
-function cerrarSesionDistribuidor(navigate) {
+async function cerrarSesionDistribuidor(navigate) {
+  try {
+    await api.post('/auth/cerrarSesion')
+  } catch (err) {
+    // un 401 ya lo resuelve el interceptor de axios (cierra la sesión local y va al login)
+    if (err.response?.status !== 401) alert(mensajeDeError(err))
+    return
+  }
   cerrarSesion()
   navigate('/login')
 }

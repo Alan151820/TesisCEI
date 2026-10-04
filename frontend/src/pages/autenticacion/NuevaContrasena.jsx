@@ -27,8 +27,7 @@ function NuevaContrasena() {
     }
     try {
       const res = await api.post('/auth/nuevaContrasena', { telefono, contrasena })
-      setMensaje(res.data.mensaje)
-      navigate('/login')
+      navigate('/login', { state: { mensajeExito: res.data.mensaje } })
     } catch (error) {
       setMensaje(mensajeDeError(error))
     }

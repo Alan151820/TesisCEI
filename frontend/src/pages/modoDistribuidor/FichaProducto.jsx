@@ -39,6 +39,7 @@ function FichaProducto() {
   const [cantidadMinima, setCantidadMinima] = useState('')
   const [precioVenta, setPrecioVenta] = useState('')
   const [descuentoPct, setDescuentoPct] = useState('')
+  const [costoTramo, setCostoTramo] = useState('')
   const [errorPrecio, setErrorPrecio] = useState('')
 
   const [descuentoTotal, setDescuentoTotal] = useState('')
@@ -80,12 +81,18 @@ function FichaProducto() {
       setErrorPrecio('Ya existe un precio con esa cantidad mínima.')
       return
     }
+    if (costoTramo !== '' && Number(costoTramo) < 0) {
+      setErrorPrecio('El precio de costo no puede ser negativo.')
+      return
+    }
 
     const precioPorUnidad = total / cant
-    setTramosAdicionales(prev => [...prev, { idLocal: Date.now(), cantidadMinima: cant, precioVenta: precioPorUnidad, precioCosto: null }])
+    const precioCostoTramo = costoTramo === '' ? null : Number(costoTramo)
+    setTramosAdicionales(prev => [...prev, { idLocal: Date.now(), cantidadMinima: cant, precioVenta: precioPorUnidad, precioCosto: precioCostoTramo }])
     setCantidadMinima('')
     setPrecioVenta('')
     setDescuentoPct('')
+    setCostoTramo('')
     setMostrarFormPrecio(false)
   }
 
@@ -399,11 +406,13 @@ function FichaProducto() {
                   descuentoPct={descuentoPct}
                   precioVenta={precioVenta}
                   precioPorUnidadCalc={precioPorUnidadCalc}
+                  precioCosto={costoTramo}
                   onCantidad={handleChangeCantidadMinima}
                   onDescuento={handleChangeDescuentoPct}
                   onPrecio={handleChangePrecioVenta}
+                  onCosto={setCostoTramo}
                   onGuardar={handleAgregarPrecio}
-                  onCancelar={() => { setMostrarFormPrecio(false); setErrorPrecio(''); setDescuentoPct('') }}
+                  onCancelar={() => { setMostrarFormPrecio(false); setErrorPrecio(''); setDescuentoPct(''); setCostoTramo('') }}
                   textoGuardar="Agregar tramo"
                   error={errorPrecio}
                 />

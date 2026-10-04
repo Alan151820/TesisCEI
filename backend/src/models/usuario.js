@@ -206,6 +206,22 @@ class Usuario {
     return true
   }
 
+  async cerrarSesion() {
+    await pool.query('UPDATE usuario SET sesion_valida_desde = now() WHERE id = $1', [this.id])
+  }
+
+  // emitidoEn: campo iat del JWT, en segundos enteros. Un token emitido en el mismo segundo
+  // del cierre de sesión (o antes) queda inválido.
+  static async sesionVigente(id, emitidoEn) {
+    const resultado = await pool.query(
+      `SELECT sesion_valida_desde IS NULL
+              OR to_timestamp($2)::timestamp > sesion_valida_desde AS vigente
+       FROM usuario WHERE id = $1`,
+      [id, emitidoEn]
+    )
+    return resultado.rows.length > 0 && resultado.rows[0].vigente
+  }
+
 }
 
 export default Usuario

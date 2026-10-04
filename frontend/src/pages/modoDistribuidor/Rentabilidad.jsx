@@ -74,7 +74,7 @@ function Rentabilidad() {
                 <>
                   <div>{formatearPesos(r.precioCosto)}</div>
                   <div>{formatearPesos(r.diferenciaPesos)}</div>
-                  <div>{r.diferenciaPorcentaje != null ? `${r.diferenciaPorcentaje.toFixed(1)}%` : '—'}</div>
+                  <div>{r.diferenciaPorcentaje != null ? `${r.diferenciaPorcentaje.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%` : '—'}</div>
                 </>
               ) : (
                 <>
